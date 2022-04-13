@@ -1,10 +1,10 @@
-// Some copyright should be here...
+// Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
-public class SDGSDK : ModuleRules
+public class XDGSDK : ModuleRules
 {
-	public SDGSDK(ReadOnlyTargetRules Target) : base(Target)
+	public XDGSDK(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		

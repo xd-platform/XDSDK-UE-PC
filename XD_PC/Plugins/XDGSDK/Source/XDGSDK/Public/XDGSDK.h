@@ -2,9 +2,10 @@
 
 #pragma once
 
+#include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FSDGSDKModule : public IModuleInterface
+class FXDGSDKModule : public IModuleInterface
 {
 public:
 

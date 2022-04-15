@@ -2,6 +2,7 @@
 
 
 #include "XDGAPI.h"
+#include "Server/XDGNet.h"
 
 DEFINE_LOG_CATEGORY_STATIC(XDGSDKLog, Log, All);
 enum InitState
@@ -36,5 +37,7 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 		GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(true, TEXT("已经初始化"));
 		return;
 	}
-	g_InitState = InitStateIniting;
+	// g_InitState = InitStateIniting;
+	// XDGNet::RequestConfig();
+	XDGNet::RequestIpInfo();
 }

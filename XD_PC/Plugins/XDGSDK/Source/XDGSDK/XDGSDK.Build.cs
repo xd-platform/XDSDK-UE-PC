@@ -38,6 +38,9 @@ public class XDGSDK : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"Http",
+				"Json",
+				"JsonUtilities",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

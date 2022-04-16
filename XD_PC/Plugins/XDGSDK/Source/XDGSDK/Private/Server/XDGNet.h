@@ -1,6 +1,7 @@
 #pragma once
 #include "TDSNet/TDSHttpManager.h"
 #include "Model/IpInfoModel.h"
+#include "Model/XDGError.h"
 
 class XDGNet: public TDSHttpRequest
 {
@@ -11,7 +12,7 @@ public:
 	// static void RequestIpInfo(void(*callback)(bool success, TSharedPtr<FIpInfoModel> model));
 	// template<typename FunctorType, typename... VarTypes>
 
-	static void RequestIpInfo(TFunction<void(bool success, TSharedPtr<FIpInfoModel> model)> callback);
+	static void RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGError error)> callback);
 
 
 

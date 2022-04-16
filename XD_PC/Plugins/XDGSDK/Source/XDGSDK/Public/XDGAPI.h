@@ -26,6 +26,7 @@ class XDGSDK_API UXDGAPI : public UObject
 	UFUNCTION(BlueprintCallable, Category = "SDGSDK", meta = (DisplayName = "Init SDK"))
 	static void InitSDK(FString sdkClientId);
 
+
 private:
 
 };

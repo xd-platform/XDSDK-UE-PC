@@ -1,10 +1,10 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "TDSHttpResponse.h"
-#include "TDSHttpObject.h"
 
 class TDSHttpRequest
 {
+	friend class TDSHttpManager;
 public:
 	virtual ~TDSHttpRequest() = default;
 
@@ -19,11 +19,16 @@ public:
 	TMap<FString, FString> headers;
 
 	FJsonObject paras;
+
+	int repeatCount = 1;
 	
 	Type type = Get;
 
-	typedef void (*CompletedBlock)(TSharedPtr<TDSHttpResponse> response);
-	CompletedBlock onCompleted = nullptr;
+	DECLARE_DELEGATE_OneParam(CompletedBlock, TSharedPtr<TDSHttpResponse>);
+	CompletedBlock onCompleted;
 	
 	virtual TMap<FString, FString> commonHeaders(){ return TMap<FString, FString>(); };
+
+private:
+	int tryCount = 0;
 };

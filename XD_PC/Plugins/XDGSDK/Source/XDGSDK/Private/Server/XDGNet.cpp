@@ -1,6 +1,6 @@
 #include "XDGNet.h"
 #include "JsonObjectConverter.h"
-#include "Model/IpInfoModel.h"
+
 
 // public readonly static string BASE_URL = "https://test-xdsdk-intnl-6.xd.com"; //测试
 static FString BASE_URL = "https://xdsdk-intnl-6.xd.com"; //正式
@@ -28,37 +28,28 @@ void XDGNet::RequestConfig()
 	TDSHttpManager::Get().request(request);
 }
 
-
-void XDGNet::RequestIpInfo()
+void XDGNet::RequestIpInfo(TFunction<void(bool success, TSharedPtr<FIpInfoModel> model)> callback)
 {
 	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = IP_INFO;
-	request->onCompleted = [](TSharedPtr<TDSHttpResponse> response)
-	{
-		TSharedPtr<FIpInfoModel> model = MakeShareable(new FIpInfoModel);
-		FJsonObjectConverter::JsonObjectStringToUStruct(response->contentString, model.Get());
-		UE_LOG(LogTemp, Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
-	};
+	request->repeatCount = 3;
+	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+		if (callback == nullptr)
+		{
+			return;
+		}
+		if (response->state == TDSHttpResponse::success) {
+			TSharedPtr<FIpInfoModel> model = MakeShareable(new FIpInfoModel);
+			FJsonObjectConverter::JsonObjectStringToUStruct(response->contentString, model.Get());
+			callback(true, model);
+		} else {
+			callback(false, nullptr);
+		}
+		
+	});
 	TDSHttpManager::Get().request(request);
-
 }
 
-/*Assigned function on successfull http call*/
-// void TDSHttpRequest::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
-// {
-// 	//Create a pointer to hold the json serialized data
-// 	TSharedPtr<FJsonObject> JsonObject;
-//
-// 	//Create a reader pointer to read the json data
-// 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
-//
-// 	//Deserialize the json data given Reader and the actual object to deserialize
-// 	if (FJsonSerializer::Deserialize(Reader, JsonObject))
-// 	{
-// 		//Get the value of the json object by field name
-// 		int32 recievedInt = JsonObject->GetIntegerField("customInt");
-//
-// 		//Output it to the engine
-// 		GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Green, FString::FromInt(recievedInt));
-// 	}
-// }
+
+
+

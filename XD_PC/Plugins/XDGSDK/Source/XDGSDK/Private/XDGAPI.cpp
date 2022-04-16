@@ -39,5 +39,13 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 	}
 	// g_InitState = InitStateIniting;
 	// XDGNet::RequestConfig();
-	XDGNet::RequestIpInfo();
+	XDGNet::RequestIpInfo(
+		[] (bool success, TSharedPtr<FIpInfoModel> model)
+		{
+			if (success)
+			{
+				// UE_LOG(LogTemp, Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
+			}
+		}
+	);
 }

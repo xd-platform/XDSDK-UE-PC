@@ -36,7 +36,12 @@ void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
 	Request->OnProcessRequestComplete().BindLambda(
 		[=](FHttpRequestPtr HttpRequest, FHttpResponsePtr Response, bool bWasSuccessful)
 		{
-			TSharedPtr<TDSHttpResponse> tdsRes(new TDSHttpResponse());
+			tdsReq->tryCount++;
+			if (bWasSuccessful == false || !EHttpResponseCodes::IsOk(Response->GetResponseCode()))
+			{
+				if (tdsReq->tryCount < tdsReq->repeatCount) { request(tdsReq); }
+			}
+			TSharedPtr<TDSHttpResponse> tdsRes(new TDSHttpResponse);
 			if (bWasSuccessful)
 			{
 				tdsRes->httpCode = Response->GetResponseCode();
@@ -58,11 +63,7 @@ void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
 				tdsRes->state = TDSHttpResponse::networkError;
 				UE_LOG(TDSHttpLog, Warning, TEXT("%s\nNetwork Error, please check network connection"), *Response->GetURL());
 			}
-			if (tdsReq->onCompleted)
-			{
-				tdsReq->onCompleted(tdsRes);
-			}
-		}
-		);
+			tdsReq->onCompleted.ExecuteIfBound(tdsRes);
+		});
 	Request->ProcessRequest();
 }

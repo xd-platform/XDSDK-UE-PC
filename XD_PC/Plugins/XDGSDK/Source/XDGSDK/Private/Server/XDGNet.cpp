@@ -1,4 +1,6 @@
 #include "XDGNet.h"
+#include "JsonObjectConverter.h"
+#include "Model/IpInfoModel.h"
 
 // public readonly static string BASE_URL = "https://test-xdsdk-intnl-6.xd.com"; //测试
 static FString BASE_URL = "https://xdsdk-intnl-6.xd.com"; //正式
@@ -33,11 +35,12 @@ void XDGNet::RequestIpInfo()
 	request->URL = IP_INFO;
 	request->onCompleted = [](TSharedPtr<TDSHttpResponse> response)
 	{
-		
+		TSharedPtr<FIpInfoModel> model = MakeShareable(new FIpInfoModel);
+		FJsonObjectConverter::JsonObjectStringToUStruct(response->contentString, model.Get());
+		UE_LOG(LogTemp, Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
 	};
 	TDSHttpManager::Get().request(request);
-	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
-	// FPaths::ProjectPluginsDir()
+
 }
 
 /*Assigned function on successfull http call*/

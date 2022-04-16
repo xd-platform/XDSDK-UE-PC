@@ -18,8 +18,8 @@ public:
 
 	int32 httpCode;
 
-	TArray<uint8> content;
-
+	// TArray<uint8> content;
+	FString contentString;
 	/**
 	 * Return all headers in an array in "Name: Value" format.
 	 *

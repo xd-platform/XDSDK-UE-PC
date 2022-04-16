@@ -40,7 +40,7 @@ void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
 			if (bWasSuccessful)
 			{
 				tdsRes->httpCode = Response->GetResponseCode();
-				tdsRes->content = Response->GetContent();
+				tdsRes->contentString = Response->GetContentAsString();
 				tdsRes->headers = Response->GetAllHeaders();
 				if (EHttpResponseCodes::IsOk(tdsRes->httpCode))
 				{

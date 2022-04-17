@@ -3,6 +3,7 @@
 
 #include "XDGAPI.h"
 #include "Server/XDGNet.h"
+#include "Tools/DataStorageName.h"
 
 DEFINE_LOG_CATEGORY_STATIC(XDGSDKLog, Log, All);
 enum InitState
@@ -25,6 +26,24 @@ const UXDGAPI* UXDGAPI::GetXDGSDKEventDispatcher()
 	return XDGSDKManager;
 }
 
+void GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FString msg)> resultBlock)
+{
+	XDGNet::RequestIpInfo(
+		[=] (TSharedPtr<FIpInfoModel> model, FXDGError error)
+		{
+			if (model == nullptr)
+			{
+				TSharedPtr<FIpInfoModel> infoModel = DataStorage::LoadStruct<FIpInfoModel>(DataStorageName_IpInfo);
+				if (resultBlock) { resultBlock(infoModel, error.msg);}
+			} else
+			{
+				DataStorage::SaveStruct(DataStorageName_IpInfo, model, true);
+				if (resultBlock) { resultBlock(model, "success");}
+			}
+		}
+	);
+}
+
 void UXDGAPI::InitSDK(FString sdkClientId)
 {
 	UE_LOG(XDGSDKLog, Display, TEXT("初始化Client ID：%s"), *sdkClientId);
@@ -39,16 +58,20 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 	}
 	// g_InitState = InitStateIniting;
 	// XDGNet::RequestConfig();
-	XDGNet::RequestIpInfo(
-		[] (TSharedPtr<FIpInfoModel> model, FXDGError error)
+	GetIpInfo(
+	[=] (TSharedPtr<FIpInfoModel> model, FString msg)
+	{
+		if (model == nullptr)
 		{
-			// if (success)
-			// {
-				UE_LOG(LogTemp, Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
-			// } else
-			// {
-			// 	GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(false, TEXT("已经初始化"));
-			// }
+			// g_InitState = InitStateUninit;
+			UE_LOG(LogTemp, Warning, TEXT("No Model !!!"));
+			GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(false, msg);
+		} else
+		{
+			// DataStorage::SaveStruct(DataStorageName::IpInfo, model);
+			// if (resultBlock) { resultBlock(model, "success");}
+			UE_LOG(LogTemp, Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
 		}
+	}
 	);
 }

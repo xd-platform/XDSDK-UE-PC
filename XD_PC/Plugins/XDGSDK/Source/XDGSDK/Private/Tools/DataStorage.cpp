@@ -1,11 +1,13 @@
 #include "DataStorage.h"
 
+#include <functional>
+
 TSharedPtr<FJsonObject> DataStorage::JsonObject = NULL;
 
 
 FString DataStoragePath()
 {
-	FString filePath = FPaths::SandboxesDir() + TEXT("TDS/DataStorage.json");
+	FString filePath = FPaths::SandboxesDir() + TEXT("/TDS/DataStorage.json");
 	return filePath;
 }
 

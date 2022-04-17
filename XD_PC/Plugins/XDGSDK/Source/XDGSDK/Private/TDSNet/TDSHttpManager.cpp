@@ -39,7 +39,11 @@ void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
 			tdsReq->tryCount++;
 			if (bWasSuccessful == false || !EHttpResponseCodes::IsOk(Response->GetResponseCode()))
 			{
-				if (tdsReq->tryCount < tdsReq->repeatCount) { request(tdsReq); }
+				if (tdsReq->tryCount < tdsReq->repeatCount)
+				{
+					request(tdsReq);
+					return;
+				}
 			}
 			TSharedPtr<TDSHttpResponse> tdsRes(new TDSHttpResponse);
 			if (bWasSuccessful)
@@ -57,11 +61,11 @@ void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
 				{
 					tdsRes->state = TDSHttpResponse::clientError;
 				}
-				UE_LOG(TDSHttpLog, Display, TEXT("%s\nHttpCode: %d\nResponse:\n%s"), * tdsReq->URL, tdsRes->httpCode, *Response->GetContentAsString());
+				UE_LOG(TDSHttpLog, Display, TEXT("%s\nHttpCode: %d\nResponse:\n%s"), *tdsReq->URL, tdsRes->httpCode, *Response->GetContentAsString());
 			} else
 			{
 				tdsRes->state = TDSHttpResponse::networkError;
-				UE_LOG(TDSHttpLog, Warning, TEXT("%s\nNetwork Error, please check network connection"), *Response->GetURL());
+				UE_LOG(TDSHttpLog, Warning, TEXT("%s\tNetwork Error, please check network connection"), *tdsReq->URL);
 			}
 			tdsReq->onCompleted.ExecuteIfBound(tdsRes);
 		});

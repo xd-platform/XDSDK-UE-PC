@@ -6,11 +6,11 @@ class DataStorage
 public:
 	
 
-	static void SaveString(const FString& key, const FString& value, bool needSaveLocal = false);
+	static void SaveString(const FString& key, const FString& value, bool needSaveLocal = true);
 	static FString LoadString(const FString& key);
 
 	template <typename StructType>
-	static void SaveStruct(const FString& key, const TSharedPtr<StructType>& value, bool needSaveLocal = false)
+	static void SaveStruct(const FString& key, const TSharedPtr<StructType>& value, bool needSaveLocal = true)
 	{
 		TSharedPtr<FJsonObject> jsonObject = FJsonObjectConverter::UStructToJsonObject(*value.Get());
 		GetJsonObject()->SetObjectField(key, jsonObject);
@@ -26,7 +26,7 @@ public:
 			return nullptr;
 		}
 		TSharedPtr<StructType> value = MakeShareable(new StructType);
-		FJsonObjectConverter::JsonObjectToUStruct(jsonObject.ToSharedRef(), StructType::StaticStruct(), value.Get());
+		FJsonObjectConverter::JsonObjectToUStruct(jsonObject.ToSharedRef(), value.Get());
 		return value;
 	}
 

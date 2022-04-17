@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "LangType.h"
 #include "XDGAPI.generated.h"
 
 /**
@@ -25,6 +26,10 @@ class XDGSDK_API UXDGAPI : public UObject
 	
 	UFUNCTION(BlueprintCallable, Category = "SDGSDK", meta = (DisplayName = "Init SDK"))
 	static void InitSDK(FString sdkClientId);
+
+
+	UFUNCTION(BlueprintCallable, Category = "SDGSDK", meta = (DisplayName = "Set Language"))
+	static void SetLanguage(LangType type);
 
 
 private:

@@ -2,8 +2,8 @@
 
 
 #include "XDGAPI.h"
-#include "Server/XDGNet.h"
-#include "Tools/DataStorageName.h"
+#include "Server/XDGImplement.h"
+#include "Server/LanguageManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(XDGSDKLog, Log, All);
 enum InitState
@@ -26,24 +26,6 @@ const UXDGAPI* UXDGAPI::GetXDGSDKEventDispatcher()
 	return XDGSDKManager;
 }
 
-void GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FString msg)> resultBlock)
-{
-	XDGNet::RequestIpInfo(
-		[=] (TSharedPtr<FIpInfoModel> model, FXDGError error)
-		{
-			if (model == nullptr)
-			{
-				TSharedPtr<FIpInfoModel> infoModel = DataStorage::LoadStruct<FIpInfoModel>(DataStorageName_IpInfo);
-				if (resultBlock) { resultBlock(infoModel, error.msg);}
-			} else
-			{
-				DataStorage::SaveStruct(DataStorageName_IpInfo, model, true);
-				if (resultBlock) { resultBlock(model, "success");}
-			}
-		}
-	);
-}
-
 void UXDGAPI::InitSDK(FString sdkClientId)
 {
 	UE_LOG(XDGSDKLog, Display, TEXT("初始化Client ID：%s"), *sdkClientId);
@@ -58,7 +40,7 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 	}
 	// g_InitState = InitStateIniting;
 	// XDGNet::RequestConfig();
-	GetIpInfo(
+	XDGImplement::GetIpInfo(
 	[=] (TSharedPtr<FIpInfoModel> model, FString msg)
 	{
 		if (model == nullptr)
@@ -75,3 +57,10 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 	}
 	);
 }
+
+void UXDGAPI::SetLanguage(LangType type)
+{
+	LanguageManager::SetLanguageType(type);
+}
+
+

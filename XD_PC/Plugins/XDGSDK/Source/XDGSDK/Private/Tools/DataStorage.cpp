@@ -4,18 +4,13 @@
 
 TSharedPtr<FJsonObject> DataStorage::JsonObject = NULL;
 
-
-FString DataStoragePath()
-{
-	FString filePath = FPaths::SandboxesDir() + TEXT("/TDS/DataStorage.json");
-	return filePath;
-}
+static FString DataStoragePath = FPaths::SandboxesDir() + TEXT("/TDS/DataStorage.json");
 
 TSharedPtr<FJsonObject>& DataStorage::GetJsonObject()
 {
 	if (JsonObject == NULL)
 	{
-		FString filePath = DataStoragePath();
+		FString filePath = DataStoragePath;
 		FString JsonStr;
 		if(FFileHelper::LoadFileToString(JsonStr, *filePath))
 		{
@@ -43,7 +38,7 @@ FString DataStorage::LoadString(const FString& key)
 
 void DataStorage::SaveToFile()
 {
-	FString filePath = DataStoragePath();
+	FString filePath = DataStoragePath;
 	FString jsonStr;
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&jsonStr);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);

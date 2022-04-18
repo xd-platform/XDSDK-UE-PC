@@ -46,7 +46,7 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 		if (model == nullptr)
 		{
 			// g_InitState = InitStateUninit;
-			UE_LOG(LogTemp, Warning, TEXT("No Model !!!"));
+			UE_LOG(XDGSDKLog, Warning, TEXT("No Model !!!"));
 			GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(false, msg);
 		} else
 		{

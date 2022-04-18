@@ -1,11 +1,15 @@
 #pragma once
 #include "CoreMinimal.h"
+// #include "TDSHttpRequest.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TDSHttpLog, Log, All);
 
+class TDSHttpRequest;
 class TDSHttpResponse
 {
+	
 public:
+	// ~TDSHttpResponse();
 	enum State
 	{
 		success,      // 200 - 206
@@ -27,4 +31,7 @@ public:
 	 */
 	TArray<FString> headers;
 
+	TSharedPtr<TDSHttpRequest> request;
+
+	FString GenerateDebugString();
 };

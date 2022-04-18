@@ -7,6 +7,8 @@ class XDGNet: public TDSHttpRequest
 {
 public:
 
+	XDGNet();
+
 	static void RequestConfig();
 
 	// static void RequestIpInfo(void(*callback)(bool success, TSharedPtr<FIpInfoModel> model));
@@ -14,6 +16,7 @@ public:
 
 	static void RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGError error)> callback);
 
-
-
+private:
+	virtual TMap<FString, FString> CommonHeaders() override;
+	
 };

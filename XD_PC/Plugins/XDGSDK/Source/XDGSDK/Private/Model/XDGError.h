@@ -11,7 +11,7 @@ struct FXDGError
 	GENERATED_BODY()
 
 	UPROPERTY()
-	int code;
+	int code = 0;
 	
 	UPROPERTY()
 	FString msg;

@@ -1,5 +1,6 @@
 #include "XDGNet.h"
 #include "JsonObjectConverter.h"
+#include "LanguageManager.h"
 
 
 // public readonly static string BASE_URL = "https://test-xdsdk-intnl-6.xd.com"; //测试
@@ -19,6 +20,22 @@ static FString XDG_COMMON_LOGIN = BASE_URL + "/api/login/v1/union";
 
 // 查询补款订单信息
 static FString XDG_PAYBACK_LIST = BASE_URL + "/order/v1/user/repayOrders";
+
+XDGNet::XDGNet()
+{
+	
+}
+
+
+TMap<FString, FString> XDGNet::CommonHeaders()
+{
+	TMap<FString, FString> headers;
+	headers.Add("Content-Type", "application/json;charset=utf-8");
+	headers.Add("Accept-Language", LanguageManager::GetLanguageKey());
+	return headers;
+}
+
+
 
 FXDGError GenerateErrorInfo(TSharedPtr<TDSHttpResponse>& response)
 {
@@ -75,6 +92,7 @@ void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGEr
 {
 	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = IP_INFO;
+	request->isPure = true;
 	request->repeatCount = 3;
 	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
 		PerfromCallBack(response, callback);

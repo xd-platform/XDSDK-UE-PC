@@ -6,7 +6,9 @@ class TDSHttpRequest
 {
 	friend class TDSHttpManager;
 public:
+	TDSHttpRequest();
 	virtual ~TDSHttpRequest() = default;
+	// virtual ~TDSHttpRequest();
 
 	enum Type
 	{
@@ -18,16 +20,21 @@ public:
 	
 	TMap<FString, FString> headers;
 
-	FJsonObject paras;
+	TSharedPtr<FJsonObject> parameters;
 
 	int repeatCount = 1;
+
+	float timeoutSecs = 10;
 	
 	Type type = Get;
 
 	DECLARE_DELEGATE_OneParam(CompletedBlock, TSharedPtr<TDSHttpResponse>);
 	CompletedBlock onCompleted;
-	
-	virtual TMap<FString, FString> commonHeaders(){ return TMap<FString, FString>(); };
+
+	// 请求的时候，是否不加入CommonHeaders和CommonParameters。
+	bool isPure = false; 
+	virtual TMap<FString, FString> CommonHeaders(){ return TMap<FString, FString>(); };
+	virtual TSharedPtr<FJsonObject> CommonParameters(){ return nullptr; };
 
 private:
 	int tryCount = 0;

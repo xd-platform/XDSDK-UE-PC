@@ -109,7 +109,7 @@ void LanguageManager::UpdateLanguageModel()
 		{
 			currentModel = MakeShareable(new FLanguageModel);
 			FJsonObjectConverter::JsonObjectToUStruct(languageObject.ToSharedRef(), currentModel.Get());
-			UE_LOG(LogTemp, Display, TEXT("%s, %s"), *currentModel->tds_account_bind_info, *currentModel->tds_account_safe_info)
+			// UE_LOG(LogTemp, Display, TEXT("%s, %s"), *currentModel->tds_account_bind_info, *currentModel->tds_account_safe_info)
 		}
 
 	} else

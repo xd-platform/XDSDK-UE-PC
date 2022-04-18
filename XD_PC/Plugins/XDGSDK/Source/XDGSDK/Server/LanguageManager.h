@@ -1,6 +1,6 @@
 #pragma once
 #include "LangType.h"
-#include "Model/LanguageModel.h"
+#include "LanguageModel.h"
 
 class LanguageManager
 {

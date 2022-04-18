@@ -1,7 +1,7 @@
 #pragma once
-#include "TDSNet/TDSHttpManager.h"
-#include "Model/IpInfoModel.h"
-#include "Model/XDGError.h"
+#include "TDSHttpManager.h"
+#include "IpInfoModel.h"
+#include "XDGError.h"
 
 class XDGNet: public TDSHttpRequest
 {
@@ -18,5 +18,5 @@ public:
 
 private:
 	virtual TMap<FString, FString> CommonHeaders() override;
-	
+	virtual TSharedPtr<FJsonObject> CommonParameters() override;
 };

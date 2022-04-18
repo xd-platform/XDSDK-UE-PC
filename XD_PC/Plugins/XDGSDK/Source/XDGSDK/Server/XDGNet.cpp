@@ -1,7 +1,8 @@
 #include "XDGNet.h"
 #include "JsonObjectConverter.h"
 #include "LanguageManager.h"
-
+#include "DataStorageName.h"
+#include "IpInfoModel.h"
 
 // public readonly static string BASE_URL = "https://test-xdsdk-intnl-6.xd.com"; //测试
 static FString BASE_URL = "https://xdsdk-intnl-6.xd.com"; //正式
@@ -34,6 +35,31 @@ TMap<FString, FString> XDGNet::CommonHeaders()
 	headers.Add("Accept-Language", LanguageManager::GetLanguageKey());
 	return headers;
 }
+
+TSharedPtr<FJsonObject> XDGNet::CommonParameters()
+{
+	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
+	
+	query->SetStringField("clientId", DataStorage::LoadString(DataStorageName_ClientID));
+
+	query->SetStringField("sdkLang", LanguageManager::GetLanguageKey());
+	query->SetStringField("lang", LanguageManager::GetLanguageKey());
+
+	auto ipInfoModel = DataStorage::LoadStruct<FIpInfoModel>(DataStorageName_IpInfo);
+	if (ipInfoModel != nullptr)
+	{
+		ipInfoModel = MakeShareable(new FIpInfoModel);
+	}
+	query->SetStringField("loc", ipInfoModel->country_code);
+	query->SetStringField("city", ipInfoModel->city);
+	query->SetStringField("timeZone", ipInfoModel->timeZone);
+	query->SetStringField("countryCode", ipInfoModel->country_code);
+	query->SetStringField("locationInfoType", "ip");
+
+	
+	return query;
+}
+
 
 
 

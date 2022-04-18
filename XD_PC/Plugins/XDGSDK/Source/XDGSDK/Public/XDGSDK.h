@@ -8,6 +8,11 @@
 class FXDGSDKModule : public IModuleInterface
 {
 public:
+	// e.g 60101001
+	static int Version;
+	// e.g "6.1.1"
+	static FString VersionName;
+
 
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;

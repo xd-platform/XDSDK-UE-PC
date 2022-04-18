@@ -2,8 +2,8 @@
 
 
 #include "XDGAPI.h"
-#include "Server/XDGImplement.h"
-#include "Server/LanguageManager.h"
+#include "XDGImplement.h"
+#include "LanguageManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(XDGSDKLog, Log, All);
 enum InitState
@@ -28,7 +28,6 @@ const UXDGAPI* UXDGAPI::GetXDGSDKEventDispatcher()
 
 void UXDGAPI::InitSDK(FString sdkClientId)
 {
-	UE_LOG(XDGSDKLog, Display, TEXT("初始化Client ID：%s"), *sdkClientId);
 	if (g_InitState == InitStateIniting)
 	{
 		return;

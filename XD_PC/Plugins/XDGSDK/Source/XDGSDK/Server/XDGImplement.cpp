@@ -1,5 +1,5 @@
 #include "XDGImplement.h"
-#include "Tools/DataStorageName.h"
+#include "DataStorageName.h"
 
 void XDGImplement::GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FString msg)> resultBlock)
 {

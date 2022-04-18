@@ -4,6 +4,9 @@
 
 #define LOCTEXT_NAMESPACE "FXDGSDKModule"
 
+int FXDGSDKModule::Version = 60101001;
+FString FXDGSDKModule::VersionName = "6.1.1";
+
 void FXDGSDKModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module

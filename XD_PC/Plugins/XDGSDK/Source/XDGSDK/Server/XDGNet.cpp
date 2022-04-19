@@ -1,8 +1,14 @@
 #include "XDGNet.h"
+
+#include <string>
+
 #include "JsonObjectConverter.h"
 #include "LanguageManager.h"
 #include "DataStorageName.h"
 #include "IpInfoModel.h"
+#include "DeviceInfo.h"
+#include "TokenModel.h"
+#include "XDGSDK.h"
 
 // public readonly static string BASE_URL = "https://test-xdsdk-intnl-6.xd.com"; //测试
 static FString BASE_URL = "https://xdsdk-intnl-6.xd.com"; //正式
@@ -40,12 +46,12 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 {
 	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
 	
-	query->SetStringField("clientId", DataStorage::LoadString(DataStorageName_ClientID));
+	query->SetStringField("clientId", DataStorage::LoadString(DataStorageName::ClientId));
 
 	query->SetStringField("sdkLang", LanguageManager::GetLanguageKey());
 	query->SetStringField("lang", LanguageManager::GetLanguageKey());
 
-	auto ipInfoModel = DataStorage::LoadStruct<FIpInfoModel>(DataStorageName_IpInfo);
+	auto ipInfoModel = DataStorage::LoadStruct<FIpInfoModel>(DataStorageName::IpInfo);
 	if (ipInfoModel != nullptr)
 	{
 		ipInfoModel = MakeShareable(new FIpInfoModel);
@@ -54,9 +60,27 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 	query->SetStringField("city", ipInfoModel->city);
 	query->SetStringField("timeZone", ipInfoModel->timeZone);
 	query->SetStringField("countryCode", ipInfoModel->country_code);
-	query->SetStringField("locationInfoType", "ip");
-
 	
+	query->SetStringField("locationInfoType", "ip");
+	query->SetStringField("chn", "PC");
+
+	query->SetStringField("sdkVer", FXDGSDKModule::VersionName);
+
+	query->SetStringField("did", DeviceInfo::GetLoginId());
+	query->SetStringField("pt", DeviceInfo::GetPlatform());
+	query->SetStringField("pkgName", DeviceInfo::GetProjectName());
+	query->SetStringField("os", DeviceInfo::GetOSVersion());
+	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), DeviceInfo::GetScreenWidth(), DeviceInfo::GetScreenHeight()));
+	
+	query->SetStringField("time", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
+	
+	
+	// 		   {"appId", cfgMd == null ? "" : cfgMd.data.configs.appId + ""},
+	// 		   {"mem", SystemInfo.systemMemorySize / 1024 + "GB"},
+	// 		   {"mod", SystemInfo.deviceModel},
+	// 		   {"brand", SystemInfo.graphicsDeviceVendor},
+	// 		   {"appVer", Application.version},
+	// 		   {"appVerCode", Application.version},
 	return query;
 }
 
@@ -126,6 +150,44 @@ void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGEr
 	TDSHttpManager::Get().request(request);
 }
 
+// FString XDGNet::GetMacToken() {
+// 	auto tokenModel = FTokenModel::GetCurrentToken();
+// 	FString authToken;
+// 	if (tokenModel == nullptr)
+// 	{
+// 		return authToken;
+// 	}
+// }
 
 
+FString GetRandomStr(int length){
+	FString LetterStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	FString SB;
+	for (int i = 0; i < length; i++){
+		SB += LetterStr[FMath::RandRange(0, LetterStr.Len()-1)];
+	}
 
+	return SB;
+}
+
+
+// private static string GetMacToken(string url, string method){
+// 	TokenModel model = TokenModel.GetLocalModel();
+// 	string authToken = null;
+// 	if (model != null && model.data != null){
+// 		var uri = new Uri(url);
+// 		var timeStr = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds() + "";
+// 		var nonce = GetRandomStr(5);
+// 		var md = method.ToUpper();
+//
+// 		var pathAndQuery = uri.PathAndQuery;
+// 		var domain = uri.Host.ToLower();
+// 		var port = uri.Port + "";
+//
+// 		var dataStr = $"{timeStr}\n{nonce}\n{md}\n{pathAndQuery}\n{domain}\n{port}\n";
+// 		var mac = Base64WithSecret(model.data.macKey, dataStr);
+// 		authToken = $"MAC id=\"{model.data.kid}\",ts=\"{timeStr}\",nonce=\"{nonce}\",mac=\"{mac}\"";
+// 	}
+//
+// 	return authToken;
+// }

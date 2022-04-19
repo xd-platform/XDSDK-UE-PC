@@ -19,4 +19,6 @@ public:
 private:
 	virtual TMap<FString, FString> CommonHeaders() override;
 	virtual TSharedPtr<FJsonObject> CommonParameters() override;
+
+	FString GetMacToken();
 };

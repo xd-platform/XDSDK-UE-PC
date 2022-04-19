@@ -8,11 +8,11 @@ void XDGImplement::GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FStr
 		{
 			if (model == nullptr)
 			{
-				TSharedPtr<FIpInfoModel> infoModel = DataStorage::LoadStruct<FIpInfoModel>(DataStorageName_IpInfo);
+				TSharedPtr<FIpInfoModel> infoModel = DataStorage::LoadStruct<FIpInfoModel>(DataStorageName::IpInfo);
 				if (resultBlock) { resultBlock(infoModel, error.msg);}
 			} else
 			{
-				DataStorage::SaveStruct(DataStorageName_IpInfo, model, true);
+				DataStorage::SaveStruct(DataStorageName::IpInfo, model, true);
 				if (resultBlock) { resultBlock(model, "success");}
 			}
 		}
@@ -21,5 +21,5 @@ void XDGImplement::GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FStr
 
 void XDGImplement::InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock)
 {
-	DataStorage::SaveString(DataStorageName_ClientID, sdkClientId, false);
+	DataStorage::SaveString(DataStorageName::ClientId, sdkClientId, false);
 }

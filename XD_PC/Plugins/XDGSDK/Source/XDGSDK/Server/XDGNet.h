@@ -1,4 +1,5 @@
 #pragma once
+#include "InitConfigModel.h"
 #include "TDSHttpManager.h"
 #include "IpInfoModel.h"
 #include "XDGError.h"
@@ -15,6 +16,7 @@ public:
 	// template<typename FunctorType, typename... VarTypes>
 
 	static void RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGError error)> callback);
+	static void RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FXDGError error)> callback);
 
 private:
 	virtual TMap<FString, FString> CommonHeaders() override;

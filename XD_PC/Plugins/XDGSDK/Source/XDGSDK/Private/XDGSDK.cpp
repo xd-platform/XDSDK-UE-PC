@@ -2,6 +2,8 @@
 
 #include "XDGSDK.h"
 
+DEFINE_LOG_CATEGORY(XDGSDKLog);
+
 #define LOCTEXT_NAMESPACE "FXDGSDKModule"
 
 int FXDGSDKModule::Version = 60101001;

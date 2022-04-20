@@ -52,7 +52,6 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
-				queryString = FGenericPlatformHttp::UrlEncode(queryString);
 				url = url + "?" + queryString;
 			}
 			Request->SetURL(url);
@@ -72,7 +71,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 }
 
 // FString combine
-FString TDSHttpManager::CombinParameters(TSharedPtr<FJsonObject> parameters)
+FString TDSHttpManager::CombinParameters(TSharedPtr<FJsonObject> parameters, bool isEncode)
 {
 	TArray<FString> keyValues;
 	for (auto para : parameters->Values)
@@ -80,7 +79,7 @@ FString TDSHttpManager::CombinParameters(TSharedPtr<FJsonObject> parameters)
 		FString value;
 		if (para.Value->TryGetString(value))
 		{
-			keyValues.Add(para.Key + "=" + value);
+			keyValues.Add(para.Key + "=" +  (isEncode ? FGenericPlatformHttp::UrlEncode(value) : value));
 		}
 	}
 	return FString::Join(keyValues, TEXT("&"));

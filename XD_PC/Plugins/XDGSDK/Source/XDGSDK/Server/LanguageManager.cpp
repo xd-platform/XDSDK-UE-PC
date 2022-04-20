@@ -1,5 +1,4 @@
 #include "LanguageManager.h"
-
 #include "JsonHelper.h"
 #include "JsonObjectConverter.h"
 #include "XDGSDK.h"
@@ -108,18 +107,18 @@ void LanguageManager::UpdateLanguageModel()
 			currentModel = MakeShareable(new FLanguageModel);
 			if (!FJsonObjectConverter::JsonObjectToUStruct(languageObject->ToSharedRef(), currentModel.Get()))
 			{
-				XDG_LOG(Error, TEXT("%s language json content error"), GetLanguageKey());
+				UE_LOG(LogTemp, Error, TEXT("%s language json content error"), *GetLanguageKey());
 			}
 			
 			// UE_LOG(LogTemp, Display, TEXT("%s, %s"), *currentModel->tds_account_bind_info, *currentModel->tds_account_safe_info)
 		} else
 		{
-			XDG_LOG(Error, TEXT("language json content error"));
+			UE_LOG(LogTemp, Error, TEXT("language json content error"));
 		}
 
 	} else
 	{
-		XDG_LOG(Error, TEXT("not found language json"));
+		UE_LOG(LogTemp, Error, TEXT("not found language json"));
 	}
 }
 

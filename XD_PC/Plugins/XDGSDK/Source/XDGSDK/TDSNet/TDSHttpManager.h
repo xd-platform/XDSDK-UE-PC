@@ -8,7 +8,7 @@ public:
 
 	void request(TSharedPtr<TDSHttpRequest> tdsReq);
 
-	static FString CombinParameters(TSharedPtr<FJsonObject> parameters);
+	static FString CombinParameters(TSharedPtr<FJsonObject> parameters, bool isEncode = true);
 private:
 	static TDSHttpManager* Singleton;
 };

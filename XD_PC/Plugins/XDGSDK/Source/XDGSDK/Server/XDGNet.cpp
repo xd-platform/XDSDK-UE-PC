@@ -154,14 +154,6 @@ void PerfromCallBack(TSharedPtr<TDSHttpResponse>& response, TFunction<void(TShar
 	callback(model, error);
 }
 
-
-void XDGNet::RequestConfig()
-{
-	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
-	request->URL = INIT_SDK_URL;
-	TDSHttpManager::Get().request(request);
-}
-
 void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGError error)> callback)
 {
 	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
@@ -173,6 +165,17 @@ void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGEr
 	});
 	TDSHttpManager::Get().request(request);
 }
+
+void XDGNet::RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FXDGError error)> callback)
+{
+	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	request->URL = INIT_SDK_URL;
+	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+		// PerfromCallBack(response, callback);
+	});
+	TDSHttpManager::Get().request(request);
+}
+
 
 
 

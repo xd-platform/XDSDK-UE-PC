@@ -46,13 +46,17 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 		if (model == nullptr)
 		{
 			// g_InitState = InitStateUninit;
-			XDG_LOG(Warning, TEXT("No Model !!!"));
+			UE_LOG(LogTemp, Warning, TEXT("No Model !!!"));
 			GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(false, msg);
 		} else
 		{
-			// DataStorage::SaveStruct(DataStorageName::IpInfo, model);
-			// if (resultBlock) { resultBlock(model, "success");}
-			XDG_LOG(Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
+			XDGImplement::InitSDK(sdkClientId,
+				[](bool successed, FString msg)
+				{
+					
+				}
+			);
+			UE_LOG(LogTemp, Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
 		}
 	}
 	);

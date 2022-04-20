@@ -38,25 +38,33 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 		GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(true, TEXT("已经初始化"));
 		return;
 	}
-	// g_InitState = InitStateIniting;
-	// XDGNet::RequestConfig();
+	g_InitState = InitStateIniting;
 	XDGImplement::GetIpInfo(
 	[=] (TSharedPtr<FIpInfoModel> model, FString msg)
 	{
 		if (model == nullptr)
 		{
-			// g_InitState = InitStateUninit;
-			XDG_LOG(Warning, TEXT("No Model !!!"));
+			g_InitState = InitStateUninit;
+			XDG_LOG(Warning, TEXT("No IpInfo Model"));
 			GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(false, msg);
 		} else
 		{
 			XDGImplement::InitSDK(sdkClientId,
 				[](bool successed, FString msg)
 				{
-					
+					if (successed)
+					{
+						g_InitState = InitStateInited;
+						XDG_LOG(Display, TEXT("init success"));
+						GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(true, msg);
+					} else
+					{
+						g_InitState = InitStateUninit;
+						XDG_LOG(Warning, TEXT("init fail"));
+						GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(false, msg);
+					}
 				}
 			);
-			XDG_LOG(Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
 		}
 	}
 	);

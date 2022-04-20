@@ -11,6 +11,7 @@
 #include "TDSCrypto.h"
 #include "TokenModel.h"
 #include "UrlParse.h"
+#include "XDGResponseModel.h"
 #include "XDGSDK.h"
 
 // public readonly static string BASE_URL = "https://test-xdsdk-intnl-6.xd.com"; //测试
@@ -108,7 +109,7 @@ void XDGNet::DoSomeingAfterCombinHeadersAndParas()
 
 
 
-FXDGError GenerateErrorInfo(TSharedPtr<TDSHttpResponse>& response)
+FXDGError GenerateErrorInfo(const TSharedPtr<TDSHttpResponse>& response)
 {
 	FXDGError error;
 	if (response->state == TDSHttpResponse::clientError)
@@ -128,7 +129,7 @@ FXDGError GenerateErrorInfo(TSharedPtr<TDSHttpResponse>& response)
 }
 
 template <typename StructType>
-TSharedPtr<StructType> GenerateStructPtr(TSharedPtr<TDSHttpResponse>& response)
+TSharedPtr<StructType> GenerateStructPtr(const TSharedPtr<TDSHttpResponse>& response)
 {
 	if (response != nullptr && response->state == TDSHttpResponse::success) {
 		return JsonHelper::GetUStruct<StructType>(response->contentString);
@@ -138,7 +139,7 @@ TSharedPtr<StructType> GenerateStructPtr(TSharedPtr<TDSHttpResponse>& response)
 }
 
 template <typename StructType>
-void PerfromCallBack(TSharedPtr<TDSHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
+void PerfromCallBack(const TSharedPtr<TDSHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
 {
 	if (callback == nullptr)
 	{
@@ -154,30 +155,28 @@ void PerfromCallBack(TSharedPtr<TDSHttpResponse>& response, TFunction<void(TShar
 	callback(model, error);
 }
 
-void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGError error)> callback)
+template <typename StructType>
+void PerfromWrapperResponseCallBack(const TSharedPtr<TDSHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
-	request->URL = IP_INFO;
-	request->isPure = true;
-	request->repeatCount = 3;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
-		PerfromCallBack(response, callback);
-	});
-	TDSHttpManager::Get().request(request);
+	if (callback == nullptr)
+	{
+		return;
+	}
+	TSharedPtr<FXDGResponseModel> Wrapper;
+	TSharedPtr<StructType> model;
+	FXDGResponseModel::ParseJson(response->contentString, Wrapper, model);
+	FXDGError error;
+	if (Wrapper == nullptr)
+	{
+		error = GenerateErrorInfo(response);
+	} else
+	{
+		error.code = Wrapper->code;
+		error.msg = Wrapper->msg;
+		error.detail = Wrapper->detail;
+	}
+	callback(model, error);
 }
-
-void XDGNet::RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FXDGError error)> callback)
-{
-	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
-	request->URL = INIT_SDK_URL;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
-		// PerfromCallBack(response, callback);
-	});
-	TDSHttpManager::Get().request(request);
-}
-
-
-
 
 FString XDGNet::GetMacToken() {
 	auto tokenModel = FTokenModel::GetCurrentToken();
@@ -208,26 +207,24 @@ FString XDGNet::GetMacToken() {
 }
 
 
+void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGError error)> callback)
+{
+	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	request->URL = IP_INFO;
+	request->isPure = true;
+	request->repeatCount = 3;
+	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+		PerfromCallBack(response, callback);
+	});
+	TDSHttpManager::Get().request(request);
+}
 
-
-
-// private static string GetMacToken(string url, string method){
-// 	TokenModel model = TokenModel.GetLocalModel();
-// 	string authToken = null;
-// 	if (model != null && model.data != null){
-// 		var uri = new Uri(url);
-// 		var timeStr = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds() + "";
-// 		var nonce = GetRandomStr(5);
-// 		var md = method.ToUpper();
-//
-// 		var pathAndQuery = uri.PathAndQuery;
-// 		var domain = uri.Host.ToLower();
-// 		var port = uri.Port + "";
-//
-// 		var dataStr = $"{timeStr}\n{nonce}\n{md}\n{pathAndQuery}\n{domain}\n{port}\n";
-// 		var mac = Base64WithSecret(model.data.macKey, dataStr);
-// 		authToken = $"MAC id=\"{model.data.kid}\",ts=\"{timeStr}\",nonce=\"{nonce}\",mac=\"{mac}\"";
-// 	}
-//
-// 	return authToken;
-// }
+void XDGNet::RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FXDGError error)> callback)
+{
+	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	request->URL = INIT_SDK_URL;
+	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+		PerfromWrapperResponseCallBack(response, callback);
+	});
+	TDSHttpManager::Get().request(request);
+}

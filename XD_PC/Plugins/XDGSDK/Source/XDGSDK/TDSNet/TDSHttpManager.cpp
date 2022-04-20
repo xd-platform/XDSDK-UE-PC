@@ -54,6 +54,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 			{
 				url = url + "?" + queryString;
 			}
+			UE_LOG(TDSHttpLog, Warning, TEXT("GET: %s"), *url);
 			Request->SetURL(url);
 		}
 		break;

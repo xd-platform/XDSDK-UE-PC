@@ -16,5 +16,7 @@ struct FXDGError
 	UPROPERTY()
 	FString msg;
 
+	UPROPERTY()
+	FString detail;
 };
 

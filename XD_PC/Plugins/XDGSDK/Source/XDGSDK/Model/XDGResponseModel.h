@@ -22,7 +22,7 @@ struct FXDGResponseModel
 	FString detail;
 
 	template <class UStructType>
-	static void ParseJson(FString json, TSharedPtr<FXDGResponseModel>& model, TSharedPtr<UStructType>& data)
+	static void ParseJson(const FString& json, TSharedPtr<FXDGResponseModel>& model, TSharedPtr<UStructType>& data)
 	{
 		auto JsonObject = JsonHelper::GetJsonObject(json);
 		model = JsonHelper::GetUStruct<FXDGResponseModel>(JsonObject);

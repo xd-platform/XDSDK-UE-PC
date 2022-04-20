@@ -8,6 +8,7 @@
 #include "IpInfoModel.h"
 #include "DeviceInfo.h"
 #include "TokenModel.h"
+#include "UrlParse.h"
 #include "XDGSDK.h"
 
 // public readonly static string BASE_URL = "https://test-xdsdk-intnl-6.xd.com"; //测试
@@ -27,6 +28,16 @@ static FString XDG_COMMON_LOGIN = BASE_URL + "/api/login/v1/union";
 
 // 查询补款订单信息
 static FString XDG_PAYBACK_LIST = BASE_URL + "/order/v1/user/repayOrders";
+
+FString GetRandomStr(int length){
+	FString LetterStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	FString SB;
+	for (int i = 0; i < length; i++){
+		SB += LetterStr[FMath::RandRange(0, LetterStr.Len()-1)];
+	}
+
+	return SB;
+}
 
 XDGNet::XDGNet()
 {
@@ -150,25 +161,36 @@ void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGEr
 	TDSHttpManager::Get().request(request);
 }
 
-// FString XDGNet::GetMacToken() {
-// 	auto tokenModel = FTokenModel::GetCurrentToken();
-// 	FString authToken;
-// 	if (tokenModel == nullptr)
-// 	{
-// 		return authToken;
-// 	}
-// }
 
 
-FString GetRandomStr(int length){
-	FString LetterStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	FString SB;
-	for (int i = 0; i < length; i++){
-		SB += LetterStr[FMath::RandRange(0, LetterStr.Len()-1)];
+FString XDGNet::GetMacToken() {
+	auto tokenModel = FTokenModel::GetCurrentToken();
+	FString authToken;
+	if (tokenModel == nullptr)
+	{
+		return authToken;
 	}
+	UrlParse parse(this->URL);
+	FString timeStr = FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp());
+	FString nonce = GetRandomStr(5);
+	FString md = this->type == Get ? "GET" : "POST";
 
-	return SB;
+	FString pathAndQuery = parse.Path;
+	if (parse.query.Len() > 0)
+	{
+		pathAndQuery += parse.query;
+	}
+	FString domain = parse.Host.ToLower();
+	FString port = parse.Port;
+
+	FString dataStr = timeStr + "\n" + nonce + "\n" + md + "\n" + pathAndQuery + "\n" + domain + "\n" + port + "\n";
+	// FSHAHash
+
+	return dataStr;
 }
+
+
+
 
 
 // private static string GetMacToken(string url, string method){

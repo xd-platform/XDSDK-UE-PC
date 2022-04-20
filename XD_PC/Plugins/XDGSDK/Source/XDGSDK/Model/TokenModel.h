@@ -26,7 +26,11 @@ struct FTokenModel
 	UPROPERTY()
 	FString macAlgorithm; //tapTap才有
 
-	// static TSharedPtr<FTokenModel> GetCurrentToken();
-	
+	static TSharedPtr<FTokenModel> GetCurrentToken();
+
+	static void SetCurrentToken(TSharedPtr<FTokenModel> model);
+
+private:
+	static TSharedPtr<FTokenModel> currentToken;
 };
 

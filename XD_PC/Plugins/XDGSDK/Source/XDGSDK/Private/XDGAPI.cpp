@@ -5,6 +5,7 @@
 #include "XDGImplement.h"
 #include "LanguageManager.h"
 #include "DeviceInfo.h"
+#include "TDSCrypto.h"
 #include "UrlParse.h"
 
 DEFINE_LOG_CATEGORY_STATIC(XDGSDKLog, Log, All);
@@ -30,12 +31,6 @@ const UXDGAPI* UXDGAPI::GetXDGSDKEventDispatcher()
 
 void UXDGAPI::InitSDK(FString sdkClientId)
 {
-	if (true)
-	{
-		UrlParse parse("https://www.baidu.com:80/path/to/some?query=123&haha=456");
-		UE_LOG(LogTemp, Display, TEXT("Scheme: %s, Host: %s, Port: %s, Path: %s, query: %s"), *parse.Scheme, *parse.Host, *parse.Port, *parse.Path, *parse.query);
-		return;
-	}
 	if (g_InitState == InitStateIniting)
 	{
 		return;

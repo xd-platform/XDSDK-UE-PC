@@ -46,7 +46,7 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 		if (model == nullptr)
 		{
 			// g_InitState = InitStateUninit;
-			UE_LOG(LogTemp, Warning, TEXT("No Model !!!"));
+			XDG_LOG(Warning, TEXT("No Model !!!"));
 			GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(false, msg);
 		} else
 		{
@@ -56,7 +56,7 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 					
 				}
 			);
-			UE_LOG(LogTemp, Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
+			XDG_LOG(Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
 		}
 	}
 	);

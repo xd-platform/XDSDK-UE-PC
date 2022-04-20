@@ -107,18 +107,18 @@ void LanguageManager::UpdateLanguageModel()
 			currentModel = MakeShareable(new FLanguageModel);
 			if (!FJsonObjectConverter::JsonObjectToUStruct(languageObject->ToSharedRef(), currentModel.Get()))
 			{
-				UE_LOG(LogTemp, Error, TEXT("%s language json content error"), *GetLanguageKey());
+				XDG_LOG(Error, TEXT("%s language json content error"), *GetLanguageKey());
 			}
 			
 			// UE_LOG(LogTemp, Display, TEXT("%s, %s"), *currentModel->tds_account_bind_info, *currentModel->tds_account_safe_info)
 		} else
 		{
-			UE_LOG(LogTemp, Error, TEXT("language json content error"));
+			XDG_LOG(Error, TEXT("language json content error"));
 		}
 
 	} else
 	{
-		UE_LOG(LogTemp, Error, TEXT("not found language json"));
+		XDG_LOG(Error, TEXT("not found language json"));
 	}
 }
 

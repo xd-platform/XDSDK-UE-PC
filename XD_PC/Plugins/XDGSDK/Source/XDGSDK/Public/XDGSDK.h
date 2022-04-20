@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 XDGSDK_API DECLARE_LOG_CATEGORY_EXTERN(XDGSDKLog, Log, All);
+#define XDG_LOG(Verbosity, Format, ...)  UE_LOG(XDGSDKLog, Verbosity, Format, ##__VA_ARGS__)
+
 
 class XDGSDK_API FXDGSDKModule : public IModuleInterface
 {

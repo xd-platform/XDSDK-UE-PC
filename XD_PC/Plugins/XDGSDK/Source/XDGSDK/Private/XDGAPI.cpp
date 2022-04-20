@@ -4,11 +4,9 @@
 #include "XDGAPI.h"
 #include "XDGImplement.h"
 #include "LanguageManager.h"
-#include "DeviceInfo.h"
-#include "TDSCrypto.h"
-#include "UrlParse.h"
+#include "XDGSDK.h"
 
-DEFINE_LOG_CATEGORY_STATIC(XDGSDKLog, Log, All);
+
 enum InitState
 {
 	InitStateUninit,
@@ -48,13 +46,13 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 		if (model == nullptr)
 		{
 			// g_InitState = InitStateUninit;
-			UE_LOG(XDGSDKLog, Warning, TEXT("No Model !!!"));
+			XDG_LOG(Warning, TEXT("No Model !!!"));
 			GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(false, msg);
 		} else
 		{
 			// DataStorage::SaveStruct(DataStorageName::IpInfo, model);
 			// if (resultBlock) { resultBlock(model, "success");}
-			UE_LOG(LogTemp, Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
+			XDG_LOG(Warning, TEXT("%s, %s, %s, %s, %s"), *model->city, *model->country, *model->country_code, *model->latitude, *model->longitude);
 		}
 	}
 	);

@@ -36,6 +36,8 @@ public:
 	virtual TMap<FString, FString> CommonHeaders(){ return TMap<FString, FString>(); };
 	virtual TSharedPtr<FJsonObject> CommonParameters(){ return nullptr; };
 
+	virtual void DoSomeingAfterCombinHeadersAndParas(){  };
+
 private:
 	int tryCount = 0;
 };

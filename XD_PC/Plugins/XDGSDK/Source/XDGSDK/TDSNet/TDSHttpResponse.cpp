@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "JsonHelper.h"
 #include "SEditorViewportToolBarMenu.h"
 #include "TDSHttpRequest.h"
 
@@ -29,9 +30,7 @@ FString TDSHttpResponse::GenerateDebugString()
 	}
 	if (request->parameters->Values.Num() > 0)
 	{
-		FString body;
-		TSharedRef<TJsonWriter<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>> JsonWriter = TJsonWriterFactory<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>::Create(&body);
-		FJsonSerializer::Serialize(request->parameters.ToSharedRef(), JsonWriter);
+		FString body = JsonHelper::GetJsonString(request->parameters);
 		DebugString += "Body:\n";
 		DebugString += body + "\n";
 	}

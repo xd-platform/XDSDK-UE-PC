@@ -1,5 +1,6 @@
 #include "TDSHttpManager.h"
 #include "Http.h"
+#include "JsonHelper.h"
 
 TDSHttpManager* TDSHttpManager::Singleton = NULL;
 
@@ -15,10 +16,7 @@ TDSHttpManager& TDSHttpManager::Get()
 
 TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttpRequest> tdsReq)
 {
-	auto Request = FHttpModule::Get().CreateRequest();
 	//This is the url on which to process the request
-	
-	Request->SetTimeout(tdsReq->timeoutSecs);
 	
 	TMap<FString, FString> headers;
 	TSharedPtr<FJsonObject> parameters = MakeShareable(new FJsonObject);
@@ -35,8 +33,12 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 	parameters->Values.Append(tdsReq->parameters->Values);
 	tdsReq->headers = headers;
 	tdsReq->parameters = parameters;
+
+	tdsReq->DoSomeingAfterCombinHeadersAndParas();
 	
-	for (auto header : headers)
+	auto Request = FHttpModule::Get().CreateRequest();
+	Request->SetTimeout(tdsReq->timeoutSecs);
+	for (auto header : tdsReq->headers)
 	{
 		Request->SetHeader(header.Key, header.Value);
 	}
@@ -46,7 +48,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 	case TDSHttpRequest::Type::Get:
 		{
 			Request->SetVerb("GET");
-			FString queryString = TDSHttpManager::CombinParameters(parameters);
+			FString queryString = TDSHttpManager::CombinParameters(tdsReq->parameters);
 			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
@@ -60,9 +62,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 		{
 			Request->SetVerb("POST");
 			Request->SetURL(tdsReq->URL);
-			FString body;
-			TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&body);
-			FJsonSerializer::Serialize(parameters.ToSharedRef(), Writer);
+			FString body = JsonHelper::GetJsonString(tdsReq->parameters);
 			// 目前只支持了json格式的body，如果需要其他的，还要继续封装。
 			Request->SetContentAsString(body);
 		}

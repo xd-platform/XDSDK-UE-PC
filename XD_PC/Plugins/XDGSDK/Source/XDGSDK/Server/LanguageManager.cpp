@@ -1,5 +1,8 @@
 #include "LanguageManager.h"
+
+#include "JsonHelper.h"
 #include "JsonObjectConverter.h"
+#include "XDGSDK.h"
 
 static FString LanguageJsonPath = FPaths::ProjectPluginsDir() + TEXT("XDGSDK/Content/Language.json");
 LangType LanguageManager::anguageType = LangType::ZH_CN;
@@ -98,23 +101,25 @@ void LanguageManager::UpdateLanguageModel()
 	FString JsonStr;
 	if(FFileHelper::LoadFileToString(JsonStr, *LanguageJsonPath))
 	{
-		TSharedPtr<FJsonObject> JsonObject;
-		const TSharedRef<TJsonReader<>>& JsonReader = TJsonReaderFactory<>::Create(JsonStr);
-		FJsonSerializer::Deserialize(JsonReader, JsonObject);
-		TSharedPtr<FJsonObject> languageObject = JsonObject->GetObjectField(GetLanguageKey());
-		if (languageObject == nullptr)
-		{
-			UE_LOG(LogTemp, Error, TEXT("language json content error"));
-		} else
+		TSharedPtr<FJsonObject> JsonObject = JsonHelper::GetJsonObject(JsonStr);
+		const TSharedPtr<FJsonObject>* languageObject;
+		if (JsonObject.IsValid() && JsonObject->TryGetObjectField(GetLanguageKey(), languageObject))
 		{
 			currentModel = MakeShareable(new FLanguageModel);
-			FJsonObjectConverter::JsonObjectToUStruct(languageObject.ToSharedRef(), currentModel.Get());
+			if (!FJsonObjectConverter::JsonObjectToUStruct(languageObject->ToSharedRef(), currentModel.Get()))
+			{
+				XDG_LOG(Error, TEXT("%s language json content error"), GetLanguageKey());
+			}
+			
 			// UE_LOG(LogTemp, Display, TEXT("%s, %s"), *currentModel->tds_account_bind_info, *currentModel->tds_account_safe_info)
+		} else
+		{
+			XDG_LOG(Error, TEXT("language json content error"));
 		}
 
 	} else
 	{
-		UE_LOG(LogTemp, Error, TEXT("not found language json"));
+		XDG_LOG(Error, TEXT("not found language json"));
 	}
 }
 

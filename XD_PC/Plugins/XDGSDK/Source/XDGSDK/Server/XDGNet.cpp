@@ -7,6 +7,8 @@
 #include "DataStorageName.h"
 #include "IpInfoModel.h"
 #include "DeviceInfo.h"
+#include "JsonHelper.h"
+#include "TDSCrypto.h"
 #include "TokenModel.h"
 #include "UrlParse.h"
 #include "XDGSDK.h"
@@ -95,6 +97,14 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 	return query;
 }
 
+void XDGNet::DoSomeingAfterCombinHeadersAndParas()
+{
+	auto auth = GetMacToken();
+	if (auth.Len() > 0)
+	{
+		this->headers.Add("Authorization", auth);
+	}
+}
 
 
 
@@ -121,9 +131,7 @@ template <typename StructType>
 TSharedPtr<StructType> GenerateStructPtr(TSharedPtr<TDSHttpResponse>& response)
 {
 	if (response != nullptr && response->state == TDSHttpResponse::success) {
-		TSharedPtr<StructType> model = MakeShareable(new StructType);
-		FJsonObjectConverter::JsonObjectStringToUStruct(response->contentString, model.Get());
-		return model;
+		return JsonHelper::GetUStruct<StructType>(response->contentString);
 	} else {
 		return nullptr;
 	}
@@ -138,6 +146,11 @@ void PerfromCallBack(TSharedPtr<TDSHttpResponse>& response, TFunction<void(TShar
 	}
 	TSharedPtr<StructType> model = GenerateStructPtr<StructType>(response);
 	FXDGError error = GenerateErrorInfo(response);
+	if (model == nullptr && error.code == 0)
+	{
+		error.code = TDSHttpResponse::clientError;
+		error.msg = "json parse error";
+	}
 	callback(model, error);
 }
 
@@ -175,18 +188,20 @@ FString XDGNet::GetMacToken() {
 	FString nonce = GetRandomStr(5);
 	FString md = this->type == Get ? "GET" : "POST";
 
-	FString pathAndQuery = parse.Path;
+	FString pathAndQuery = "/" + parse.Path;
 	if (parse.query.Len() > 0)
 	{
-		pathAndQuery += parse.query;
+		pathAndQuery += "?" + parse.query;
 	}
 	FString domain = parse.Host.ToLower();
 	FString port = parse.Port;
 
 	FString dataStr = timeStr + "\n" + nonce + "\n" + md + "\n" + pathAndQuery + "\n" + domain + "\n" + port + "\n";
-	// FSHAHash
-
-	return dataStr;
+	auto sha1 = TDSCrypto::HmacSHA1(TDSCrypto::UTF8Encode(dataStr), TDSCrypto::UTF8Encode(tokenModel->macKey));
+	FString mac = TDSCrypto::Base64Encode(sha1);
+	
+	authToken = FString::Printf(TEXT("MAC id=\"%s\",ts=\"%s\",nonce=\"%s\",mac=\"%s\""), *tokenModel->kid, *timeStr, *nonce, *mac);
+	return authToken;
 }
 
 

@@ -19,6 +19,7 @@ public:
 private:
 	virtual TMap<FString, FString> CommonHeaders() override;
 	virtual TSharedPtr<FJsonObject> CommonParameters() override;
+	virtual void DoSomeingAfterCombinHeadersAndParas() override;
 
 	FString GetMacToken();
 };

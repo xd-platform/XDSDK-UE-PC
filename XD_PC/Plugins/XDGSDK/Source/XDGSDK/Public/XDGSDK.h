@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
+DEFINE_LOG_CATEGORY_STATIC(XDGSDKLog, Log, All);
+#define XDG_LOG(Verbosity, Format, ...) UE_LOG(XDGSDKLog, Verbosity, Format, #__VA_ARGS__)
+
 class FXDGSDKModule : public IModuleInterface
 {
 public:

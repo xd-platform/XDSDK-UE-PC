@@ -7,9 +7,9 @@ public:
 	static FString GetJsonString(const TSharedPtr<FJsonObject>& JsonObject)
 	{
 		FString OutputString;
-		if (JsonObject == nullptr)
+		if (!JsonObject.IsValid())
 		{
-			return "";
+			return OutputString;
 		}
 		TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
 		FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
@@ -35,11 +35,14 @@ public:
 	{
 		TSharedPtr<FJsonObject> JsonObject;
 		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
-		if (!FJsonSerializer::Deserialize(Reader, JsonObject))
+		if (FJsonSerializer::Deserialize(Reader, JsonObject))
 		{
-			JsonObject = MakeShareable(new FJsonObject);
+			return JsonObject;
+		} else
+		{
+			return nullptr;
 		}
-		return JsonObject;
+		
 	}
 
 	template <typename UStructType>
@@ -59,9 +62,18 @@ public:
 	template <typename UStructType>
 	static TSharedPtr<UStructType> GetUStruct(const TSharedPtr<FJsonObject>& JsonObject)
 	{
+		if (!JsonObject.IsValid())
+		{
+			return nullptr;
+		}
 		TSharedPtr<UStructType> value = MakeShareable(new UStructType);
-		FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), value.Get());
-		return value;
+		if (FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), value.Get()))
+		{
+			return value;
+		} else
+		{
+			return nullptr;
+		}
 	}
 
 	template <typename UStructType>

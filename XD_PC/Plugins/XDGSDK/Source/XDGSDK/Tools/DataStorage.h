@@ -20,13 +20,13 @@ public:
 	template <typename StructType>
 	static TSharedPtr<StructType> LoadStruct(const FString& key)
 	{
-		TSharedPtr<FJsonObject> jsonObject = GetJsonObject()-> GetObjectField(key);
-		if (jsonObject == nullptr)
+		const TSharedPtr<FJsonObject>* jsonObject;
+		if (!GetJsonObject()->TryGetObjectField(key, jsonObject))
 		{
 			return nullptr;
 		}
 		TSharedPtr<StructType> value = MakeShareable(new StructType);
-		FJsonObjectConverter::JsonObjectToUStruct(jsonObject.ToSharedRef(), value.Get());
+		FJsonObjectConverter::JsonObjectToUStruct(jsonObject->ToSharedRef(), value.Get());
 		return value;
 	}
 

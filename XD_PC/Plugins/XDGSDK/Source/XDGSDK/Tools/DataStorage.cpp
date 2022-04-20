@@ -2,6 +2,7 @@
 
 #include <functional>
 
+#include "JsonHelper.h"
 #include "TDSCrypto.h"
 
 TSharedPtr<FJsonObject> DataStorage::JsonObject = NULL;
@@ -19,8 +20,7 @@ TSharedPtr<FJsonObject>& DataStorage::GetJsonObject()
 		if(FFileHelper::LoadFileToArray(data, *filePath))
 		{
 			auto JsonStr = TDSCrypto::UTF8Encode(TDSCrypto::AesDecode(data, TDSCrypto::UTF8Encode(DataStorageKey)));
-			const TSharedRef<TJsonReader<>>& JsonReader = TJsonReaderFactory<>::Create(JsonStr);
-			FJsonSerializer::Deserialize(JsonReader, JsonObject);
+			JsonObject = JsonHelper::GetJsonObject(JsonStr);
 			// UE_LOG(LogTemp, Display, TEXT("JsonStr: %s"), *JsonStr);
 		}
 	}
@@ -45,9 +45,7 @@ FString DataStorage::LoadString(const FString& key)
 void DataStorage::SaveToFile()
 {
 	FString filePath = DataStoragePath;
-	FString jsonStr;
-	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&jsonStr);
-	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
+	FString jsonStr = JsonHelper::GetJsonString(JsonObject);
 	auto data = TDSCrypto::AesEncode(TDSCrypto::UTF8Encode(jsonStr), TDSCrypto::UTF8Encode(DataStorageKey));
 	FFileHelper::SaveArrayToFile(data, *filePath);
 }

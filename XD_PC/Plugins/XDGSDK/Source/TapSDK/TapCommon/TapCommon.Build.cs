@@ -12,6 +12,8 @@ public class TapCommon : ModuleRules
 
         PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Private")));
         PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Public")));
+        PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Tools")));
+        PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "TDSNet")));
 
         PublicIncludePaths.AddRange(
             new string[] {
@@ -69,6 +71,7 @@ public class TapCommon : ModuleRules
                     "SlateCore",
                     "UMG",
                     "Json",
+                    "Http",
                     "JsonUtilities"
                 }
             );

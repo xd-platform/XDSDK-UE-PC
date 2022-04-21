@@ -1,6 +1,6 @@
 #pragma once
 
-class UrlParse
+class TAPCOMMON_API UrlParse
 {
 public:
 	UrlParse(FString url);

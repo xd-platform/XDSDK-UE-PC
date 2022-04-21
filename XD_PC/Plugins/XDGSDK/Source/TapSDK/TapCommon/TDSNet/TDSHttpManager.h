@@ -1,7 +1,7 @@
 #pragma once
 #include "TDSHttpRequest.h"
 
-class TDSHttpManager
+class TAPCOMMON_API TDSHttpManager
 {
 public:
 	static TDSHttpManager& Get();

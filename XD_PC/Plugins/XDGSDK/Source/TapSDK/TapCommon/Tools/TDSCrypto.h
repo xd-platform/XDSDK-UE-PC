@@ -1,6 +1,6 @@
 #pragma once
 
-class TDSCrypto
+class TAPCOMMON_API TDSCrypto
 {
 public:
 

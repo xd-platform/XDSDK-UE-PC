@@ -5,7 +5,7 @@
 DEFINE_LOG_CATEGORY_STATIC(TDSHttpLog, Log, All);
 
 class TDSHttpRequest;
-class TDSHttpResponse
+class TAPCOMMON_API TDSHttpResponse
 {
 	
 public:

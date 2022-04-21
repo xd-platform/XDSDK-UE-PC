@@ -1,7 +1,7 @@
 #pragma once
 #include "JsonObjectConverter.h"
 
-class DataStorage
+class TAPCOMMON_API DataStorage
 {
 public:
 	

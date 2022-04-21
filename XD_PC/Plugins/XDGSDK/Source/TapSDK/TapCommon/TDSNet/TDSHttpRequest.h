@@ -2,7 +2,7 @@
 #include "CoreMinimal.h"
 #include "TDSHttpResponse.h"
 
-class TDSHttpRequest
+class TAPCOMMON_API TDSHttpRequest
 {
 	friend class TDSHttpManager;
 public:

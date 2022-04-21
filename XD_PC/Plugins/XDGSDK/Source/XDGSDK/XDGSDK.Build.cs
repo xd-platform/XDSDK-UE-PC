@@ -49,6 +49,10 @@ public class XDGSDK : ModuleRules
 				"Json",
 				// "OpenSSL",
 				"JsonUtilities",
+				"TapBootstrap",
+				"TapCommon",
+				"TapDB",
+				"TapLogin",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

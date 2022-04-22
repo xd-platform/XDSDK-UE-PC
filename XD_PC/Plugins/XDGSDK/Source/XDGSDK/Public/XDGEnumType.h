@@ -20,3 +20,21 @@ enum LangType
 	RU = 12 UMETA(DisplayName = "RU"),
 };
 
+UENUM(BlueprintType)
+enum LoginType
+{
+	Default = -1 UMETA(DisplayName = "Default"),
+	Guest  = 0 UMETA(DisplayName = "Guest"),
+	TapTap = 5 UMETA(DisplayName = "TapTap"),
+};
+
+// ios的，要与后台一致！
+// XDGLoginInfoTypeGuest = 0,
+// XDGLoginInfoTypeWeChat = 1,
+// XDGLoginInfoTypeApple = 2,
+// XDGLoginInfoTypeGoogle = 3,
+// XDGLoginInfoTypeFacebook = 4,
+// XDGLoginInfoTypeTapTap = 5,
+// XDGLoginInfoTypeLine = 6,
+// XDGLoginInfoTypeTwitter = 7
+

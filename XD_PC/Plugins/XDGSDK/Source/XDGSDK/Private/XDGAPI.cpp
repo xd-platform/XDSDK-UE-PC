@@ -75,4 +75,9 @@ void UXDGAPI::SetLanguage(LangType type)
 	LanguageManager::SetLanguageType(type);
 }
 
+bool UXDGAPI::IsInitialized()
+{
+	return g_InitState == InitStateInited;;
+}
+
 

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "LangType.h"
+#include "XDGEnumType.h"
 #include "XDGAPI.generated.h"
 
 /**
@@ -15,21 +15,25 @@ class XDGSDK_API UXDGAPI : public UObject
 {
 	GENERATED_BODY()
 
-	UFUNCTION(BlueprintPure, Category = "SDGSDK", meta = (DisplayName = "Get XDG SDK Event Dispatcher"))
+	UFUNCTION(BlueprintPure, Category = "XDGSDK", meta = (DisplayName = "Get XDG SDK Event Dispatcher"))
 	static const UXDGAPI* GetXDGSDKEventDispatcher();
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FBool_String_CallBack, bool, Result, FString, Message);
 	
 	
-	UPROPERTY(BlueprintAssignable, Category = "SDGSDK CallBack")
+	UPROPERTY(BlueprintAssignable, Category = "XDGSDK CallBack")
 	FBool_String_CallBack OnInitSDK;
 	
-	UFUNCTION(BlueprintCallable, Category = "SDGSDK", meta = (DisplayName = "Init SDK"))
+	UFUNCTION(BlueprintCallable, Category = "XDGSDK", meta = (DisplayName = "Init SDK"))
 	static void InitSDK(FString sdkClientId);
 
 
-	UFUNCTION(BlueprintCallable, Category = "SDGSDK", meta = (DisplayName = "Set Language"))
+	UFUNCTION(BlueprintCallable, Category = "XDGSDK", meta = (DisplayName = "Set Language"))
 	static void SetLanguage(LangType type);
+
+	UFUNCTION(BlueprintCallable, Category = "XDGSDK", meta = (DisplayName = "is Initialized"))
+	static bool IsInitialized();
+
 
 
 private:

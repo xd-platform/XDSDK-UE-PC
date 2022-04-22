@@ -1,5 +1,5 @@
 #pragma once
-#include "LangType.h"
+#include "XDGEnumType.h"
 #include "LanguageModel.h"
 
 class LanguageManager

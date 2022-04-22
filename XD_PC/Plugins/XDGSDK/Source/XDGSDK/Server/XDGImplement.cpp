@@ -1,6 +1,9 @@
 #include "XDGImplement.h"
 #include "DataStorageName.h"
+#include "DeviceInfo.h"
 #include "JsonHelper.h"
+#include "TapBootstrapAPI.h"
+#include "TapConfig.h"
 #include "XDGSDK.h"
 
 static int Success = 200;
@@ -49,6 +52,15 @@ void XDGImplement::InitBootstrap(const TSharedPtr<FInitConfigModel>& model, TFun
 		return;
 	}
 	auto tapCfg = model->configs.tapSdkConfig;
+	FTapConfig Config;
+	Config.clientID = tapCfg.clientId;
+	Config.clientToken = tapCfg.clientToken;
+	Config.serverURL = tapCfg.serverUrl;
+	Config.regionType = RegionType::IO;
+	Config.dbConfig.enable = tapCfg.enableTapDB;
+	Config.dbConfig.channel = tapCfg.tapDBChannel;
+	Config.dbConfig.gameVersion = DeviceInfo::GetProjectVersion();
+	UTapBootstrap::Init(Config);
 	
 	// TapLogin.Init(tapCfg.clientId, false, false);
 	// var config = new TapConfig.Builder()

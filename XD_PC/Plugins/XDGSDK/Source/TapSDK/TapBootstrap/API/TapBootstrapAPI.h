@@ -14,6 +14,6 @@ UCLASS()
 class TAPBOOTSTRAP_API UTapBootstrap : public UObject
 {
 	GENERATED_BODY()
-
+public:
 	static void Init(const FTapConfig& tapConfig);
 };

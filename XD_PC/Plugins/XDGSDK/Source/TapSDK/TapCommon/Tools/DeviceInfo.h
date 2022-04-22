@@ -39,5 +39,7 @@ public:
 	static FString GetProjectName();
 
 	static FString GetDeviceId();
+
+	static FString GetProjectVersion();
 	
 };

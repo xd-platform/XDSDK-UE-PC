@@ -87,6 +87,12 @@ FString DeviceInfo::GetDeviceId()
 	return FPlatformMisc::GetDeviceId();
 }
 
+FString DeviceInfo::GetProjectVersion()
+{
+	// 待实现
+	return "1.0.1";
+}
+
 
 
 

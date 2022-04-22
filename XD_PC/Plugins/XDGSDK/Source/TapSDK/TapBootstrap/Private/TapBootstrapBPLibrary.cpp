@@ -201,7 +201,7 @@ void UTapBootstrapBPLibrary::Logout()
 #endif
 }
 
-void UTapBootstrapBPLibrary::SetPreferLanguage(FTapLanguage language)
+void UTapBootstrapBPLibrary::SetPreferLanguage(bool isEnglish)
 {
 #if PLATFORM_ANDROID || PLATFORM_IOS
     TSharedPtr<FJsonObject> args = MakeShareable(new FJsonObject);

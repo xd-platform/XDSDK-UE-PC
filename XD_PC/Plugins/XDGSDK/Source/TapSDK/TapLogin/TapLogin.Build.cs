@@ -10,6 +10,10 @@ public class TapLogin : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
+		PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Server")));
+		PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "API")));
+		PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Model")));
+		
 		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...

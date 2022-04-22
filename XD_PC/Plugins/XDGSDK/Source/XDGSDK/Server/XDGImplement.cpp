@@ -49,6 +49,7 @@ void XDGImplement::InitBootstrap(const TSharedPtr<FInitConfigModel>& model, TFun
 		return;
 	}
 	auto tapCfg = model->configs.tapSdkConfig;
+	
 	// TapLogin.Init(tapCfg.clientId, false, false);
 	// var config = new TapConfig.Builder()
 	// 	.ClientID(tapCfg.clientId)

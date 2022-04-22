@@ -59,7 +59,7 @@ class TAPBOOTSTRAP_API UTapBootstrapBPLibrary : public UBlueprintFunctionLibrary
 	static void Logout();
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "TapTap Language config"), Category = "TapBootstrap")
-	static void SetPreferLanguage(FTapLanguage language);
+	static void SetPreferLanguage(bool isEnglish);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "TapTap Test Qualification"), Category = "TapBootstrap")
 	static void GetTestQualification();

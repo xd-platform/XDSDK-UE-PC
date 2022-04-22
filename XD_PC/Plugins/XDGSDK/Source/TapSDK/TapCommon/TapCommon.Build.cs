@@ -14,6 +14,7 @@ public class TapCommon : ModuleRules
         PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Public")));
         PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Tools")));
         PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "TDSNet")));
+        PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Model")));
 
         PublicIncludePaths.AddRange(
             new string[] {

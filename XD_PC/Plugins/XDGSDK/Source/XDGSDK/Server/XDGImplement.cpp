@@ -1,5 +1,5 @@
 #include "XDGImplement.h"
-#include "DataStorageName.h"
+#include "XDGDataStorageName.h"
 #include "DeviceInfo.h"
 #include "JsonHelper.h"
 #include "LanguageManager.h"
@@ -16,11 +16,11 @@ void XDGImplement::GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FStr
 		{
 			if (model == nullptr)
 			{
-				TSharedPtr<FIpInfoModel> infoModel = DataStorage::LoadStruct<FIpInfoModel>(DataStorageName::IpInfo);
+				TSharedPtr<FIpInfoModel> infoModel = FIpInfoModel::GetLocalModel();
 				if (resultBlock) { resultBlock(infoModel, error.msg);}
 			} else
 			{
-				DataStorage::SaveStruct(DataStorageName::IpInfo, model, true);
+				model->SaveToLocal();
 				if (resultBlock) { resultBlock(model, "success");}
 			}
 		}
@@ -29,17 +29,17 @@ void XDGImplement::GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FStr
 
 void XDGImplement::InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock)
 {
-	DataStorage::SaveString(DataStorageName::ClientId, sdkClientId, false);
+	DataStorage::SaveString(XDGDataStorageName::ClientId, sdkClientId, false);
 	XDGNet::RequestConfig(
 	[=] (TSharedPtr<FInitConfigModel> model, FXDGError error)
 	{
 		if (model != nullptr && error.code == Success)
 		{
-			DataStorage::SaveStruct(DataStorageName::InitConfig, model);
+			model->SaveToLocal();
 			InitBootstrap(model, resultBlock, error.msg);
 		} else
 		{
-			InitBootstrap(DataStorage::LoadStruct<FInitConfigModel>(DataStorageName::InitConfig), resultBlock, error.msg);
+			InitBootstrap(FInitConfigModel::GetLocalModel(), resultBlock, error.msg);
 		}
 	}
 	);
@@ -88,7 +88,7 @@ void XDGImplement::LoginByType(LoginType loginType,
 					AsyncNetworkTdsUser(user->userId,
 					[=](FString SessionToken)
 					{
-						DataStorage::SaveStruct(DataStorageName::UserInfo, user);
+						user->SaveToLocal();
 						resultBlock(user);
 					}, ErrorBlock);
 				}, ErrorBlock);
@@ -123,11 +123,11 @@ void XDGImplement::RequestKidToken(TSharedPtr<FJsonObject> paras,
 		{
 			if (error.code == Success && kidToken != nullptr)
 			{
-				DataStorage::SaveStruct(DataStorageName::TokenInfo, kidToken);
+				kidToken->SaveToLocal();
 				resultBlock(kidToken);
 			} else
 			{
-				auto localToken = DataStorage::LoadStruct<FTokenModel>(DataStorageName::TokenInfo);
+				auto localToken = FTokenModel::GetLocalModel();
 				if (localToken == nullptr)
 				{
 					ErrorBlock(error);
@@ -150,12 +150,12 @@ void XDGImplement::RequestUserInfo(bool saveToLocal,
 		{
 			if (saveToLocal)
 			{
-				DataStorage::SaveStruct(DataStorageName::UserInfo, user);
+				user->SaveToLocal();
 			}
 			callback(user);
 		} else
 		{
-			auto localUser = DataStorage::LoadStruct<FXDGUser>(DataStorageName::UserInfo);
+			auto localUser = FXDGUser::GetLocalModel();
 			if (localUser == nullptr)
 			{
 				ErrorBlock(error);
@@ -176,7 +176,7 @@ void XDGImplement::AsyncNetworkTdsUser(const FString& userId,
 	{
 		if (error.code == Success && model != nullptr)
 		{
-			DataStorage::SaveStruct(DataStorageName::SessionTokenKey, model);
+			model->SaveToLocal();
 
 			// LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, userId) as LCUser;
 			// lcUser.SessionToken = md.data.sessionToken;
@@ -185,7 +185,7 @@ void XDGImplement::AsyncNetworkTdsUser(const FString& userId,
 			callback(model->sessionToken);
 		} else
 		{
-			auto localModel = DataStorage::LoadStruct<FSyncTokenModel>(DataStorageName::SessionTokenKey);
+			auto localModel = FSyncTokenModel::GetLocalModel();
 			if (localModel == nullptr)
 			{
 				ErrorBlock(error);

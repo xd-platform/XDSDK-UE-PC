@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "XDGDataStorageName.h"
 #include "IpInfoModel.generated.h"
 
 // {"country":"Hong Kong","city":"","latitude":"22.2578","longitude":"114.1657","timeZone":"Asia/Hong_Kong","country_code":"HK","continent_code":"AS","src_ip":"103.86.76.195"} 
@@ -28,4 +29,14 @@ struct FIpInfoModel
 
 	UPROPERTY()
 	FString timeZone;
+
+	void SaveToLocal()
+	{
+		DataStorage::SaveStruct(XDGDataStorageName::IpInfo, *this, true);
+	}
+
+	static TSharedPtr<FIpInfoModel> GetLocalModel()
+	{
+		return  DataStorage::LoadStruct<FIpInfoModel>(XDGDataStorageName::IpInfo);
+	}
 };

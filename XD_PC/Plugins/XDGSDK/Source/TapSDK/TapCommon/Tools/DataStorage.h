@@ -18,6 +18,14 @@ public:
 	}
 
 	template <typename StructType>
+	static void SaveStruct(const FString& key, const StructType& value, bool needSaveLocal = true)
+	{
+		TSharedPtr<FJsonObject> jsonObject = FJsonObjectConverter::UStructToJsonObject(value);
+		GetJsonObject()->SetObjectField(key, jsonObject);
+		if (needSaveLocal){ SaveToFile(); }
+	}
+
+	template <typename StructType>
 	static TSharedPtr<StructType> LoadStruct(const FString& key)
 	{
 		const TSharedPtr<FJsonObject>* jsonObject;
@@ -29,6 +37,8 @@ public:
 		FJsonObjectConverter::JsonObjectToUStruct(jsonObject->ToSharedRef(), value.Get());
 		return value;
 	}
+
+	static void Remove(const FString& key, bool needSaveLocal = true);
 
 	static void SaveToFile();
 

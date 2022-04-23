@@ -2,7 +2,7 @@
 #include "DataStorage.h"
 
 
-namespace DataStorageName
+namespace XDGDataStorageName
 {
 	static FString const InitConfig = "PCG_InitConfigKey";
 	static FString const IpInfo = "PCG_IpInfoKey";

@@ -1,7 +1,7 @@
 #include "XDGNet.h"
 #include "JsonObjectConverter.h"
 #include "LanguageManager.h"
-#include "DataStorageName.h"
+#include "XDGDataStorageName.h"
 #include "IpInfoModel.h"
 #include "DeviceInfo.h"
 #include "JsonHelper.h"
@@ -69,12 +69,12 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 {
 	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
 	
-	query->SetStringField("clientId", DataStorage::LoadString(DataStorageName::ClientId));
+	query->SetStringField("clientId", DataStorage::LoadString(XDGDataStorageName::ClientId));
 
 	query->SetStringField("sdkLang", LanguageManager::GetLanguageKey());
 	query->SetStringField("lang", LanguageManager::GetLanguageKey());
-
-	auto ipInfoModel = DataStorage::LoadStruct<FIpInfoModel>(DataStorageName::IpInfo);
+	
+	auto ipInfoModel = FIpInfoModel::GetLocalModel();
 	if (ipInfoModel == nullptr)
 	{
 		ipInfoModel = MakeShareable(new FIpInfoModel);
@@ -101,8 +101,8 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 	
 	query->SetStringField("appVer", DeviceInfo::GetProjectVersion());
 	query->SetStringField("appVerCode", DeviceInfo::GetProjectVersion());
-
-	auto cfgMd = DataStorage::LoadStruct<FInitConfigModel>(DataStorageName::InitConfig);
+	
+	auto cfgMd = FInitConfigModel::GetLocalModel();
 	query->SetStringField("appId", cfgMd == nullptr ? "" : cfgMd->configs.appId);
 
 	
@@ -195,7 +195,7 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDSHttpResponse>& response,
 }
 
 FString XDGNet::GetMacToken() {
-	auto tokenModel = FTokenModel::GetCurrentToken();
+	auto tokenModel = FTokenModel::GetLocalModel();
 	FString authToken;
 	if (tokenModel == nullptr)
 	{

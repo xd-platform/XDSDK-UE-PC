@@ -1,11 +1,9 @@
 #include "DataStorage.h"
 
-#include <functional>
-
 #include "JsonHelper.h"
 #include "TDSCrypto.h"
 
-TSharedPtr<FJsonObject> DataStorage::JsonObject = NULL;
+TSharedPtr<FJsonObject> DataStorage::JsonObject = nullptr;
 
 static FString DataStoragePath = FPaths::SandboxesDir() + TEXT("/TDS/DataStorageContent");
 
@@ -13,7 +11,7 @@ static FString DataStorageKey = "version1";
 
 TSharedPtr<FJsonObject>& DataStorage::GetJsonObject()
 {
-	if (JsonObject == NULL)
+	if (JsonObject == nullptr)
 	{
 		FString filePath = DataStoragePath;
 		TArray<uint8> data;
@@ -24,7 +22,7 @@ TSharedPtr<FJsonObject>& DataStorage::GetJsonObject()
 			// UE_LOG(LogTemp, Display, TEXT("JsonStr: %s"), *JsonStr);
 		}
 	}
-	if (JsonObject == NULL)
+	if (JsonObject == nullptr)
 	{
 		JsonObject = MakeShareable(new FJsonObject);
 	}
@@ -40,6 +38,12 @@ void DataStorage::SaveString(const FString& key, const FString& value, bool need
 FString DataStorage::LoadString(const FString& key)
 {
 	return GetJsonObject()->GetStringField(key);
+}
+
+void DataStorage::Remove(const FString& key, bool needSaveLocal)
+{
+	GetJsonObject()->RemoveField(key);
+	if (needSaveLocal){ SaveToFile(); }
 }
 
 void DataStorage::SaveToFile()

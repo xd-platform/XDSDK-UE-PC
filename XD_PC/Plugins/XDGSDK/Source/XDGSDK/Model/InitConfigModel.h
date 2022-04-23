@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "XDGDataStorageName.h"
 #include "InitConfigModel.generated.h"
 
 USTRUCT()
@@ -121,6 +122,16 @@ struct FInitConfigModel
 
 	UPROPERTY()
 	FConfigsModel configs;
+
+	void SaveToLocal()
+	{
+		DataStorage::SaveStruct(XDGDataStorageName::InitConfig, *this, true);
+	}
+
+	static TSharedPtr<FInitConfigModel> GetLocalModel()
+	{
+		return  DataStorage::LoadStruct<FInitConfigModel>(XDGDataStorageName::InitConfig);
+	}
 	
 };
 

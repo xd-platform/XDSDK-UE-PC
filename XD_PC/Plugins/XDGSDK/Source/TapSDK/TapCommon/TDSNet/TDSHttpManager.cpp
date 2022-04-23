@@ -2,11 +2,11 @@
 #include "Http.h"
 #include "JsonHelper.h"
 
-TDSHttpManager* TDSHttpManager::Singleton = NULL;
+TDSHttpManager* TDSHttpManager::Singleton = nullptr;
 
 TDSHttpManager& TDSHttpManager::Get()
 {
-	if (Singleton == NULL)
+	if (Singleton == nullptr)
 	{
 		check(IsInGameThread());
 		Singleton = new TDSHttpManager();
@@ -29,16 +29,14 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 			parameters->Values.Append(CommonParameters->Values);
 		}
 	}
-	headers.Append(tdsReq->headers);
-	parameters->Values.Append(tdsReq->parameters->Values);
-	tdsReq->headers = headers;
-	tdsReq->parameters = parameters;
-
-	tdsReq->DoSomeingAfterCombinHeadersAndParas();
+	headers.Append(tdsReq->Headers);
+	parameters->Values.Append(tdsReq->Parameters->Values);
+	tdsReq->Headers = headers;
+	tdsReq->Parameters = parameters;
 	
 	auto Request = FHttpModule::Get().CreateRequest();
-	Request->SetTimeout(tdsReq->timeoutSecs);
-	for (auto header : tdsReq->headers)
+	Request->SetTimeout(tdsReq->TimeoutSecs);
+	for (auto header : tdsReq->Headers)
 	{
 		Request->SetHeader(header.Key, header.Value);
 	}
@@ -48,21 +46,26 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 	case TDSHttpRequest::Type::Get:
 		{
 			Request->SetVerb("GET");
-			FString queryString = TDSHttpManager::CombinParameters(tdsReq->parameters);
+			FString queryString = TDSHttpManager::CombinParameters(tdsReq->Parameters);
 			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
 				url = url + "?" + queryString;
 			}
-			UE_LOG(TDSHttpLog, Warning, TEXT("GET: %s"), *url);
 			Request->SetURL(url);
 		}
 		break;
 	case TDSHttpRequest::Type::Post:
 		{
 			Request->SetVerb("POST");
-			Request->SetURL(tdsReq->URL);
-			FString body = JsonHelper::GetJsonString(tdsReq->parameters);
+			FString queryString = TDSHttpManager::CombinParameters(tdsReq->PostUrlParameters);
+			FString url = tdsReq->URL;
+			if (queryString.Len() > 0)
+			{
+				url = url + "?" + queryString;
+			}
+			Request->SetURL(url);
+			FString body = JsonHelper::GetJsonString(tdsReq->Parameters);
 			// 目前只支持了json格式的body，如果需要其他的，还要继续封装。
 			Request->SetContentAsString(body);
 		}
@@ -89,14 +92,21 @@ FString TDSHttpManager::CombinParameters(TSharedPtr<FJsonObject> parameters, boo
 void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
 {
 	auto Request = GenerateRequest(tdsReq);
-	// Request->OnProcessRequestComplete().BindUObject(this, &TDSHttpRequest::OnResponseReceived);
+	tdsReq->FinalURL = Request->GetURL();
+	if (tdsReq->ResetHeadersBeforeRequest())
+	{
+		for (auto header : tdsReq->Headers)
+		{
+			Request->SetHeader(header.Key, header.Value);
+		}
+	}
 	Request->OnProcessRequestComplete().BindLambda(
 		[=](FHttpRequestPtr HttpRequest, FHttpResponsePtr Response, bool bWasSuccessful)
 		{
 			tdsReq->tryCount++;
 			if (bWasSuccessful == false || !EHttpResponseCodes::IsOk(Response->GetResponseCode()))
 			{
-				if (tdsReq->tryCount < tdsReq->repeatCount)
+				if (tdsReq->tryCount < tdsReq->RepeatCount)
 				{
 					request(tdsReq);
 					return;
@@ -123,7 +133,7 @@ void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
 			{
 				tdsRes->state = TDSHttpResponse::networkError;
 			}
-			UE_LOG(TDSHttpLog, Warning, TEXT("%s"), *tdsRes->GenerateDebugString());
+			UE_LOG(TDSHttpLog, Display, TEXT("%s"), *tdsRes->GenerateDebugString());
 			tdsReq->onCompleted.ExecuteIfBound(tdsRes);
 		});
 	Request->ProcessRequest();

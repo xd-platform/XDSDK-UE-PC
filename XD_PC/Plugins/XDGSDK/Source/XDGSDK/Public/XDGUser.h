@@ -7,24 +7,24 @@
 #include "XDGEnumType.h"
 #include "XDGUser.generated.h"
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FXDGUser
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FString userId;
 	
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FString username;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FString nickName;
 
-	UPROPERTY()
-	uint64 loginType;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	int loginType;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TArray<FString> loginList; // boundAccounts
 
 	TSharedPtr<FTokenModel> Token()

@@ -5,18 +5,21 @@
 #include "CoreMinimal.h"
 #include "XDGError.generated.h"
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FXDGError
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int code = 0;
 	
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FString msg;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FString detail;
+
+	FXDGError() = default;
+	FXDGError(const FString& message) :code(-1), msg(message) {};
 };
 

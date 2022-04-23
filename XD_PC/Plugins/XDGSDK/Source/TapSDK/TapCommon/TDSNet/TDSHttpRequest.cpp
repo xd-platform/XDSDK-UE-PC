@@ -4,7 +4,13 @@
 
 TDSHttpRequest::TDSHttpRequest()
 {
-	parameters = MakeShareable(new FJsonObject);
+	Parameters = MakeShareable(new FJsonObject);
+	PostUrlParameters = MakeShareable(new FJsonObject);
+}
+
+FString TDSHttpRequest::GetFinalUrl()
+{
+	return FinalURL;
 }
 
 // TDSHttpRequest::~TDSHttpRequest()

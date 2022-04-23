@@ -80,4 +80,23 @@ bool UXDGAPI::IsInitialized()
 	return g_InitState == InitStateInited;;
 }
 
+void UXDGAPI::LoginByType(LoginType loginType)
+{
+	if (!IsInitialized())
+	{
+		GetXDGSDKEventDispatcher()->OnLoginFail.Broadcast(FXDGError("Please init first"));
+		return;
+	}
+
+	XDGImplement::LoginByType(loginType,
+	[](TSharedPtr<FXDGUser> user)
+	{
+		GetXDGSDKEventDispatcher()->OnLoginSuccess.Broadcast(*user.Get());
+	},
+	[](FXDGError error)
+	{
+		GetXDGSDKEventDispatcher()->OnLoginFail.Broadcast(error);
+	});
+}
+
 

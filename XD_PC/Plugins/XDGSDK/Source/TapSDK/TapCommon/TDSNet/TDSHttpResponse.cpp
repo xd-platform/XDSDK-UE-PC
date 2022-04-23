@@ -1,7 +1,5 @@
 #include "TDSHttpResponse.h"
 
-#include <string>
-
 #include "JsonHelper.h"
 #include "SEditorViewportToolBarMenu.h"
 #include "TDSHttpRequest.h"
@@ -19,18 +17,18 @@ FString TDSHttpResponse::GenerateDebugString()
 		return DebugString;
 	}
 	DebugString += "------------------------------------------\n";
-	DebugString += "URL: " + request->URL + "\n";
-	if (request->headers.Num() > 0)
+	DebugString += (request->type == TDSHttpRequest::Post ? "POST: " : "GET: ") + request->GetFinalUrl() + "\n";
+	if (request->Headers.Num() > 0)
 	{
 		DebugString += "Headers:\n";
-		for (auto Header : request->headers)
+		for (auto Header : request->Headers)
 		{
 			DebugString += "\t" + Header.Key + ": " + Header.Value + "\n";
 		}
 	}
-	if (request->parameters->Values.Num() > 0)
+	if (request->type == TDSHttpRequest::Post && request->Parameters->Values.Num() > 0)
 	{
-		FString body = JsonHelper::GetJsonString(request->parameters);
+		FString body = JsonHelper::GetJsonString(request->Parameters);
 		DebugString += "Body:\n";
 		DebugString += body + "\n";
 	}

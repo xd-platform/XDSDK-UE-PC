@@ -1,7 +1,4 @@
 #include "XDGNet.h"
-
-#include <string>
-
 #include "JsonObjectConverter.h"
 #include "LanguageManager.h"
 #include "DataStorageName.h"
@@ -28,6 +25,18 @@ static FString XDG_USER_PROFILE = BASE_URL + "/api/account/v1/info";
 
 //游客
 static FString XDG_COMMON_LOGIN = BASE_URL + "/api/login/v1/union";
+
+// 与leanClound同步
+static FString XDG_LOGIN_SYN = BASE_URL + "/api/login/v1/syn";
+
+// 获取用户绑定信息
+static FString XDG_BIND_LIST = BASE_URL + "/api/account/v1/bind/list";
+
+// 绑定接口
+static FString XDG_BIND_INTERFACE = BASE_URL + "/api/account/v1/bind";
+
+// 解绑接口
+static FString XDG_UNBIND_INTERFACE = BASE_URL + "/api/account/v1/unbind";
 
 // 查询补款订单信息
 static FString XDG_PAYBACK_LIST = BASE_URL + "/order/v1/user/repayOrders";
@@ -66,7 +75,7 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 	query->SetStringField("lang", LanguageManager::GetLanguageKey());
 
 	auto ipInfoModel = DataStorage::LoadStruct<FIpInfoModel>(DataStorageName::IpInfo);
-	if (ipInfoModel != nullptr)
+	if (ipInfoModel == nullptr)
 	{
 		ipInfoModel = MakeShareable(new FIpInfoModel);
 	}
@@ -87,24 +96,31 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), DeviceInfo::GetScreenWidth(), DeviceInfo::GetScreenHeight()));
 	
 	query->SetStringField("time", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
+
+	query->SetStringField("appVer", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
 	
+	query->SetStringField("appVer", DeviceInfo::GetProjectVersion());
+	query->SetStringField("appVerCode", DeviceInfo::GetProjectVersion());
+
+	auto cfgMd = DataStorage::LoadStruct<FInitConfigModel>(DataStorageName::InitConfig);
+	query->SetStringField("appId", cfgMd == nullptr ? "" : cfgMd->configs.appId);
+
 	
-	// 		   {"appId", cfgMd == null ? "" : cfgMd.data.configs.appId + ""},
 	// 		   {"mem", SystemInfo.systemMemorySize / 1024 + "GB"},
 	// 		   {"mod", SystemInfo.deviceModel},
 	// 		   {"brand", SystemInfo.graphicsDeviceVendor},
-	// 		   {"appVer", Application.version},
-	// 		   {"appVerCode", Application.version},
+
 	return query;
 }
 
-void XDGNet::DoSomeingAfterCombinHeadersAndParas()
+bool XDGNet::ResetHeadersBeforeRequest()
 {
 	auto auth = GetMacToken();
 	if (auth.Len() > 0)
 	{
-		this->headers.Add("Authorization", auth);
+		this->Headers.Add("Authorization", auth);
 	}
+	return true;
 }
 
 
@@ -185,7 +201,7 @@ FString XDGNet::GetMacToken() {
 	{
 		return authToken;
 	}
-	UrlParse parse(this->URL);
+	UrlParse parse(this->GetFinalUrl());
 	FString timeStr = FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp());
 	FString nonce = GetRandomStr(5);
 	FString md = this->type == Get ? "GET" : "POST";
@@ -212,7 +228,7 @@ void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGEr
 	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = IP_INFO;
 	request->isPure = true;
-	request->repeatCount = 3;
+	request->RepeatCount = 3;
 	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
 		PerfromCallBack(response, callback);
 	});
@@ -223,6 +239,45 @@ void XDGNet::RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FX
 {
 	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = INIT_SDK_URL;
+	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+		PerfromWrapperResponseCallBack(response, callback);
+	});
+	TDSHttpManager::Get().request(request);
+}
+
+void XDGNet::RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<void(TSharedPtr<FTokenModel> model, FXDGError error)> callback)
+{
+	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	request->URL = XDG_COMMON_LOGIN;
+	request->Parameters = paras;
+	request->type = Post;
+	request->isPure = true;
+	request->Headers = request->CommonHeaders();
+	request->PostUrlParameters = request->CommonParameters();
+	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+		PerfromWrapperResponseCallBack(response, callback);
+	});
+	TDSHttpManager::Get().request(request);
+}
+
+void XDGNet::RequestUserInfo(TFunction<void(TSharedPtr<FXDGUser> model, FXDGError error)> callback)
+{
+	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	request->URL = XDG_USER_PROFILE;
+	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+		PerfromWrapperResponseCallBack(response, callback);
+	});
+	TDSHttpManager::Get().request(request);
+}
+
+void XDGNet::RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> model, FXDGError error)> callback)
+{
+	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	request->URL = XDG_LOGIN_SYN;
+	request->type = Post;
+	request->isPure = true;
+	request->Headers = request->CommonHeaders();
+	request->PostUrlParameters = request->CommonParameters();
 	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});

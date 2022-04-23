@@ -2,6 +2,7 @@
 #include "DataStorageName.h"
 #include "DeviceInfo.h"
 #include "JsonHelper.h"
+#include "LanguageManager.h"
 #include "TapBootstrapAPI.h"
 #include "TapConfig.h"
 #include "XDGSDK.h"
@@ -62,18 +63,142 @@ void XDGImplement::InitBootstrap(const TSharedPtr<FInitConfigModel>& model, TFun
 	Config.dbConfig.gameVersion = DeviceInfo::GetProjectVersion();
 	UTapBootstrap::Init(Config);
 	
-	// TapLogin.Init(tapCfg.clientId, false, false);
-	// var config = new TapConfig.Builder()
-	// 	.ClientID(tapCfg.clientId)
-	// 	.ClientToken(tapCfg.clientToken)
-	// 	.ServerURL(tapCfg.serverUrl)
-	// 	.RegionType(RegionType.IO) //IO：海外 
-	// 	.TapDBConfig(tapCfg.enableTapDB, tapCfg.tapDBChannel, Application.version)
-	// 	.ConfigBuilder();
-	// TapBootstrap.Init(config);
 	if (resultBlock) { resultBlock(true, msg);}
 }
 
 
-// private static void InitBootstrap(InitConfigModel infoMd, Action<bool, string> callback, string msg){
+void XDGImplement::LoginByType(LoginType loginType,
+	TFunction<void(TSharedPtr<FXDGUser> user)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock)
+{
+	auto lmd = LanguageManager::GetCurrentModel();
+	if (loginType == LoginType::Default)
+	{
+		
+	} else
+	{
+		GetLoginParam(loginType,
+		[=](TSharedPtr<FJsonObject> paras)
+		{
+			RequestKidToken(paras,
+			[=](TSharedPtr<FTokenModel> kidToken)
+			{
+				RequestUserInfo(false,
+				[=](TSharedPtr<FXDGUser> user)
+				{
+					AsyncNetworkTdsUser(user->userId,
+					[=](FString SessionToken)
+					{
+						DataStorage::SaveStruct(DataStorageName::UserInfo, user);
+						resultBlock(user);
+					}, ErrorBlock);
+				}, ErrorBlock);
+			}, ErrorBlock);
+		}, ErrorBlock);
+	}
+}
+
+void XDGImplement::GetLoginParam(LoginType loginType,
+	TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock)
+{
+	if (loginType == LoginType::Guest)
+	{
+		TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
+		JsonObject->SetNumberField("type", (int)loginType);
+		JsonObject->SetStringField("token", DeviceInfo::GetLoginId());
+		resultBlock(JsonObject);
+	} else if(loginType == LoginType::TapTap)
+	{
+		
+	} else
+	{
+		ErrorBlock(FXDGError("No Login Param"));
+	}
+}
+
+void XDGImplement::RequestKidToken(TSharedPtr<FJsonObject> paras,
+	TFunction<void(TSharedPtr<FTokenModel> kidToken)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock)
+{
+	XDGNet::RequestKidToken(paras,
+		[=](TSharedPtr<FTokenModel> kidToken, FXDGError error)
+		{
+			if (error.code == Success && kidToken != nullptr)
+			{
+				DataStorage::SaveStruct(DataStorageName::TokenInfo, kidToken);
+				resultBlock(kidToken);
+			} else
+			{
+				auto localToken = DataStorage::LoadStruct<FTokenModel>(DataStorageName::TokenInfo);
+				if (localToken == nullptr)
+				{
+					ErrorBlock(error);
+				} else
+				{
+					resultBlock(kidToken);
+				}
+			}
+		}
+	);
+}
+
+void XDGImplement::RequestUserInfo(bool saveToLocal,
+	TFunction<void(TSharedPtr<FXDGUser> model)> callback, TFunction<void(FXDGError error)> ErrorBlock)
+{
+	XDGNet::RequestUserInfo(
+	[=](TSharedPtr<FXDGUser> user, FXDGError error)
+	{
+		if (error.code == Success && user != nullptr)
+		{
+			if (saveToLocal)
+			{
+				DataStorage::SaveStruct(DataStorageName::UserInfo, user);
+			}
+			callback(user);
+		} else
+		{
+			auto localUser = DataStorage::LoadStruct<FXDGUser>(DataStorageName::UserInfo);
+			if (localUser == nullptr)
+			{
+				ErrorBlock(error);
+			} else
+			{
+				callback(localUser);
+			}
+		}
+	});
+	
+}
+
+void XDGImplement::AsyncNetworkTdsUser(const FString& userId,
+	TFunction<void(FString SessionToken)> callback, TFunction<void(FXDGError error)> ErrorBlock)
+{
+	XDGNet::RequestSyncToken(
+	[=](TSharedPtr<FSyncTokenModel> model, FXDGError error)
+	{
+		if (error.code == Success && model != nullptr)
+		{
+			DataStorage::SaveStruct(DataStorageName::SessionTokenKey, model);
+
+			// LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, userId) as LCUser;
+			// lcUser.SessionToken = md.data.sessionToken;
+			// await lcUser.SaveToLocal();
+	
+			callback(model->sessionToken);
+		} else
+		{
+			auto localModel = DataStorage::LoadStruct<FSyncTokenModel>(DataStorageName::SessionTokenKey);
+			if (localModel == nullptr)
+			{
+				ErrorBlock(error);
+			} else
+			{
+				// LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, userId) as LCUser;
+				// lcUser.SessionToken = token;
+				// await lcUser.SaveToLocal();
+				callback(localModel->sessionToken);
+			}
+		}
+	}
+	);
+}
+
 

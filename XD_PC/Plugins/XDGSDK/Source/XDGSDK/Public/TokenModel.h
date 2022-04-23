@@ -34,3 +34,14 @@ private:
 	static TSharedPtr<FTokenModel> currentToken;
 };
 
+USTRUCT()
+struct FSyncTokenModel
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString sessionToken;
+};
+
+
+

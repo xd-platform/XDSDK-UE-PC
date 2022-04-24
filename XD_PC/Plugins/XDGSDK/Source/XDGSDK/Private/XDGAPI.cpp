@@ -4,7 +4,10 @@
 #include "XDGAPI.h"
 #include "XDGImplement.h"
 #include "LanguageManager.h"
+#include "TDSHelper.h"
 #include "XDGSDK.h"
+#include "Blueprint/UserWidget.h"
+#include "XDGSDK/UI/XDGPrivacyWidget.h"
 
 
 enum InitState
@@ -97,6 +100,11 @@ void UXDGAPI::LoginByType(LoginType loginType)
 	{
 		GetXDGSDKEventDispatcher()->OnLoginFail.Broadcast(error);
 	});
+}
+
+void UXDGAPI::Test()
+{
+	UXDGPrivacyWidget::ShowPrivacy([](bool result){TDSHelper::Debug(TEXT("关闭了"));});
 }
 
 

@@ -123,15 +123,20 @@ struct FInitConfigModel
 	UPROPERTY()
 	FConfigsModel configs;
 
-	void SaveToLocal()
-	{
-		DataStorage::SaveStruct(XDGDataStorageName::InitConfig, *this, true);
-	}
+	void SaveToLocal();
 
-	static TSharedPtr<FInitConfigModel> GetLocalModel()
-	{
-		return  DataStorage::LoadStruct<FInitConfigModel>(XDGDataStorageName::InitConfig);
-	}
+	static TSharedPtr<FInitConfigModel>& GetLocalModel();
+
+	static bool CanShowPrivacyAlert();
+
+	static void UpdatePrivacyState(); //弹过之后若没变化就不再弹出
 	
+	static void GetPrivacyTxt(const FString& txtUrl, TFunction<void(FString txt)> callback);
+
+private:
+	static TSharedPtr<FInitConfigModel> CurrentModel;
+	void SavePrivacyTxt();
+
+	TMap<FString, FString> Cache;
 };
 

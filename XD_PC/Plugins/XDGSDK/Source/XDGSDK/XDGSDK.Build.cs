@@ -45,6 +45,7 @@ public class XDGSDK : ModuleRules
 				"SlateCore",
 				"Http",
 				"Json",
+				"UMG",
 				// "OpenSSL",
 				"JsonUtilities",
 				"TapBootstrap",

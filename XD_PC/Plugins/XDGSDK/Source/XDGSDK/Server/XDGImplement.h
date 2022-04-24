@@ -24,6 +24,8 @@ private:
 	static void RequestUserInfo(bool saveToLocal, TFunction<void(TSharedPtr<FXDGUser> model)> callback, TFunction<void(FXDGError error)> ErrorBlock);
 
 	static void AsyncNetworkTdsUser(const FString& userId, TFunction<void(FString SessionToken)> callback, TFunction<void(FXDGError error)> ErrorBlock);
+
+	static void CheckPrivacyAlert(TFunction<void()> Callback);
 	
 	
 };

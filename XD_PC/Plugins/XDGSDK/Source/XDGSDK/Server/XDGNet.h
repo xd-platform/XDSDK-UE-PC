@@ -18,6 +18,8 @@ public:
 	static void RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<void(TSharedPtr<FTokenModel> model, FXDGError error)> callback);
 	static void RequestUserInfo(TFunction<void(TSharedPtr<FXDGUser> model, FXDGError error)> callback);
 	static void RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> model, FXDGError error)> callback);
+	static void RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> callback);
+
 
 
 private:

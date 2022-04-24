@@ -6,6 +6,7 @@
 #include "TapBootstrapAPI.h"
 #include "TapConfig.h"
 #include "XDGSDK.h"
+#include "XDGSDK/UI/XDGPrivacyWidget.h"
 
 static int Success = 200;
 
@@ -88,8 +89,12 @@ void XDGImplement::LoginByType(LoginType loginType,
 					AsyncNetworkTdsUser(user->userId,
 					[=](FString SessionToken)
 					{
-						user->SaveToLocal();
-						resultBlock(user);
+						CheckPrivacyAlert(
+						[=]()
+						{
+							user->SaveToLocal();
+							resultBlock(user);
+						});
 					}, ErrorBlock);
 				}, ErrorBlock);
 			}, ErrorBlock);
@@ -199,6 +204,24 @@ void XDGImplement::AsyncNetworkTdsUser(const FString& userId,
 		}
 	}
 	);
+}
+
+void XDGImplement::CheckPrivacyAlert(TFunction<void()> Callback)
+{
+	if (FInitConfigModel::CanShowPrivacyAlert())
+	{
+		UXDGPrivacyWidget::ShowPrivacy(
+		[=](bool result)
+		{
+			if (result)
+			{
+				Callback();
+			}
+		});
+	} else
+	{
+		Callback();
+	}
 }
 
 

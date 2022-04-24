@@ -283,3 +283,14 @@ void XDGNet::RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> model, 
 	});
 	TDSHttpManager::Get().request(request);
 }
+
+void XDGNet::RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> callback)
+{
+	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	request->URL = Url;
+	// request->isPure = true;
+	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+		callback(response->contentString);
+	});
+	TDSHttpManager::Get().request(request);
+}

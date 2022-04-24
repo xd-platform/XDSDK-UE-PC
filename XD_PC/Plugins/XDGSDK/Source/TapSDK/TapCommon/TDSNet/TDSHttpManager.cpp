@@ -134,7 +134,10 @@ void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
 				tdsRes->state = TDSHttpResponse::networkError;
 			}
 			UE_LOG(TDSHttpLog, Display, TEXT("%s"), *tdsRes->GenerateDebugString());
-			tdsReq->onCompleted.ExecuteIfBound(tdsRes);
+			AsyncTask(ENamedThreads::GameThread, [=]()
+			{
+				tdsReq->onCompleted.ExecuteIfBound(tdsRes);
+			});
 		});
 	Request->ProcessRequest();
 }

@@ -11,7 +11,7 @@ struct FIpInfoModel
 
 	UPROPERTY()
 	FString city;
-	
+
 	UPROPERTY()
 	FString country;
 

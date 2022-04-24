@@ -45,6 +45,10 @@ class XDGSDK_API UXDGAPI : public UObject
 	FErrorCallBack OnLoginFail;
 
 
+	UFUNCTION(BlueprintCallable, Category = "XDGSDK", meta = (DisplayName = "XDG Test"))
+	static void Test();
+
+
 private:
 
 };

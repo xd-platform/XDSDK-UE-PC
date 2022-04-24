@@ -37,7 +37,16 @@ void DataStorage::SaveString(const FString& key, const FString& value, bool need
 
 FString DataStorage::LoadString(const FString& key)
 {
-	return GetJsonObject()->GetStringField(key);
+	FString String;
+	if (GetJsonObject()->TryGetStringField(key, String))
+	{
+		return String;
+	} else
+	{
+		return FString();
+	}
+	
+	
 }
 
 void DataStorage::Remove(const FString& key, bool needSaveLocal)

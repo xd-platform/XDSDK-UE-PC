@@ -125,29 +125,29 @@ bool XDGNet::ResetHeadersBeforeRequest()
 
 
 
-FXDGError GenerateErrorInfo(const TSharedPtr<TDSHttpResponse>& response)
+FXDGError GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& response)
 {
 	FXDGError error;
-	if (response->state == TDSHttpResponse::clientError)
+	if (response->state == TDUHttpResponse::clientError)
 	{
-		error.code = TDSHttpResponse::clientError;
+		error.code = TDUHttpResponse::clientError;
 		error.msg = "request fail";
-	} else if (response->state == TDSHttpResponse::serverError)
+	} else if (response->state == TDUHttpResponse::serverError)
 	{
-		error.code = TDSHttpResponse::serverError;
+		error.code = TDUHttpResponse::serverError;
 		error.msg = "server error";
-	} else if (response->state == TDSHttpResponse::networkError)
+	} else if (response->state == TDUHttpResponse::networkError)
 	{
-		error.code = TDSHttpResponse::networkError;
+		error.code = TDUHttpResponse::networkError;
 		error.msg = "network connection error";
 	}
 	return error;
 }
 
 template <typename StructType>
-TSharedPtr<StructType> GenerateStructPtr(const TSharedPtr<TDSHttpResponse>& response)
+TSharedPtr<StructType> GenerateStructPtr(const TSharedPtr<TDUHttpResponse>& response)
 {
-	if (response != nullptr && response->state == TDSHttpResponse::success) {
+	if (response != nullptr && response->state == TDUHttpResponse::success) {
 		return JsonHelper::GetUStruct<StructType>(response->contentString);
 	} else {
 		return nullptr;
@@ -155,7 +155,7 @@ TSharedPtr<StructType> GenerateStructPtr(const TSharedPtr<TDSHttpResponse>& resp
 }
 
 template <typename StructType>
-void PerfromCallBack(const TSharedPtr<TDSHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
+void PerfromCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
 {
 	if (callback == nullptr)
 	{
@@ -165,14 +165,14 @@ void PerfromCallBack(const TSharedPtr<TDSHttpResponse>& response, TFunction<void
 	FXDGError error = GenerateErrorInfo(response);
 	if (model == nullptr && error.code == 0)
 	{
-		error.code = TDSHttpResponse::clientError;
+		error.code = TDUHttpResponse::clientError;
 		error.msg = "json parse error";
 	}
 	callback(model, error);
 }
 
 template <typename StructType>
-void PerfromWrapperResponseCallBack(const TSharedPtr<TDSHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
+void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
 {
 	if (callback == nullptr)
 	{
@@ -225,72 +225,72 @@ FString XDGNet::GetMacToken() {
 
 void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = IP_INFO;
 	request->isPure = true;
 	request->RepeatCount = 3;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
 		PerfromCallBack(response, callback);
 	});
-	TDSHttpManager::Get().request(request);
+	TDUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = INIT_SDK_URL;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDSHttpManager::Get().request(request);
+	TDUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<void(TSharedPtr<FTokenModel> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_COMMON_LOGIN;
 	request->Parameters = paras;
 	request->type = Post;
 	request->isPure = true;
 	request->Headers = request->CommonHeaders();
 	request->PostUrlParameters = request->CommonParameters();
-	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDSHttpManager::Get().request(request);
+	TDUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestUserInfo(TFunction<void(TSharedPtr<FXDGUser> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_USER_PROFILE;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDSHttpManager::Get().request(request);
+	TDUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_LOGIN_SYN;
 	request->type = Post;
 	request->isPure = true;
 	request->Headers = request->CommonHeaders();
 	request->PostUrlParameters = request->CommonParameters();
-	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDSHttpManager::Get().request(request);
+	TDUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> callback)
 {
-	const TSharedPtr<TDSHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = Url;
 	// request->isPure = true;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDSHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
 		callback(response->contentString);
 	});
-	TDSHttpManager::Get().request(request);
+	TDUHttpManager::Get().request(request);
 }

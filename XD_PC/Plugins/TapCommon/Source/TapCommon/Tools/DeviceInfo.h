@@ -31,7 +31,7 @@ public:
 	static FString GetLoginId();
 
 	// 88:66:5a:28:20:9e
-	static FString GetMacAddress();
+	// static FString GetMacAddress();
 
 	// macOS
 	static FString GetPlatform();

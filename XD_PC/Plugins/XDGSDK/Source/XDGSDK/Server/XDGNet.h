@@ -1,12 +1,12 @@
 #pragma once
 #include "InitConfigModel.h"
-#include "TDSHttpManager.h"
+#include "TDUHttpManager.h"
 #include "IpInfoModel.h"
 #include "TokenModel.h"
 #include "XDGError.h"
 #include "XDGUser.h"
 
-class XDGNet: public TDSHttpRequest
+class XDGNet: public TDUHttpRequest
 {
 public:
 

@@ -1,20 +1,20 @@
-#include "TDSHttpManager.h"
+#include "TDUHttpManager.h"
 #include "Http.h"
 #include "JsonHelper.h"
 
-TDSHttpManager* TDSHttpManager::Singleton = nullptr;
+TDUHttpManager* TDUHttpManager::Singleton = nullptr;
 
-TDSHttpManager& TDSHttpManager::Get()
+TDUHttpManager& TDUHttpManager::Get()
 {
 	if (Singleton == nullptr)
 	{
 		check(IsInGameThread());
-		Singleton = new TDSHttpManager();
+		Singleton = new TDUHttpManager();
 	}
 	return *Singleton;
 }
 
-TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttpRequest> tdsReq)
+TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDUHttpRequest> tdsReq)
 {
 	//This is the url on which to process the request
 	
@@ -43,10 +43,10 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 	
 	switch (tdsReq->type)
 	{
-	case TDSHttpRequest::Type::Get:
+	case TDUHttpRequest::Type::Get:
 		{
 			Request->SetVerb("GET");
-			FString queryString = TDSHttpManager::CombinParameters(tdsReq->Parameters);
+			FString queryString = TDUHttpManager::CombinParameters(tdsReq->Parameters);
 			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
@@ -55,10 +55,10 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 			Request->SetURL(url);
 		}
 		break;
-	case TDSHttpRequest::Type::Post:
+	case TDUHttpRequest::Type::Post:
 		{
 			Request->SetVerb("POST");
-			FString queryString = TDSHttpManager::CombinParameters(tdsReq->PostUrlParameters);
+			FString queryString = TDUHttpManager::CombinParameters(tdsReq->PostUrlParameters);
 			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
@@ -75,7 +75,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDSHttp
 }
 
 // FString combine
-FString TDSHttpManager::CombinParameters(TSharedPtr<FJsonObject> parameters, bool isEncode)
+FString TDUHttpManager::CombinParameters(TSharedPtr<FJsonObject> parameters, bool isEncode)
 {
 	TArray<FString> keyValues;
 	for (auto para : parameters->Values)
@@ -89,7 +89,7 @@ FString TDSHttpManager::CombinParameters(TSharedPtr<FJsonObject> parameters, boo
 	return FString::Join(keyValues, TEXT("&"));
 }
 
-void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
+void TDUHttpManager::request(TSharedPtr<TDUHttpRequest> tdsReq)
 {
 	auto Request = GenerateRequest(tdsReq);
 	tdsReq->FinalURL = Request->GetURL();
@@ -112,7 +112,7 @@ void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
 					return;
 				}
 			}
-			TSharedPtr<TDSHttpResponse> tdsRes(new TDSHttpResponse);
+			TSharedPtr<TDUHttpResponse> tdsRes(new TDUHttpResponse);
 			tdsRes->request = tdsReq;
 			if (bWasSuccessful)
 			{
@@ -121,19 +121,19 @@ void TDSHttpManager::request(TSharedPtr<TDSHttpRequest> tdsReq)
 				tdsRes->headers = Response->GetAllHeaders();
 				if (EHttpResponseCodes::IsOk(tdsRes->httpCode))
 				{
-					tdsRes->state = TDSHttpResponse::success;
+					tdsRes->state = TDUHttpResponse::success;
 				} else if (tdsRes->httpCode >= 500)
 				{
-					tdsRes->state = TDSHttpResponse::serverError;
+					tdsRes->state = TDUHttpResponse::serverError;
 				} else
 				{
-					tdsRes->state = TDSHttpResponse::clientError;
+					tdsRes->state = TDUHttpResponse::clientError;
 				}
 			} else
 			{
-				tdsRes->state = TDSHttpResponse::networkError;
+				tdsRes->state = TDUHttpResponse::networkError;
 			}
-			UE_LOG(TDSHttpLog, Display, TEXT("%s"), *tdsRes->GenerateDebugString());
+			UE_LOG(TDUHttpLog, Display, TEXT("%s"), *tdsRes->GenerateDebugString());
 			AsyncTask(ENamedThreads::GameThread, [=]()
 			{
 				tdsReq->onCompleted.ExecuteIfBound(tdsRes);

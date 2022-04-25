@@ -1,15 +1,15 @@
 #pragma once
 #include "CoreMinimal.h"
-// #include "TDSHttpRequest.h"
+// #include "TDUHttpRequest.h"
 
-DEFINE_LOG_CATEGORY_STATIC(TDSHttpLog, Log, All);
+DEFINE_LOG_CATEGORY_STATIC(TDUHttpLog, Log, All);
 
-class TDSHttpRequest;
-class TAPCOMMON_API TDSHttpResponse
+class TDUHttpRequest;
+class TAPCOMMON_API TDUHttpResponse
 {
 	
 public:
-	// ~TDSHttpResponse();
+	// ~TDUHttpResponse();
 	enum State
 	{
 		success,      // 200 - 206
@@ -31,7 +31,7 @@ public:
 	 */
 	TArray<FString> headers;
 
-	TSharedPtr<TDSHttpRequest> request;
+	TSharedPtr<TDUHttpRequest> request;
 
 	FString GenerateDebugString();
 };

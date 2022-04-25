@@ -49,16 +49,16 @@ FString DeviceInfo::GetLoginId()
 	return FPlatformMisc::GetLoginId();
 }
 
-FString DeviceInfo::GetMacAddress()
-{
-	auto MacAddr = FPlatformMisc::GetMacAddress();
-	TArray<FString> MacAddrStr;
-	for (TArray<uint8>::TConstIterator it(MacAddr); it; ++it)
-	{
-		MacAddrStr.Add(FString::Printf(TEXT("%02x"), *it));
-	}
-	return FString::Join(MacAddrStr, TEXT(":"));
-}
+// FString DeviceInfo::GetMacAddress()
+// {
+// 	auto MacAddr = FPlatformMisc::GetMacAddress();
+// 	TArray<FString> MacAddrStr;
+// 	for (TArray<uint8>::TConstIterator it(MacAddr); it; ++it)
+// 	{
+// 		MacAddrStr.Add(FString::Printf(TEXT("%02x"), *it));
+// 	}
+// 	return FString::Join(MacAddrStr, TEXT(":"));
+// }
 
 FString DeviceInfo::GetPlatform()
 {

@@ -205,7 +205,7 @@ void UTapBootstrapBPLibrary::SetPreferLanguage(bool isEnglish)
 {
 #if PLATFORM_ANDROID || PLATFORM_IOS
     TSharedPtr<FJsonObject> args = MakeShareable(new FJsonObject);
-    args->SetNumberField(TEXT("preferredLanguage"),(uint8)language);
+    args->SetNumberField(TEXT("preferredLanguage"),(uint8)isEnglish);
     FString commandJson = TapJson::ConstructorCommand(TEXT(TAP_BOOTSTRAP_SERVICE),TEXT("setPreferredLanguage"),TapJson::ToJSON(args),false,TEXT(""),false);
     GetBridge()->CallHandler(commandJson);
 #endif

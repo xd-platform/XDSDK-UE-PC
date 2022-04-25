@@ -47,7 +47,7 @@ TArray<uint8> TDSCrypto::HmacSHA1(const TArray<uint8>& content, const TArray<uin
 TArray<uint8> TDSCrypto::AesEncode(const TArray<uint8>& content, const TArray<uint8>& key, bool isPadding)
 {
 	FAES::FAESKey AesKey;
-	FMemory::Memcpy(AesKey.Key, key.GetData(), MIN(FAES::FAESKey::KeySize, key.Num()));
+	FMemory::Memcpy(AesKey.Key, key.GetData(), FMath::Min(FAES::FAESKey::KeySize, key.Num()));
 	
 	auto ContentSize = content.Num();
 	auto ContentData = content;
@@ -74,7 +74,7 @@ TArray<uint8> TDSCrypto::AesEncode(const TArray<uint8>& content, const TArray<ui
 TArray<uint8> TDSCrypto::AesDecode(const TArray<uint8>& content, const TArray<uint8>& key, bool isPadding)
 {
 	FAES::FAESKey AesKey;
-	FMemory::Memcpy(AesKey.Key, key.GetData(), MIN(FAES::FAESKey::KeySize, key.Num()));
+	FMemory::Memcpy(AesKey.Key, key.GetData(), FMath::Min(FAES::FAESKey::KeySize, key.Num()));
 	
 	auto ContentData = content;
 	auto Alignment = FAES::AESBlockSize;

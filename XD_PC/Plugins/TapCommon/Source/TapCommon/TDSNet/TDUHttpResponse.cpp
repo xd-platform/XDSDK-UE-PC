@@ -1,15 +1,14 @@
-#include "TDSHttpResponse.h"
+#include "TDUHttpResponse.h"
 
 #include "JsonHelper.h"
-#include "SEditorViewportToolBarMenu.h"
-#include "TDSHttpRequest.h"
+#include "TDUHttpRequest.h"
 
-// TDSHttpResponse::~TDSHttpResponse()
+// TDUHttpResponse::~TDUHttpResponse()
 // {
-// 	UE_LOG(LogTemp, Display, TEXT("TDSHttpResponse销毁了-----"));
+// 	UE_LOG(LogTemp, Display, TEXT("TDUHttpResponse销毁了-----"));
 // }
 
-FString TDSHttpResponse::GenerateDebugString()
+FString TDUHttpResponse::GenerateDebugString()
 {
 	FString DebugString;
 	if (request == nullptr)
@@ -17,7 +16,7 @@ FString TDSHttpResponse::GenerateDebugString()
 		return DebugString;
 	}
 	DebugString += "------------------------------------------\n";
-	DebugString += (request->type == TDSHttpRequest::Post ? "POST: " : "GET: ") + request->GetFinalUrl() + "\n";
+	DebugString += (request->type == TDUHttpRequest::Post ? "POST: " : "GET: ") + request->GetFinalUrl() + "\n";
 	if (request->Headers.Num() > 0)
 	{
 		DebugString += "Headers:\n";
@@ -26,7 +25,7 @@ FString TDSHttpResponse::GenerateDebugString()
 			DebugString += "\t" + Header.Key + ": " + Header.Value + "\n";
 		}
 	}
-	if (request->type == TDSHttpRequest::Post && request->Parameters->Values.Num() > 0)
+	if (request->type == TDUHttpRequest::Post && request->Parameters->Values.Num() > 0)
 	{
 		FString body = JsonHelper::GetJsonString(request->Parameters);
 		DebugString += "Body:\n";

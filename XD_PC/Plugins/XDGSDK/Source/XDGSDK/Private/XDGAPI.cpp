@@ -18,10 +18,10 @@ enum InitState
 };
 	
 static InitState g_InitState = InitStateUninit;
-static UXDGAPI* XDGSDKManager = nullptr;
+static const UXDGAPI* XDGSDKManager = nullptr;
 
 	
-const UXDGAPI* UXDGAPI::GetXDGSDKEventDispatcher()
+const UXDGAPI*& UXDGAPI::GetXDGSDKEventDispatcher()
 {
 	if (XDGSDKManager == nullptr)
 	{

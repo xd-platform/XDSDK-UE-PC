@@ -12,13 +12,13 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class XDGSDK_API UXDGAPI : public UObject
 {
 	GENERATED_BODY()
 
 	UFUNCTION(BlueprintPure, Category = "XDGSDK", meta = (DisplayName = "Get XDG SDK Event Dispatcher"))
-	static const UXDGAPI* GetXDGSDKEventDispatcher();
+	static const UXDGAPI*& GetXDGSDKEventDispatcher();
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FBool_String_CallBack, bool, Result, const FString &, Message);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUserCallBack, const FXDGUser&, User);

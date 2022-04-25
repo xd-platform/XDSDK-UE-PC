@@ -44,6 +44,8 @@ class XDGSDK_API UXDGAPI : public UObject
 	UPROPERTY(BlueprintAssignable, Category = "XDGSDK CallBack")
 	FErrorCallBack OnLoginFail;
 
+	UFUNCTION(BlueprintCallable, Category = "XDGSDK", meta = (DisplayName = "XDG Reset Privacy"))
+	static void ResetPrivacy();
 
 	UFUNCTION(BlueprintCallable, Category = "XDGSDK", meta = (DisplayName = "XDG Test"))
 	static void Test();

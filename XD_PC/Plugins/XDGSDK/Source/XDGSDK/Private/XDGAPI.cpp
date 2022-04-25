@@ -102,6 +102,11 @@ void UXDGAPI::LoginByType(LoginType loginType)
 	});
 }
 
+void UXDGAPI::ResetPrivacy()
+{
+	DataStorage::Remove(XDGDataStorageName::PrivacyKey);
+}
+
 void UXDGAPI::Test()
 {
 	UXDGPrivacyWidget::ShowPrivacy([](bool result){TDSHelper::Debug(TEXT("关闭了"));});

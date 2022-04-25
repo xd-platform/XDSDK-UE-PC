@@ -74,7 +74,19 @@ void XDGImplement::LoginByType(LoginType loginType,
 	auto lmd = LanguageManager::GetCurrentModel();
 	if (loginType == LoginType::Default)
 	{
-		
+		auto localUser = FXDGUser::GetLocalModel();
+		if (localUser.IsValid())
+		{
+			RequestUserInfo(true,
+				[=](TSharedPtr<FXDGUser> user)
+				{
+					AsyncLocalTdsUser(user->userId, FSyncTokenModel::GetLocalModel()->sessionToken);
+					resultBlock(user);
+				}, ErrorBlock);
+		} else
+		{
+			ErrorBlock(FXDGError(lmd->tds_login_failed)); 
+		}
 	} else
 	{
 		GetLoginParam(loginType,
@@ -182,11 +194,7 @@ void XDGImplement::AsyncNetworkTdsUser(const FString& userId,
 		if (error.code == Success && model != nullptr)
 		{
 			model->SaveToLocal();
-
-			// LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, userId) as LCUser;
-			// lcUser.SessionToken = md.data.sessionToken;
-			// await lcUser.SaveToLocal();
-	
+			AsyncLocalTdsUser(userId, model->sessionToken);
 			callback(model->sessionToken);
 		} else
 		{
@@ -196,14 +204,19 @@ void XDGImplement::AsyncNetworkTdsUser(const FString& userId,
 				ErrorBlock(error);
 			} else
 			{
-				// LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, userId) as LCUser;
-				// lcUser.SessionToken = token;
-				// await lcUser.SaveToLocal();
+				AsyncLocalTdsUser(userId, model->sessionToken);
 				callback(localModel->sessionToken);
 			}
 		}
 	}
 	);
+}
+
+void XDGImplement::AsyncLocalTdsUser(const FString& userId, const FString& sessionToken)
+{
+	// LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, userId) as LCUser;
+	// lcUser.SessionToken = token;
+	// await lcUser.SaveToLocal();
 }
 
 void XDGImplement::CheckPrivacyAlert(TFunction<void()> Callback)

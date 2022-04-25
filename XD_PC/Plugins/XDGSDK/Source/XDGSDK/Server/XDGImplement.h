@@ -25,6 +25,8 @@ private:
 
 	static void AsyncNetworkTdsUser(const FString& userId, TFunction<void(FString SessionToken)> callback, TFunction<void(FXDGError error)> ErrorBlock);
 
+	static void AsyncLocalTdsUser(const FString& userId, const FString& sessionToken);
+	
 	static void CheckPrivacyAlert(TFunction<void()> Callback);
 	
 	

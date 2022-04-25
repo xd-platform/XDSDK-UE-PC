@@ -21,9 +21,9 @@ enum LangType
 };
 
 UENUM(BlueprintType)
-enum LoginType
+enum class LoginType: uint8
 {
-	Default = -1 UMETA(DisplayName = "Default"),
+	Default = uint8(-1) UMETA(DisplayName = "Default"),
 	Guest  = 0 UMETA(DisplayName = "Guest"),
 	TapTap = 5 UMETA(DisplayName = "TapTap"),
 };

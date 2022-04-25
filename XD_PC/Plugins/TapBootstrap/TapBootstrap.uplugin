@@ -1,11 +1,11 @@
 {
 	"FileVersion": 3,
-	"Version": 60101001,
-	"VersionName": "6.1.1",
-	"FriendlyName": "XDGSDK",
-	"Description": "",
-	"Category": "Other",
-	"CreatedBy": "XinDong TDS",
+	"Version": 1,
+	"VersionName": "3.6.0",
+	"FriendlyName": "TapBootstrap",
+	"Description": "TapTap Bootstrap",
+	"Category": "TapTap",
+	"CreatedBy": "TapTap Develop Service",
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
@@ -16,19 +16,19 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "XDGSDK",
+			"Name": "TapBootstrap",
 			"Type": "Runtime",
 			"LoadingPhase": "PreLoadingScreen"
+		},
+		{
+			"Name": "TapBootstrapEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	],
-
 	"Plugins": [
 		{
 			"Name": "TapCommon",
-			"Enabled": true
-		},
-		{
-			"Name": "TapBootstrap",
 			"Enabled": true
 		},
 		{

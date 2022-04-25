@@ -11,9 +11,6 @@
 		}
 	],
 	"Plugins": [
-		{
-			"Name": "SDGSDK",
-			"Enabled": false
-		}
+
 	]
 }

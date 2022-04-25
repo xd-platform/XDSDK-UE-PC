@@ -1,11 +1,11 @@
 {
 	"FileVersion": 3,
-	"Version": 60101001,
-	"VersionName": "6.1.1",
-	"FriendlyName": "XDGSDK",
-	"Description": "",
-	"Category": "Other",
-	"CreatedBy": "XinDong TDS",
+	"Version": 1,
+	"VersionName": "3.6.0",
+	"FriendlyName": "TapDB",
+	"Description": "TapTap TapDB",
+	"Category": "TapTap",
+	"CreatedBy": "TapTap Develop Service",
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
@@ -16,23 +16,14 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "XDGSDK",
+			"Name": "TapDB",
 			"Type": "Runtime",
 			"LoadingPhase": "PreLoadingScreen"
 		}
 	],
-
 	"Plugins": [
 		{
 			"Name": "TapCommon",
-			"Enabled": true
-		},
-		{
-			"Name": "TapBootstrap",
-			"Enabled": true
-		},
-		{
-			"Name": "TapLogin",
 			"Enabled": true
 		}
 	]

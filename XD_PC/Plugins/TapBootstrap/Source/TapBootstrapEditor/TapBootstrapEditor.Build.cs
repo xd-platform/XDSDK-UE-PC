@@ -4,30 +4,14 @@ using UnrealBuildTool;
 using System.IO;
 using System;
 
-public class TapBootstrap : ModuleRules
+public class TapBootstrapEditor : ModuleRules
 {
-    public TapBootstrap(ReadOnlyTargetRules Target) : base(Target)
+    public TapBootstrapEditor(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Private")));
         PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Public")));
-        PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "API")));
-
-        PublicIncludePaths.AddRange(
-            new string[] {
-				// ... add public include paths required here ...
-
-			}
-            );
-
-
-        PrivateIncludePaths.AddRange(
-            new string[] {
-				// ... add other private include paths required here ...
-			}
-            );
-
 
         PublicIncludePaths.AddRange(
             new string[] {
@@ -47,7 +31,6 @@ public class TapBootstrap : ModuleRules
             new string[]
             {
                 "Core",
-                "ApplicationCore"
 				// ... add other public dependencies that you statically link with here ...
 			}
             );
@@ -84,43 +67,9 @@ public class TapBootstrap : ModuleRules
                     "Slate",
                     "SlateCore",
                     "UMG",
-                    "Json",
-                    "JsonUtilities",
-                    "TapCommon",
-                    "TapLogin"
+                    "TapBootstrap"
                 }
             );
-
-        if (Target.Platform == UnrealTargetPlatform.IOS)
-        {
-            PublicAdditionalFrameworks.Add(
-                new Framework(
-                    "TapBootstrapSDK",
-                    "../TapBootstrap/ios/framework/TapBootstrapSDK.embeddedframework.zip"
-                )
-            );
-
-            PublicAdditionalFrameworks.Add(
-                new Framework(
-                    "LeanCloudObjc",
-                    "../TapBootstrap/ios/framework/LeanCloudObjc.embeddedframework.zip"
-                )
-            );
-        }
-
-        if (Target.Platform == UnrealTargetPlatform.Android)
-        {
-            PrivateDependencyModuleNames.AddRange(
-                new string[]
-                {
-                        "Launch"
-                }
-            );
-            AdditionalPropertiesForReceipt.Add(
-                "AndroidPlugin",
-                Path.Combine(ModuleDirectory, "TapBootstrap_Android_UPL.xml")
-            );
-        }
 
     }
 }

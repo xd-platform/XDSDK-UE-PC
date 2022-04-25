@@ -1,12 +1,11 @@
 #pragma once
-
 #include "CoreMinimal.h"
-#include "FAccessToken.generated.h"
+#include "TapAccessToken.generated.h"
 
 USTRUCT(BlueprintType)
-struct FAccessToken
+struct FTapAccessToken
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY()
 
 	UPROPERTY()
 	FString kid;
@@ -15,15 +14,15 @@ struct FAccessToken
 	FString access_token;
 
 	UPROPERTY()
-	FString mac_algorithm;
-
-	UPROPERTY()
 	FString token_type;
 
 	UPROPERTY()
 	FString mac_key;
 
 	UPROPERTY()
-	uint64 expireIn;
+	FString mac_algorithm;
 
+	UPROPERTY()
+	uint64 expireIn;
+	
 };

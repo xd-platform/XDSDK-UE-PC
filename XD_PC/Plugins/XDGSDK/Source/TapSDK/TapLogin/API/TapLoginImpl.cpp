@@ -14,6 +14,11 @@ TapLoginImpl& TapLoginImpl::Get()
 	return *Singleton;
 }
 
+void TapLoginImpl::Login(TArray<FString> Permissions, TFunction<void(TapAuthResult)> CallBack)
+{
+	
+}
+
 void TapLoginImpl::Init(const FString& clientID, bool isCn, bool roundCorner)
 {
 	TapTapSdk::SDKInitialize(clientID, isCn);

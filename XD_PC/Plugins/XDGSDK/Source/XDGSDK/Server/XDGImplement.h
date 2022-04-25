@@ -1,4 +1,5 @@
 #pragma once
+#include "TapAccessToken.h"
 #include "XDGEnumType.h"
 #include "XDGNet.h"
 #include "XDGUser.h"
@@ -29,5 +30,6 @@ private:
 	
 	static void CheckPrivacyAlert(TFunction<void()> Callback);
 	
+	static void RequestTapToken(TFunction<void(FTapAccessToken AccessToken)> callback, TFunction<void(FXDGError error)> ErrorBlock);
 	
 };

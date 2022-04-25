@@ -212,9 +212,9 @@ void UTapLoginBPLibrary::OnBridgeCallback(const FString& result)
 
 		if (loginWrapper.loginCallbackCode == 0)
 		{
-			FAccessToken accessToken;
+			FTapAccessToken accessToken;
 			UE_LOG(LogTemp, Warning, TEXT("TapLogin OnLoginSuccess:%s"), *loginWrapper.wrapper);
-			FJsonObjectConverter::JsonObjectStringToUStruct<FAccessToken>(loginWrapper.wrapper, &accessToken, 0, 0);
+			FJsonObjectConverter::JsonObjectStringToUStruct<FTapAccessToken>(loginWrapper.wrapper, &accessToken, 0, 0);
 			FTapLoginModule::OnLoginSuccess.Broadcast(accessToken);
 			return;
 		}
@@ -238,9 +238,9 @@ void UTapLoginBPLibrary::OnBridgeCallback(const FString& result)
 			FTapLoginModule::OnGetTestQualificationError.Broadcast(Error);
 			return;
 		}
-		FAccessToken AccessToken;
+		FTapAccessToken AccessToken;
 		UE_LOG(LogTemp, Warning, TEXT("TapLogin OnLoginSuccess:%s"), *tapResult.content);
-		FJsonObjectConverter::JsonObjectStringToUStruct<FAccessToken>(tapResult.content, &AccessToken, 0, 0);
+		FJsonObjectConverter::JsonObjectStringToUStruct<FTapAccessToken>(tapResult.content, &AccessToken, 0, 0);
 		FTapLoginModule::OnGetAccessTokenSuccess.Broadcast(AccessToken);
 		return;
 	}

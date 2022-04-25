@@ -5,6 +5,7 @@
 #include "LanguageManager.h"
 #include "TapBootstrapAPI.h"
 #include "TapConfig.h"
+#include "TapLoginHelper.h"
 #include "XDGSDK.h"
 #include "XDGSDK/UI/XDGPrivacyWidget.h"
 
@@ -125,7 +126,15 @@ void XDGImplement::GetLoginParam(LoginType loginType,
 		resultBlock(JsonObject);
 	} else if(loginType == LoginType::TapTap)
 	{
-		
+		RequestTapToken(
+		[=](FTapAccessToken AccessToken)
+		{
+			TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
+			JsonObject->SetNumberField("type", (int)loginType);
+			JsonObject->SetStringField("token", AccessToken.kid);
+			JsonObject->SetStringField("secret", AccessToken.mac_key);
+			resultBlock(JsonObject);
+		}, ErrorBlock);
 	} else
 	{
 		ErrorBlock(FXDGError("No Login Param"));
@@ -235,6 +244,34 @@ void XDGImplement::CheckPrivacyAlert(TFunction<void()> Callback)
 	{
 		Callback();
 	}
+}
+
+void XDGImplement::RequestTapToken(TFunction<void(FTapAccessToken AccessToken)> callback,
+	TFunction<void(FXDGError error)> ErrorBlock)
+{
+	UTapLoginHelper::Login(
+	[=](TapAuthResult Result)
+	{
+		if (Result.GetType() == TapAuthResult::Success)
+		{
+			callback(*Result.GetToken().Get());
+		} else if (Result.GetType() == TapAuthResult::Cancel)
+		{
+			FXDGError Error;
+			Error.msg = "Login Cancel";
+			Error.code = FTapError::ERROR_CODE_LOGIN_CANCEL;
+			ErrorBlock(Error);
+		} else if (Result.GetType() == TapAuthResult::Fail)
+		{
+			FXDGError Error;
+			Error.msg = Result.GetError()->error_description;
+			Error.code = Result.GetError()->code;
+			ErrorBlock(Error);
+		} else
+		{
+			ErrorBlock(FXDGError("Login Fail"));
+		}
+	});
 }
 
 

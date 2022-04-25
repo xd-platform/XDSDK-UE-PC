@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "FAccessToken.h"
+#include "TapAccessToken.h"
 #include "FProfile.h"
 #include "TapError.h"
 #include "TapFriendResult.h"
@@ -17,7 +17,7 @@ public:
 
 
 	/** RegisterLoginResultListener Callback */
-	DECLARE_MULTICAST_DELEGATE_OneParam(FLoginSuccess, const FAccessToken);
+	DECLARE_MULTICAST_DELEGATE_OneParam(FLoginSuccess, const FTapAccessToken);
 
 	DECLARE_MULTICAST_DELEGATE_OneParam(FLoginError, const FTapError);
 
@@ -42,7 +42,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "TapLogin")
 	static FGetProfileError OnGetProfileError;
 
-	DECLARE_MULTICAST_DELEGATE_OneParam(FGetAccessToken, const FAccessToken);
+	DECLARE_MULTICAST_DELEGATE_OneParam(FGetAccessToken, const FTapAccessToken);
 	DECLARE_MULTICAST_DELEGATE_OneParam(FGetAccessTokenError, const FTapError);
 
 	UPROPERTY(BlueprintAssignable, Category= "TapLogin")

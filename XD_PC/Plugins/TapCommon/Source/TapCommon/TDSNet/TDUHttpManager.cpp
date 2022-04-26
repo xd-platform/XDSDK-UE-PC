@@ -1,4 +1,6 @@
 #include "TDUHttpManager.h"
+
+#include "DetailLayoutBuilder.h"
 #include "Http.h"
 #include "JsonHelper.h"
 
@@ -41,7 +43,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDUHttp
 		Request->SetHeader(header.Key, header.Value);
 	}
 	
-	switch (tdsReq->type)
+	switch (tdsReq->Type)
 	{
 	case TDUHttpRequest::Type::Get:
 		{
@@ -65,9 +67,16 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDUHttp
 				url = url + "?" + queryString;
 			}
 			Request->SetURL(url);
-			FString body = JsonHelper::GetJsonString(tdsReq->Parameters);
-			// 目前只支持了json格式的body，如果需要其他的，还要继续封装。
-			Request->SetContentAsString(body);
+			if (tdsReq->Form == TDUHttpRequest::Form::Default)
+			{
+				FString body = TDUHttpManager::CombinParameters(tdsReq->Parameters);
+				Request->SetContentAsString(body);
+			} else if (tdsReq->Form == TDUHttpRequest::Form::Json)
+			{
+				FString body = JsonHelper::GetJsonString(tdsReq->Parameters);
+				Request->SetContentAsString(body);
+			}
+			
 		}
 		break;
 	}

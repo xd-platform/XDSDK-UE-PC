@@ -12,8 +12,14 @@ public:
 
 	enum Type
 	{
-		Get,
-		Post,
+		Get,	// application/x-www-form-urlencoded
+		Post,	// application/json
+	};
+
+	enum Form
+	{
+		Default,
+		Json,
 	};
 	
 	FString URL;
@@ -30,7 +36,9 @@ public:
 
 	float TimeoutSecs = 10;
 	
-	Type type = Get;
+	Type Type = Get;
+
+	Form Form = Default;
 
 	DECLARE_DELEGATE_OneParam(CompletedBlock, TSharedPtr<TDUHttpResponse>);
 	CompletedBlock onCompleted;
@@ -39,8 +47,8 @@ public:
 
 	// 请求的时候，是否不加入CommonHeaders和CommonParameters。
 	bool isPure = false; 
-	virtual TMap<FString, FString> CommonHeaders(){ return TMap<FString, FString>(); };
-	virtual TSharedPtr<FJsonObject> CommonParameters(){ return nullptr; };
+	virtual TMap<FString, FString> CommonHeaders();
+	virtual TSharedPtr<FJsonObject> CommonParameters();
 
 	// virtual void DoSomeingAfterCombinHeadersAndParas(){  };
 	// 真正的request已经配置完，这里给个时机重新设置一下

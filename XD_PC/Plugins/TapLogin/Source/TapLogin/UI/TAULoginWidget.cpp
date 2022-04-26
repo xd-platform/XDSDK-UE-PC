@@ -2,6 +2,7 @@
 #include "TAULoginWidget.h"
 
 #include "TAULoginLanguage.h"
+#include "TAULoginNet.h"
 #include "TDSHelper.h"
 
 
@@ -17,6 +18,7 @@ void UTAULoginWidget::ShowLoginUI(TArray<FString> Permissions, TFunction<void(Ta
 		if (GWorld && GWorld->GetWorld())
 		{
 			auto widget = CreateWidget<UTAULoginWidget>(GWorld->GetWorld(), MyWidgetClass);
+			widget->Permissions = Permissions;
 			widget->Completed = Completed;
 			widget->AddToViewport();
 		}
@@ -53,7 +55,8 @@ void UTAULoginWidget::NativeConstruct()
 	// ComfirmButtonLabel->SetText(FText::FromString(langModel->tds_confirm_agreement));
 	// AgreeCheckLabel1->SetText(FText::FromString(langModel->tds_service_terms_agreement));
 	// AgreeCheckLabel2->SetText(FText::FromString(langModel->tds_service_terms_agreement));
-	
+
+	GetQrCode();
 }
 
 void UTAULoginWidget::OnCloseBtnClick()
@@ -73,6 +76,15 @@ void UTAULoginWidget::OnRefreshBtnClick()
 void UTAULoginWidget::OnJumpWebBtnClick()
 {
 	TDSHelper::Debug("OnJumpWebBtnClick");
+}
+
+void UTAULoginWidget::GetQrCode()
+{
+	TAULoginNet::RequestLoginQrCode(Permissions,
+	[](TSharedPtr<FTAUQrCodeModel> model, FTapError error)
+	{
+		
+	});
 }
 
 

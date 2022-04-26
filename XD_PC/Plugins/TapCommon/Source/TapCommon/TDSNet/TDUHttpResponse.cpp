@@ -16,7 +16,7 @@ FString TDUHttpResponse::GenerateDebugString()
 		return DebugString;
 	}
 	DebugString += "------------------------------------------\n";
-	DebugString += (request->type == TDUHttpRequest::Post ? "POST: " : "GET: ") + request->GetFinalUrl() + "\n";
+	DebugString += (request->Type == TDUHttpRequest::Post ? "POST: " : "GET: ") + request->GetFinalUrl() + "\n";
 	if (request->Headers.Num() > 0)
 	{
 		DebugString += "Headers:\n";
@@ -25,7 +25,7 @@ FString TDUHttpResponse::GenerateDebugString()
 			DebugString += "\t" + Header.Key + ": " + Header.Value + "\n";
 		}
 	}
-	if (request->type == TDUHttpRequest::Post && request->Parameters->Values.Num() > 0)
+	if (request->Type == TDUHttpRequest::Post && request->Parameters->Values.Num() > 0)
 	{
 		FString body = JsonHelper::GetJsonString(request->Parameters);
 		DebugString += "Body:\n";

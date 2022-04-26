@@ -53,13 +53,13 @@ FString GetRandomStr(int length){
 
 XDGNet::XDGNet()
 {
-	
+	Form = Json;
 }
 
 
 TMap<FString, FString> XDGNet::CommonHeaders()
 {
-	TMap<FString, FString> headers;
+	TMap<FString, FString> headers = TDUHttpRequest::CommonHeaders();
 	headers.Add("Content-Type", "application/json;charset=utf-8");
 	headers.Add("Accept-Language", LanguageManager::GetLanguageKey());
 	return headers;
@@ -67,7 +67,7 @@ TMap<FString, FString> XDGNet::CommonHeaders()
 
 TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 {
-	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
+	TSharedPtr<FJsonObject> query = TDUHttpRequest::CommonParameters();
 	
 	query->SetStringField("clientId", DataStorage::LoadString(XDGDataStorageName::ClientId));
 
@@ -204,7 +204,7 @@ FString XDGNet::GetMacToken() {
 	UrlParse parse(this->GetFinalUrl());
 	FString timeStr = FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp());
 	FString nonce = GetRandomStr(5);
-	FString md = this->type == Get ? "GET" : "POST";
+	FString md = this->Type == Get ? "GET" : "POST";
 
 	FString pathAndQuery = "/" + parse.Path;
 	if (parse.query.Len() > 0)
@@ -250,7 +250,7 @@ void XDGNet::RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<voi
 	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_COMMON_LOGIN;
 	request->Parameters = paras;
-	request->type = Post;
+	request->Type = Post;
 	request->isPure = true;
 	request->Headers = request->CommonHeaders();
 	request->PostUrlParameters = request->CommonParameters();
@@ -274,7 +274,7 @@ void XDGNet::RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> model, 
 {
 	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_LOGIN_SYN;
-	request->type = Post;
+	request->Type = Post;
 	request->isPure = true;
 	request->Headers = request->CommonHeaders();
 	request->PostUrlParameters = request->CommonParameters();

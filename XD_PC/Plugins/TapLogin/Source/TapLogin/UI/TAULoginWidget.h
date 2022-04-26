@@ -87,4 +87,9 @@ private:
 	UTextBlock* WebButtonJumpToWebLabel; //return "跳转至 TapTap";
 	
 	TFunction<void(TapAuthResult result)> Completed;
+	TArray<FString> Permissions;
+
+	void GetQrCode();
+
+	
 };

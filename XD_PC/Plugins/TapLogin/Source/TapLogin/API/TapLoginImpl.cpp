@@ -1,6 +1,7 @@
 #include "TapLoginImpl.h"
 
 #include "TapTapSdk.h"
+#include "TAULoginWidget.h"
 
 TapLoginImpl* TapLoginImpl::Singleton = NULL;
 
@@ -16,7 +17,7 @@ TapLoginImpl& TapLoginImpl::Get()
 
 void TapLoginImpl::Login(TArray<FString> Permissions, TFunction<void(TapAuthResult)> CallBack)
 {
-	
+	UTAULoginWidget::ShowLoginUI(Permissions, CallBack);
 }
 
 void TapLoginImpl::Init(const FString& clientID, bool isCn, bool roundCorner)

@@ -11,6 +11,7 @@ public class TapLogin : ModuleRules
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
 		PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Server")));
+		PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "UI")));
 		PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "API")));
 		PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Model")));
 		
@@ -48,6 +49,7 @@ public class TapLogin : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"UMG",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

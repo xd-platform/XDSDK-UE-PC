@@ -13,9 +13,9 @@ public:
 		Fail,
 	};
 	
-	static TSharedPtr<TapAuthResult> CancelInit();
-	static TSharedPtr<TapAuthResult> SuccessInit(const TSharedPtr<FTapAccessToken>& Token);
-	static TSharedPtr<TapAuthResult> FailInit(const FTapError& Error);
+	static TapAuthResult CancelInit();
+	static TapAuthResult SuccessInit(const TSharedPtr<FTapAccessToken>& Token);
+	static TapAuthResult FailInit(const FTapError& Error);
 
 	Type GetType();
 	TSharedPtr<FTapAccessToken> GetToken();

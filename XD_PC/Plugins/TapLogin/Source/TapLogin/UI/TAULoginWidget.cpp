@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "TAULoginWidget.h"
 
+#include "TAULoginLanguage.h"
 #include "TDSHelper.h"
 
 
@@ -29,9 +30,20 @@ void UTAULoginWidget::NativeConstruct()
 	CloseButton->OnClicked.AddUniqueDynamic(this, &UTAULoginWidget::OnCloseBtnClick);
 	RefreshButton->OnClicked.AddUniqueDynamic(this, &UTAULoginWidget::OnRefreshBtnClick);
 	JumpWebButton->OnClicked.AddUniqueDynamic(this, &UTAULoginWidget::OnJumpWebBtnClick);
+
+	TitleUseLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->TitleUse()));
+	TitleLoginLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->TitleLogin()));
+	QrTitleLoginLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrTitleLogin()));
+	QrRefreshLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrRefresh()));
+	QrNoticeUseLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrNoticeUse()));
+	QrNoticeClientLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrNoticeClient()));
+	QrNoticeScanToLoginLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrNoticeScanToLogin()));
+	WebLoginLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->WebLogin()));
+	WebNoticeLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->WebNotice()));
+	WebButtonJumpToWebLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->WebButtonJumpToWeb()));
 	
 	RefreshButton->SetVisibility(ESlateVisibility::Hidden);
-	RefreshButtonLabel->SetVisibility(ESlateVisibility::Hidden);
+	QRCoverView->SetVisibility(ESlateVisibility::Hidden);
 
 	auto texture = TDSHelper::GenerateQrCode(QRImage, "https://www.baidu.com");
 	QRImage->SetBrushFromTexture(texture);

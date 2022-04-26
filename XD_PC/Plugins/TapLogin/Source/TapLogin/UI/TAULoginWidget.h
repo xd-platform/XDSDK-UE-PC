@@ -48,9 +48,6 @@ private:
 	UButton* RefreshButton;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* RefreshButtonLabel;
-
-	UPROPERTY(meta = (BindWidget))
 	UButton* JumpWebButton;
 
 	UPROPERTY(meta = (BindWidget))
@@ -58,6 +55,36 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* QRImage;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TitleUseLabel; //return "使用";
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TitleLoginLabel; //return "账号登录";
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* QrTitleLoginLabel; //return "安全扫码登录";
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* QrRefreshLabel; //return "点击刷新";
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* QrNoticeUseLabel; //return "请使用";
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* QrNoticeClientLabel; //return "客户端";
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* QrNoticeScanToLoginLabel; //return "扫描二维码登录";
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* WebLoginLabel; //return "使用网页浏览器完成授权";
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* WebNoticeLabel; //return "点击下方按钮前往网页浏览器，\n授权 TapTap 账号，完成后将自动返回游戏。";
+        
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* WebButtonJumpToWebLabel; //return "跳转至 TapTap";
 	
 	TFunction<void(TapAuthResult result)> Completed;
 };

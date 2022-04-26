@@ -18,4 +18,7 @@ public:
 		}
 		return view;
 	}
+
+	// parent 需要传入一个UObject*来保持生命周期，一般传入要设置的image就行了。
+	static UTexture2D* GenerateQrCode(UObject* parent, const FString& string);
 };

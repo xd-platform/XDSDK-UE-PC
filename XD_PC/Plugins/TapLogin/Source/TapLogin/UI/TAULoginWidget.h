@@ -41,12 +41,22 @@ protected:
 
 
 private:
-
+	UPROPERTY(meta = (BindWidget))
 	UButton* CloseButton;
+
+	UPROPERTY(meta = (BindWidget))
 	UButton* RefreshButton;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* RefreshButtonLabel;
+
+	UPROPERTY(meta = (BindWidget))
 	UButton* JumpWebButton;
+
+	UPROPERTY(meta = (BindWidget))
 	UBorder* QRCoverView;
+
+	UPROPERTY(meta = (BindWidget))
 	UImage* QRImage;
 	
 	TFunction<void(TapAuthResult result)> Completed;

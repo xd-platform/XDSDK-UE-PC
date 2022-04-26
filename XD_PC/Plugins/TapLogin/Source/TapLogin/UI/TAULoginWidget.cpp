@@ -26,36 +26,16 @@ void UTAULoginWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	CloseButton = TDSHelper::GetWidgetUI<UButton>(this, "CloseButton");
-	RefreshButton = TDSHelper::GetWidgetUI<UButton>(this, "RefreshButton");
-	RefreshButtonLabel = TDSHelper::GetWidgetUI<UTextBlock>(this, "RefreshButtonLabel");
-	JumpWebButton = TDSHelper::GetWidgetUI<UButton>(this, "JumpWebButton");
-	QRCoverView = TDSHelper::GetWidgetUI<UBorder>(this, "QRCoverView");
-	QRImage = TDSHelper::GetWidgetUI<UImage>(this, "QRImage");
-
 	CloseButton->OnClicked.AddUniqueDynamic(this, &UTAULoginWidget::OnCloseBtnClick);
 	RefreshButton->OnClicked.AddUniqueDynamic(this, &UTAULoginWidget::OnRefreshBtnClick);
 	JumpWebButton->OnClicked.AddUniqueDynamic(this, &UTAULoginWidget::OnJumpWebBtnClick);
 	
-	
+	RefreshButton->SetVisibility(ESlateVisibility::Hidden);
+	RefreshButtonLabel->SetVisibility(ESlateVisibility::Hidden);
 
-	// FInitConfigModel::GetPrivacyTxt(FInitConfigModel::GetLocalModel()->configs.serviceAgreementTxt,
-	// [&](FString txt)
-	// {
-	// 	if (PrivacyTextView1)
-	// 	{
-	// 		PrivacyTextView1->SetText(FText::FromString(txt));
-	// 	}
-	// });
-	// FInitConfigModel::GetPrivacyTxt(FInitConfigModel::GetLocalModel()->configs.serviceTermsTxt,
-	// [&](FString txt)
-	// {
-	// 	if (PrivacyTextView2)
-	// 	{
-	// 		PrivacyTextView2->SetText(FText::FromString(txt));
-	// 	}
-	// 	
-	// });
+	auto texture = TDSHelper::GenerateQrCode(QRImage, "https://www.baidu.com");
+	QRImage->SetBrushFromTexture(texture);
+
 	// auto langModel = LanguageManager::GetCurrentModel();
 	// TitleLabel->SetText(FText::FromString(langModel->tds_terms_agreement));
 	// ComfirmButtonLabel->SetText(FText::FromString(langModel->tds_confirm_agreement));

@@ -7,6 +7,7 @@
 #include "TDSHelper.h"
 #include "XDGSDK.h"
 #include "Blueprint/UserWidget.h"
+#include "TapLogin/UI/TAULoginWidget.h"
 #include "XDGSDK/UI/XDGPrivacyWidget.h"
 
 
@@ -109,7 +110,8 @@ void UXDGAPI::ResetPrivacy()
 
 void UXDGAPI::Test()
 {
-	UXDGPrivacyWidget::ShowPrivacy([](bool result){TDSHelper::Debug(TEXT("关闭了"));});
+	UTAULoginWidget::ShowLoginUI(TArray<FString>(), nullptr);
+	// UXDGPrivacyWidget::ShowPrivacy([](bool result){TDSHelper::Debug(TEXT("关闭了"));});
 }
 
 

@@ -4,6 +4,7 @@
 #include "TAULoginLanguage.h"
 #include "TAULoginNet.h"
 #include "TDSHelper.h"
+#include "TDUDebuger.h"
 
 
 UTAULoginWidget::UTAULoginWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -44,17 +45,7 @@ void UTAULoginWidget::NativeConstruct()
 	WebNoticeLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->WebNotice()));
 	WebButtonJumpToWebLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->WebButtonJumpToWeb()));
 	
-	RefreshButton->SetVisibility(ESlateVisibility::Hidden);
-	QRCoverView->SetVisibility(ESlateVisibility::Hidden);
-
-	auto texture = TDSHelper::GenerateQrCode(QRImage, "https://www.baidu.com");
-	QRImage->SetBrushFromTexture(texture);
-
-	// auto langModel = LanguageManager::GetCurrentModel();
-	// TitleLabel->SetText(FText::FromString(langModel->tds_terms_agreement));
-	// ComfirmButtonLabel->SetText(FText::FromString(langModel->tds_confirm_agreement));
-	// AgreeCheckLabel1->SetText(FText::FromString(langModel->tds_service_terms_agreement));
-	// AgreeCheckLabel2->SetText(FText::FromString(langModel->tds_service_terms_agreement));
+	HiddenRefreshButton();
 
 	GetQrCode();
 }
@@ -70,20 +61,159 @@ void UTAULoginWidget::OnCloseBtnClick()
 
 void UTAULoginWidget::OnRefreshBtnClick()
 {
-	TDSHelper::Debug("OnRefreshBtnClick");
+	// TDSHelper::Debug("OnRefreshBtnClick");
 }
 
 void UTAULoginWidget::OnJumpWebBtnClick()
 {
-	TDSHelper::Debug("OnJumpWebBtnClick");
+	// TDSHelper::Debug("OnJumpWebBtnClick");
+}
+
+void UTAULoginWidget::ShowRefreshButton()
+{
+	RefreshButton->SetVisibility(ESlateVisibility::Visible);
+	QRCoverView->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UTAULoginWidget::HiddenRefreshButton()
+{
+	RefreshButton->SetVisibility(ESlateVisibility::Hidden);
+	QRCoverView->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UTAULoginWidget::ResetQrCode(const FString& Content)
+{
+	HiddenRefreshButton();
+	auto texture = TDSHelper::GenerateQrCode(QRImage, Content);
+	QRImage->SetBrushFromTexture(texture);
+}
+
+void UTAULoginWidget::ShowTip(const FString& Tip, const FString& SubTip)
+{
+	TipLabel->SetText(FText::FromString(Tip));
+	SubTipLabel->SetText(FText::FromString(SubTip));
+	GetWorld()->GetTimerManager().ClearTimer(TipTimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(TipTimerHandle,
+		[=]()
+		{
+			TipLabel->SetText(FText::FromString(""));
+			SubTipLabel->SetText(FText::FromString(""));
+		}, 3.f, false);
+}
+
+void UTAULoginWidget::StartCheck()
+{
+	AsyncTask(ENamedThreads::AnyThread,[=]()
+	{
+		AutoCheck();
+	});
+
+}
+
+void UTAULoginWidget::AutoCheck()
+{
+	if (!QrCodeModel.IsValid())
+	{
+		ShowRefreshButton();
+		return;
+	}
+	int64 ExpireAt = FDateTime::UtcNow().ToUnixTimestamp() + QrCodeModel->expires_in;
+	int64 LastCheckAt = 0;
+	while (true)
+	{
+		FPlatformProcess::Sleep(0.5);
+		int64 Now = FDateTime::UtcNow().ToUnixTimestamp();
+		if (Now > ExpireAt) {
+			ShowRefreshButton();
+			return;
+		}
+		if (Now <= LastCheckAt + QrCodeModel->interval) {continue;}
+		bool Wait = true;
+		bool Stop = false;
+		TFunction<void()> Event = nullptr;
+		TAULoginNet::RequestAccessToken(QrCodeModel->device_code, [=, &Wait, &Stop, &Event](TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)
+		{
+			if (Model.IsValid())
+			{
+				Event = [=]()
+				{
+					GetProfile(*Model.Get());
+				};
+				Stop = true;
+			} else
+			{
+				if (Error.error == "authorization_pending")
+				{
+					
+				} else if (Error.error == "authorization_waiting")
+				{
+					Event = [=]()
+					{
+						ShowTip(TAULoginLanguage::GetCurrentLang()->QrnNoticeSuccess(), TAULoginLanguage::GetCurrentLang()->QrnNoticeSuccess2());
+					};
+				} else if (Error.error == "access_denied")
+				{
+					Event = [=]()
+					{
+						ShowTip(TAULoginLanguage::GetCurrentLang()->QrNoticeCancel(), TAULoginLanguage::GetCurrentLang()->QrNoticeCancel2());
+						GetQrCode();
+					};
+					Stop = true;
+				} else if (Error.error == "invalid_grant")
+				{
+					Event = [=]()
+					{
+						ShowRefreshButton();
+					};
+					Stop = true;
+				} else if (Error.error == "slow_down")
+				{
+					
+				} else
+				{
+					Event = [=]()
+					{
+						ShowRefreshButton();
+					};
+					Stop = true;
+				}
+			}
+			Wait = false;
+		});
+		while (Wait)
+		{
+			FPlatformProcess::Sleep(0.5);
+		}
+		LastCheckAt = FDateTime::UtcNow().ToUnixTimestamp();
+		if (Event){
+			AsyncTask(ENamedThreads::GameThread, Event);
+		}
+		if (Stop) {
+			break;
+		}
+	}
+}
+
+void UTAULoginWidget::GetProfile(const FTapAccessToken& AccessToken)
+{
 }
 
 void UTAULoginWidget::GetQrCode()
 {
 	TAULoginNet::RequestLoginQrCode(Permissions,
-	[](TSharedPtr<FTAUQrCodeModel> Model, FTAULoginError Error)
+	[=](TSharedPtr<FTAUQrCodeModel> Model, FTAULoginError Error)
 	{
-		
+		if (Model.IsValid())
+		{
+			QrCodeModel = Model;
+			ResetQrCode(Model->qrcode_url);
+			StartCheck();
+			TDUDebuger::DisplayLog("QRCODE Get");
+		} else
+		{
+			ShowRefreshButton();
+			TDUDebuger::WarningLog("QRCODE Get Fail");
+		}
 	});
 }
 

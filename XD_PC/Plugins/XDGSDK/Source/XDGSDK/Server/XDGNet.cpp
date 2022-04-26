@@ -97,7 +97,7 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 	
 	query->SetStringField("time", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
 
-	query->SetStringField("appVer", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
+	// query->SetStringField("appVer", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
 	
 	query->SetStringField("appVer", DeviceInfo::GetProjectVersion());
 	query->SetStringField("appVerCode", DeviceInfo::GetProjectVersion());

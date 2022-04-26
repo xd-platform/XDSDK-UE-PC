@@ -50,7 +50,7 @@ void UXDGPrivacyWidget::NativeConstruct()
 	ComfirmButton->OnClicked.Add(BtnDel);
 
 	FInitConfigModel::GetPrivacyTxt(FInitConfigModel::GetLocalModel()->configs.serviceAgreementTxt,
-	[&](FString txt)
+	[=](FString txt)
 	{
 		if (PrivacyTextView1)
 		{
@@ -58,7 +58,7 @@ void UXDGPrivacyWidget::NativeConstruct()
 		}
 	});
 	FInitConfigModel::GetPrivacyTxt(FInitConfigModel::GetLocalModel()->configs.serviceTermsTxt,
-	[&](FString txt)
+	[=](FString txt)
 	{
 		if (PrivacyTextView2)
 		{

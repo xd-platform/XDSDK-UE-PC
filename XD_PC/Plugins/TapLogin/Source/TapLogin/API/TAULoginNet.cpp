@@ -82,6 +82,25 @@ void TAULoginNet::RequestLoginQrCode(const TArray<FString> Permissions,
 	TDUHttpManager::Get().request(request);
 }
 
+void TAULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)> callback)
+{
+	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new TAULoginNet());
+	request->Type = Post;
+	request->URL = TapTapSdk::CurrentRegion->TokenUrl();
+	request->Parameters->SetStringField("grant_type", "device_token");
+	request->Parameters->SetStringField("client_id", TapTapSdk::ClientId);
+	request->Parameters->SetStringField("secret_type", "hmac-sha-1");
+	request->Parameters->SetStringField("code", DeviceCode);
+	request->Parameters->SetStringField("version", "1.0");
+	request->Parameters->SetStringField("platform", "ue");
+	request->Parameters->SetStringField("info", FString::Printf(TEXT("{\"device_id\":\"%s\"}"), *DeviceInfo::GetLoginId()));
+
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+		PerfromWrapperResponseCallBack(response, callback);
+	});
+	TDUHttpManager::Get().request(request);
+}
+
 TMap<FString, FString> TAULoginNet::CommonHeaders()
 {
 	return TDUHttpRequest::CommonHeaders();

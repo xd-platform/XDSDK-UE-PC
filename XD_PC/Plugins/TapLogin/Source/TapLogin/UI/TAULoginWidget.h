@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "TapAuthResult.h"
+#include "TAUQrCodeModel.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Border.h"
 #include "Components/Button.h"
@@ -85,9 +86,34 @@ private:
         
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* WebButtonJumpToWebLabel; //return "跳转至 TapTap";
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TipLabel;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* SubTipLabel;
+
+private:
 	
 	TFunction<void(TapAuthResult result)> Completed;
+	
 	TArray<FString> Permissions;
+
+	TSharedPtr<FTAUQrCodeModel> QrCodeModel = nullptr;
+
+	FTimerHandle TipTimerHandle;
+
+	void ShowRefreshButton();
+	void HiddenRefreshButton();
+	void ResetQrCode(const FString& Content);
+	void ShowTip(const FString& Tip, const FString& SubTip);
+	void StartCheck();
+	void AutoCheck();
+	void GetProfile(const FTapAccessToken& AccessToken);
+
+
+	
+	
 
 	void GetQrCode();
 

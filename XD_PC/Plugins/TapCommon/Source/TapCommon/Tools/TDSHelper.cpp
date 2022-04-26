@@ -2,13 +2,6 @@
 #include "qrcodegen.hpp"
 #include "ImageUtils.h"
 
-void TDSHelper::Debug(FString Message, float Duration)
-{
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Yellow, Message);
-	}
-}
 
 UTexture2D* TDSHelper::GenerateQrCode(UObject* parent, const FString& string)
 {

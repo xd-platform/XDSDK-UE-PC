@@ -177,7 +177,7 @@ public:
 
 	virtual FString QrNoticeUse() override
 	{
-		return "Use";
+		return "Use ";
 	}
 
 	virtual FString QrNoticeClient() override

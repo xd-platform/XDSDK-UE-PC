@@ -81,7 +81,7 @@ void UTAULoginWidget::OnJumpWebBtnClick()
 void UTAULoginWidget::GetQrCode()
 {
 	TAULoginNet::RequestLoginQrCode(Permissions,
-	[](TSharedPtr<FTAUQrCodeModel> model, FTapError error)
+	[](TSharedPtr<FTAUQrCodeModel> Model, FTAULoginError Error)
 	{
 		
 	});

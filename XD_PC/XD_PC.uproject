@@ -11,6 +11,13 @@
 		}
 	],
 	"Plugins": [
-
+		{
+			"Name": "XDGSDK",
+			"Enabled": true
+		},
+		{
+			"Name": "TapCommon",
+			"Enabled": true
+		}
 	]
 }

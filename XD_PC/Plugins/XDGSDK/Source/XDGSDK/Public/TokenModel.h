@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "XDGDataStorageName.h"
 #include "TokenModel.generated.h"
 
 
@@ -27,20 +26,11 @@ struct FTokenModel
 	UPROPERTY()
 	FString macAlgorithm; //tapTap才有
 
-	void SaveToLocal()
-	{
-		DataStorage::SaveStruct(XDGDataStorageName::TokenInfo, *this, true);
-	}
+	void SaveToLocal();
 
-	static TSharedPtr<FTokenModel> GetLocalModel()
-	{
-		return  DataStorage::LoadStruct<FTokenModel>(XDGDataStorageName::TokenInfo);
-	}
+	static TSharedPtr<FTokenModel> GetLocalModel();
 
-	static void ClearToken()
-	{
-		DataStorage::Remove(XDGDataStorageName::TokenInfo);
-	}
+	static void ClearToken();
 	
 };
 
@@ -52,20 +42,11 @@ struct FSyncTokenModel
 	UPROPERTY()
 	FString sessionToken;
 
-	void SaveToLocal()
-	{
-		DataStorage::SaveStruct(XDGDataStorageName::SessionTokenKey, *this, true);
-	}
+	void SaveToLocal();
 
-	static TSharedPtr<FSyncTokenModel> GetLocalModel()
-	{
-		return  DataStorage::LoadStruct<FSyncTokenModel>(XDGDataStorageName::SessionTokenKey);
-	}
+	static TSharedPtr<FSyncTokenModel> GetLocalModel();
 
-	static void ClearToken()
-	{
-		DataStorage::Remove(XDGDataStorageName::SessionTokenKey);
-	}
+	static void ClearToken();
 };
 
 

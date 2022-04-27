@@ -1,5 +1,5 @@
 #include "XDGUser.h"
-// #include "XDGNet.h"
+#include "XDGDataStorageName.h"
 
 TSharedPtr<FXDGUser> FXDGUser::CurrentModel = nullptr;
 

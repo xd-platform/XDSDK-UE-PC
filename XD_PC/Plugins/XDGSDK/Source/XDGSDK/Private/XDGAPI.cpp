@@ -20,19 +20,20 @@ enum InitState
 };
 	
 static InitState g_InitState = InitStateUninit;
-static const UXDGAPI* XDGSDKManager = nullptr;
+// static const UXDGAPI* XDGSDKManager = nullptr;
+//
+// 	
+// const UXDGAPI*& UXDGAPI::GetXDGSDKEventDispatcher()
+// {
+// 	if (XDGSDKManager == nullptr)
+// 	{
+// 		XDGSDKManager = NewObject<UXDGAPI>();
+// 	}
+// 	return XDGSDKManager;
+// }
 
-	
-const UXDGAPI*& UXDGAPI::GetXDGSDKEventDispatcher()
-{
-	if (XDGSDKManager == nullptr)
-	{
-		XDGSDKManager = NewObject<UXDGAPI>();
-	}
-	return XDGSDKManager;
-}
 
-void UXDGAPI::InitSDK(FString sdkClientId)
+void UXDGAPI::InitSDK(const FString& ClientId, TFunction<void(bool Result, FString Message)> CallBack)
 {
 	if (g_InitState == InitStateIniting)
 	{
@@ -40,7 +41,10 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 	}
 	if (g_InitState == InitStateInited)
 	{
-		GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(true, TEXT("已经初始化"));
+		if (CallBack)
+		{
+			CallBack(true, TEXT("已经初始化"));
+		}
 		return;
 	}
 	g_InitState = InitStateIniting;
@@ -51,28 +55,65 @@ void UXDGAPI::InitSDK(FString sdkClientId)
 		{
 			g_InitState = InitStateUninit;
 			XDG_LOG(Warning, TEXT("No IpInfo Model"));
-			GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(false, msg);
+			if (CallBack)
+			{
+				CallBack(false, msg);
+			}
 		} else
 		{
-			XDGImplement::InitSDK(sdkClientId,
-				[](bool successed, FString msg)
+			XDGImplement::InitSDK(ClientId,
+				[=](bool successed, FString InitMsg)
 				{
 					if (successed)
 					{
 						g_InitState = InitStateInited;
 						XDG_LOG(Display, TEXT("init success"));
-						GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(true, msg);
+						if (CallBack)
+						{
+							CallBack(true, InitMsg);
+						}
 					} else
 					{
 						g_InitState = InitStateUninit;
 						XDG_LOG(Warning, TEXT("init fail"));
-						GetXDGSDKEventDispatcher()->OnInitSDK.Broadcast(false, msg);
+						if (CallBack)
+						{
+							CallBack(false, InitMsg);
+						}
 					}
 				}
 			);
 		}
+	});
+}
+
+void UXDGAPI::LoginByType(LoginType LoginType, TFunction<void(FXDGUser User)> SuccessBlock,
+	TFunction<void(FXDGError Error)> FailBlock)
+{
+	if (!IsInitialized())
+	{
+		if (FailBlock)
+		{
+			FailBlock(FXDGError("Please init first"));
+		}
+		return;
 	}
-	);
+
+	XDGImplement::LoginByType(LoginType,
+	[=](TSharedPtr<FXDGUser> user)
+	{
+		if (SuccessBlock)
+		{
+			SuccessBlock(*user.Get());
+		}
+	},
+	[=](FXDGError error)
+	{
+		if (FailBlock)
+		{
+			FailBlock(error);
+		}
+	});
 }
 
 void UXDGAPI::SetLanguage(LangType type)
@@ -83,25 +124,6 @@ void UXDGAPI::SetLanguage(LangType type)
 bool UXDGAPI::IsInitialized()
 {
 	return g_InitState == InitStateInited;;
-}
-
-void UXDGAPI::LoginByType(LoginType loginType)
-{
-	if (!IsInitialized())
-	{
-		GetXDGSDKEventDispatcher()->OnLoginFail.Broadcast(FXDGError("Please init first"));
-		return;
-	}
-
-	XDGImplement::LoginByType(loginType,
-	[](TSharedPtr<FXDGUser> user)
-	{
-		GetXDGSDKEventDispatcher()->OnLoginSuccess.Broadcast(*user.Get());
-	},
-	[](FXDGError error)
-	{
-		GetXDGSDKEventDispatcher()->OnLoginFail.Broadcast(error);
-	});
 }
 
 void UXDGAPI::ResetPrivacy()

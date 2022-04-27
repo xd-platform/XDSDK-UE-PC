@@ -161,7 +161,7 @@ FString TAULoginNet::GetMacToken()
 	FString domain = parse.Host.ToLower();
 	FString port = parse.Port;
 
-	FString dataStr = timeStr + "\n" + nonce + "\n" + md + "\n" + pathAndQuery + "\n" + domain + "\n" + port + "\n";
+	FString dataStr = timeStr + "\n" + nonce + "\n" + md + "\n" + pathAndQuery + "\n" + domain + "\n" + port + "\n\n";
 	auto sha1 = TDSCrypto::HmacSHA1(TDSCrypto::UTF8Encode(dataStr), TDSCrypto::UTF8Encode(tokenModel->mac_key));
 	FString mac = TDSCrypto::Base64Encode(sha1);
 	

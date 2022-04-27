@@ -24,7 +24,7 @@ struct FTapAccessToken
 	FString mac_algorithm;
 
 	UPROPERTY()
-	uint64 expireIn;
+	uint64 scope;
 
 	void SaveToLocal()
 	{

@@ -45,11 +45,13 @@ void AXD_PCGameModeBase::SetLanguage(LangType type)
 void AXD_PCGameModeBase::ResetPrivacy()
 {
 	UXDGAPI::ResetPrivacy();
+	TDUDebuger::DisplayShow(TEXT("重置隐私"));
 }
 
 void AXD_PCGameModeBase::Logout()
 {
 	UXDGAPI::Logout();
+	TDUDebuger::DisplayShow(TEXT("退出登录"));
 }
 
 void AXD_PCGameModeBase::Test()

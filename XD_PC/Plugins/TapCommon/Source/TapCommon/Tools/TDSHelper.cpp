@@ -3,7 +3,7 @@
 #include "ImageUtils.h"
 
 
-UTexture2D* TDSHelper::GenerateQrCode(UObject* parent, const FString& string)
+UTexture2D* TDSHelper::GenerateQrCode(const FString& string)
 {
 	qrcodegen::QrCode qr = qrcodegen::QrCode::encodeText(TCHAR_TO_UTF8(*string), qrcodegen::QrCode::Ecc::LOW);
 	int border = 0;
@@ -18,7 +18,7 @@ UTexture2D* TDSHelper::GenerateQrCode(UObject* parent, const FString& string)
 			pixels[(x + border) + (y + border) * size] = color;
 		}
 	}
-	UTexture2D* texture = UTexture2D::CreateTransient(size, size, EPixelFormat::PF_B8G8R8A8, "QRCode");
+	UTexture2D* texture = UTexture2D::CreateTransient(size, size, EPixelFormat::PF_B8G8R8A8);
 	void* data = texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
 	FMemory::Memcpy(data, pixels.GetData(), size * size * 4);
 	texture->PlatformData->Mips[0].BulkData.Unlock();

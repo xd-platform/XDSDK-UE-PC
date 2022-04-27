@@ -103,6 +103,8 @@ private:
 
 	FTimerHandle TipTimerHandle;
 
+	bool WidgetIsClosed = true;
+
 	void ShowRefreshButton();
 	void HiddenRefreshButton();
 	void ResetQrCode(const FString& Content);

@@ -48,6 +48,8 @@ void UTAULoginWidget::NativeConstruct()
 	HiddenRefreshButton();
 
 	GetQrCode();
+
+	WidgetIsClosed = false;
 }
 
 void UTAULoginWidget::OnCloseBtnClick()
@@ -57,12 +59,13 @@ void UTAULoginWidget::OnCloseBtnClick()
 
 void UTAULoginWidget::OnRefreshBtnClick()
 {
-	// TDSHelper::Debug("OnRefreshBtnClick");
+	HiddenRefreshButton();
+	GetQrCode();
 }
 
 void UTAULoginWidget::OnJumpWebBtnClick()
 {
-	// TDSHelper::Debug("OnJumpWebBtnClick");
+	TDUDebuger::DisplayShow("OnJumpWebBtnClick");
 }
 
 void UTAULoginWidget::ShowRefreshButton()
@@ -80,7 +83,7 @@ void UTAULoginWidget::HiddenRefreshButton()
 void UTAULoginWidget::ResetQrCode(const FString& Content)
 {
 	HiddenRefreshButton();
-	auto texture = TDSHelper::GenerateQrCode(QRImage, Content);
+	auto texture = TDSHelper::GenerateQrCode(Content);
 	QRImage->SetBrushFromTexture(texture);
 }
 
@@ -110,17 +113,28 @@ void UTAULoginWidget::AutoCheck()
 {
 	if (!QrCodeModel.IsValid())
 	{
-		ShowRefreshButton();
+		AsyncTask(ENamedThreads::GameThread, [=]()
+		{
+			ShowRefreshButton();
+		});
 		return;
 	}
 	int64 ExpireAt = FDateTime::UtcNow().ToUnixTimestamp() + QrCodeModel->expires_in;
+	// int64 ExpireAt = FDateTime::UtcNow().ToUnixTimestamp() + 10;
 	int64 LastCheckAt = 0;
 	while (true)
 	{
 		FPlatformProcess::Sleep(0.5);
+		if (WidgetIsClosed)
+		{
+			return;
+		}
 		int64 Now = FDateTime::UtcNow().ToUnixTimestamp();
 		if (Now > ExpireAt) {
-			ShowRefreshButton();
+			AsyncTask(ENamedThreads::GameThread, [=]()
+			{
+				ShowRefreshButton();
+			});
 			return;
 		}
 		if (Now <= LastCheckAt + QrCodeModel->interval) {continue;}
@@ -181,6 +195,10 @@ void UTAULoginWidget::AutoCheck()
 		{
 			FPlatformProcess::Sleep(0.5);
 		}
+		if (WidgetIsClosed)
+		{
+			return;
+		}
 		LastCheckAt = FDateTime::UtcNow().ToUnixTimestamp();
 		if (Event){
 			AsyncTask(ENamedThreads::GameThread, Event);
@@ -217,6 +235,7 @@ void UTAULoginWidget::Close(const TapAuthResult& Result)
 	{
 		Completed(Result);
 	}
+	WidgetIsClosed = true;
 }
 
 void UTAULoginWidget::GetQrCode()

@@ -30,16 +30,6 @@ void UXDGPrivacyWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	TitleLabel = TDSHelper::GetWidgetUI<UTextBlock>(this, "TitleLabel");
-	ComfirmButton = TDSHelper::GetWidgetUI<UButton>(this, "ComfirmButton");
-	ComfirmButtonLabel = TDSHelper::GetWidgetUI<UTextBlock>(this, "ComfirmButtonLabel");
-	PrivacyTextView1 = TDSHelper::GetWidgetUI<UMultiLineEditableTextBox>(this, "PrivacyTextView1");
-	PrivacyTextView2 = TDSHelper::GetWidgetUI<UMultiLineEditableTextBox>(this, "PrivacyTextView2");
-	AgreeCheckBox1 = TDSHelper::GetWidgetUI<UCheckBox>(this, "AgreeCheckBox1");
-	AgreeCheckBox2 = TDSHelper::GetWidgetUI<UCheckBox>(this, "AgreeCheckBox2");
-	AgreeCheckLabel1 = TDSHelper::GetWidgetUI<UTextBlock>(this, "AgreeCheckLabel1");
-	AgreeCheckLabel2 = TDSHelper::GetWidgetUI<UTextBlock>(this, "AgreeCheckLabel2");
-
 	ComfirmButton->SetIsEnabled(false);
 	
 	AgreeCheckBox1->OnCheckStateChanged.AddUniqueDynamic(this, &UXDGPrivacyWidget::OnCheckStateChanged);

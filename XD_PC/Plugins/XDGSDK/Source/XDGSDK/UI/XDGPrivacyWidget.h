@@ -35,14 +35,31 @@ protected:
 
 
 private:
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TitleLabel;
+
+	UPROPERTY(meta = (BindWidget))
 	UButton* ComfirmButton;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ComfirmButtonLabel;
+
+	UPROPERTY(meta = (BindWidget))
 	UMultiLineEditableTextBox* PrivacyTextView1;
+
+	UPROPERTY(meta = (BindWidget))
 	UMultiLineEditableTextBox* PrivacyTextView2;
+
+	UPROPERTY(meta = (BindWidget))
 	UCheckBox* AgreeCheckBox1;
+
+	UPROPERTY(meta = (BindWidget))
 	UCheckBox* AgreeCheckBox2;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* AgreeCheckLabel1;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* AgreeCheckLabel2;
 	
 	TFunction<void(bool result)> Completed;

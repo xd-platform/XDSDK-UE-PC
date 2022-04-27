@@ -52,11 +52,7 @@ void UTAULoginWidget::NativeConstruct()
 
 void UTAULoginWidget::OnCloseBtnClick()
 {
-	RemoveFromParent();
-	if (Completed)
-	{
-		Completed(TapAuthResult::CancelInit());
-	}
+	Close(TapAuthResult::CancelInit());
 }
 
 void UTAULoginWidget::OnRefreshBtnClick()
@@ -137,7 +133,7 @@ void UTAULoginWidget::AutoCheck()
 			{
 				Event = [=]()
 				{
-					GetProfile(*Model.Get());
+					GetProfile(Model);
 				};
 				Stop = true;
 			} else
@@ -180,6 +176,7 @@ void UTAULoginWidget::AutoCheck()
 			}
 			Wait = false;
 		});
+		// 有空改成信号量 FEvent
 		while (Wait)
 		{
 			FPlatformProcess::Sleep(0.5);
@@ -194,8 +191,32 @@ void UTAULoginWidget::AutoCheck()
 	}
 }
 
-void UTAULoginWidget::GetProfile(const FTapAccessToken& AccessToken)
+void UTAULoginWidget::GetProfile(const TSharedPtr<FTapAccessToken>& AccessToken)
 {
+	TAULoginNet::RequestProfile(*AccessToken.Get(), [=](TSharedPtr<FTAUProfileModel> Model, FTAULoginError Error)
+	{
+		if (Model.IsValid())
+		{
+			AccessToken->SaveToLocal();
+			Model->SaveToLocal();
+			Close(TapAuthResult::SuccessInit(AccessToken));
+		} else
+		{
+			FTapError TapError;
+			TapError.code = Error.code;
+			TapError.error_description = Error.error_description + "./t" + "Get profile error";
+			Close(TapAuthResult::FailInit(TapError));
+		}
+	});
+}
+
+void UTAULoginWidget::Close(const TapAuthResult& Result)
+{
+	RemoveFromParent();
+	if (Completed)
+	{
+		Completed(Result);
+	}
 }
 
 void UTAULoginWidget::GetQrCode()

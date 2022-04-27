@@ -12,7 +12,7 @@ FString Region::TokenUrl()
 
 FString Region::ProfileUrl()
 {
-	return ApiHost() + "/account/profile/v1?client_id=";
+	return ApiHost() + "/account/profile/v1";
 }
 
 FString Region::AccountUrl()

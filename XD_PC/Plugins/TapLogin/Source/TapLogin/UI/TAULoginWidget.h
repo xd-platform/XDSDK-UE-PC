@@ -109,7 +109,8 @@ private:
 	void ShowTip(const FString& Tip, const FString& SubTip);
 	void StartCheck();
 	void AutoCheck();
-	void GetProfile(const FTapAccessToken& AccessToken);
+	void GetProfile(const TSharedPtr<FTapAccessToken>& AccessToken);
+	void Close(const TapAuthResult& Result);
 
 
 	

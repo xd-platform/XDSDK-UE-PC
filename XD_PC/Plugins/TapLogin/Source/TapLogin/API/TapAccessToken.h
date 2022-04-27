@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "TAULoginDataStorageName.h"
 #include "TapAccessToken.generated.h"
 
 USTRUCT(BlueprintType)
@@ -24,5 +25,15 @@ struct FTapAccessToken
 
 	UPROPERTY()
 	uint64 expireIn;
+
+	void SaveToLocal()
+	{
+		DataStorage::SaveStruct(TAULoginDataStorageName::AccessToken, *this, true);
+	}
+	
+	static TSharedPtr<FTapAccessToken> GetLocalModel()
+	{
+		return  DataStorage::LoadStruct<FTapAccessToken>(TAULoginDataStorageName::AccessToken);
+	}
 	
 };

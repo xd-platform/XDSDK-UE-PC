@@ -3,7 +3,10 @@
 #include "DeviceInfo.h"
 #include "JsonHelper.h"
 #include "TapTapSdk.h"
+#include "TDSCrypto.h"
+#include "TDSHelper.h"
 #include "TDUHttpManager.h"
+#include "UrlParse.h"
 
 TAULoginNet::TAULoginNet()
 {
@@ -101,6 +104,19 @@ void TAULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(T
 	TDUHttpManager::Get().request(request);
 }
 
+void TAULoginNet::RequestProfile(const FTapAccessToken& AccessToken,
+	TFunction<void(TSharedPtr<FTAUProfileModel> Model, FTAULoginError Error)> callback)
+{
+	const TSharedPtr<TAULoginNet> request = MakeShareable(new TAULoginNet());
+	request->URL = TapTapSdk::CurrentRegion->ProfileUrl();
+	request->Parameters->SetStringField("client_id", TapTapSdk::ClientId);
+	request->AccessToken = MakeShareable(new FTapAccessToken(AccessToken));
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+		PerfromWrapperResponseCallBack(response, callback);
+	});
+	TDUHttpManager::Get().request(request);
+}
+
 TMap<FString, FString> TAULoginNet::CommonHeaders()
 {
 	return TDUHttpRequest::CommonHeaders();
@@ -113,9 +129,44 @@ TSharedPtr<FJsonObject> TAULoginNet::CommonParameters()
 
 bool TAULoginNet::ResetHeadersBeforeRequest()
 {
-	return TDUHttpRequest::ResetHeadersBeforeRequest();
+	if (AccessToken.IsValid())
+	{
+		this->Headers.Add("Authorization", GetMacToken());
+		return true;
+	} else
+	{
+		return TDUHttpRequest::ResetHeadersBeforeRequest();
+	}
+	
 }
 
-// FString TAULoginNet::GetMacToken()
-// {
-// }
+FString TAULoginNet::GetMacToken()
+{
+	auto tokenModel = AccessToken;
+	FString authToken;
+	if (tokenModel == nullptr)
+	{
+		return authToken;
+	}
+	UrlParse parse(this->GetFinalUrl());
+	FString timeStr = FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp());
+	FString nonce = TDSHelper::GetRandomStr(5);
+	FString md = this->Type == Get ? "GET" : "POST";
+
+	FString pathAndQuery = "/" + parse.Path;
+	if (parse.query.Len() > 0)
+	{
+		pathAndQuery += "?" + parse.query;
+	}
+	FString domain = parse.Host.ToLower();
+	FString port = parse.Port;
+
+	FString dataStr = timeStr + "\n" + nonce + "\n" + md + "\n" + pathAndQuery + "\n" + domain + "\n" + port + "\n";
+	auto sha1 = TDSCrypto::HmacSHA1(TDSCrypto::UTF8Encode(dataStr), TDSCrypto::UTF8Encode(tokenModel->mac_key));
+	FString mac = TDSCrypto::Base64Encode(sha1);
+	
+	authToken = FString::Printf(TEXT("MAC id=\"%s\",ts=\"%s\",nonce=\"%s\",mac=\"%s\""), *tokenModel->kid, *timeStr, *nonce, *mac);
+	return authToken;
+}
+
+

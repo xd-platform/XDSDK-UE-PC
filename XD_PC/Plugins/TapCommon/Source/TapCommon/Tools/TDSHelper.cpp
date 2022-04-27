@@ -26,3 +26,15 @@ UTexture2D* TDSHelper::GenerateQrCode(UObject* parent, const FString& string)
 	texture->Filter = TextureFilter::TF_Nearest;
 	return texture;
 }
+
+FString TDSHelper::GetRandomStr(int len)
+{
+	FString LetterStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	FString SB;
+	int LetterLen = LetterStr.Len();
+	for (int i = 0; i < len; i++){
+		SB += LetterStr[FMath::RandRange(0, LetterLen-1)];
+	}
+
+	return SB;
+}

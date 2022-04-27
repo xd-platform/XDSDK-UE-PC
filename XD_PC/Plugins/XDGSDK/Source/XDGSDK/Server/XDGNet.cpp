@@ -6,6 +6,7 @@
 #include "DeviceInfo.h"
 #include "JsonHelper.h"
 #include "TDSCrypto.h"
+#include "TDSHelper.h"
 #include "TokenModel.h"
 #include "UrlParse.h"
 #include "XDGResponseModel.h"
@@ -40,16 +41,6 @@ static FString XDG_UNBIND_INTERFACE = BASE_URL + "/api/account/v1/unbind";
 
 // 查询补款订单信息
 static FString XDG_PAYBACK_LIST = BASE_URL + "/order/v1/user/repayOrders";
-
-FString GetRandomStr(int length){
-	FString LetterStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	FString SB;
-	for (int i = 0; i < length; i++){
-		SB += LetterStr[FMath::RandRange(0, LetterStr.Len()-1)];
-	}
-
-	return SB;
-}
 
 XDGNet::XDGNet()
 {
@@ -203,7 +194,7 @@ FString XDGNet::GetMacToken() {
 	}
 	UrlParse parse(this->GetFinalUrl());
 	FString timeStr = FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp());
-	FString nonce = GetRandomStr(5);
+	FString nonce = TDSHelper::GetRandomStr(5);
 	FString md = this->Type == Get ? "GET" : "POST";
 
 	FString pathAndQuery = "/" + parse.Path;

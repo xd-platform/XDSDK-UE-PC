@@ -29,5 +29,10 @@ struct FTAUProfileModel
 	{
 		return  DataStorage::LoadStruct<FTAUProfileModel>(TAULoginDataStorageName::Profile);
 	}
+
+	static void ClearLocalModel()
+	{
+		DataStorage::Remove(TAULoginDataStorageName::Profile);
+	}
 	
 };

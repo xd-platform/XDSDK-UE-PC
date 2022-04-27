@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "TapAuthResult.h"
+#include "TAUProfileModel.h"
 #include "UObject/Object.h"
 #include "TapLoginHelper.generated.h"
 
@@ -29,5 +30,13 @@ public:
 
 	static void Login(TFunction<void(TapAuthResult Result)> CallBack);
 	static void Login(TArray<FString> Permissions, TFunction<void(TapAuthResult Result)> CallBack);
+
+	static void Logout();
+
+	static TSharedPtr<FTAUProfileModel> GetProfile();
+	static TSharedPtr<FTapAccessToken> GetAccessToken();
+
+
+
 
 };

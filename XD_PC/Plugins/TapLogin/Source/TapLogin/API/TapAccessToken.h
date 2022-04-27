@@ -35,5 +35,10 @@ struct FTapAccessToken
 	{
 		return  DataStorage::LoadStruct<FTapAccessToken>(TAULoginDataStorageName::AccessToken);
 	}
+
+	static void ClearLocalModel()
+	{
+		DataStorage::Remove(TAULoginDataStorageName::AccessToken);
+	}
 	
 };

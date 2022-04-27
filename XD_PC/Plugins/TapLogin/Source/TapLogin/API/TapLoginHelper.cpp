@@ -22,3 +22,19 @@ void UTapLoginHelper::Login(TArray<FString> Permissions, TFunction<void(TapAuthR
 {
 	TapLoginImpl::Get().Login(Permissions, CallBack);
 }
+
+void UTapLoginHelper::Logout()
+{
+	FTAUProfileModel::ClearLocalModel();
+	FTapAccessToken::ClearLocalModel();
+}
+
+TSharedPtr<FTAUProfileModel> UTapLoginHelper::GetProfile()
+{
+	return FTAUProfileModel::GetLocalModel();
+}
+
+TSharedPtr<FTapAccessToken> UTapLoginHelper::GetAccessToken()
+{
+	return FTapAccessToken::GetLocalModel();
+}

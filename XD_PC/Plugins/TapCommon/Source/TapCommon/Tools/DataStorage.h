@@ -9,6 +9,9 @@ public:
 	static void SaveString(const FString& key, const FString& value, bool needSaveLocal = true);
 	static FString LoadString(const FString& key);
 
+	static void SaveBool(const FString& key, bool value, bool needSaveLocal = true);
+	static bool LoadBool(const FString& key);
+
 	template <typename StructType>
 	static void SaveStruct(const FString& key, const TSharedPtr<StructType>& value, bool needSaveLocal = true)
 	{

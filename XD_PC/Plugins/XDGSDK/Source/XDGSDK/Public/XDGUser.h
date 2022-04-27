@@ -27,30 +27,23 @@ struct FXDGUser
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TArray<FString> loginList; // boundAccounts
 
-	void SaveToLocal()
-	{
-		DataStorage::SaveStruct(XDGDataStorageName::UserInfo, *this, true);
-	}
+	void SaveToLocal();
 
-	static TSharedPtr<FXDGUser> GetLocalModel()
-	{
-		return  DataStorage::LoadStruct<FXDGUser>(XDGDataStorageName::UserInfo);
-	}
+	static TSharedPtr<FXDGUser>& GetLocalModel();
+	
+	TSharedPtr<FTokenModel> Token();
 
-	TSharedPtr<FTokenModel> Token()
-	{
-		return  FTokenModel::GetLocalModel();
-	}
+	LoginType GetLoginType();
 
-	LoginType GetLoginType()
-	{
-		if (loginType == 0){
-			return LoginType::Guest;
-		} else if (loginType == 5){
-			return LoginType::TapTap;
-		}
-		return LoginType::Guest;
-	}
+	static void ClearUserData();
+	
+	static bool IsPushServiceEnable();
+
+	static void SetPushServiceEnable(bool enable);
+
+private:
+	static TSharedPtr<FXDGUser> CurrentModel;
+
 };
 
 

@@ -47,6 +47,9 @@ class XDGSDK_API UXDGAPI : public UObject
 	UFUNCTION(BlueprintCallable, Category = "XDGSDK", meta = (DisplayName = "XDG Reset Privacy"))
 	static void ResetPrivacy();
 
+	UFUNCTION(BlueprintCallable, Category = "XDGSDK", meta = (DisplayName = "XDG Logout"))
+	static void Logout();
+
 	UFUNCTION(BlueprintCallable, Category = "XDGSDK", meta = (DisplayName = "XDG Test"))
 	static void Test();
 

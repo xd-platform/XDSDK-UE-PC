@@ -4,6 +4,7 @@
 #include "XDGAPI.h"
 #include "XDGImplement.h"
 #include "LanguageManager.h"
+#include "TapLoginHelper.h"
 #include "TDSHelper.h"
 #include "XDGSDK.h"
 #include "Blueprint/UserWidget.h"
@@ -106,6 +107,13 @@ void UXDGAPI::LoginByType(LoginType loginType)
 void UXDGAPI::ResetPrivacy()
 {
 	DataStorage::Remove(XDGDataStorageName::PrivacyKey);
+}
+
+void UXDGAPI::Logout()
+{
+	// await TDSUser.Logout();
+	UTapLoginHelper::Logout();
+	FXDGUser::ClearUserData();
 }
 
 void UXDGAPI::Test()

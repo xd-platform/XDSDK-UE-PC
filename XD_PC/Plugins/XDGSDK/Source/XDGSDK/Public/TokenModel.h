@@ -61,6 +61,11 @@ struct FSyncTokenModel
 	{
 		return  DataStorage::LoadStruct<FSyncTokenModel>(XDGDataStorageName::SessionTokenKey);
 	}
+
+	static void ClearToken()
+	{
+		DataStorage::Remove(XDGDataStorageName::SessionTokenKey);
+	}
 };
 
 

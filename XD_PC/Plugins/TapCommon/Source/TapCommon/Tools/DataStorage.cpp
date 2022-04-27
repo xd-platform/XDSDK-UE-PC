@@ -49,6 +49,24 @@ FString DataStorage::LoadString(const FString& key)
 	
 }
 
+void DataStorage::SaveBool(const FString& key, bool value, bool needSaveLocal)
+{
+	GetJsonObject()->SetBoolField(key, value);
+	if (needSaveLocal){ SaveToFile(); }
+}
+
+bool DataStorage::LoadBool(const FString& key)
+{
+	bool Value;
+	if (GetJsonObject()->TryGetBoolField(key, Value))
+	{
+		return Value;
+	} else
+	{
+		return false;
+	}
+}
+
 void DataStorage::Remove(const FString& key, bool needSaveLocal)
 {
 	GetJsonObject()->RemoveField(key);

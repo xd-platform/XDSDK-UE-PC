@@ -68,6 +68,8 @@ public:
 	
 	static void Test();
 
+	static void OpenUserCenter();
+
 
 private:
 

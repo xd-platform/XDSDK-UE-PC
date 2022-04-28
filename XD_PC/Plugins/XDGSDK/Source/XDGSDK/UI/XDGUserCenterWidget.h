@@ -1,6 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LanguageManager.h"
+#include "XDGUser.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
@@ -15,17 +17,17 @@ class XDGSDK_API UXDGUserCenterWidget : public UUserWidget
 public:
 	UXDGUserCenterWidget(const FObjectInitializer& ObjectInitializer);
 
-	// static void ShowPrivacy(TFunction<void(bool result)> Completed);
+	static void ShowWidget();
 
 protected:
 
 	virtual void NativeConstruct() override;
 
-	// UFUNCTION()
-	// void OnCheckStateChanged(bool isChecked);
-	//
-	// UFUNCTION()
-	// void OnComfirmBtnClick();
+	UFUNCTION()
+	void OnCloseBtnClick();
+
+	UFUNCTION()
+	void OnCopyBtnClick();
 
 
 private:
@@ -59,5 +61,13 @@ private:
 	
 	
 	// TFunction<void(bool result)> Completed;
+
+	TSharedPtr<FXDGUser> userMd;
+	TSharedPtr<FLanguageModel> langModel;
+
+	FString GetLoginTypeName();
+
+	void RequestList();
+
 	
 };

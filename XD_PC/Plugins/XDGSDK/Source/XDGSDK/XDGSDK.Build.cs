@@ -48,6 +48,7 @@ public class XDGSDK : ModuleRules
 				"UMG",
 				// "OpenSSL",
 				"JsonUtilities",
+				"ApplicationCore",
 				"TapBootstrap",
 				"TapCommon",
 				"TapLogin",

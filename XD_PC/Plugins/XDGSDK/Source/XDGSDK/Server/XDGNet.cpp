@@ -185,6 +185,29 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& response,
 	callback(model, error);
 }
 
+template <typename StructType>
+void PerfromResponseCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
+{
+	if (callback == nullptr)
+	{
+		return;
+	}
+	TSharedPtr<FXDGResponseModel> Wrapper = JsonHelper::GetUStruct<StructType>(response->contentString);;
+	JsonHelper::GetUStruct<StructType>(response->contentString);
+	FXDGError error;
+	if (Wrapper == nullptr)
+	{
+		error = GenerateErrorInfo(response);
+	} else
+	{
+		error.code = Wrapper->code;
+		error.msg = Wrapper->msg;
+		error.detail = Wrapper->detail;
+	}
+	
+	callback(StaticCastSharedPtr<StructType>(Wrapper), error);
+}
+
 FString XDGNet::GetMacToken() {
 	auto tokenModel = FTokenModel::GetLocalModel();
 	FString authToken;
@@ -282,6 +305,16 @@ void XDGNet::RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> 
 	// request->isPure = true;
 	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
 		callback(response->contentString);
+	});
+	TDUHttpManager::Get().request(request);
+}
+
+void XDGNet::RequestBindList(TFunction<void(TSharedPtr<FXDGBindResponseModel> Model, FXDGError Error)> Callback)
+{
+	const TSharedPtr<XDGNet> request = MakeShareable(new XDGNet());
+	request->URL = XDG_BIND_LIST;
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+		PerfromResponseCallBack(response, Callback);
 	});
 	TDUHttpManager::Get().request(request);
 }

@@ -3,6 +3,7 @@
 #include "TDUHttpManager.h"
 #include "IpInfoModel.h"
 #include "TokenModel.h"
+#include "XDGBindModel.h"
 #include "XDGError.h"
 #include "XDGUser.h"
 
@@ -13,12 +14,14 @@ public:
 	XDGNet();
 	
 
-	static void RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGError error)> callback);
-	static void RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FXDGError error)> callback);
-	static void RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<void(TSharedPtr<FTokenModel> model, FXDGError error)> callback);
-	static void RequestUserInfo(TFunction<void(TSharedPtr<FXDGUser> model, FXDGError error)> callback);
-	static void RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> model, FXDGError error)> callback);
-	static void RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> callback);
+	static void RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> Model, FXDGError Error)> Callback);
+	static void RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> Model, FXDGError Error)> Callback);
+	static void RequestKidToken(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FTokenModel> Model, FXDGError Error)> Callback);
+	static void RequestUserInfo(TFunction<void(TSharedPtr<FXDGUser> Model, FXDGError Error)> Callback);
+	static void RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> Model, FXDGError Error)> Callback);
+	static void RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> Callback);
+	static void RequestBindList(TFunction<void(TSharedPtr<FXDGBindResponseModel> Model, FXDGError Error)> Callback);
+
 
 
 

@@ -6,10 +6,12 @@
 #include "LanguageManager.h"
 #include "TapLoginHelper.h"
 #include "TDSHelper.h"
+#include "TDUDebuger.h"
 #include "XDGSDK.h"
 #include "Blueprint/UserWidget.h"
 #include "TapLogin/UI/TAULoginWidget.h"
 #include "XDGSDK/UI/XDGPrivacyWidget.h"
+#include "XDGSDK/UI/XDGUserCenterWidget.h"
 
 
 enum InitState
@@ -142,6 +144,16 @@ void UXDGAPI::Test()
 {
 	UTAULoginWidget::ShowLoginUI(TArray<FString>(), nullptr);
 	// UXDGPrivacyWidget::ShowPrivacy([](bool result){TDSHelper::Debug(TEXT("关闭了"));});
+}
+
+void UXDGAPI::OpenUserCenter()
+{
+	if (!FXDGUser::GetLocalModel().IsValid()) {
+		TDUDebuger::WarningLog("请先登录");
+		return;
+	}
+
+	UXDGUserCenterWidget::ShowWidget();
 }
 
 

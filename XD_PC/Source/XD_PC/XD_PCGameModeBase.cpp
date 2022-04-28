@@ -58,3 +58,8 @@ void AXD_PCGameModeBase::Test()
 {
 	UXDGAPI::Test();
 }
+
+void AXD_PCGameModeBase::OpenUserCenter()
+{
+	UXDGAPI::OpenUserCenter();
+}

@@ -36,12 +36,25 @@ FString DeviceInfo::GetOSVersion()
 
 int DeviceInfo::GetScreenWidth()
 {
-	return GEngine->GameViewport->Viewport->GetSizeXY().X;
+	if (GEngine)
+	{
+		return GEngine->GameViewport->Viewport->GetSizeXY().X;
+	} else
+	{
+		return 0;
+	}
+	
 }
 
 int DeviceInfo::GetScreenHeight()
 {
-	return GEngine->GameViewport->Viewport->GetSizeXY().Y;
+	if (GEngine)
+	{
+		return GEngine->GameViewport->Viewport->GetSizeXY().Y;
+	} else
+	{
+		return 0;
+	}
 }
 
 FString DeviceInfo::GetLoginId()

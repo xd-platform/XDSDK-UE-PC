@@ -2,10 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "LanguageManager.h"
+#include "XDGBindModel.h"
+#include "XDGLoginTypeModel.h"
 #include "XDGUser.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
+#include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
+#include "Components/VerticalBox.h"
 #include "XDGUserCenterWidget.generated.h"
 
 
@@ -20,7 +24,7 @@ public:
 	static void ShowWidget();
 
 protected:
-
+	
 	virtual void NativeConstruct() override;
 
 	UFUNCTION()
@@ -29,6 +33,11 @@ protected:
 	UFUNCTION()
 	void OnCopyBtnClick();
 
+	UFUNCTION()
+	void OnErrorBtnClick();
+
+	UFUNCTION()
+	void OnDeleteBtnClick();
 
 private:
 	
@@ -58,6 +67,22 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* CloseButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UVerticalBox* ListBox;
+
+	UPROPERTY(meta = (BindWidget))
+	USizeBox* EmptyBox1;
+
+	UPROPERTY(meta = (BindWidget))
+	USizeBox* EmptyBox2;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* ErrorButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ErrorButtonLabel;
+	
 	
 	
 	// TFunction<void(bool result)> Completed;
@@ -68,6 +93,16 @@ private:
 	FString GetLoginTypeName();
 
 	void RequestList();
+
+	void ResetListBox();
+
+	void ShouldShowErrorButton(bool Should);
+
+	TArray<FXDGLoginTypeModel> GetSdkTypes();
+
+	TArray<FXDGLoginTypeModel> GetSupportTypes();
+
+	TArray<TSharedPtr<FXDGBindModel>> BindModels;
 
 	
 };

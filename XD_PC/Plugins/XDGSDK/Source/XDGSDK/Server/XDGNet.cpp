@@ -182,7 +182,13 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& response,
 		error.msg = Wrapper->msg;
 		error.detail = Wrapper->detail;
 	}
-	callback(model, error);
+	if (response->state == TDUHttpResponse::success)
+	{
+		callback(model, error);
+	} else
+	{
+		callback(nullptr, error);
+	}
 }
 
 template <typename StructType>
@@ -193,7 +199,6 @@ void PerfromResponseCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunct
 		return;
 	}
 	TSharedPtr<FXDGResponseModel> Wrapper = JsonHelper::GetUStruct<StructType>(response->contentString);;
-	JsonHelper::GetUStruct<StructType>(response->contentString);
 	FXDGError error;
 	if (Wrapper == nullptr)
 	{
@@ -204,8 +209,14 @@ void PerfromResponseCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunct
 		error.msg = Wrapper->msg;
 		error.detail = Wrapper->detail;
 	}
-	
-	callback(StaticCastSharedPtr<StructType>(Wrapper), error);
+
+	if (response->state == TDUHttpResponse::success)
+	{
+		callback(StaticCastSharedPtr<StructType>(Wrapper), error);
+	} else
+	{
+		callback(nullptr, error);
+	}
 }
 
 FString XDGNet::GetMacToken() {

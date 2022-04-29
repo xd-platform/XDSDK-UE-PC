@@ -11,7 +11,7 @@ UTDUHUD*& UTDUHUD::GetCurrentHUD()
 		HUD->GetWorld()->GetTimerManager().ClearTimer(HUD->DismissTimerHandle);
 		if (!HUD->IsInViewport())
 		{
-			HUD->AddToViewport();
+			HUD->AddToViewport(MAX_int16);
 		}
 		return HUD;
 	} else
@@ -21,7 +21,7 @@ UTDUHUD*& UTDUHUD::GetCurrentHUD()
 			if (GWorld && GWorld->GetWorld())
 			{
         		HUD = CreateWidget<UTDUHUD>(GWorld->GetWorld(), MyWidgetClass);
-				HUD->AddToViewport();
+				HUD->AddToViewport(MAX_int16);
         	}
         }
 		return HUD;
@@ -60,7 +60,7 @@ void UTDUHUD::Dismiss()
 	{
 		HUD->RemoveFromParent();
 	}
-	
+	HUD = nullptr;
 }
 
 void UTDUHUD::ShowToast(const FString& Toast, float TimeInterval)

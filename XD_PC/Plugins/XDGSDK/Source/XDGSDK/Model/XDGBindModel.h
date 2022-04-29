@@ -7,6 +7,13 @@
 #include "XDGResponseModel.h"
 #include "XDGBindModel.generated.h"
 
+UENUM()
+enum FXDGBindType
+{
+	Bind = 0,   //绑定
+	UnBind = 1  //未绑定
+};
+
 USTRUCT()
 struct FXDGBindModel
 {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "XDGBindModel.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
@@ -16,7 +17,9 @@ class XDGSDK_API UXDGUserCenterItemWidget : public UUserWidget
 public:
 	UXDGUserCenterItemWidget(const FObjectInitializer& ObjectInitializer);
 
-	// static void ShowPrivacy(TFunction<void(bool result)> Completed);
+	static UXDGUserCenterItemWidget * GenerateItem();
+
+	void SetBindModel(const TSharedPtr<FXDGBindModel>& Model);
 
 protected:
 
@@ -44,8 +47,8 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* ArrowImage;
-	
-	
+
+	TSharedPtr<FXDGBindModel> BindModel;
 	// TFunction<void(bool result)> Completed;
 	
 };

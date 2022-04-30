@@ -12,6 +12,7 @@
 #include "TapLogin/UI/TAULoginWidget.h"
 #include "XDGSDK/UI/XDGPrivacyWidget.h"
 #include "XDGSDK/UI/XDGUserCenterWidget.h"
+#include "XDGSDK/UI/XDIPayHintAlert.h"
 
 
 enum InitState
@@ -128,10 +129,6 @@ bool UXDGAPI::IsInitialized()
 	return g_InitState == InitStateInited;;
 }
 
-void UXDGAPI::ResetPrivacy()
-{
-	DataStorage::Remove(XDGDataStorageName::PrivacyKey);
-}
 
 void UXDGAPI::Logout()
 {
@@ -140,11 +137,6 @@ void UXDGAPI::Logout()
 	FXDGUser::ClearUserData();
 }
 
-void UXDGAPI::Test()
-{
-	UTAULoginWidget::ShowLoginUI(TArray<FString>(), nullptr);
-	// UXDGPrivacyWidget::ShowPrivacy([](bool result){TDSHelper::Debug(TEXT("关闭了"));});
-}
 
 void UXDGAPI::OpenUserCenter()
 {
@@ -154,6 +146,22 @@ void UXDGAPI::OpenUserCenter()
 	}
 
 	UXDGUserCenterWidget::ShowWidget();
+}
+
+void UXDGAPI::Test()
+{
+	UTAULoginWidget::ShowLoginUI(TArray<FString>(), nullptr);
+	// UXDGPrivacyWidget::ShowPrivacy([](bool result){TDSHelper::Debug(TEXT("关闭了"));});
+}
+
+void UXDGAPI::ResetPrivacy()
+{
+	DataStorage::Remove(XDGDataStorageName::PrivacyKey);
+}
+
+void UXDGAPI::OpenPayHintAlert()
+{
+	UXDIPayHintAlert::Show(true, true);
 }
 
 

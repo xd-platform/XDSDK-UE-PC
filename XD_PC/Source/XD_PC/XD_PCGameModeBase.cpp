@@ -63,3 +63,8 @@ void AXD_PCGameModeBase::OpenUserCenter()
 {
 	UXDGAPI::OpenUserCenter();
 }
+
+void AXD_PCGameModeBase::OpenPayHintAlert()
+{
+	UXDGAPI::OpenPayHintAlert();
+}

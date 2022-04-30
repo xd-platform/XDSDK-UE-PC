@@ -38,6 +38,8 @@ class XD_PC_API AXD_PCGameModeBase : public AGameModeBase
 	
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "OpenUserCenter"))
 	static void OpenUserCenter();
-	
+
+	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "OpenPayHintAlert"))
+	static void OpenPayHintAlert();
 	
 };

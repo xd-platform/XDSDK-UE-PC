@@ -61,14 +61,19 @@ public:
 	static bool IsInitialized();
 
 	static void SetLanguage(LangType Type);
-
-	static void ResetPrivacy();
 	
 	static void Logout();
 	
+	static void OpenUserCenter();
+
+	// only test
+
 	static void Test();
 
-	static void OpenUserCenter();
+	static void ResetPrivacy();
+
+	static void OpenPayHintAlert();
+
 
 
 private:

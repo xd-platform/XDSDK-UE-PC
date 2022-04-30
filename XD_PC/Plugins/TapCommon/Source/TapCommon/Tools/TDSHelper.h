@@ -20,4 +20,7 @@ public:
 
 
 	static FString GetRandomStr(int len);
+
+	static void GenerateBrush(FSlateBrush& Brush, const FString& TexturePath);
+
 };

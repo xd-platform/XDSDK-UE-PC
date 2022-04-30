@@ -2,9 +2,11 @@
 
 #include "TDUDebuger.h"
 #include "TDUHUD.h"
+#include "XDGAPI.h"
+#include "XDGImplement.h"
 #include "XDGNet.h"
 #include "XDGUser.h"
-#include "XDGUserCenterItemWidget.h"
+#include "XDGUserCenterTipWidget.h"
 #include "Mac/MacPlatformApplicationMisc.h"
 
 UXDGUserCenterWidget::UXDGUserCenterWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -38,7 +40,8 @@ void UXDGUserCenterWidget::NativeConstruct()
 	Content = "ID: " + userMd->userId;
 	IDTitleLabel->SetText(FText::FromString(Content));
 	ErrorButtonLabel->SetText(FText::FromString(langModel->tds_network_error_retry));
-	InfoTitleLabel->SetText(FText::FromString(langModel->tds_account_bind_info));
+	BindInfoTitleLabel->SetText(FText::FromString(langModel->tds_account_bind_info));
+	DeleteButtonLabel->SetText(FText::FromString(langModel->tds_delete_account));
 	
 	CloseButton->OnClicked.AddUniqueDynamic(this, &UXDGUserCenterWidget::OnCloseBtnClick);
 	CopyButton->OnClicked.AddUniqueDynamic(this, &UXDGUserCenterWidget::OnCopyBtnClick);
@@ -68,6 +71,32 @@ void UXDGUserCenterWidget::OnErrorBtnClick()
 
 void UXDGUserCenterWidget::OnDeleteBtnClick()
 {
+	if (userMd->loginType != (int)LoginType::Guest)
+	{
+		return;
+	}
+	UXDGUserCenterTipWidget::Show(UXDGUserCenterTipWidget::DeleteGuest, LoginType::Guest, [=]()
+	{
+		UTDUHUD::ShowWait();
+		XDGNet::Unbind((int)LoginType::Guest, [=](TSharedPtr<FXDGResponseModel> Model, FXDGError Error)
+		{
+			UTDUHUD::Dismiss();
+			if (Model.IsValid())
+			{
+				DeleteAccount(langModel->tds_unbind_guest_return);
+			} else
+			{
+				if (Error.code > 200)
+				{
+					UTDUHUD::ShowToast(Error.msg);
+				} else
+				{
+					UTDUHUD::ShowToast(langModel->tds_unbind_guest_return);
+				}
+				
+			}
+		});
+	}, nullptr);
 }
 
 FString UXDGUserCenterWidget::GetLoginTypeName()
@@ -108,7 +137,7 @@ void UXDGUserCenterWidget::RequestList()
 				}
 				BindModels.Add(md);
 			}
-			ResetListBox();
+			ResetListBoxAndDeleteButton();
 		} else
 		{
 			ShouldShowErrorButton(true);
@@ -117,7 +146,7 @@ void UXDGUserCenterWidget::RequestList()
 	});
 }
 
-void UXDGUserCenterWidget::ResetListBox()
+void UXDGUserCenterWidget::ResetListBoxAndDeleteButton()
 {
 	ListBox->ClearChildren();
 	for (auto FxdgBindModel : BindModels)
@@ -125,8 +154,31 @@ void UXDGUserCenterWidget::ResetListBox()
 		UXDGUserCenterItemWidget * Item = UXDGUserCenterItemWidget::GenerateItem();
 		Item->SetBindModel(FxdgBindModel);
 		ListBox->AddChild(Item);
+		Item->BindCallBack = [=](UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXDGBindModel> Model)
+		{
+			if (Model->status == FXDGBindType::Bind)
+			{
+				enum UXDGUserCenterTipWidget::AlertType AlertType = GetBindCount() <= 1 ? UXDGUserCenterTipWidget::DeleteThird : UXDGUserCenterTipWidget::UnbindThird;
+				UXDGUserCenterTipWidget::Show(AlertType, LoginType::TapTap, [=]()
+				{
+					UnBind(CurrentWidget, Model);
+				}, nullptr);
+			} else
+			{
+				Bind(CurrentWidget, Model);
+			}
+		};
 	}
-	
+
+	if (userMd->loginType == (int)LoginType::Guest)
+	{
+		EmptyBox1->SetVisibility(ESlateVisibility::Visible);
+		DeleteButton->SetVisibility(ESlateVisibility::Visible);
+	} else
+	{
+		EmptyBox1->SetVisibility(ESlateVisibility::Collapsed);
+		DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }
 
 void UXDGUserCenterWidget::ShouldShowErrorButton(bool Should)
@@ -173,3 +225,102 @@ TArray<FXDGLoginTypeModel> UXDGUserCenterWidget::GetSupportTypes()
 	}
 	return list;
 }
+
+void UXDGUserCenterWidget::DeleteAccount(const FString& Tip)
+{
+	UTDUHUD::ShowToast(Tip);
+	UXDGAPI::Logout();
+	UXDGAPI::ResetPrivacy();
+	RemoveFromParent();
+}
+
+void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TSharedPtr<FXDGBindModel> Model)
+{
+	TFunction<void(TSharedPtr<FJsonObject> paras)> BindBlock = [=](TSharedPtr<FJsonObject> Paras)
+	{
+		UTDUHUD::ShowWait();
+		XDGNet::Bind(Paras, [=](TSharedPtr<FXDGResponseModel> ResponseModel, FXDGError Error)
+		{
+			UTDUHUD::Dismiss();
+			if (ResponseModel.IsValid())
+			{
+				Model->status = (int) FXDGBindType::Bind;
+				CurrentWidget->SetBindModel(Model);
+				UTDUHUD::ShowToast(langModel->tds_bind_success);
+			} else
+			{
+				if (Error.code > 200)
+				{
+					UTDUHUD::ShowToast(Error.msg);
+				} else
+				{
+					UTDUHUD::ShowToast(langModel->tds_bind_error);
+				}
+				
+			}
+		});
+	};
+	if (Model->loginType == (int)LoginType::TapTap)
+	{
+		XDGImplement::GetLoginParam(LoginType::TapTap, [=](TSharedPtr<FJsonObject> Paras)
+		{
+			BindBlock(Paras);
+		}, [=](FXDGError error)
+		{
+			if (error.code ==  80081)
+			{
+				UTDUHUD::ShowToast(langModel->tds_login_cancel);
+			} else
+			{
+				UTDUHUD::ShowToast(error.msg);
+			}
+		});
+	}
+
+	
+}
+
+void UXDGUserCenterWidget::UnBind(UXDGUserCenterItemWidget* CurrentWidget, TSharedPtr<FXDGBindModel> Model)
+{
+	UTDUHUD::ShowWait();
+	XDGNet::Unbind(Model->loginType, [=](TSharedPtr<FXDGResponseModel> ResponseModel, FXDGError Error)
+	{
+		UTDUHUD::Dismiss();
+		if (ResponseModel.IsValid())
+		{
+			if (GetBindCount() <= 1)
+			{
+				DeleteAccount(langModel->tds_unbind_delete_success_return_sign);
+			} else
+			{
+				Model->status = (int) FXDGBindType::UnBind;
+				CurrentWidget->SetBindModel(Model);
+				UTDUHUD::ShowToast(langModel->tds_unbind_success);
+			}
+		} else
+		{
+			if (Error.code > 200)
+			{
+				UTDUHUD::ShowToast(Error.msg);
+			} else
+			{
+				UTDUHUD::ShowToast(langModel->tds_unbind_guest_return);
+			}
+				
+		}
+	});
+}
+
+int UXDGUserCenterWidget::GetBindCount()
+{
+	int num = 0;
+	for (auto FxdgBindModel : BindModels)
+	{
+		if (FxdgBindModel->status == FXDGBindType::Bind)
+		{
+			num++;
+		}
+	}
+	return num;
+}
+

@@ -21,15 +21,15 @@ public:
 
 	void SetBindModel(const TSharedPtr<FXDGBindModel>& Model);
 
+	TFunction<void(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXDGBindModel> Model)> BindCallBack;
+
 protected:
 
 	virtual void NativeConstruct() override;
 
-	// UFUNCTION()
-	// void OnCheckStateChanged(bool isChecked);
-	//
-	// UFUNCTION()
-	// void OnComfirmBtnClick();
+
+	UFUNCTION()
+	void OnBindBtnClick();
 
 
 private:

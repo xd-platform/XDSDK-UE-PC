@@ -10,6 +10,7 @@
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
+#include "XDGUserCenterItemWidget.h"
 #include "XDGUserCenterWidget.generated.h"
 
 
@@ -94,7 +95,7 @@ private:
 
 	void RequestList();
 
-	void ResetListBox();
+	void ResetListBoxAndDeleteButton();
 
 	void ShouldShowErrorButton(bool Should);
 
@@ -104,5 +105,16 @@ private:
 
 	TArray<TSharedPtr<FXDGBindModel>> BindModels;
 
+	void DeleteAccount(const FString& Tip);
+
+	int GetBindCount();
+
+	void Bind(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXDGBindModel> Model);
+
+	void UnBind(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXDGBindModel> Model);
+
+	
+
 	
 };
+

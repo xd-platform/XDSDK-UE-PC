@@ -21,6 +21,9 @@ public:
 	static void RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> Model, FXDGError Error)> Callback);
 	static void RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> Callback);
 	static void RequestBindList(TFunction<void(TSharedPtr<FXDGBindResponseModel> Model, FXDGError Error)> Callback);
+	static void Bind(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FXDGResponseModel> Model, FXDGError Error)> Callback);
+	static void Unbind(int LoginType, TFunction<void(TSharedPtr<FXDGResponseModel> Model, FXDGError Error)> Callback);
+
 
 
 

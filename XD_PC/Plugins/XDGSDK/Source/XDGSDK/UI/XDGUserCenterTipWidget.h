@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "XDGEnumType.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
@@ -15,19 +16,29 @@ class XDGSDK_API UXDGUserCenterTipWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	enum AlertType
+	{
+		DeleteGuest = 0,   //删除游客
+		DeleteThird = 1,   //删除第三方
+		UnbindThird = 2,   //解绑第三方
+	};
 	UXDGUserCenterTipWidget(const FObjectInitializer& ObjectInitializer);
 
-	// static void ShowPrivacy(TFunction<void(bool result)> Completed);
+	static void Show(AlertType AlertType, LoginType LoginType, TFunction<void()> SureCallBack, TFunction<void()> CancelCallBack);
+
 
 protected:
 
 	virtual void NativeConstruct() override;
 
-	// UFUNCTION()
-	// void OnCheckStateChanged(bool isChecked);
-	//
-	// UFUNCTION()
-	// void OnComfirmBtnClick();
+	UFUNCTION()
+	void OnGreenBtnClick();
+
+	UFUNCTION()
+	void OnWhiteBtnClick();
+
+	UFUNCTION()
+	void OnTextBoxValueChange(const FText& Content);
 
 
 private:
@@ -52,8 +63,35 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* WhiteButtonLabel;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* RedTipLabel;
+
+
+	AlertType AlertType;
+	LoginType LoginType;
+	TFunction<void()> SureCallBack;
+	TFunction<void()> CancelCallBack;
+
+	void FirstStepUpdate();
+	void SecondStepUpdate();
+
+	enum Step
+	{
+		First,
+		Second,
+	};
+
+	Step Step;
+
+	UPROPERTY()
+	UTexture2D * GrayTexture = nullptr;
+
+	UTexture2D *&GetGrayTexture();
 	
-	
-	// TFunction<void(bool result)> Completed;
+	UPROPERTY()
+	UTexture2D * RedTexture = nullptr;
+
+	UTexture2D *&GetRedTexture();
 	
 };

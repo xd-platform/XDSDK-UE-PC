@@ -38,3 +38,24 @@ FString TDSHelper::GetRandomStr(int len)
 
 	return SB;
 }
+
+void TDSHelper::GenerateBrush(FSlateBrush& Brush, const FString& TexturePath)
+{
+	UTexture2D *Texture = LoadObject<UTexture2D>(nullptr, *TexturePath);
+	if(IsValid(Texture) && Brush.GetResourceObject() != Texture)
+	{
+		Brush.SetResourceObject(Texture);
+
+		if (Texture) // Since this texture is used as UI, don't allow it affected by budget.
+			{
+			Texture->bForceMiplevelsToBeResident = true;
+			Texture->bIgnoreStreamingMipBias = true;
+			}
+
+		if (Texture)
+		{
+			Brush.ImageSize.X = Texture->GetSizeX();
+			Brush.ImageSize.Y = Texture->GetSizeY();
+		}
+	}
+}

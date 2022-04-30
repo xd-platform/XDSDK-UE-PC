@@ -329,3 +329,34 @@ void XDGNet::RequestBindList(TFunction<void(TSharedPtr<FXDGBindResponseModel> Mo
 	});
 	TDUHttpManager::Get().request(request);
 }
+
+void XDGNet::Bind(const TSharedPtr<FJsonObject>& Paras,
+	TFunction<void(TSharedPtr<FXDGResponseModel> Model, FXDGError Error)> Callback)
+{
+	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
+	request->URL = XDG_BIND_INTERFACE;
+	request->Parameters = Paras;
+	request->Type = Post;
+	request->isPure = true;
+	request->Headers = request->CommonHeaders();
+	request->PostUrlParameters = request->CommonParameters();
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+		PerfromResponseCallBack(response, Callback);
+	});
+	TDUHttpManager::Get().request(request);
+}
+
+void XDGNet::Unbind(int LoginType, TFunction<void(TSharedPtr<FXDGResponseModel> Model, FXDGError Error)> Callback)
+{
+	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
+	request->URL = XDG_UNBIND_INTERFACE;
+	request->Parameters->SetNumberField("type", LoginType);
+	request->Type = Post;
+	request->isPure = true;
+	request->Headers = request->CommonHeaders();
+	request->PostUrlParameters = request->CommonParameters();
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+		PerfromResponseCallBack(response, Callback);
+	});
+	TDUHttpManager::Get().request(request);
+}

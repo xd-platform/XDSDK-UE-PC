@@ -68,3 +68,28 @@ void AXD_PCGameModeBase::OpenPayHintAlert()
 {
 	UXDGAPI::OpenPayHintAlert();
 }
+
+void AXD_PCGameModeBase::CheckPay()
+{
+	UXDGAPI::CheckPay([](CheckPayType CheckType)
+	{
+		switch (CheckType)
+		{
+		case iOSAndAndroid:
+			TDUDebuger::DisplayShow(TEXT("iOSAndAndroid"));
+			break;
+		case iOS:
+			TDUDebuger::DisplayShow(TEXT("iOS"));
+			break;
+		case Android:
+			TDUDebuger::DisplayShow(TEXT("Android"));
+			break;
+		case None:
+			TDUDebuger::DisplayShow(TEXT("None"));
+			break;
+		}
+	}, [](FXDGError Error)
+	{
+		TDUDebuger::DisplayShow(Error.msg);
+	});
+}

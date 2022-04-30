@@ -6,7 +6,6 @@
 #include "TapBootstrapAPI.h"
 #include "TapConfig.h"
 #include "TapLoginHelper.h"
-#include "XDGSDK.h"
 #include "XDGSDK/UI/XDGPrivacyWidget.h"
 
 static int Success = 200;
@@ -141,8 +140,55 @@ void XDGImplement::GetLoginParam(LoginType loginType,
 	}
 }
 
+void XDGImplement::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock,
+	TFunction<void(FXDGError Error)> FailBlock)
+{
+	XDGNet::CheckPay([=](TSharedPtr<FXDIPayCheckResponseModel> Model, FXDGError Error)
+	{
+		if (Model.IsValid())
+		{
+			bool hasIOS = false;
+			bool hasAndroid = false;
+			for (auto md : Model->list)
+			{
+				if (md.platform == 1)
+				{
+					hasIOS = true;
+				}
+				if (md.platform == 2)
+				{
+					hasAndroid = true;
+				}
+			}
+			if (SuccessBlock)
+			{
+				if (hasIOS && hasAndroid)
+				{
+					SuccessBlock(iOSAndAndroid);
+				} else if (hasIOS)
+				{
+					SuccessBlock(iOS);
+				} else if (hasAndroid)
+				{
+					SuccessBlock(Android);
+				} else
+				{
+					SuccessBlock(None);
+				}
+			}
+			
+		} else
+		{
+			if (FailBlock)
+			{
+				FailBlock(Error);
+			}
+		}
+	});
+}
+
 void XDGImplement::RequestKidToken(TSharedPtr<FJsonObject> paras,
-	TFunction<void(TSharedPtr<FTokenModel> kidToken)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock)
+                                   TFunction<void(TSharedPtr<FTokenModel> kidToken)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock)
 {
 	XDGNet::RequestKidToken(paras,
 		[=](TSharedPtr<FTokenModel> kidToken, FXDGError error)

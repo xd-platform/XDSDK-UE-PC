@@ -16,6 +16,9 @@ public:
 
 	static void GetLoginParam(LoginType loginType, TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock);
 
+	static void CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock);
+
+
 private:
 
 	static void InitBootstrap(const TSharedPtr<FInitConfigModel>& model, TFunction<void(bool successed, FString msg)> resultBlock, const FString& msg);

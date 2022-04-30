@@ -360,3 +360,14 @@ void XDGNet::Unbind(int LoginType, TFunction<void(TSharedPtr<FXDGResponseModel> 
 	});
 	TDUHttpManager::Get().request(request);
 }
+
+void XDGNet::CheckPay(TFunction<void(TSharedPtr<FXDIPayCheckResponseModel> Model, FXDGError Error)> Callback)
+{
+	const TSharedPtr<XDGNet> request = MakeShareable(new XDGNet());
+	request->URL = XDG_PAYBACK_LIST;
+	request->Parameters->SetStringField("userId", FXDGUser::GetLocalModel()->userId);
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+		PerfromWrapperResponseCallBack(response, Callback);
+	});
+	TDUHttpManager::Get().request(request);
+}

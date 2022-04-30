@@ -38,3 +38,11 @@ enum class LoginType: uint8
 // XDGLoginInfoTypeLine = 6,
 // XDGLoginInfoTypeTwitter = 7
 
+UENUM(BlueprintType)
+enum CheckPayType{
+	iOS				UMETA(DisplayName = "iOS"),					//只有iOS需要补款
+	Android			UMETA(DisplayName = "Android"),				//只有Android需要补款
+	iOSAndAndroid	UMETA(DisplayName = "iOS And Android"),		//iOS Android 都需要补款
+	None			UMETA(DisplayName = "None"),				//没有要补款
+};
+

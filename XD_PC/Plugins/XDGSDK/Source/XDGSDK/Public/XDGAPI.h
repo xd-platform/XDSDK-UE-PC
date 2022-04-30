@@ -65,6 +65,9 @@ public:
 	static void Logout();
 	
 	static void OpenUserCenter();
+	
+	static void CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock);
+
 
 	// only test
 

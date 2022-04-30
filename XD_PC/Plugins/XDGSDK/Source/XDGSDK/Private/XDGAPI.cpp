@@ -141,11 +141,34 @@ void UXDGAPI::Logout()
 void UXDGAPI::OpenUserCenter()
 {
 	if (!FXDGUser::GetLocalModel().IsValid()) {
-		TDUDebuger::WarningLog("请先登录");
+		TDUDebuger::WarningLog("Please Login First");
 		return;
 	}
 
 	UXDGUserCenterWidget::ShowWidget();
+}
+
+void UXDGAPI::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock)
+{
+	if (!FXDGUser::GetLocalModel().IsValid()) {
+		if (FailBlock)
+		{
+			FailBlock(FXDGError("Please Login First"));
+		}
+		return;
+	}
+	XDGImplement::CheckPay([=](CheckPayType CheckType)
+	{
+		if (CheckType != None)
+		{
+			UXDIPayHintAlert::Show(CheckType);
+		}
+		if (SuccessBlock)
+		{
+			SuccessBlock(CheckType);
+		}
+	}, FailBlock);
+
 }
 
 void UXDGAPI::Test()
@@ -161,7 +184,7 @@ void UXDGAPI::ResetPrivacy()
 
 void UXDGAPI::OpenPayHintAlert()
 {
-	UXDIPayHintAlert::Show(true, true);
+	UXDIPayHintAlert::Show(iOSAndAndroid);
 }
 
 

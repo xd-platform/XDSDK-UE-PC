@@ -6,6 +6,7 @@
 #include "XDGBindModel.h"
 #include "XDGError.h"
 #include "XDGUser.h"
+#include "XDIPayCheckModel.h"
 
 class XDGNet: public TDUHttpRequest
 {
@@ -23,9 +24,7 @@ public:
 	static void RequestBindList(TFunction<void(TSharedPtr<FXDGBindResponseModel> Model, FXDGError Error)> Callback);
 	static void Bind(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FXDGResponseModel> Model, FXDGError Error)> Callback);
 	static void Unbind(int LoginType, TFunction<void(TSharedPtr<FXDGResponseModel> Model, FXDGError Error)> Callback);
-
-
-
+	static void CheckPay(TFunction<void(TSharedPtr<FXDIPayCheckResponseModel> Model, FXDGError Error)> Callback);
 
 
 private:

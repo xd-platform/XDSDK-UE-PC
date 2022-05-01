@@ -1,6 +1,7 @@
 #pragma once
 #include "JsonObjectConverter.h"
 
+// template <typename StructName>
 class TAPCOMMON_API DataStorage
 {
 public:

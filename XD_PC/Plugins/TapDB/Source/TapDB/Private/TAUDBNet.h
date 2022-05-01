@@ -1,11 +1,16 @@
 #pragma once
-#include "TapError.h"
+
+#include "TAUDBEnum.h"
 #include "TDUHttpRequest.h"
+
+
 
 class TAUDBNet: public TDUHttpRequest
 {
 	
 public:
+
+	static void SendEvent(TAUDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras);
 
 	// 普通事件
 	static void SendNormalEvent(TSharedPtr<FJsonObject> Paras);

@@ -45,8 +45,6 @@ FString DataStorage::LoadString(const FString& key)
 	{
 		return FString();
 	}
-	
-	
 }
 
 void DataStorage::SaveBool(const FString& key, bool value, bool needSaveLocal)
@@ -66,6 +64,8 @@ bool DataStorage::LoadBool(const FString& key)
 		return false;
 	}
 }
+// auto xxx = UXDGAPI::StaticClass()->GetName();
+// FInitConfigModel::StaticStruct()->GetName();
 
 void DataStorage::Remove(const FString& key, bool needSaveLocal)
 {

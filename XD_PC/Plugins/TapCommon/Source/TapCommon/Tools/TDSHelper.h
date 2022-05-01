@@ -23,4 +23,7 @@ public:
 
 	static void GenerateBrush(FSlateBrush& Brush, const FString& TexturePath);
 
+	// 把Adder加到Object中。
+	static void JsonObjectAppend(TSharedPtr<FJsonObject>& Object, const TSharedPtr<FJsonObject>& Adder);
+
 };

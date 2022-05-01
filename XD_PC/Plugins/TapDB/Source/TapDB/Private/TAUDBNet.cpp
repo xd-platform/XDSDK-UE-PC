@@ -9,6 +9,20 @@ FTimerHandle TAUDBNet::RetryTimerHandle = FTimerHandle();
 int TAUDBNet::CacheCount = 0;
 
 
+void TAUDBNet::SendEvent(TAUDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras)
+{
+	if (EventType == TAUDBEnum::Normal)
+	{
+		SendNormalEvent(Paras);
+	} else if (EventType == TAUDBEnum::Custom)
+	{
+		SendCustomEvent(Paras);
+	} else if (EventType == TAUDBEnum::Identify)
+	{
+		SendIdentifyEvent(Paras);
+	}
+}
+
 void TAUDBNet::SendNormalEvent(TSharedPtr<FJsonObject> Paras)
 {
 	FString Url = TAUDBConfig::GetHost() + "event";

@@ -59,3 +59,8 @@ void TDSHelper::GenerateBrush(FSlateBrush& Brush, const FString& TexturePath)
 		}
 	}
 }
+
+void TDSHelper::JsonObjectAppend(TSharedPtr<FJsonObject>& Object, const TSharedPtr<FJsonObject>& Adder)
+{
+	Object->Values.Append(Adder->Values);
+}

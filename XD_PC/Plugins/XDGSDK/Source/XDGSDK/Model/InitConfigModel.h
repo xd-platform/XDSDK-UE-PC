@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "XDGDataStorageName.h"
+#include "XDGStorage.h"
 #include "InitConfigModel.generated.h"
 
 USTRUCT()

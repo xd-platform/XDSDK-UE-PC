@@ -1,5 +1,5 @@
 #include "XDGImplement.h"
-#include "XDGDataStorageName.h"
+#include "XDGStorage.h"
 #include "DeviceInfo.h"
 #include "JsonHelper.h"
 #include "LanguageManager.h"
@@ -30,7 +30,7 @@ void XDGImplement::GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FStr
 
 void XDGImplement::InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock)
 {
-	DataStorage::SaveString(XDGDataStorageName::ClientId, sdkClientId, false);
+	DataStorage<FXDGStorage>::SaveString(FXDGStorage::ClientId, sdkClientId, false);
 	XDGNet::RequestConfig(
 	[=] (TSharedPtr<FInitConfigModel> model, FXDGError error)
 	{

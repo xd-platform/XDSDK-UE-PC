@@ -1,7 +1,7 @@
 #include "XDGNet.h"
 #include "JsonObjectConverter.h"
 #include "LanguageManager.h"
-#include "XDGDataStorageName.h"
+#include "XDGStorage.h"
 #include "IpInfoModel.h"
 #include "DeviceInfo.h"
 #include "JsonHelper.h"
@@ -60,7 +60,7 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 {
 	TSharedPtr<FJsonObject> query = TDUHttpRequest::CommonParameters();
 	
-	query->SetStringField("clientId", DataStorage::LoadString(XDGDataStorageName::ClientId));
+	query->SetStringField("clientId", DataStorage<FXDGStorage>::LoadString(FXDGStorage::ClientId));
 
 	query->SetStringField("sdkLang", LanguageManager::GetLanguageKey());
 	query->SetStringField("lang", LanguageManager::GetLanguageKey());

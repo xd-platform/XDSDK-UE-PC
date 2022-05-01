@@ -1,17 +1,48 @@
 #pragma once
 #include "JsonObjectConverter.h"
+#include "JsonHelper.h"
+#include "TDSCrypto.h"
 
-// template <typename StructName>
+template <typename StructName>
 class TAPCOMMON_API DataStorage
 {
 public:
 	
 
-	static void SaveString(const FString& key, const FString& value, bool needSaveLocal = true);
-	static FString LoadString(const FString& key);
+	static void SaveString(const FString& key, const FString& value, bool needSaveLocal = true)
+	{
+		GetJsonObject()->SetStringField(key, value);
+		if (needSaveLocal){ SaveToFile(); }
+	}
+	static FString LoadString(const FString& key)
+	{
+		FString String;
+		if (GetJsonObject()->TryGetStringField(key, String))
+		{
+			return String;
+		} else
+		{
+			return FString();
+		}
+	}
 
-	static void SaveBool(const FString& key, bool value, bool needSaveLocal = true);
-	static bool LoadBool(const FString& key);
+	static void SaveBool(const FString& key, bool value, bool needSaveLocal = true)
+	{
+		GetJsonObject()->SetBoolField(key, value);
+		if (needSaveLocal){ SaveToFile(); }
+	}
+	
+	static bool LoadBool(const FString& key)
+	{
+		bool Value;
+		if (GetJsonObject()->TryGetBoolField(key, Value))
+		{
+			return Value;
+		} else
+		{
+			return false;
+		}
+	}
 
 	template <typename StructType>
 	static void SaveStruct(const FString& key, const TSharedPtr<StructType>& value, bool needSaveLocal = true)
@@ -42,12 +73,54 @@ public:
 		return value;
 	}
 
-	static void Remove(const FString& key, bool needSaveLocal = true);
+	static void Remove(const FString& key, bool needSaveLocal = true)
+	{
+		GetJsonObject()->RemoveField(key);
+		if (needSaveLocal){ SaveToFile(); }
+	}
 
-	static void SaveToFile();
+	static void SaveToFile()
+	{
+		FString filePath = DataStoragePath();
+		FString jsonStr = JsonHelper::GetJsonString(JsonObject);
+		auto data = TDSCrypto::AesEncode(TDSCrypto::UTF8Encode(jsonStr), TDSCrypto::UTF8Encode(DataStorageKey()));
+		FFileHelper::SaveArrayToFile(data, *filePath);
+	}
 
 private:
 	
+	static TSharedPtr<FJsonObject>& GetJsonObject()
+	{
+		if (JsonObject == nullptr)
+		{
+			FString filePath = DataStoragePath();
+			TArray<uint8> data;
+			if(FFileHelper::LoadFileToArray(data, *filePath))
+			{
+				auto JsonStr = TDSCrypto::UTF8Encode(TDSCrypto::AesDecode(data, TDSCrypto::UTF8Encode(DataStorageKey())));
+				JsonObject = JsonHelper::GetJsonObject(JsonStr);
+				// UE_LOG(LogTemp, Display, TEXT("JsonStr: %s"), *JsonStr);
+			}
+		}
+		if (JsonObject == nullptr)
+		{
+			JsonObject = MakeShareable(new FJsonObject);
+		}
+		return JsonObject;
+	}
+
 	static TSharedPtr<FJsonObject> JsonObject;
-	static TSharedPtr<FJsonObject>& GetJsonObject();
+	static FString DataStoragePath()
+	{
+		return FPaths::SandboxesDir() + TEXT("/DataStorage/") + StructName::StaticStruct()->GetName();
+	};
+	
+	static FString DataStorageKey()
+	{
+		return StructName::StaticStruct()->GetName() + TEXT("Key");
+	}
 };
+
+template <typename StructName>
+TSharedPtr<FJsonObject> DataStorage<StructName>::JsonObject = nullptr;
+

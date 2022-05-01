@@ -11,7 +11,7 @@ void FInitConfigModel::SaveToLocal()
 	{
 		CurrentModel = MakeShareable(new FInitConfigModel(*this));
 	}
-	DataStorage::SaveStruct(XDGDataStorageName::InitConfig, *this, true);
+	DataStorage<FXDGStorage>::SaveStruct(FXDGStorage::InitConfig, *this, true);
 	if (CanShowPrivacyAlert())
 	{
 		SavePrivacyTxt();
@@ -23,7 +23,7 @@ TSharedPtr<FInitConfigModel>& FInitConfigModel::GetLocalModel()
 {
 	if (CurrentModel == nullptr)
 	{
-		CurrentModel = DataStorage::LoadStruct<FInitConfigModel>(XDGDataStorageName::InitConfig);
+		CurrentModel = DataStorage<FXDGStorage>::LoadStruct<FInitConfigModel>(FXDGStorage::InitConfig);
 	}
 	return  CurrentModel;
 }
@@ -36,7 +36,7 @@ bool FInitConfigModel::CanShowPrivacyAlert()
 		XDG_LOG(Warning, TEXT("请先初始化"));
 		return false;
 	}
-	auto preStr = DataStorage::LoadString(XDGDataStorageName::PrivacyKey);
+	auto preStr = DataStorage<FXDGStorage>::LoadString(FXDGStorage::PrivacyKey);
 	FString currentStr = FString::Printf(TEXT("%s-%s-%s"), *md->version, *md->configs.serviceAgreementUrl, *md->configs.serviceTermsUrl);
 	if (preStr == currentStr)
 	{
@@ -51,7 +51,7 @@ void FInitConfigModel::UpdatePrivacyState()
 	if (md.IsValid())
 	{
 		FString currentStr = FString::Printf(TEXT("%s-%s-%s"), *md->version, *md->configs.serviceAgreementUrl, *md->configs.serviceTermsUrl);
-		DataStorage::SaveString(XDGDataStorageName::PrivacyKey, currentStr);
+		DataStorage<FXDGStorage>::SaveString(FXDGStorage::PrivacyKey, currentStr);
 	}
 }
 

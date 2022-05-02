@@ -47,6 +47,7 @@ public class TapCommon : ModuleRules
                 "Engine",
                 "Slate",
                 "SlateCore",
+                "Sockets",
                 "UMG",
 				// ... add private dependencies that you statically link with here ...	
 			}

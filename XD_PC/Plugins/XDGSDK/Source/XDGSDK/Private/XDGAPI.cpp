@@ -173,8 +173,7 @@ void UXDGAPI::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFu
 
 void UXDGAPI::Test()
 {
-	UTAULoginWidget::ShowLoginUI(TArray<FString>(), nullptr);
-	// UXDGPrivacyWidget::ShowPrivacy([](bool result){TDSHelper::Debug(TEXT("关闭了"));});
+	TDUDebuger::DisplayLog(FGuid::NewGuid().ToString());
 }
 
 void UXDGAPI::ResetPrivacy()

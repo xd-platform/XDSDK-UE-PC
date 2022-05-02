@@ -1,4 +1,7 @@
 #include "DeviceInfo.h"
+#include "SocketSubsystem.h"
+#include "TAUCommonStorage.h"
+
 
 FString DeviceInfo::GetCPU()
 {
@@ -62,6 +65,18 @@ FString DeviceInfo::GetLoginId()
 	return FPlatformMisc::GetLoginId();
 }
 
+FString DeviceInfo::GetInstallId()
+{
+	FString InstallID = DataStorage<FTAUCommonStorage>::LoadString(FTAUCommonStorage::InstallID);
+	if (InstallID.Len() <= 0)
+	{
+		InstallID = FGuid::NewGuid().ToString();
+		DataStorage<FTAUCommonStorage>::SaveString(FTAUCommonStorage::InstallID, InstallID);
+	}
+	return InstallID;
+	
+}
+
 // FString DeviceInfo::GetMacAddress()
 // {
 // 	auto MacAddr = FPlatformMisc::GetMacAddress();
@@ -75,19 +90,19 @@ FString DeviceInfo::GetLoginId()
 
 FString DeviceInfo::GetPlatform()
 {
-	FString os = "";
+	FString OS;
 #if PLATFORM_IOS
-	os = "iOS";
+	OS = "iOS";
 #elif PLATFORM_ANDROID
-	os = "Android";
+	OS = "Android";
 #elif PLATFORM_MAC
-	os = "macOS";
+	OS = "macOS";
 #elif PLATFORM_WINDOWS
-	os = "Windows";
+	OS = "Windows";
 #elif PLATFORM_LINUX
-	os = "Linux";
+	OS = "Linux";
 #endif
-	return os;
+	return OS;
 }
 
 FString DeviceInfo::GetProjectName()
@@ -104,6 +119,56 @@ FString DeviceInfo::GetProjectVersion()
 {
 	// 待实现
 	return "1.0.1";
+}
+
+FString DeviceInfo::GetIpv4()
+{
+	ISocketSubsystem *socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+	FString HostName;
+	FString Ipv4;
+	if (socket->GetHostName(HostName))
+	{
+		FAddressInfoResult GAIRequest = socket->GetAddressInfo(*HostName, nullptr,
+			EAddressInfoFlags::AllResultsWithMapping | EAddressInfoFlags::OnlyUsableAddresses,
+			FNetworkProtocolTypes::IPv6);
+
+		// Start packing the addresses we got to the results.
+		if (GAIRequest.ReturnCode == SE_NO_ERROR)
+		{
+			for (auto Result : GAIRequest.Results)
+			{
+				FString IPStr = Result.Address->ToString(false);
+				if (IPStr != "127.0.0.1" && IPStr != "0.0.0.0")
+				{
+					Ipv4 = IPStr;
+				}
+			}
+		}
+	}
+	return Ipv4;
+}
+
+FString DeviceInfo::GetIpv6()
+{
+	ISocketSubsystem *socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+	FString HostName;
+	FString Ipv6;
+	if (socket->GetHostName(HostName))
+	{
+		FAddressInfoResult GAIRequest = socket->GetAddressInfo(*HostName, nullptr,
+			EAddressInfoFlags::AllResultsWithMapping | EAddressInfoFlags::OnlyUsableAddresses,
+			FNetworkProtocolTypes::IPv6);
+
+		// Start packing the addresses we got to the results.
+		if (GAIRequest.ReturnCode == SE_NO_ERROR)
+		{
+			if (GAIRequest.Results.Num() > 0)
+			{
+				Ipv6 = GAIRequest.Results.Last().Address->ToString(false);
+			}
+		}
+	}
+	return Ipv6;
 }
 
 

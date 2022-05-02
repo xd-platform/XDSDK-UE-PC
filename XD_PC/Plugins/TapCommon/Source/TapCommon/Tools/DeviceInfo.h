@@ -27,8 +27,12 @@ public:
 	static int GetScreenHeight();
 
 	// 236caff059420a236f355dab40d051c0
-	// 可以当成GetMachineId 如果没有满足需求，那么自己建一个FGuid::NewGuid()，然后存在本地
+	// 可以当成GetMachineId或者IDFA 如果没有满足需求，那么自己建一个FGuid::NewGuid()，然后存在本地
 	static FString GetLoginId();
+
+	// 236caff059420a236f355dab40d051c0
+	// 安转应用的ID，每次重装会更新
+	static FString GetInstallId();
 
 	// 88:66:5a:28:20:9e
 	// static FString GetMacAddress();
@@ -41,5 +45,8 @@ public:
 	static FString GetDeviceId();
 
 	static FString GetProjectVersion();
-	
+
+	static FString GetIpv4();
+
+	static FString GetIpv6();
 };

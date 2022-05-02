@@ -1,4 +1,5 @@
 #pragma once
+#include "TDUDebuger.h"
 #include "Blueprint/UserWidget.h"
 
 class TAPCOMMON_API TDSHelper
@@ -29,83 +30,38 @@ public:
 	// 把Adder加到Object中。
 	static void JsonObjectAddNotEmptyString(TSharedPtr<FJsonObject>& Object, const FString& Key, const FString& Value);
 
-	template<typename... TReturns, typename... TArgs>
-static void InvokeFunction(UClass* objClass, UObject* obj, UFunction* func, TTuple<TReturns...>& outParams, TArgs&&... args)
-{
-    objClass = obj != nullptr ? obj->GetClass() : objClass;
-    UObject* context = obj != nullptr ? obj : objClass;
-    uint8* outPramsBuffer = (uint8*)&outParams;
-
-    if (func->HasAnyFunctionFlags(FUNC_Native)) //quick path for c++ functions
-    {
-        TTuple<TArgs..., TReturns...> params(Forward<TArgs>(args)..., TReturns()...);
-        context->ProcessEvent(func, &params);
-        //copy back out params
-        for (TFieldIterator<FProperty> i(func); i; ++i)
-        {
-            FProperty* prop = *i;
-            if (prop->PropertyFlags & CPF_OutParm)
-            {
-                void* propBuffer = prop->ContainerPtrToValuePtr<void*>(&params);
-                prop->CopyCompleteValue(outPramsBuffer, propBuffer);
-                outPramsBuffer += prop->GetSize();
-            }
-        }
-        return;
-    }
-
-    TTuple<TArgs...> inParams(Forward<TArgs>(args)...);
-    void* funcPramsBuffer = (uint8*)FMemory_Alloca(func->ParmsSize);
-    uint8* inPramsBuffer = (uint8*)&inParams;
-
-    for (TFieldIterator<FProperty> i(func); i; ++i)
-    {
-        FProperty* prop = *i;
-        if (prop->GetFName().ToString().StartsWith("__"))
-        {
-            //ignore private param like __WolrdContext of function in blueprint funcion library
-            continue;
-        }
-        void* propBuffer = prop->ContainerPtrToValuePtr<void*>(funcPramsBuffer);
-        if (prop->PropertyFlags & CPF_OutParm)
-        {
-            prop->CopyCompleteValue(propBuffer, outPramsBuffer);
-            outPramsBuffer += prop->GetSize();
-        }
-        else if (prop->PropertyFlags & CPF_Parm)
-        {
-            prop->CopyCompleteValue(propBuffer, inPramsBuffer);
-            inPramsBuffer += prop->GetSize();
-        }
-    }
-
-    context->ProcessEvent(func, funcPramsBuffer);   //call function
-    outPramsBuffer = (uint8*)&outParams;    //reset to begin
-
-    //copy back out params
-    for (TFieldIterator<FProperty> i(func); i; ++i)
-    {
-        FProperty* prop = *i;
-        if (prop->PropertyFlags & CPF_OutParm)
-        {
-            void* propBuffer = prop->ContainerPtrToValuePtr<void*>(funcPramsBuffer);
-            prop->CopyCompleteValue(outPramsBuffer, propBuffer);
-            outPramsBuffer += prop->GetSize();
-        }
-    }
-}
-
-	template<typename... TReturns, typename... TArgs>
-	static void InvokeFunctionByName(FName functionName, TTuple<TReturns...>& outParams, TArgs&&... args)
+	template<typename TReturn, typename... TArgs>
+	static TReturn InvokeFunctionByName(FString CLassName, FString FunctionName, TArgs&&... args)
 	{
-		/*
-		错误！在PIE模式下，有可能会获得SKEL_XXX_C:Func这个对象，里面的Script为空
-		UFunction* func = FindObject<UFunction>(ANY_PACKAGE, *functionName.ToString()); 
-		*/
-		UFunction* func = (UFunction*)StaticFindObjectFast(UFunction::StaticClass(), nullptr, functionName, false, true, RF_Transient); //exclude SKEL_XXX_C:Func
-		InvokeFunction<TReturns...>(func->GetOuterUClass(), nullptr, func, outParams,Forward<TArgs>(args)...);
+		TReturn Value;
+		if (CLassName.IsEmpty() || FunctionName.IsEmpty())
+		{
+			TDUDebuger::ErrorLog("类名或者方法名不得为空");
+			return Value;
+		}
+		UClass* ResultClass = FindObject<UClass>(ANY_PACKAGE, *CLassName);
+		if (ResultClass)
+		{
+			UFunction* CallBack = ResultClass->FindFunctionByName(FName(*FunctionName));
+			if (CallBack)
+			{
+				TTuple<TArgs..., TReturn> params(Forward<TArgs>(args)..., Value);
+				ResultClass->ProcessEvent(CallBack, &params);
+				//copy back out params
+				for (TFieldIterator<FProperty> i(CallBack); i; ++i)
+				{
+				    FProperty* prop = *i;
+				    if (prop->PropertyFlags & CPF_OutParm)
+				    {
+				        void* propBuffer = prop->ContainerPtrToValuePtr<void*>(&params);
+				        prop->CopyCompleteValue(&Value, propBuffer);
+				    }
+				}
+				return Value;
+			}
+		}
+		TDUDebuger::WarningLog("映射调用失败");
+		return Value;
 	}
-
-	// FString oO = UReflectionLibrary::InvokeFunctionByName<FString>(TEXT("TestFunc5"), 10, Actor);
 
 };

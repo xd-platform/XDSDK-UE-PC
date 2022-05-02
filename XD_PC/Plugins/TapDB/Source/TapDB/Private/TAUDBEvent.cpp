@@ -230,7 +230,7 @@ FString TAUDBEventUser::GetIdentifyKey()
 
 FString TAUDBEventUser::GetOpenId()
 {
-	return TAUDBEvent::GetOpenId();
+	return TDSHelper::InvokeFunctionByName<FString>("TapLoginReflection", "GetOpenID");
 }
 
 bool TAUDBEventUser::Identify(const FString& identify, const FString& loginType,

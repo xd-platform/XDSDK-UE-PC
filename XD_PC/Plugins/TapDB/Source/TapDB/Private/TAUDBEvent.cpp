@@ -218,71 +218,71 @@ TSharedPtr<FJsonObject> TAUDBEvent::CombinedProperties(const TSharedPtr<FJsonObj
 	return CombinedProperties;
 }
 
-// FString TAUDBEventUser::GetEventCatogery()
-// {
-// 	return "user_id";
-// }
-//
-// FString TAUDBEventUser::GetIdentifyKey()
-// {
-// 	return "game_user";
-// }
-//
-// FString TAUDBEventUser::GetOpenId()
-// {
-// 	return TAUDBEvent::GetOpenId();
-// }
-//
-// bool TAUDBEventUser::Identify(const FString& identify, const FString& loginType,
-// 	const TSharedPtr<FJsonObject>& properties)
-// {
-// 	bool newIdentify = TAUDBEvent::Identify(identify, loginType, properties);
-// 	if (newIdentify)
-// 	{
-// 		TrackEvent("user_login", properties, nullptr, TAUDBEnum::Identify);
-// 	}
-// 	return newIdentify;
-// }
-//
-// void TAUDBEventUser::SaveIdentify(const FString& identify)
-// {
-// }
-//
-// FString TAUDBEventUser::GetSavedIdentify()
-// {
-// 	return FString();
-// }
-//
-// bool TAUDBEventUser::HasSavedIdentify()
-// {
-// 	return false;
-// }
-//
-// void TAUDBEventUser::ClearIdentify()
-// {
-// 	TAUDBEvent::ClearIdentify();
-// 	if (CommonProperties.IsValid())
-// 	{
-// 		CommonProperties->RemoveField(LOGIN_TYPE_KEY);
-// 	}
-// }
-//
-// FString TAUDBEventMobile::GetEventCatogery()
-// {
-// 	return "game_mobile";
-// }
-//
-// FString TAUDBEventMobile::GetIdentifyKey()
-// {
-// 	return "device_id";
-// }
-//
-// bool TAUDBEventMobile::Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties)
-// {
-// 	bool newIdentify = TAUDBEvent::Identify(identify, loginType, properties);
-// 	if (newIdentify)
-// 	{
-// 		TrackEvent("device_login", properties, nullptr, TAUDBEnum::Identify);
-// 	}
-// 	return newIdentify;
-// }
+FString TAUDBEventUser::GetEventCatogery()
+{
+	return "user_id";
+}
+
+FString TAUDBEventUser::GetIdentifyKey()
+{
+	return "game_user";
+}
+
+FString TAUDBEventUser::GetOpenId()
+{
+	return TAUDBEvent::GetOpenId();
+}
+
+bool TAUDBEventUser::Identify(const FString& identify, const FString& loginType,
+	const TSharedPtr<FJsonObject>& properties)
+{
+	bool newIdentify = TAUDBEvent::Identify(identify, loginType, properties);
+	if (newIdentify)
+	{
+		TrackEvent("user_login", properties, nullptr, TAUDBEnum::Identify);
+	}
+	return newIdentify;
+}
+
+void TAUDBEventUser::SaveIdentify(const FString& identify)
+{
+}
+
+FString TAUDBEventUser::GetSavedIdentify()
+{
+	return FString();
+}
+
+bool TAUDBEventUser::HasSavedIdentify()
+{
+	return false;
+}
+
+void TAUDBEventUser::ClearIdentify()
+{
+	TAUDBEvent::ClearIdentify();
+	if (CommonProperties.IsValid())
+	{
+		CommonProperties->RemoveField(LOGIN_TYPE_KEY);
+	}
+}
+
+FString TAUDBEventMobile::GetEventCatogery()
+{
+	return "game_mobile";
+}
+
+FString TAUDBEventMobile::GetIdentifyKey()
+{
+	return "device_id";
+}
+
+bool TAUDBEventMobile::Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties)
+{
+	bool newIdentify = TAUDBEvent::Identify(identify, loginType, properties);
+	if (newIdentify)
+	{
+		TrackEvent("device_login", properties, nullptr, TAUDBEnum::Identify);
+	}
+	return newIdentify;
+}

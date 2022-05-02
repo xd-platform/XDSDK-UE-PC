@@ -66,22 +66,22 @@ private:
 
 };
 
-// class TAUDBEventUser final : public TAUDBEvent
-// {
-// 	virtual FString GetEventCatogery() override;
-// 	virtual FString GetIdentifyKey() override;
-// 	virtual FString GetOpenId() override;
-// 	virtual bool Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties) override;
-// 	virtual void SaveIdentify(const FString& identify) override;
-// 	virtual FString GetSavedIdentify() override;
-// 	virtual bool HasSavedIdentify() override;
-// 	virtual void ClearIdentify() override;
-// };
-//
-// class TAUDBEventMobile: public TAUDBEvent
-// {
-// 	virtual FString GetEventCatogery() override;
-// 	virtual FString GetIdentifyKey() override;
-// 	virtual bool Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties) override;
-//
-// };
+class TAUDBEventUser final : public TAUDBEvent
+{
+	virtual FString GetEventCatogery() override;
+	virtual FString GetIdentifyKey() override;
+	virtual FString GetOpenId() override;
+	virtual bool Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties) override;
+	virtual void SaveIdentify(const FString& identify) override;
+	virtual FString GetSavedIdentify() override;
+	virtual bool HasSavedIdentify() override;
+	virtual void ClearIdentify() override;
+};
+
+class TAUDBEventMobile : public TAUDBEvent
+{
+	virtual FString GetEventCatogery() override;
+	virtual FString GetIdentifyKey() override;
+	virtual bool Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties) override;
+
+};

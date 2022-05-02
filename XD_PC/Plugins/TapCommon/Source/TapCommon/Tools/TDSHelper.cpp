@@ -60,7 +60,7 @@ void TDSHelper::GenerateBrush(FSlateBrush& Brush, const FString& TexturePath)
 	}
 }
 
-inline void TDSHelper::JsonObjectAppend(TSharedPtr<FJsonObject>& Object, const TSharedPtr<FJsonObject>& Adder)
+void TDSHelper::JsonObjectAppend(TSharedPtr<FJsonObject>& Object, const TSharedPtr<FJsonObject>& Adder)
 {
 	if (Object.IsValid() && Adder.IsValid())
 	{
@@ -68,7 +68,7 @@ inline void TDSHelper::JsonObjectAppend(TSharedPtr<FJsonObject>& Object, const T
 	}
 }
 
-inline void TDSHelper::JsonObjectAddNotEmptyString(TSharedPtr<FJsonObject>& Object, const FString& Key, const FString& Value)
+void TDSHelper::JsonObjectAddNotEmptyString(TSharedPtr<FJsonObject>& Object, const FString& Key, const FString& Value)
 {
 	if (Value.Len() > 0)
 	{

@@ -4,7 +4,7 @@
 #include "TDUDebuger.h"
 #include "TDUHttpManager.h"
 
-
+TQueue<TSharedPtr<TAUDBNet>> TAUDBNet::RequestQueue;
 FTimerHandle TAUDBNet::RetryTimerHandle = FTimerHandle();
 int TAUDBNet::CacheCount = 0;
 

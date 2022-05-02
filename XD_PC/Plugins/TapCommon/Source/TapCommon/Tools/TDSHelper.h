@@ -31,7 +31,7 @@ public:
 	static void JsonObjectAddNotEmptyString(TSharedPtr<FJsonObject>& Object, const FString& Key, const FString& Value);
 
 	template<typename TReturn, typename... TArgs>
-	static TReturn InvokeFunctionByName(FString CLassName, FString FunctionName, TArgs&&... args)
+	static TReturn InvokeFunction(FString CLassName, FString FunctionName, TArgs&&... args)
 	{
 		TReturn Value;
 		if (CLassName.IsEmpty() || FunctionName.IsEmpty())
@@ -62,6 +62,28 @@ public:
 		}
 		TDUDebuger::WarningLog("映射调用失败");
 		return Value;
+	}
+
+	template<typename... TArgs>
+	static void InvokeNoReturnFunction(FString CLassName, FString FunctionName, TArgs&&... args)
+	{
+		if (CLassName.IsEmpty() || FunctionName.IsEmpty())
+		{
+			TDUDebuger::ErrorLog("类名或者方法名不得为空");
+			return;
+		}
+		UClass* ResultClass = FindObject<UClass>(ANY_PACKAGE, *CLassName);
+		if (ResultClass)
+		{
+			UFunction* CallBack = ResultClass->FindFunctionByName(FName(*FunctionName));
+			if (CallBack)
+			{
+				TTuple<TArgs...> params(Forward<TArgs>(args)...);
+				ResultClass->ProcessEvent(CallBack, &params);
+				return;
+			}
+		}
+		TDUDebuger::WarningLog("映射调用失败");
 	}
 
 };

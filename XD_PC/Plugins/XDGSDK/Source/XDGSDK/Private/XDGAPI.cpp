@@ -173,7 +173,7 @@ void UXDGAPI::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFu
 
 void UXDGAPI::Test()
 {
-	FString temp = TDSHelper::InvokeFunctionByName<FString>("TapLoginReflection", "GetOpenID");
+	FString temp = TDSHelper::InvokeFunction<FString>("TapLoginReflection", "GetOpenID");
 	TDUDebuger::DisplayShow(temp);
 }
 

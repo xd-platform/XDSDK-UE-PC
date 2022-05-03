@@ -4,7 +4,7 @@
 #include "TDSCrypto.h"
 
 template <typename StructName>
-class TAPCOMMON_API DataStorage
+class DataStorage
 {
 public:
 	

@@ -100,11 +100,10 @@ FString LanguageManager::GetCustomerCenterLang()
 void LanguageManager::UpdateLanguageModel()
 {
 	FString JsonStr;
-	TDUDebuger::ErrorShow(LanguageJsonPath);
 	if(FFileHelper::LoadFileToString(JsonStr, *LanguageJsonPath))
 	{
 		TSharedPtr<FJsonObject> JsonObject = JsonHelper::GetJsonObject(JsonStr);
-		const TSharedPtr<FJsonObject>* languageObject;
+		const TSharedPtr<FJsonObject>* languageObject = nullptr;
 		if (JsonObject.IsValid() && JsonObject->TryGetObjectField(GetLanguageKey(), languageObject))
 		{
 			currentModel = MakeShareable(new FLanguageModel);

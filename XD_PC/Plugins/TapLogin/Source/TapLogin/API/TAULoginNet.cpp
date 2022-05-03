@@ -42,7 +42,7 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& Response,
 
 	auto JsonObject = JsonHelper::GetJsonObject(Response->contentString);
 	bool Success = false;
-	const TSharedPtr<FJsonObject>* DataJsonObject;
+	const TSharedPtr<FJsonObject>* DataJsonObject = nullptr;
 	if (JsonObject.IsValid() && JsonObject->TryGetBoolField("success", Success) && JsonObject->TryGetObjectField("data", DataJsonObject))
 	{
 		if (Success)

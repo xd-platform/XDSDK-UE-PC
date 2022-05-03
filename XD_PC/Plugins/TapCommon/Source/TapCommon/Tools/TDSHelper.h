@@ -42,13 +42,13 @@ public:
 		UClass* ResultClass = FindObject<UClass>(ANY_PACKAGE, *CLassName);
 		if (ResultClass)
 		{
-			UFunction* CallBack = ResultClass->FindFunctionByName(FName(*FunctionName));
-			if (CallBack)
+			UFunction* Function = ResultClass->FindFunctionByName(FName(*FunctionName));
+			if (Function)
 			{
 				TTuple<TArgs..., TReturn> params(Forward<TArgs>(args)..., Value);
-				ResultClass->ProcessEvent(CallBack, &params);
+				ResultClass->ProcessEvent(Function, &params);
 				//copy back out params
-				for (TFieldIterator<FProperty> i(CallBack); i; ++i)
+				for (TFieldIterator<FProperty> i(Function); i; ++i)
 				{
 				    FProperty* prop = *i;
 				    if (prop->PropertyFlags & CPF_OutParm)
@@ -75,11 +75,11 @@ public:
 		UClass* ResultClass = FindObject<UClass>(ANY_PACKAGE, *CLassName);
 		if (ResultClass)
 		{
-			UFunction* CallBack = ResultClass->FindFunctionByName(FName(*FunctionName));
-			if (CallBack)
+			UFunction* Function = ResultClass->FindFunctionByName(FName(*FunctionName));
+			if (Function)
 			{
 				TTuple<TArgs...> params(Forward<TArgs>(args)...);
-				ResultClass->ProcessEvent(CallBack, &params);
+				ResultClass->ProcessEvent(Function, &params);
 				return;
 			}
 		}

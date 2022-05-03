@@ -44,6 +44,24 @@ public:
 		}
 	}
 
+	static void SaveNumber(const FString& key, double value, bool needSaveLocal = true)
+	{
+		GetJsonObject()->SetNumberField(key, value);
+		if (needSaveLocal){ SaveToFile(); }
+	}
+	
+	static double LoadNumber(const FString& key)
+	{
+		double Value;
+		if (GetJsonObject()->TryGetNumberField(key, Value))
+		{
+			return Value;
+		} else
+		{
+			return 0;
+		}
+	}
+
 	template <typename StructType>
 	static void SaveStruct(const FString& key, const TSharedPtr<StructType>& value, bool needSaveLocal = true)
 	{

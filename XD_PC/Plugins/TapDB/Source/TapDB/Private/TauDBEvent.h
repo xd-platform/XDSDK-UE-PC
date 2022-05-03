@@ -1,12 +1,27 @@
 #pragma once
-#include "TAUDBEnum.h"
+#include "TauDBEnum.h"
 
-class TAUDBEvent
+namespace TauDBEventKey
+{
+	static FString const INDEX_KEY                = "index";
+	static FString const NAME_KEY                 = "name";
+	static FString const PROPERTIES_KEY           = "properties";
+	static FString const CUSTOM_PROPERTIES_KEY    = "customProperties";
+
+	static FString const MODULE_KEY               = "module";
+	static FString const TYPE_KEY                 = "type";
+
+	static FString const OPENID_KEY               = "open_id";
+	static FString const CLIENTID_KEY             = "client_id";
+	static FString const LOGIN_TYPE_KEY           = "login_type";
+}
+
+class TauDBEvent
 {
 public:
-	virtual ~TAUDBEvent() = default;
+	virtual ~TauDBEvent() = default;
 
-	TAUDBEvent(const FString& AccountOrClinentID, bool isAccount);
+	TauDBEvent(const FString& AccountOrClinentID, bool isAccount);
 
 	
 	TSharedPtr<FJsonObject> SysProperties;
@@ -26,7 +41,7 @@ public:
 	void TrackEvent(const FString& Name,
 		TSharedPtr<FJsonObject> CustomProperties = nullptr,
 		TSharedPtr<FJsonObject> Properties = nullptr,
-		TAUDBEnum::EventType EventType = TAUDBEnum::Normal,
+		TauDBEnum::EventType EventType = TauDBEnum::Normal,
 		TSharedPtr<FJsonObject> SystemParams = nullptr
 		);
 
@@ -34,9 +49,9 @@ public:
 	* 事件操作 add update initial
 	* properties：操作属性
 	*/
-	void InitialEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties, TAUDBEnum::EventType EventType);
-	void AddEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties, TAUDBEnum::EventType EventType);
-	void UpdateEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties, TAUDBEnum::EventType EventType);
+	void InitialEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties, TauDBEnum::EventType EventType);
+	void AddEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties, TauDBEnum::EventType EventType);
+	void UpdateEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties, TauDBEnum::EventType EventType);
 
 	void SetAccount(const FString& _Account);
 	void SetClientId(const FString& _ClientId);
@@ -50,7 +65,7 @@ public:
 	virtual bool HasSavedIdentify();
 	virtual void ClearIdentify();
 
-	
+	FString GetIdentify();
 	
 private:
 	
@@ -66,8 +81,10 @@ private:
 
 };
 
-class TAUDBEventUser final : public TAUDBEvent
+class TauDBEventUser : public TauDBEvent
 {
+public:
+	TauDBEventUser(const FString& AccountOrClinentID, bool isAccount): TauDBEvent(AccountOrClinentID, isAccount){};
 	virtual FString GetEventCatogery() override;
 	virtual FString GetIdentifyKey() override;
 	virtual FString GetOpenId() override;
@@ -78,8 +95,10 @@ class TAUDBEventUser final : public TAUDBEvent
 	virtual void ClearIdentify() override;
 };
 
-class TAUDBEventMobile : public TAUDBEvent
+class TauDBEventMobile : public TauDBEvent
 {
+public:
+	TauDBEventMobile(const FString& AccountOrClinentID, bool isAccount): TauDBEvent(AccountOrClinentID, isAccount){};
 	virtual FString GetEventCatogery() override;
 	virtual FString GetIdentifyKey() override;
 	virtual bool Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties) override;

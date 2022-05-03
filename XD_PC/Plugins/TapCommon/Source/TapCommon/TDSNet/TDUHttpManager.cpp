@@ -1,6 +1,5 @@
 #include "TDUHttpManager.h"
 
-#include "DetailLayoutBuilder.h"
 #include "Http.h"
 #include "JsonHelper.h"
 

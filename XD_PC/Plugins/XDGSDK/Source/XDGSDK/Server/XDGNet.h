@@ -27,11 +27,13 @@ public:
 	static void CheckPay(TFunction<void(TSharedPtr<FXDIPayCheckResponseModel> Model, FXDGError Error)> Callback);
 
 
+	static FXDGError GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& response);
 private:
 	virtual TMap<FString, FString> CommonHeaders() override;
 	virtual TSharedPtr<FJsonObject> CommonParameters() override;
 	virtual bool ResetHeadersBeforeRequest() override;
 	// virtual void DoSomeingAfterCombinHeadersAndParas() override;
 
+	
 	FString GetMacToken();
 };

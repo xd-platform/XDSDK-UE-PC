@@ -20,6 +20,7 @@ public:
 	static void RequestProfile(const FTapAccessToken& AccessToken, TFunction<void(TSharedPtr<FTAUProfileModel> Model, FTAULoginError Error)> callback);
 
 
+	static FTAULoginError GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& Response);
 private:
 	virtual TMap<FString, FString> CommonHeaders() override;
 	virtual TSharedPtr<FJsonObject> CommonParameters() override;
@@ -27,4 +28,6 @@ private:
 
 	TSharedPtr<FTapAccessToken> AccessToken = nullptr;
 	FString GetMacToken();
+
+	
 };

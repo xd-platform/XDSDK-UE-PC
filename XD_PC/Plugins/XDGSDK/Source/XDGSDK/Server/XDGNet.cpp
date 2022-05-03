@@ -116,7 +116,7 @@ bool XDGNet::ResetHeadersBeforeRequest()
 
 
 
-FXDGError GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& response)
+FXDGError XDGNet::GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& response)
 {
 	FXDGError error;
 	if (response->state == TDUHttpResponse::clientError)
@@ -153,7 +153,7 @@ void PerfromCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunction<void
 		return;
 	}
 	TSharedPtr<StructType> model = GenerateStructPtr<StructType>(response);
-	FXDGError error = GenerateErrorInfo(response);
+	FXDGError error = XDGNet::GenerateErrorInfo(response);
 	if (model == nullptr && error.code == 0)
 	{
 		error.code = TDUHttpResponse::clientError;
@@ -175,7 +175,7 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& response,
 	FXDGError error;
 	if (Wrapper == nullptr)
 	{
-		error = GenerateErrorInfo(response);
+		error = XDGNet::GenerateErrorInfo(response);
 	} else
 	{
 		error.code = Wrapper->code;
@@ -202,7 +202,7 @@ void PerfromResponseCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunct
 	FXDGError error;
 	if (Wrapper == nullptr)
 	{
-		error = GenerateErrorInfo(response);
+		error = XDGNet::GenerateErrorInfo(response);
 	} else
 	{
 		error.code = Wrapper->code;

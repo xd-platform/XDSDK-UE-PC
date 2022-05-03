@@ -1,6 +1,6 @@
 #include "TAUDBNet.h"
 
-#include "TAUDBConfig.h"
+#include "TauDBConfig.h"
 #include "TDUDebuger.h"
 #include "TDUHttpManager.h"
 
@@ -9,15 +9,15 @@ FTimerHandle TAUDBNet::RetryTimerHandle = FTimerHandle();
 int TAUDBNet::CacheCount = 0;
 
 
-void TAUDBNet::SendEvent(TAUDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras)
+void TAUDBNet::SendEvent(TauDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras)
 {
-	if (EventType == TAUDBEnum::Normal)
+	if (EventType == TauDBEnum::Normal)
 	{
 		SendNormalEvent(Paras);
-	} else if (EventType == TAUDBEnum::Custom)
+	} else if (EventType == TauDBEnum::Custom)
 	{
 		SendCustomEvent(Paras);
-	} else if (EventType == TAUDBEnum::Identify)
+	} else if (EventType == TauDBEnum::Identify)
 	{
 		SendIdentifyEvent(Paras);
 	}
@@ -25,19 +25,19 @@ void TAUDBNet::SendEvent(TAUDBEnum::EventType EventType, TSharedPtr<FJsonObject>
 
 void TAUDBNet::SendNormalEvent(TSharedPtr<FJsonObject> Paras)
 {
-	FString Url = TAUDBConfig::GetHost() + "event";
+	FString Url = TauDBConfig::GetHost() + "event";
 	SendEvent(Url, Paras);
 }
 
 void TAUDBNet::SendCustomEvent(TSharedPtr<FJsonObject> Paras)
 {
-	FString Url = TAUDBConfig::GetHost() + "custom";
+	FString Url = TauDBConfig::GetHost() + "custom";
 	SendEvent(Url, Paras);
 }
 
 void TAUDBNet::SendIdentifyEvent(TSharedPtr<FJsonObject> Paras)
 {
-	FString Url = TAUDBConfig::GetHost() + "identify";
+	FString Url = TauDBConfig::GetHost() + "identify";
 	SendEvent(Url, Paras);
 }
 

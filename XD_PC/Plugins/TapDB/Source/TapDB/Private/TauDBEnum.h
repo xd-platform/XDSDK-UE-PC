@@ -1,6 +1,6 @@
 #pragma once
 
-namespace TAUDBEnum
+namespace TauDBEnum
 {
 // 	UENUM(BlueprintType)
 // 	enum class LoginType: uint8

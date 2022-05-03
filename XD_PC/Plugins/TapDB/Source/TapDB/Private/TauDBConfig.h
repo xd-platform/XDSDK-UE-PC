@@ -1,15 +1,15 @@
 #pragma once
 
-class TAUDBConfig
+class TauDBConfig
 {
 public:
 
 	bool isCN = true;
-
+	static TauDBConfig& Get();
 	static FString GetHost();
 
 	
 private:
-	static TAUDBConfig *Singleton;
-	static TAUDBConfig& Get();
+	static TauDBConfig *Singleton;
+	
 };

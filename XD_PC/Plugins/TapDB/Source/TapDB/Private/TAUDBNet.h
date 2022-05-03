@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TAUDBEnum.h"
+#include "TauDBEnum.h"
 #include "TDUHttpRequest.h"
 
 
@@ -10,7 +10,7 @@ class TAUDBNet: public TDUHttpRequest
 	
 public:
 
-	static void SendEvent(TAUDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras);
+	static void SendEvent(TauDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras);
 
 	// 普通事件
 	static void SendNormalEvent(TSharedPtr<FJsonObject> Paras);
@@ -20,6 +20,8 @@ public:
 
 	// 设备/用户 登录事件
 	static void SendIdentifyEvent(TSharedPtr<FJsonObject> Paras);
+
+	static int CacheCount;
 
 private:
 
@@ -31,5 +33,5 @@ private:
 
 	static FTimerHandle RetryTimerHandle;
 
-	static int CacheCount;
+
 };

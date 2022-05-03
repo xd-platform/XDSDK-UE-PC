@@ -12,7 +12,7 @@ TAULoginNet::TAULoginNet()
 {
 }
 
-FTAULoginError GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& Response)
+FTAULoginError TAULoginNet::GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& Response)
 {
 	FTAULoginError Error = FTAULoginError();
 	if (Response->state == TDUHttpResponse::clientError)
@@ -38,7 +38,7 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& Response,
 	{
 		return;
 	}
-	FTAULoginError Error = GenerateErrorInfo(Response);
+	FTAULoginError Error = TAULoginNet::GenerateErrorInfo(Response);
 
 	auto JsonObject = JsonHelper::GetJsonObject(Response->contentString);
 	bool Success = false;

@@ -1,5 +1,6 @@
 #include "TauDBImplement.h"
 
+#include "DeviceInfo.h"
 #include "JsonHelper.h"
 #include "TauDB.h"
 #include "TAUDBNet.h"
@@ -21,75 +22,35 @@ TauDBImplement & TauDBImplement::Get()
 	return *Singleton;
 }
 
-void TauDBImplement::Init(const FString& AccountOrClinentID, bool isAccount)
+void TauDBImplement::Init(const TauDBInitConfig& Config, bool isAccount)
 {
-	TapDBEventMobile = MakeShareable(new TauDBEventMobile(AccountOrClinentID, isAccount));
-	TapDBEventUser = MakeShareable(new TauDBEventUser(AccountOrClinentID, isAccount));
-	StartTime = MakeShareable(new FDateTime(FDateTime::Now()));
+	TapDBEventMobile = MakeShareable(new TauDBEventMobile(Config.AppIdOrClientId, isAccount));
+	TapDBEventUser = MakeShareable(new TauDBEventUser(Config.AppIdOrClientId, isAccount));
+
+	TSharedPtr<FJsonObject> CommonProperties = MakeShareable(new FJsonObject);
+	if (Config.Channel.Len() > 0 && Config.Channel.Len() <= 256)
+	{
+		CommonProperties->SetStringField("channel", Config.Channel);
+	}
+	if (Config.GameVersion.Len() > 0 && Config.GameVersion.Len() <= 256)
+	{
+		CommonProperties->SetStringField("app_version", Config.GameVersion);
+	} else
+	{
+		CommonProperties->SetStringField("app_version", DeviceInfo::GetProjectVersion());
+	}
+	CommonProperties->SetStringField("sdk_version", TAPDB_VERSION);
+
+	TapDBEventMobile->CommonProperties = CommonProperties;
 	
-	FCoreDelegates::ApplicationWillDeactivateDelegate.AddLambda([=]()
-	{
-		TDUDebuger::DisplayLog("Enter background.");
-		PauseTime = MakeShareable(new FDateTime(FDateTime::Now()));
-	});
+	StartTime = MakeShareable(new FDateTime(FDateTime::Now()));
+	RegisterCoreDelegate();
+	StartOperation(Config.Properties);
 
-	FCoreDelegates::ApplicationHasEnteredForegroundDelegate.AddLambda([=]()
-	{
-		FDateTime Now = FDateTime::Now();
-		if (StartTime.IsValid())
-		{
-			StartTime = MakeShareable(new FDateTime(Now));
-			PauseTime = nullptr;
-		} else if (PauseTime.IsValid())
-		{
-			if ((Now - *PauseTime.Get()).GetTotalSeconds() > 30)
-			{  //算作一次新的游戏
-				TDUDebuger::DisplayLog("Start with a new session.");
-				auto PlayTime = (*PauseTime.Get() - *StartTime.Get()).GetTotalSeconds();
-				if (PlayTime > 0)
-				{
-					SendPlayTime(PlayTime);
-				}
-				StartTime = MakeShareable(new FDateTime(Now));
-				PauseTime = nullptr;
-			} else
-			{
-				PauseTime = nullptr;
-			}
-			
-		} 
-	});
-
-	FCoreDelegates::ApplicationWillTerminateDelegate.AddLambda([=]()
-	{
-		if (!StartTime.IsValid())
-		{
-			return;
-		}
-		FDateTime Now = FDateTime::Now();
-		// 先把游戏事件缓存到本地，然后发送给服务端，如果发送成功，那么删除，不然下次激活的时候发送
-		auto PlayTime = (Now - *StartTime.Get()).GetTotalSeconds();
-		if (PlayTime > 0)
-		{
-			DataStorage<FTauDBStorage>::SaveNumber(FTauDBStorage::TapDBPlayTime, PlayTime);
-			SendPlayTime(PlayTime);
-			// 如果请求失败，等待2秒无限重试；
-			static FTimerHandle TimerHandle;
-			if (GWorld)
-			{
-				GWorld->GetWorld()->GetTimerManager().SetTimer(TimerHandle, [=]()
-				{
-					// 说明所有请求都发送成功了
-					if (TAUDBNet::CacheCount == 0)
-					{
-						TDUDebuger::DisplayLog("All data sended before terminated.");
-						DataStorage<FTauDBStorage>::Remove(FTauDBStorage::TapDBPlayTime);
-						GWorld->GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-					}
-				}, 0.5, true);
-			}
-		}
-	});
+	TapDBEventUser->CommonProperties = CommonProperties;
+	TSharedPtr<FJsonObject> DeviceIdProperty = MakeShareable(new FJsonObject);
+	DeviceIdProperty->SetStringField(TapDBEventMobile->GetIdentifyKey(), TapDBEventMobile->GetIdentify());
+	TapDBEventUser->SysProperties = DeviceIdProperty;
 }
 
 void TauDBImplement::SetUser(const FString& UserId, TSharedPtr<FJsonObject> Properties, const FString& LoginType)
@@ -348,5 +309,83 @@ bool TauDBImplement::CheckStringParam(const FString& Para, const FString& ParaNa
 		return false;
 	}
 	return true;
+}
+
+void TauDBImplement::RegisterCoreDelegate()
+{
+	FCoreDelegates::ApplicationWillDeactivateDelegate.AddLambda([=]()
+	{
+		TDUDebuger::DisplayLog("Enter background.");
+		PauseTime = MakeShareable(new FDateTime(FDateTime::Now()));
+	});
+
+	FCoreDelegates::ApplicationHasEnteredForegroundDelegate.AddLambda([=]()
+	{
+		FDateTime Now = FDateTime::Now();
+		if (StartTime.IsValid())
+		{
+			StartTime = MakeShareable(new FDateTime(Now));
+			PauseTime = nullptr;
+		} else if (PauseTime.IsValid())
+		{
+			if ((Now - *PauseTime.Get()).GetTotalSeconds() > 30)
+			{  //算作一次新的游戏
+				TDUDebuger::DisplayLog("Start with a new session.");
+				auto PlayTime = (*PauseTime.Get() - *StartTime.Get()).GetTotalSeconds();
+				if (PlayTime > 0)
+				{
+					SendPlayTime(PlayTime);
+				}
+				StartTime = MakeShareable(new FDateTime(Now));
+				PauseTime = nullptr;
+			} else
+			{
+				PauseTime = nullptr;
+			}
+			
+		} 
+	});
+
+	FCoreDelegates::ApplicationWillTerminateDelegate.AddLambda([=]()
+	{
+		if (!StartTime.IsValid())
+		{
+			return;
+		}
+		FDateTime Now = FDateTime::Now();
+		// 先把游戏事件缓存到本地，然后发送给服务端，如果发送成功，那么删除，不然下次激活的时候发送
+		auto PlayTime = (Now - *StartTime.Get()).GetTotalSeconds();
+		if (PlayTime > 0)
+		{
+			DataStorage<FTauDBStorage>::SaveNumber(FTauDBStorage::TapDBPlayTime, PlayTime);
+			SendPlayTime(PlayTime);
+			// 如果请求失败，等待2秒无限重试；
+			static FTimerHandle TimerHandle;
+			if (GWorld)
+			{
+				GWorld->GetWorld()->GetTimerManager().SetTimer(TimerHandle, [=]()
+				{
+					// 说明所有请求都发送成功了
+					if (TAUDBNet::CacheCount == 0)
+					{
+						TDUDebuger::DisplayLog("All data sended before terminated.");
+						DataStorage<FTauDBStorage>::Remove(FTauDBStorage::TapDBPlayTime);
+						GWorld->GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+					}
+				}, 0.5, true);
+			}
+		}
+	});
+}
+
+void TauDBImplement::StartOperation(const TSharedPtr<FJsonObject>& Properties)
+{
+	if (TapDBEventMobile->HasSavedIdentify())
+	{
+		TapDBEventMobile->AutoIdentifyWithProperties(Properties);
+	} else
+	{
+		TapDBEventMobile->Identify(DeviceInfo::GetLoginId(), FString(), Properties);
+	}
 }
 

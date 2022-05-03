@@ -6,6 +6,7 @@
 #include "TDUDebuger.h"
 #include "TAUDBNet.h"
 #include "TauDBStorage.h"
+#include "VisualLogger/VisualLoggerCustomVersion.h"
 
 
 using namespace TauDBEventKey;
@@ -170,6 +171,23 @@ void TauDBEvent::ClearIdentify()
 FString TauDBEvent::GetIdentify()
 {
 	return _Identify;
+}
+
+void TauDBEvent::AutoIdentifyWithProperties(const TSharedPtr<FJsonObject>& properties)
+{
+	if (!_Identify.IsEmpty())
+	{
+		TDUDebuger::DisplayLog("Already exists identify");
+		return;
+	}
+	auto identy = GetSavedIdentify();
+	if (identy.IsEmpty())
+	{
+		Identify(FGuid::NewGuid().ToString(), FString(), properties);
+	} else
+	{
+		Identify(identy, FString(), properties);
+	}
 }
 
 

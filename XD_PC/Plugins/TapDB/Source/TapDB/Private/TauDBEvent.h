@@ -66,6 +66,7 @@ public:
 	virtual void ClearIdentify();
 
 	FString GetIdentify();
+	void AutoIdentifyWithProperties(const TSharedPtr<FJsonObject>& properties);
 	
 private:
 	

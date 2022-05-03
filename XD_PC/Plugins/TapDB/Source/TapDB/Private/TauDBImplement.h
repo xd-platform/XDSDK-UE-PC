@@ -1,4 +1,5 @@
 #pragma once
+#include "TauDB.h"
 #include "TauDBEvent.h"
 
 class TauDBImplement
@@ -6,7 +7,7 @@ class TauDBImplement
 public:
 	static TauDBImplement& Get();
 
-	void Init(const FString& AccountOrClinentID, bool isAccount);
+	void Init(const TauDBInitConfig& Config, bool isAccount);
 
 	void SetUser(const FString& UserId, TSharedPtr<FJsonObject> Properties = nullptr, const FString& LoginType = FString());
 	void ClearUser();
@@ -65,5 +66,10 @@ private:
 
 	TSharedPtr<FDateTime> StartTime;
 	TSharedPtr<FDateTime> PauseTime;
+
+	void RegisterCoreDelegate();
+
+	void StartOperation(const TSharedPtr<FJsonObject>& Properties);
+
 
 };

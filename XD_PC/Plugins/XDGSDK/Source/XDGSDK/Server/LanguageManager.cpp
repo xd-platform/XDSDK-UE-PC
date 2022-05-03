@@ -1,9 +1,11 @@
 #include "LanguageManager.h"
 #include "JsonHelper.h"
 #include "JsonObjectConverter.h"
+#include "TDUDebuger.h"
 #include "XDGSDK.h"
 
-static FString LanguageJsonPath = FPaths::ProjectPluginsDir() + TEXT("XDGSDK/Content/Language.json");
+static FString LanguageJsonPath = FPaths::ProjectContentDir() / TEXT("XDGAssets/Language.json");
+
 LangType LanguageManager::anguageType = LangType::ZH_CN;
 TSharedPtr<FLanguageModel> LanguageManager::currentModel = nullptr;
 
@@ -98,6 +100,7 @@ FString LanguageManager::GetCustomerCenterLang()
 void LanguageManager::UpdateLanguageModel()
 {
 	FString JsonStr;
+	TDUDebuger::ErrorShow(LanguageJsonPath);
 	if(FFileHelper::LoadFileToString(JsonStr, *LanguageJsonPath))
 	{
 		TSharedPtr<FJsonObject> JsonObject = JsonHelper::GetJsonObject(JsonStr);

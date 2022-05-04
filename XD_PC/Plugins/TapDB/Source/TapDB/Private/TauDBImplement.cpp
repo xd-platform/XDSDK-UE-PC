@@ -168,28 +168,23 @@ void TauDBImplement::SetName(const FString& Name)
 void TauDBImplement::ChargeSuccess(FString OrderId, FString Product, int64 Amount,
 	FString CurrencyType, FString Payment, TSharedPtr<FJsonObject> Properties)
 {
-	if (!CheckIdentify())
-	{
+	if (!CheckIdentify()) {
 		return;
 	}
 	if (Amount <= 0 || Amount > 100000000000) {
 		TDUDebuger::ErrorLog("amount is illegal, shoud > 0 and <= 100000000000");
 		return;
 	}
-	if (!CheckStringParam(OrderId, "OrderId"))
-	{
+	if (!CheckStringParam(OrderId, "OrderId")) {
 		OrderId = "";
 	}
-	if (!CheckStringParam(Product, "Product"))
-	{
+	if (!CheckStringParam(Product, "Product")) {
 		Product = "";
 	}
-	if (!CheckStringParam(CurrencyType, "CurrencyType"))
-	{
+	if (!CheckStringParam(CurrencyType, "CurrencyType")) {
 		CurrencyType = "";
 	}
-	if (!CheckStringParam(Payment, "Payment"))
-	{
+	if (!CheckStringParam(Payment, "Payment")) {
 		Payment = "";
 	}
 	TSharedPtr<FJsonObject> EventDataDic = MakeShareable(new FJsonObject);

@@ -31,15 +31,12 @@ void TauDBEvent::TrackEvent(const FString& Name, TSharedPtr<FJsonObject> CustomP
 	TDSHelper::JsonObjectAppend(DataDic, SystemParams);
 	TDSHelper::JsonObjectAppend(DataDic, SysProperties);
 
-	TSharedPtr<FJsonObject> MutableProperties =  GetSystemParams();
-	if (Name == "device_login" || Name == "user_login")
-	{
-		
-	}
-
-	if (Name == "device_login")
-	{
-		
+	TSharedPtr<FJsonObject> MutableProperties = GetSystemParams();
+	// if (Name == "device_login" || Name == "user_login") {
+	//
+	// }
+	if (Name == "device_login") {
+		MutableProperties->SetNumberField("boot_timestamp", FDateTime::UtcNow().ToUnixTimestamp());
 	}
 	TDSHelper::JsonObjectAppend(MutableProperties, Properties);
 

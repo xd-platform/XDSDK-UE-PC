@@ -108,7 +108,7 @@ bool TauDBEvent::Identify(const FString& identify, const FString& loginType, con
 {
 	if (identify.IsEmpty())
 	{
-		TDUDebuger::ErrorLog("nvalid UserID!!");
+		TDUDebuger::ErrorLog("invalid UserID!!");
 		return false;
 	}
 	this->_Identify = identify;

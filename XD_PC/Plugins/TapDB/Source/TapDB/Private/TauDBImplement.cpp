@@ -59,8 +59,9 @@ void TauDBImplement::SetUser(const FString& UserId, TSharedPtr<FJsonObject> Prop
 	{
 		return;
 	}
+	TapDBEventUser->Identify(UserId, LoginType, Properties);
+
 	TSharedPtr<FJsonObject> InitialOperationProperties = MakeShareable(new FJsonObject);
-	TapDBEventMobile->Identify(UserId, LoginType, Properties);
 	if (First_login_type.IsEmpty())
 	{
 		First_login_type = LoginType;

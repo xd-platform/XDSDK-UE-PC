@@ -29,6 +29,8 @@ protected:
 
 	virtual void NativeConstruct() override;
 
+	virtual void NativeDestruct() override;
+
 	UFUNCTION()
 	void OnCloseBtnClick();
 
@@ -100,6 +102,8 @@ private:
 	TSharedPtr<FTAUQrCodeModel> QrCodeModel = nullptr;
 
 	FTimerHandle TipTimerHandle;
+	
+	FEvent* WaitEvent;
 
 	bool WidgetIsClosed = true;
 
@@ -111,10 +115,6 @@ private:
 	void AutoCheck();
 	void GetProfile(const TSharedPtr<FTapAccessToken>& AccessToken);
 	void Close(const TapAuthResult& Result);
-
-
-	
-	
 
 	void GetQrCode();
 

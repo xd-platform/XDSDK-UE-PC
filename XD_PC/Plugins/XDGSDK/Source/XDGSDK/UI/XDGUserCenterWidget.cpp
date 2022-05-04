@@ -61,7 +61,7 @@ void UXDGUserCenterWidget::OnCloseBtnClick()
 void UXDGUserCenterWidget::OnCopyBtnClick()
 {
 	FPlatformApplicationMisc::ClipboardCopy(*userMd->userId);
-	TDUDebuger::DisplayShow(langModel->tds_copy_success);
+	UTDUHUD::ShowToast(langModel->tds_copy_success);
 }
 
 void UXDGUserCenterWidget::OnErrorBtnClick()

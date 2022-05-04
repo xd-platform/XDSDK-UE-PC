@@ -50,6 +50,16 @@ void UTAULoginWidget::NativeConstruct()
 	GetQrCode();
 
 	WidgetIsClosed = false;
+
+	WaitEvent = FPlatformProcess::GetSynchEventFromPool(false);
+}
+
+void UTAULoginWidget::NativeDestruct() {
+	Super::NativeDestruct();
+	if (WaitEvent) {
+		FPlatformProcess::ReturnSynchEventToPool(WaitEvent);
+		WaitEvent = nullptr;
+	}
 }
 
 void UTAULoginWidget::OnCloseBtnClick()
@@ -138,10 +148,10 @@ void UTAULoginWidget::AutoCheck()
 			return;
 		}
 		if (Now <= LastCheckAt + QrCodeModel->interval) {continue;}
-		bool Wait = true;
 		bool Stop = false;
+		
 		TFunction<void()> Event = nullptr;
-		TAULoginNet::RequestAccessToken(QrCodeModel->device_code, [=, &Wait, &Stop, &Event](TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)
+		TAULoginNet::RequestAccessToken(QrCodeModel->device_code, [=, &Stop, &Event](TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)
 		{
 			if (Model.IsValid())
 			{
@@ -188,13 +198,14 @@ void UTAULoginWidget::AutoCheck()
 					Stop = true;
 				}
 			}
-			Wait = false;
+			if (WaitEvent)
+			{
+			   WaitEvent->Trigger();
+			}
 		});
 		// 有空改成信号量 FEvent
-		while (Wait)
-		{
-			FPlatformProcess::Sleep(0.5);
-		}
+		WaitEvent->Wait();
+		
 		if (WidgetIsClosed)
 		{
 			return;

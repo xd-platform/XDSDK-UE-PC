@@ -12,17 +12,6 @@
 using namespace TauDBEventKey;
 
 
-TauDBEvent::TauDBEvent(const FString& AccountOrClinentID, bool isAccount)
-{
-	if (isAccount)
-	{
-		SetAccount(AccountOrClinentID);
-	} else
-	{
-		SetClientId(AccountOrClinentID);
-	}
-}
-
 void TauDBEvent::TrackEvent(const FString& Name, TSharedPtr<FJsonObject> CustomProperties,
                             TSharedPtr<FJsonObject> Properties, TauDBEnum::EventType EventType, TSharedPtr<FJsonObject> SystemParams)
 {
@@ -231,6 +220,17 @@ TSharedPtr<FJsonObject> TauDBEvent::CombinedProperties(const TSharedPtr<FJsonObj
 	return CombinedProperties;
 }
 
+TauDBEventUser::TauDBEventUser(const FString& AccountOrClinentID, bool isAccount)
+{
+	if (isAccount)
+	{
+		SetAccount(AccountOrClinentID);
+	} else
+	{
+		SetClientId(AccountOrClinentID);
+	}
+}
+
 FString TauDBEventUser::GetEventCatogery()
 {
 	return "user_id";
@@ -277,6 +277,17 @@ void TauDBEventUser::ClearIdentify()
 	if (CommonProperties.IsValid())
 	{
 		CommonProperties->RemoveField(LOGIN_TYPE_KEY);
+	}
+}
+
+TauDBEventMobile::TauDBEventMobile(const FString& AccountOrClinentID, bool isAccount)
+{
+	if (isAccount)
+	{
+		SetAccount(AccountOrClinentID);
+	} else
+	{
+		SetClientId(AccountOrClinentID);
 	}
 }
 

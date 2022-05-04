@@ -8,5 +8,12 @@
 
 FString UTapLoginReflection::GetOpenID()
 {
-	return FTAUProfileModel::GetLocalModel()->openid;
+	auto Profile = FTAUProfileModel::GetLocalModel();
+	if (Profile.IsValid())
+	{
+		return Profile->openid;
+	} else
+	{
+		return "";
+	}
 }

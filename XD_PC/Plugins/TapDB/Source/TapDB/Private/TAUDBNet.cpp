@@ -49,19 +49,22 @@ void TAUDBNet::SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras)
 	request->Parameters = Paras;
 	// 查下有没有循环引用
 	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> Response) {
-		if (Response->success)
+		if (Response->state == TDUHttpResponse::success)
 		{
 			// 如果请求成功，那么去掉队列的第一个，执行下一个请求
-			if (request== *RequestQueue.Peek())
+			if (!RequestQueue.IsEmpty() && request == *RequestQueue.Peek())
 			{
 				RequestQueue.Pop();
 				CacheCount--;
 			}
-			PerformRequest(*RequestQueue.Peek());
+			if (!RequestQueue.IsEmpty())
+			{
+				PerformRequest(*RequestQueue.Peek());
+			}
 		} else
 		{
 			// 如果请求失败，等待2秒无限重试；
-			if (request == *RequestQueue.Peek() && GWorld)
+			if (!RequestQueue.IsEmpty() && request == *RequestQueue.Peek() && GWorld)
 			{
 				GWorld->GetWorld()->GetTimerManager().SetTimer(RetryTimerHandle, [=]()
 				{
@@ -73,7 +76,7 @@ void TAUDBNet::SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras)
 	PerformRequest(request);
 }
 
-void TAUDBNet::PerformRequest(TSharedPtr<TAUDBNet> Request)
+void TAUDBNet::PerformRequest(const TSharedPtr<TAUDBNet>& Request)
 {
 	if (!Request.IsValid())
 	{
@@ -90,7 +93,7 @@ void TAUDBNet::PerformRequest(TSharedPtr<TAUDBNet> Request)
 		CacheCount = 0;
 	}
 	// 如果需要执行的请求不是队列的第一个，那么先加到队列里
-	if (Request != *RequestQueue.Peek())
+	if (RequestQueue.IsEmpty() || Request != *RequestQueue.Peek())
 	{
 		RequestQueue.Enqueue(Request);
 		CacheCount++;

@@ -20,9 +20,6 @@ class TauDBEvent
 {
 public:
 	virtual ~TauDBEvent() = default;
-
-	TauDBEvent(const FString& AccountOrClinentID, bool isAccount);
-
 	
 	TSharedPtr<FJsonObject> SysProperties;
 	TSharedPtr<FJsonObject> CommonProperties;
@@ -85,7 +82,7 @@ private:
 class TauDBEventUser : public TauDBEvent
 {
 public:
-	TauDBEventUser(const FString& AccountOrClinentID, bool isAccount): TauDBEvent(AccountOrClinentID, isAccount){};
+	TauDBEventUser(const FString& AccountOrClinentID, bool isAccount);
 	virtual FString GetEventCatogery() override;
 	virtual FString GetIdentifyKey() override;
 	virtual FString GetOpenId() override;
@@ -99,7 +96,7 @@ public:
 class TauDBEventMobile : public TauDBEvent
 {
 public:
-	TauDBEventMobile(const FString& AccountOrClinentID, bool isAccount): TauDBEvent(AccountOrClinentID, isAccount){};
+	TauDBEventMobile(const FString& AccountOrClinentID, bool isAccount);
 	virtual FString GetEventCatogery() override;
 	virtual FString GetIdentifyKey() override;
 	virtual bool Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties) override;

@@ -8,7 +8,7 @@ TAUDBEventTool * TAUDBEventTool::Singleton = nullptr;
 
 TSharedPtr<FJsonObject> TAUDBEventTool::GetPresetProperties()
 {
-	TSharedPtr<FJsonObject> PresetProperties;
+	TSharedPtr<FJsonObject> PresetProperties = MakeShareable(new FJsonObject);
 	TDSHelper::JsonObjectAppend(PresetProperties, GetStaticPresetProperties());
 	PresetProperties->SetNumberField("event_index", GetEventIndex());
 	PresetProperties->SetStringField("event_uuid", FGuid::NewGuid().ToString());

@@ -27,7 +27,7 @@ private:
 
 	static void SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras);
 
-	static void PerformRequest(TSharedPtr<TAUDBNet> Request);
+	static void PerformRequest(const TSharedPtr<TAUDBNet>& Request);
 
 	static TQueue<TSharedPtr<TAUDBNet>> RequestQueue;
 

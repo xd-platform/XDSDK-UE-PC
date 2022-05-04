@@ -18,7 +18,7 @@ void UTauDB::StartByClientID(const TauDBInitConfig& Config)
 	Start(true, Config);
 }
 
-void UTauDB::SetUser(const FString& UserId, TSharedPtr<FJsonObject> Properties, const FString& LoginType)
+void UTauDB::SetUser(const FString& UserId, const FString& LoginType, TSharedPtr<FJsonObject> Properties)
 {
 	TauDBImplement::Get().SetUser(UserId, Properties, LoginType);
 }

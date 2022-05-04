@@ -21,7 +21,7 @@ void TDUDebuger::DisplayShow(const FString& Info, float Duration)
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Green, Info);
+		GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Green, Info, true, FVector2D(2, 2));
 	}
 }
 

@@ -59,7 +59,7 @@ public:
 	/// @param UserId 用户ID。不同用户需要保证ID的唯一性
 	/// @param LoginType 登录方式
 	/// @param Properties 自定义属性
-	static void SetUser(const FString& UserId, TSharedPtr<FJsonObject> Properties = nullptr, const FString& LoginType = FString());
+	static void SetUser(const FString& UserId, const FString& LoginType = FString(), TSharedPtr<FJsonObject> Properties = nullptr);
 	static void ClearUser();
 
 	/**

@@ -8,7 +8,7 @@ public class XD_PC : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "XDGSDK", "TapCommon" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "XDGSDK", "TapCommon", "TapDB" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

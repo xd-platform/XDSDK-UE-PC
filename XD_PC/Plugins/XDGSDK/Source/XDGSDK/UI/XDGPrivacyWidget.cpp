@@ -44,6 +44,7 @@ void UXDGPrivacyWidget::NativeConstruct()
 	{
 		if (PrivacyTextView1)
 		{
+			txt = txt.Replace(TEXT("</b>"), TEXT("</>"));
 			PrivacyTextView1->SetText(FText::FromString(txt));
 		}
 	});
@@ -52,6 +53,7 @@ void UXDGPrivacyWidget::NativeConstruct()
 	{
 		if (PrivacyTextView2)
 		{
+			txt = txt.Replace(TEXT("</b>"), TEXT("</>"));
 			PrivacyTextView2->SetText(FText::FromString(txt));
 		}
 		

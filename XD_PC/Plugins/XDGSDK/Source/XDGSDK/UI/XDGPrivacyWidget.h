@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/CheckBox.h"
 #include "Components/MultiLineEditableTextBox.h"
+#include "Components/RichTextBlock.h"
 #include "Components/TextBlock.h"
 #include "XDGPrivacyWidget.generated.h"
 
@@ -45,10 +46,10 @@ private:
 	UTextBlock* ComfirmButtonLabel;
 
 	UPROPERTY(meta = (BindWidget))
-	UMultiLineEditableTextBox* PrivacyTextView1;
+	URichTextBlock* PrivacyTextView1;
 
 	UPROPERTY(meta = (BindWidget))
-	UMultiLineEditableTextBox* PrivacyTextView2;
+	URichTextBlock* PrivacyTextView2;
 
 	UPROPERTY(meta = (BindWidget))
 	UCheckBox* AgreeCheckBox1;

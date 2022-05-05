@@ -7,7 +7,7 @@
 #include "XDGNet.h"
 #include "XDGUser.h"
 #include "XDGUserCenterTipWidget.h"
-#include "Mac/MacPlatformApplicationMisc.h"
+#include "HAL/PlatformApplicationMisc.h"
 
 UXDGUserCenterWidget::UXDGUserCenterWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

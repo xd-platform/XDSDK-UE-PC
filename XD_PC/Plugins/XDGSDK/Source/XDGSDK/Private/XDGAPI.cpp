@@ -173,8 +173,9 @@ void UXDGAPI::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFu
 
 void UXDGAPI::Test()
 {
-	FString temp = TDSHelper::InvokeFunction<FString>("TapLoginReflection", "GetOpenID");
-	TDUDebuger::DisplayShow(temp);
+	// FString temp = TDSHelper::InvokeFunction<FString>("TapLoginReflection", "GetOpenID");
+	// TDUDebuger::DisplayShow(temp);
+	FPlatformProcess::LaunchURL(TEXT("https://confluence.xindong.com/pages/viewpage.action?pageId=669527742"), nullptr, nullptr);
 }
 
 void UXDGAPI::ResetPrivacy()

@@ -16,6 +16,9 @@ class XD_PC_API UXD_PCTapDBDemo : public UObject
 
 public:
 
+	UFUNCTION(BlueprintCallable, Category = "TapDBDemo", meta = (DisplayName = "TapDBDemoReadme"))
+	static void TapDBDemoReadme();
+
 	UFUNCTION(BlueprintCallable, Category = "TapDBDemo", meta = (DisplayName = "Init"))
 	static void Init(const TArray<FString>& Paras, const TMap<FString, FString> Properties);
 

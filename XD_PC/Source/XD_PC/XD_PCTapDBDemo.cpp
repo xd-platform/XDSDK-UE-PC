@@ -5,6 +5,10 @@
 
 #include "TauDB.h"
 
+void UXD_PCTapDBDemo::TapDBDemoReadme() {
+	FPlatformProcess::LaunchURL(TEXT("https://confluence.xindong.com/pages/viewpage.action?pageId=669527742"), nullptr, nullptr);
+}
+
 void UXD_PCTapDBDemo::Init(const TArray<FString>& Paras, const TMap<FString, FString> Properties)
 {
 	TauDBInitConfig Config;

@@ -48,7 +48,7 @@ void AXD_PCGameModeBase::ResetPrivacy()
 	TDUDebuger::DisplayShow(TEXT("重置隐私"));
 }
 
-void AXD_PCGameModeBase::Logout()
+void AXD_PCGameModeBase::XDLogout()
 {
 	UXDGAPI::Logout();
 	TDUDebuger::DisplayShow(TEXT("退出登录"));

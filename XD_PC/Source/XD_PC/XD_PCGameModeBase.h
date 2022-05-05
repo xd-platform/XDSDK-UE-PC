@@ -31,7 +31,7 @@ class XD_PC_API AXD_PCGameModeBase : public AGameModeBase
 	static void ResetPrivacy();
 	
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "Logout"))
-	static void Logout();
+	static void XDLogout();
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "Test"))
 	static void Test();

@@ -29,7 +29,7 @@ void TDUDebuger::WarningShow(const FString& Info, float Duration)
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Yellow, Info);
+		GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Yellow, Info, true, FVector2D(2, 2));
 	}
 }
 
@@ -37,7 +37,7 @@ void TDUDebuger::ErrorShow(const FString& Info, float Duration)
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Red, Info);
+		GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Red, Info, true, FVector2D(2, 2));
 	}
 }
 

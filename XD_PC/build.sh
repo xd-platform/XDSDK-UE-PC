@@ -6,6 +6,8 @@ UEVersion="UE_4.27"
 ProjectName="XD_PC"
 PRODUCT_DIR=${PROJECT_DIR}/Product
 
+#-ue4exe="C:\Program Files\Epic Games\UE_4.27\Engine\Binaries\Win64\UE4Editor-Cmd.exe"
+
 doBuild() {
     sh /Users/Shared/Epic\ Games/${UEVersion}/Engine/Build/BatchFiles/RunUAT.sh \
     BuildCookRun \

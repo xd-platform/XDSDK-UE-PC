@@ -2,6 +2,7 @@
 
 #include "Http.h"
 #include "JsonHelper.h"
+#include "TDSHelper.h"
 
 TDUHttpManager* TDUHttpManager::Singleton = nullptr;
 
@@ -47,7 +48,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDUHttp
 	case TDUHttpRequest::Type::Get:
 		{
 			Request->SetVerb("GET");
-			FString queryString = TDUHttpManager::CombinParameters(tdsReq->Parameters);
+			FString queryString = TDSHelper::CombinParameters(tdsReq->Parameters);
 			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
@@ -59,7 +60,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDUHttp
 	case TDUHttpRequest::Type::Post:
 		{
 			Request->SetVerb("POST");
-			FString queryString = TDUHttpManager::CombinParameters(tdsReq->PostUrlParameters);
+			FString queryString = TDSHelper::CombinParameters(tdsReq->PostUrlParameters);
 			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
@@ -68,7 +69,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDUHttp
 			Request->SetURL(url);
 			if (tdsReq->Form == TDUHttpRequest::Form::Default)
 			{
-				FString body = TDUHttpManager::CombinParameters(tdsReq->Parameters);
+				FString body = TDSHelper::CombinParameters(tdsReq->Parameters);
 				Request->SetContentAsString(body);
 			} else if (tdsReq->Form == TDUHttpRequest::Form::Json)
 			{
@@ -80,21 +81,6 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TDUHttp
 		break;
 	}
 	return Request;
-}
-
-// FString combine
-FString TDUHttpManager::CombinParameters(TSharedPtr<FJsonObject> parameters, bool isEncode)
-{
-	TArray<FString> keyValues;
-	for (auto para : parameters->Values)
-	{
-		FString value;
-		if (para.Value->TryGetString(value))
-		{
-			keyValues.Add(para.Key + "=" +  (isEncode ? FGenericPlatformHttp::UrlEncode(value) : value));
-		}
-	}
-	return FString::Join(keyValues, TEXT("&"));
 }
 
 void TDUHttpManager::request(TSharedPtr<TDUHttpRequest> tdsReq)

@@ -86,4 +86,6 @@ public:
 		TDUDebuger::WarningLog("映射调用失败");
 	}
 
+	static FString CombinParameters(const TSharedPtr<FJsonObject>& parameters, bool isEncode = true);
+
 };

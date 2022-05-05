@@ -18,6 +18,9 @@ public:
 
 	static void CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock);
 
+	static FString GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
+
+
 
 private:
 

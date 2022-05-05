@@ -68,6 +68,8 @@ public:
 	
 	static void CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock);
 
+	static void OpenCustomerCenter(FString ServerId, FString RoleId, FString RoleName);
+
 
 	// only test
 

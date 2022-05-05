@@ -6,7 +6,11 @@
 #include "TapBootstrapAPI.h"
 #include "TapConfig.h"
 #include "TapLoginHelper.h"
+#include "TDSHelper.h"
 #include "TDUHUD.h"
+#include "URLParser.h"
+#include "URLParser.h"
+#include "XDGSDK.h"
 #include "XDGSDK/UI/XDGPrivacyWidget.h"
 
 static int Success = 200;
@@ -158,6 +162,41 @@ void XDGImplement::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock
 			}
 		}
 	});
+}
+
+FString XDGImplement::GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName) {
+	auto userMd = FXDGUser::GetLocalModel();
+	auto cfgMd = FInitConfigModel::GetLocalModel();
+	auto tkModel = FTokenModel::GetLocalModel();
+	if (!userMd.IsValid() || !cfgMd.IsValid() || !tkModel.IsValid()) {
+		return "";
+	}
+	
+	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
+	query->SetStringField("client_id", DataStorage<FXDGStorage>::LoadString(FXDGStorage::ClientId));
+	query->SetStringField("access_token", tkModel->kid);
+	query->SetStringField("user_id", userMd->userId);
+	query->SetStringField("server_id", ServerId);
+	query->SetStringField("role_id", RoleId);
+	query->SetStringField("role_name", RoleName);
+	query->SetStringField("region", cfgMd->configs.region);
+	query->SetStringField("sdk_ver", FXDGSDKModule::VersionName);
+	query->SetStringField("sdk_lang", LanguageManager::GetCustomerCenterLang());
+	query->SetStringField("app_ver", DeviceInfo::GetProjectVersion());
+	query->SetStringField("app_ver_code", DeviceInfo::GetProjectVersion());
+	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), DeviceInfo::GetScreenWidth(), DeviceInfo::GetScreenHeight()));
+	query->SetStringField("cpu", DeviceInfo::GetCPU());
+	query->SetStringField("pt", DeviceInfo::GetPlatform());
+	query->SetStringField("os", DeviceInfo::GetOSVersion());
+	query->SetStringField("brand", DeviceInfo::GetGPU());
+	query->SetStringField("game_name", DeviceInfo::GetProjectName());
+
+	FString QueryStr = TDSHelper::CombinParameters(query);
+	FString UrlStr = cfgMd->configs.reportUrl;
+	auto Parse = TauCommon::FURL_RFC3986();
+	Parse.Parse(UrlStr);
+	UrlStr = FString::Printf(TEXT("%s://%s?%s"), *Parse.GetScheme(), *Parse.GetHost(), *QueryStr);
+	return UrlStr;
 }
 
 void XDGImplement::RequestKidToken(TSharedPtr<FJsonObject> paras,

@@ -1,6 +1,7 @@
 #include "XDIPayHintAlert.h"
 
 #include "LanguageManager.h"
+#include "XDGAPI.h"
 
 UXDIPayHintAlert::UXDIPayHintAlert(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -52,5 +53,5 @@ void UXDIPayHintAlert::NativeConstruct()
 
 void UXDIPayHintAlert::OnContactCustomerServiceBtnClick()
 {
-	
+	UXDGAPI::OpenCustomerCenter("", "", "");
 }

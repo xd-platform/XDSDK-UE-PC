@@ -93,3 +93,7 @@ void AXD_PCGameModeBase::CheckPay()
 		TDUDebuger::DisplayShow(Error.msg);
 	});
 }
+
+void AXD_PCGameModeBase::OpenCustomerCenter() {
+	UXDGAPI::OpenCustomerCenter("serverId", "roleId", "roleName");
+}

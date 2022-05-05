@@ -1,6 +1,7 @@
 #include "TDSHelper.h"
 #include "qrcodegen.hpp"
 #include "ImageUtils.h"
+#include "GenericPlatform/GenericPlatformHttp.h"
 
 
 UTexture2D* TDSHelper::GenerateQrCode(const FString& string)
@@ -74,4 +75,17 @@ void TDSHelper::JsonObjectAddNotEmptyString(TSharedPtr<FJsonObject>& Object, con
 	{
 		Object->SetStringField(Key, Value);
 	}
+}
+
+FString TDSHelper::CombinParameters(const TSharedPtr<FJsonObject>& parameters, bool isEncode) {
+	TArray<FString> keyValues;
+	for (auto para : parameters->Values)
+	{
+		FString value;
+		if (para.Value->TryGetString(value))
+		{
+			keyValues.Add(para.Key + "=" +  (isEncode ? FGenericPlatformHttp::UrlEncode(value) : value));
+		}
+	}
+	return FString::Join(keyValues, TEXT("&"));
 }

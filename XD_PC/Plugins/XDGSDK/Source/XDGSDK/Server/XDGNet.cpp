@@ -8,7 +8,7 @@
 #include "TDSCrypto.h"
 #include "TDSHelper.h"
 #include "TokenModel.h"
-#include "UrlParse.h"
+#include "URLParser.h"
 #include "XDGResponseModel.h"
 #include "XDGSDK.h"
 
@@ -226,18 +226,19 @@ FString XDGNet::GetMacToken() {
 	{
 		return authToken;
 	}
-	UrlParse parse(this->GetFinalUrl());
+	auto Parse = TauCommon::FURL_RFC3986();
+	Parse.Parse(this->GetFinalUrl());
 	FString timeStr = FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp());
 	FString nonce = TDSHelper::GetRandomStr(5);
 	FString md = this->Type == Get ? "GET" : "POST";
 
-	FString pathAndQuery = "/" + parse.Path;
-	if (parse.query.Len() > 0)
+	FString pathAndQuery = Parse.GetPath();
+	if (Parse.GetQuery().Len() > 0)
 	{
-		pathAndQuery += "?" + parse.query;
+		pathAndQuery += "?" + Parse.GetQuery();
 	}
-	FString domain = parse.Host.ToLower();
-	FString port = parse.Port;
+	FString domain = Parse.GetHost().ToLower();
+	FString port = Parse.GetPort();
 
 	FString dataStr = timeStr + "\n" + nonce + "\n" + md + "\n" + pathAndQuery + "\n" + domain + "\n" + port + "\n";
 	auto sha1 = TDSCrypto::HmacSHA1(TDSCrypto::UTF8Encode(dataStr), TDSCrypto::UTF8Encode(tokenModel->macKey));

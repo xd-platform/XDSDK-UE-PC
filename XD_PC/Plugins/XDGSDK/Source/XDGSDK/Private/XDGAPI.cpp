@@ -171,6 +171,16 @@ void UXDGAPI::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFu
 
 }
 
+void UXDGAPI::OpenCustomerCenter(FString ServerId, FString RoleId, FString RoleName) {
+	FString UrlStr = XDGImplement::GetCustomerCenter(ServerId, RoleId, RoleName);
+
+	if (UrlStr.IsEmpty()) {
+		TDUDebuger::ErrorLog("please login first");
+	} else {
+		FPlatformProcess::LaunchURL(*UrlStr, nullptr, nullptr);
+	}
+}
+
 void UXDGAPI::Test()
 {
 	// FString temp = TDSHelper::InvokeFunction<FString>("TapLoginReflection", "GetOpenID");

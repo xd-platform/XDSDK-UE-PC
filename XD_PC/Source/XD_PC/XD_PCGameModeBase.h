@@ -44,5 +44,10 @@ class XD_PC_API AXD_PCGameModeBase : public AGameModeBase
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "CheckPay"))
 	static void CheckPay();
+
+	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "OpenCustomerCenter"))
+	static void OpenCustomerCenter();
+
+	
 	
 };

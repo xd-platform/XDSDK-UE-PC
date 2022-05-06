@@ -181,6 +181,17 @@ void UXDGAPI::OpenCustomerCenter(FString ServerId, FString RoleId, FString RoleN
 	}
 }
 
+void UXDGAPI::OpenWebPay(FString ServerId, FString RoleId) {
+	FString UrlStr = XDGImplement::GetPayUrl(ServerId, RoleId);
+
+	if (UrlStr.IsEmpty()) {
+		TDUDebuger::ErrorLog("please login first");
+	} else {
+		TDUDebuger::DisplayLog(FString::Printf(TEXT("web pay url: %s"), *UrlStr));
+		FPlatformProcess::LaunchURL(*UrlStr, nullptr, nullptr);
+	}
+}
+
 void UXDGAPI::Test()
 {
 	FString temp = TEXT("<b>这个<b>不<b>厉害么</b>哦哦</b>真逗。</b><b>这样不太好。</b><b>这个是真<b>的个</b>厉害</b>你行不行<b>不要把</b>后</b>四位3ew<b>后四位<b><b>");

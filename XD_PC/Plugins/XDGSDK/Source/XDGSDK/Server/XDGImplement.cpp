@@ -199,26 +199,48 @@ FString XDGImplement::GetCustomerCenter(const FString& ServerId, const FString& 
 	return UrlStr;
 }
 
+FString XDGImplement::GetPayUrl(const FString& ServerId, const FString& RoleId) {
+	auto userMd = FXDGUser::GetLocalModel();
+	auto cfgMd = FInitConfigModel::GetLocalModel();
+	if (!userMd.IsValid() || !cfgMd.IsValid()) {
+		return "";
+	}
+	
+	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
+
+	query->SetStringField("serverId", ServerId);
+	query->SetStringField("roleId", RoleId);
+	query->SetStringField("region", cfgMd->configs.region);
+	query->SetStringField("appId", cfgMd->configs.appId);
+	query->SetStringField("lang", LanguageManager::GetLanguageKey());
+	
+
+	FString QueryStr = TDSHelper::CombinParameters(query);
+	FString UrlStr = cfgMd->configs.webPayUrl;
+	auto Parse = TauCommon::FURL_RFC3986();
+	Parse.Parse(UrlStr);
+	UrlStr = FString::Printf(TEXT("%s://%s?%s"), *Parse.GetScheme(), *Parse.GetHost(), *QueryStr);
+	return UrlStr;
+}
+
 void XDGImplement::RequestKidToken(TSharedPtr<FJsonObject> paras,
                                    TFunction<void(TSharedPtr<FTokenModel> kidToken)> resultBlock,
                                    TFunction<void(FXDGError error)> ErrorBlock) {
-	XDGNet::RequestKidToken(paras,
-	                        [=](TSharedPtr<FTokenModel> kidToken, FXDGError error) {
-		                        if (error.code == Success && kidToken != nullptr) {
-			                        kidToken->SaveToLocal();
-			                        resultBlock(kidToken);
-		                        }
-		                        else {
-			                        auto localToken = FTokenModel::GetLocalModel();
-			                        if (localToken == nullptr) {
-				                        ErrorBlock(error);
-			                        }
-			                        else {
-				                        resultBlock(kidToken);
-			                        }
-		                        }
-	                        }
-	);
+	XDGNet::RequestKidToken(paras, [=](TSharedPtr<FTokenModel> kidToken, FXDGError error) {
+		if (error.code == Success && kidToken != nullptr) {
+			kidToken->SaveToLocal();
+			resultBlock(kidToken);
+		}
+		else {
+			auto localToken = FTokenModel::GetLocalModel();
+			if (localToken == nullptr) {
+				ErrorBlock(error);
+			}
+			else {
+				resultBlock(kidToken);
+			}
+		}
+	});
 }
 
 void XDGImplement::RequestUserInfo(bool saveToLocal,

@@ -97,3 +97,7 @@ void AXD_PCGameModeBase::CheckPay()
 void AXD_PCGameModeBase::OpenCustomerCenter() {
 	UXDGAPI::OpenCustomerCenter("serverId", "roleId", "roleName");
 }
+
+void AXD_PCGameModeBase::OpenWebPay(FString ServerId, FString RoleId) {
+	UXDGAPI::OpenWebPay(ServerId, RoleId);
+}

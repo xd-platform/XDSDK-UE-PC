@@ -70,7 +70,10 @@ public:
 
 	static void OpenCustomerCenter(FString ServerId, FString RoleId, FString RoleName);
 
+	static void OpenWebPay(FString ServerId, FString RoleId);
 
+
+	
 	// only test
 
 	static void Test();

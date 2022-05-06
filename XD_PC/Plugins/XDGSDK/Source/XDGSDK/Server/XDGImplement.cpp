@@ -257,12 +257,11 @@ void XDGImplement::AsyncNetworkTdsUser(const FString& userId,
 			}
 			else {
 				auto localModel = FSyncTokenModel::GetLocalModel();
-				if (localModel == nullptr) {
-					ErrorBlock(error);
-				}
-				else {
-					AsyncLocalTdsUser(userId, model->sessionToken);
+				if (localModel.IsValid()) {
+					AsyncLocalTdsUser(userId, localModel->sessionToken);
 					callback(localModel->sessionToken);
+				} else {
+					ErrorBlock(error);
 				}
 			}
 		}

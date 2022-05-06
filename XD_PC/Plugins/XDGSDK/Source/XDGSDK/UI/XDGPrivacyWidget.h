@@ -64,5 +64,7 @@ private:
 	UTextBlock* AgreeCheckLabel2;
 	
 	TFunction<void(bool result)> Completed;
+
+	void FormatTags(FString& Content);
 	
 };

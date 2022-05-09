@@ -35,6 +35,7 @@ public class TapLogin : ModuleRules
 				"Core",
 				"Json",
 				"JsonUtilities",
+				"HTTPServer",
 				"TapCommon"
 				// ... add other public dependencies that you statically link with here ...
 				

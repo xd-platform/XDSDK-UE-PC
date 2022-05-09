@@ -17,7 +17,7 @@ FString Region::ProfileUrl()
 
 FString Region::AccountUrl()
 {
-	return AccountHost() + "/authorize?";
+	return AccountHost() + "/authorize";
 }
 
 

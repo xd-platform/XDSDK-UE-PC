@@ -53,6 +53,8 @@ public class TapCommon : ModuleRules
 			}
             );
 
+        AddEngineThirdPartyPrivateStaticDependencies(Target, "OpenSSL");
+
 
         DynamicallyLoadedModuleNames.AddRange(
             new string[]

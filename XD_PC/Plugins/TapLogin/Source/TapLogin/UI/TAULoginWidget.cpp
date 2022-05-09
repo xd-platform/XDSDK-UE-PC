@@ -5,6 +5,7 @@
 #include "TAULoginNet.h"
 #include "TDSHelper.h"
 #include "TDUDebuger.h"
+#include "TauWebAuthHelper.h"
 
 
 UTAULoginWidget::UTAULoginWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -75,6 +76,8 @@ void UTAULoginWidget::OnRefreshBtnClick()
 
 void UTAULoginWidget::OnJumpWebBtnClick()
 {
+	// static TauWebAuthHelper Helper(Permissions);
+	// Helper.ProcessWebAuth();
 	TDUDebuger::DisplayShow("OnJumpWebBtnClick");
 }
 

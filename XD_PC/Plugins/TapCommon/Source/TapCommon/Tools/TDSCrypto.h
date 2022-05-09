@@ -5,12 +5,14 @@ class TAPCOMMON_API TDSCrypto
 public:
 
 	static TArray<uint8> UTF8Encode(const FString& content);
-
 	static FString UTF8Encode(const TArray<uint8>& data);
 
 	static FString Base64Encode(const TArray<uint8>& data);
-
 	static TArray<uint8> Base64Decode(const FString& content);
+
+	// 会对base64字符串中引起Url歧义的部分进行处理
+	static FString UrlBase64Encode(const TArray<uint8>& data);
+	static TArray<uint8> UrlBase64Decode(const FString& content);
 
 	static TArray<uint8> HmacSHA1(const TArray<uint8>& content,  const TArray<uint8>& key);
 

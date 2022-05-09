@@ -1,8 +1,5 @@
 #include "TDSCrypto.h"
 
-// THIRD_PARTY_INCLUDES_START
-// #include "openssl/aes.h"
-// THIRD_PARTY_INCLUDES_END
 
 TArray<uint8> TDSCrypto::UTF8Encode(const FString& content)
 {
@@ -34,6 +31,27 @@ TArray<uint8> TDSCrypto::Base64Decode(const FString& content)
 	TArray<uint8> outData;
 	FBase64::Decode(content, outData);
 	return outData;
+}
+
+FString TDSCrypto::UrlBase64Encode(const TArray<uint8>& data) {
+	FString Result = Base64Encode(data);
+	Result.ReplaceInline(TEXT("+"), TEXT("-"));
+	Result.ReplaceInline(TEXT("/"), TEXT("_"));
+	Result.ReplaceInline(TEXT("="), TEXT(""));
+	return Result;
+}
+
+TArray<uint8> TDSCrypto::UrlBase64Decode(const FString& content) {
+	FString Result = content;
+	Result.ReplaceInline(TEXT("-"), TEXT("+"));
+	Result.ReplaceInline(TEXT("_"), TEXT("/"));
+	int Mod4 = Result.Len() % 4;
+	if (Mod4 > 0) {
+		for (int i = 0; i < 4 - Mod4; i++) {
+			Result += "=";
+		}
+	}
+	return Base64Decode(Result);
 }
 
 TArray<uint8> TDSCrypto::HmacSHA1(const TArray<uint8>& content, const TArray<uint8>& key)

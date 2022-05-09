@@ -117,6 +117,18 @@ void TAULoginNet::RequestProfile(const FTapAccessToken& AccessToken,
 	TDUHttpManager::Get().request(request);
 }
 
+void TAULoginNet::RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras,
+	TFunction<void(TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)> callback) {
+	const TSharedPtr<TAULoginNet> request = MakeShareable(new TAULoginNet());
+	request->Type = Post;
+	request->URL = TapTapSdk::CurrentRegion->TokenUrl();
+	request->Parameters = Paras;
+	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+		PerfromWrapperResponseCallBack(response, callback);
+	});
+	TDUHttpManager::Get().request(request);
+}
+
 TMap<FString, FString> TAULoginNet::CommonHeaders()
 {
 	return TDUHttpRequest::CommonHeaders();

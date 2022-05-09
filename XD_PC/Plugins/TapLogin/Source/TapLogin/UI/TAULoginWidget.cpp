@@ -1,11 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "TAULoginWidget.h"
 
+#include "TapTapSdk.h"
 #include "TAULoginLanguage.h"
 #include "TAULoginNet.h"
 #include "TDSHelper.h"
 #include "TDUDebuger.h"
-#include "TauWebAuthHelper.h"
+
 
 
 UTAULoginWidget::UTAULoginWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -76,8 +77,13 @@ void UTAULoginWidget::OnRefreshBtnClick()
 
 void UTAULoginWidget::OnJumpWebBtnClick()
 {
+	if (!WebAuthHelper.IsValid()) {
+		WebAuthHelper = MakeShareable(new TauWebAuthHelper);
+	}
 	// static TauWebAuthHelper Helper(Permissions);
-	// Helper.ProcessWebAuth();
+	WebAuthHelper->ProcessWebAuth(Permissions, [=](FString WebCode) {
+		GetTokenFromWebCode(WebCode);
+	});
 	TDUDebuger::DisplayShow("OnJumpWebBtnClick");
 }
 
@@ -249,6 +255,10 @@ void UTAULoginWidget::Close(const TapAuthResult& Result)
 	{
 		Completed(Result);
 	}
+	if (WebAuthHelper.IsValid()) {
+		WebAuthHelper->StopProcess();
+		WebAuthHelper = nullptr;
+	}
 	WidgetIsClosed = true;
 }
 
@@ -267,6 +277,30 @@ void UTAULoginWidget::GetQrCode()
 		{
 			ShowRefreshButton();
 			TDUDebuger::WarningLog("QRCODE Get Fail");
+		}
+	});
+}
+
+void UTAULoginWidget::GetTokenFromWebCode(const FString& WebCode) {
+	if (!WebAuthHelper.IsValid()) {
+		TDUDebuger::ErrorLog("WebAuthHelper is invalid, please check code");
+		return;
+	}
+	TSharedPtr<FJsonObject> Paras = MakeShareable(new FJsonObject);
+	Paras->SetStringField("client_id", TapTapSdk::ClientId);
+	Paras->SetStringField("grant_type", "authorization_code");
+	Paras->SetStringField("secret_type", "hmac-sha-1");
+	Paras->SetStringField("code", WebCode);
+	Paras->SetStringField("redirect_uri", WebAuthHelper->GetRedirectUri());
+	Paras->SetStringField("code_verifier", WebAuthHelper->GetCodeVerifier());
+
+	ShowTip(TAULoginLanguage::GetCurrentLang()->WebNoticeLogin(),"");
+	TAULoginNet::RequestAccessTokenFromWeb(Paras, [=](TSharedPtr<FTapAccessToken> Model, FTAULoginError Error) {
+		if (Model.IsValid()) {
+			GetProfile(Model);
+		} else {
+			TDUDebuger::WarningLog("web login fail");
+			ShowTip(TAULoginLanguage::GetCurrentLang()->WebNoticeFail(), TAULoginLanguage::GetCurrentLang()->WebNoticeFail2());
 		}
 	});
 }

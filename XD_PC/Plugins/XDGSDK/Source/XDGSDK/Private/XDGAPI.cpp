@@ -5,12 +5,9 @@
 #include "XDGImplement.h"
 #include "LanguageManager.h"
 #include "TapLoginHelper.h"
-#include "TDSHelper.h"
 #include "TDUDebuger.h"
 #include "XDGSDK.h"
 #include "Blueprint/UserWidget.h"
-#include "TapLogin/UI/TAULoginWidget.h"
-#include "XDGSDK/UI/XDGPrivacyWidget.h"
 #include "XDGSDK/UI/XDGUserCenterWidget.h"
 #include "XDGSDK/UI/XDIPayHintAlert.h"
 

@@ -18,6 +18,7 @@ public:
 	static void RequestLoginQrCode(const TArray<FString> Permissions, TFunction<void(TSharedPtr<FTAUQrCodeModel> Model, FTAULoginError Error)> callback);
 	static void RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)> callback);
 	static void RequestProfile(const FTapAccessToken& AccessToken, TFunction<void(TSharedPtr<FTAUProfileModel> Model, FTAULoginError Error)> callback);
+	static void RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)> callback);
 
 
 	static FTAULoginError GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& Response);

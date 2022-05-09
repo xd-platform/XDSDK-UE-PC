@@ -10,6 +10,7 @@
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "TauWebAuthHelper.h"
 #include "TAULoginWidget.generated.h"
 
 /**
@@ -102,6 +103,8 @@ private:
 	TSharedPtr<FTAUQrCodeModel> QrCodeModel = nullptr;
 
 	FTimerHandle TipTimerHandle;
+
+	TSharedPtr<TauWebAuthHelper> WebAuthHelper;
 	
 	FEvent* WaitEvent;
 
@@ -117,6 +120,8 @@ private:
 	void Close(const TapAuthResult& Result);
 
 	void GetQrCode();
+
+	void GetTokenFromWebCode(const FString& WebCode);
 
 	
 };

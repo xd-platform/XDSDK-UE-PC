@@ -1,12 +1,16 @@
 #pragma once
 #include "IHttpRouter.h"
+#include "TapAccessToken.h"
+#include "TAULoginError.h"
 
 class TauWebAuthHelper: public TSharedFromThis<TauWebAuthHelper> {
 public:
-	TauWebAuthHelper(TArray<FString> Permissions);
+	TauWebAuthHelper();
 	~TauWebAuthHelper();
 
-	bool ProcessWebAuth();
+	bool ProcessWebAuth(const TArray<FString>& NeedPermissions, TFunction<void(FString WebCode)> CallBack);
+
+	void StopProcess();
 
 private:
 
@@ -16,12 +20,16 @@ private:
 
 	TArray<FString> Permissions;
 
-	FString CodeChallenge;
+	FString CodeVerifier;
 	
 	bool GetHttpRouter();
+public:
+	FString GetRedirectUri();
+	FString GetCodeVerifier() const;
+private:
 	bool SetAuthHandle();
 
-	
+	TFunction<void(FString WebCode)> CallBackBlock;
 	
 	TSharedPtr<IHttpRouter> HttpRouter = nullptr;
 

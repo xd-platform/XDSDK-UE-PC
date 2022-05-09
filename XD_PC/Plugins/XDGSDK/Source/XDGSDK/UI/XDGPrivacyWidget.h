@@ -6,7 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/CheckBox.h"
-#include "Components/MultiLineEditableTextBox.h"
 #include "Components/RichTextBlock.h"
 #include "Components/TextBlock.h"
 #include "XDGPrivacyWidget.generated.h"

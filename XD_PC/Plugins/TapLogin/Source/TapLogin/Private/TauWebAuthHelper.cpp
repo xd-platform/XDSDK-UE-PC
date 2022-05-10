@@ -62,7 +62,11 @@ bool TauWebAuthHelper::GetHttpRouter() {
 		}
 	}
 	CurrentPort = Port;
-	// Port++;
+#if  PLATFORM_MAC
+	// Mac版第二次接回调失效，可能是兼容问题，先新开一个端口解决下bug。
+	Port++;
+	TDUDebuger::DisplayLog("Http port add 1");
+#endif
 	TDUDebuger::DisplayLog("HttpRouter get success");
 	return true;
 }

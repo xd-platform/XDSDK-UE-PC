@@ -101,3 +101,11 @@ void AXD_PCGameModeBase::OpenCustomerCenter() {
 void AXD_PCGameModeBase::OpenWebPay(FString ServerId, FString RoleId) {
 	UXDGAPI::OpenWebPay(ServerId, RoleId);
 }
+
+void AXD_PCGameModeBase::IsPushServiceEnable() {
+	if (UXDGAPI::IsPushServiceEnable()) {
+		TDUDebuger::DisplayShow("Push Service Enable");
+	} else {
+		TDUDebuger::DisplayShow("Push Service Disable");
+	}
+}

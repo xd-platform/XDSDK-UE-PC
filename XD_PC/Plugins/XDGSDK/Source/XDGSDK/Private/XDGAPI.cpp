@@ -175,6 +175,14 @@ void UXDGAPI::OpenWebPay(FString ServerId, FString RoleId) {
 	}
 }
 
+void UXDGAPI::SetPushServiceEnable(bool enable) {
+	FXDGUser::SetPushServiceEnable(enable);
+}
+
+bool UXDGAPI::IsPushServiceEnable() {
+	return FXDGUser::IsPushServiceEnable();
+}
+
 void UXDGAPI::Test()
 {
 	

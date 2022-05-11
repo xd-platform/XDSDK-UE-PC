@@ -72,6 +72,10 @@ public:
 
 	static void OpenWebPay(FString ServerId, FString RoleId);
 
+	static void SetPushServiceEnable(bool enable);
+
+	static bool IsPushServiceEnable();
+
 
 	
 	// only test

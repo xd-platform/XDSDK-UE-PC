@@ -4,7 +4,7 @@
 #include "TDUDebuger.h"
 #include "XDGSDK.h"
 
-static FString LanguageJsonPath = FPaths::ProjectContentDir() / TEXT("XDGAssets/Language.json");
+static FString LanguageJsonPath = FPaths::ProjectPluginsDir() / TEXT("XDGSDK/Content") / TEXT("XDGAssets/Language.json");
 
 LangType LanguageManager::anguageType = LangType::ZH_CN;
 TSharedPtr<FLanguageModel> LanguageManager::currentModel = nullptr;

@@ -61,9 +61,20 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* AgreeCheckLabel2;
+
+	UPROPERTY(meta = (BindWidget))
+	UCheckBox* AdditionalCheckBox;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* AdditionalCheckLabel;
 	
 	TFunction<void(bool result)> Completed;
 
 	void FormatTags(FString& Content);
+
+
+	bool IsInKrAndPushEnable();
+
+	bool IsInNorthAmerica();
 	
 };

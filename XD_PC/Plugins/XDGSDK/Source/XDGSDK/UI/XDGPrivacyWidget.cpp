@@ -6,6 +6,7 @@
 #include "InitConfigModel.h"
 #include "LanguageManager.h"
 #include "TDSHelper.h"
+#include "XDGUser.h"
 
 
 UXDGPrivacyWidget::UXDGPrivacyWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -34,6 +35,7 @@ void UXDGPrivacyWidget::NativeConstruct()
 	
 	AgreeCheckBox1->OnCheckStateChanged.AddUniqueDynamic(this, &UXDGPrivacyWidget::OnCheckStateChanged);
 	AgreeCheckBox2->OnCheckStateChanged.AddUniqueDynamic(this, &UXDGPrivacyWidget::OnCheckStateChanged);
+	AdditionalCheckBox->OnCheckStateChanged.AddUniqueDynamic(this, &UXDGPrivacyWidget::OnCheckStateChanged);
 
 	FScriptDelegate BtnDel;
 	BtnDel.BindUFunction(this, "OnComfirmBtnClick");
@@ -65,14 +67,25 @@ void UXDGPrivacyWidget::NativeConstruct()
 	ComfirmButtonLabel->SetText(FText::FromString(langModel->tds_confirm_agreement));
 	AgreeCheckLabel1->SetText(FText::FromString(langModel->tds_service_terms_agreement));
 	AgreeCheckLabel2->SetText(FText::FromString(langModel->tds_service_terms_agreement));
-	
+
+	if (IsInKrAndPushEnable()) {
+		AdditionalCheckLabel->SetText(FText::FromString(langModel->tds_push_agreement));
+	} else if (IsInNorthAmerica()) {
+		AdditionalCheckLabel->SetText(FText::FromString(langModel->tds_is_adult_agreement));
+	} else {
+		AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }
 
 void UXDGPrivacyWidget::OnCheckStateChanged(bool isChecked)
 {
 	if (AgreeCheckBox1->IsChecked() && AgreeCheckBox2->IsChecked())
 	{
-		ComfirmButton->SetIsEnabled(true);
+		if (IsInNorthAmerica() && !AdditionalCheckBox->IsChecked()) {
+			ComfirmButton->SetIsEnabled(false);
+		} else {
+			ComfirmButton->SetIsEnabled(true);
+		}
 	} else
 	{
 		ComfirmButton->SetIsEnabled(false);
@@ -85,6 +98,9 @@ void UXDGPrivacyWidget::OnComfirmBtnClick()
 	if (Completed)
 	{
 		Completed(true);
+	}
+	if (IsInKrAndPushEnable()) {
+		FXDGUser::SetPushServiceEnable(AdditionalCheckBox->IsChecked());
 	}
 	RemoveFromParent();
 }
@@ -164,6 +180,23 @@ void UXDGPrivacyWidget::FormatTags(FString& Content) {
 	for (auto Delete : NeedDelete) {
 		Content.RemoveAt(Delete.Key, Delete.Value, false);
 	}
+}
+
+bool UXDGPrivacyWidget::IsInKrAndPushEnable() {
+	if (!FInitConfigModel::GetLocalModel().IsValid()) {
+		return false;
+	}
+	FString Region = FInitConfigModel::GetLocalModel()->configs.region.ToLower();
+	bool CanPush = FInitConfigModel::GetLocalModel()->configs.isKRPushServiceSwitchEnable;
+	return CanPush && Region == "kr";
+}
+
+bool UXDGPrivacyWidget::IsInNorthAmerica() {
+	if (!FInitConfigModel::GetLocalModel().IsValid()) {
+		return false;
+	}
+	FString Region = FInitConfigModel::GetLocalModel()->configs.region.ToLower();
+	return Region == "us";
 }
 
 

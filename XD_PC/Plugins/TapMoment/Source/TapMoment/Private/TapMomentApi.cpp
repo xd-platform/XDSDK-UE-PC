@@ -9,6 +9,6 @@ void TapMomentApi::Init(TapMomentConfig Config) {
 
 void TapMomentApi::OpenWebTopic() {
 	FString Url = FTapConfig::Get().regionType == RegionType::CN ? "https://www.taptap.com" : "https://www.taptap.io";
-	Url = Url / "app" / FTapConfig::Get().MomentConfig.AppId / "topic";
+	Url = Url / "app" / FTapConfig::Get().MomentConfig.AppId / "topic?utm_medium=link&utm_source=pc_sdk";
 	FPlatformProcess::LaunchURL(*Url, nullptr, nullptr);
 }

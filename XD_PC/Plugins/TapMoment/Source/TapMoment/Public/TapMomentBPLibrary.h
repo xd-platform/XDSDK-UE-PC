@@ -27,6 +27,6 @@ class UTapMomentBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Execute Sample function", Keywords = "TapMoment sample test testing"), Category = "TapMomentTesting")
-	static float TapMomentSampleFunction(float Param);
+	// UFUNCTION(BlueprintCallable, meta = (DisplayName = "Execute Sample function", Keywords = "TapMoment sample test testing"), Category = "TapMomentTesting")
+	// static float TapMomentSampleFunction(float Param);
 };

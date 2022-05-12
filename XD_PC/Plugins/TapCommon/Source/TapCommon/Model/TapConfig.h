@@ -11,7 +11,7 @@ enum class RegionType: int8
 
 
 USTRUCT()
-struct FTapDBConfig
+struct TAPCOMMON_API FTapDBConfig
 {
 	GENERATED_BODY()
 
@@ -30,7 +30,17 @@ struct FTapDBConfig
 };
 
 USTRUCT()
-struct FTapConfig
+struct TAPCOMMON_API FTapMomentConfig
+{
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	FString AppId;
+	
+};
+
+USTRUCT()
+struct TAPCOMMON_API FTapConfig
 {
 	GENERATED_BODY()
 	
@@ -48,6 +58,14 @@ struct FTapConfig
 
 	UPROPERTY()
 	FTapDBConfig dbConfig;
+
+	UPROPERTY()
+	FTapMomentConfig MomentConfig;
+
+	static FTapConfig& Get();
+
+private:
+	static FTapConfig * Singleton;
 	
 };
 

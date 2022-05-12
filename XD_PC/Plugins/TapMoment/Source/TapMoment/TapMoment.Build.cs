@@ -38,6 +38,7 @@ public class TapMoment : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"TapCommon",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

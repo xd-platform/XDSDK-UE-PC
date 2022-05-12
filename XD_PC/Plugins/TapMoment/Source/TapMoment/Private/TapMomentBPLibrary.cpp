@@ -9,8 +9,8 @@ UTapMomentBPLibrary::UTapMomentBPLibrary(const FObjectInitializer& ObjectInitial
 
 }
 
-float UTapMomentBPLibrary::TapMomentSampleFunction(float Param)
-{
-	return -1;
-}
+// float UTapMomentBPLibrary::TapMomentSampleFunction(float Param)
+// {
+// 	return -1;
+// }
 

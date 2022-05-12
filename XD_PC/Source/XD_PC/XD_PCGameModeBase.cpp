@@ -4,6 +4,7 @@
 #include "XD_PCGameModeBase.h"
 
 #include "JsonHelper.h"
+#include "TapMomentApi.h"
 #include "TDUDebuger.h"
 
 
@@ -108,4 +109,13 @@ void AXD_PCGameModeBase::IsPushServiceEnable() {
 	} else {
 		TDUDebuger::DisplayShow("Push Service Disable");
 	}
+}
+
+void AXD_PCGameModeBase::OpenWebTopic(FString AppId) {
+	// TAPMOMENT_API
+	TapMomentConfig Config;
+	Config.AppId = AppId;
+	Config.IsCN = false;
+	TapMomentApi::Init(Config);
+	TapMomentApi::OpenWebTopic();
 }

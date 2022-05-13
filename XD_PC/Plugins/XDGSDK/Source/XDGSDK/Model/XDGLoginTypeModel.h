@@ -18,16 +18,22 @@ struct FXDGLoginTypeModel
 	int typeValue;
 
 	FXDGLoginTypeModel() = default;
+	
+
+	static FString GetName(int Type) {
+		if (Type == (int)LoginType::TapTap)
+		{
+			return  "TapTap";
+		} else if (Type == (int)LoginType::Guest)
+		{
+			return  "Guest";
+		}
+		return "";
+	}
 
 	FXDGLoginTypeModel(LoginType type) : type(type), typeValue((int)type)
 	{
-		if (type == LoginType::TapTap)
-		{
-			typeName = "TapTap";
-		} else if (type == LoginType::Guest)
-		{
-			typeName = "Guest";
-		}
+		typeName = GetName((int)type);
 	}
 	
 };

@@ -120,15 +120,14 @@ void UXDGAPI::Logout()
 	FXDGUser::ClearUserData();
 }
 
-
-void UXDGAPI::OpenUserCenter()
-{
+void UXDGAPI::OpenUserCenter(TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
+	TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
 	if (!FXDGUser::GetLocalModel().IsValid()) {
 		TDUDebuger::WarningLog("Please Login First");
 		return;
 	}
 
-	UXDGUserCenterWidget::ShowWidget();
+	UXDGUserCenterWidget::ShowWidget(BindCallBack, UnbindCallBack);
 }
 
 void UXDGAPI::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock)

@@ -14,17 +14,20 @@ UXDGUserCenterWidget::UXDGUserCenterWidget(const FObjectInitializer& ObjectIniti
 
 }
 
-void UXDGUserCenterWidget::ShowWidget()
-{
+void UXDGUserCenterWidget::ShowWidget(TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
+	TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
 	if (UClass* MyWidgetClass = LoadClass<UXDGUserCenterWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXDGUserCenter.BPXDGUserCenter_C'")))
 	{
 		if (GWorld && GWorld->GetWorld())
 		{
 			auto widget = CreateWidget<UXDGUserCenterWidget>(GWorld->GetWorld(), MyWidgetClass);
 			widget->AddToViewport();
+			widget->BindCallBack = BindCallBack;
+			widget->UnbindCallBack = UnbindCallBack;
 		}
 	}
 }
+
 
 void UXDGUserCenterWidget::NativeConstruct()
 {
@@ -170,15 +173,15 @@ void UXDGUserCenterWidget::ResetListBoxAndDeleteButton()
 		};
 	}
 
-	if (userMd->loginType == (int)LoginType::Guest)
-	{
-		EmptyBox1->SetVisibility(ESlateVisibility::Visible);
-		DeleteButton->SetVisibility(ESlateVisibility::Visible);
-	} else
-	{
-		EmptyBox1->SetVisibility(ESlateVisibility::Collapsed);
-		DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	// if (userMd->loginType == (int)LoginType::Guest)
+	// {
+	// 	EmptyBox1->SetVisibility(ESlateVisibility::Visible);
+	// 	DeleteButton->SetVisibility(ESlateVisibility::Visible);
+	// } else
+	// {
+	// 	EmptyBox1->SetVisibility(ESlateVisibility::Collapsed);
+	// 	DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
+	// }
 }
 
 void UXDGUserCenterWidget::ShouldShowErrorButton(bool Should)
@@ -186,18 +189,17 @@ void UXDGUserCenterWidget::ShouldShowErrorButton(bool Should)
 	if (Should)
 	{
 		ListBox->SetVisibility(ESlateVisibility::Collapsed);
-		EmptyBox1->SetVisibility(ESlateVisibility::Collapsed);
 		EmptyBox2->SetVisibility(ESlateVisibility::Collapsed);
-		DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
 		ErrorButton->SetVisibility(ESlateVisibility::Visible);
 	} else
 	{
 		ListBox->SetVisibility(ESlateVisibility::Visible);
-		EmptyBox1->SetVisibility(ESlateVisibility::Collapsed);
 		EmptyBox2->SetVisibility(ESlateVisibility::Visible);
-		DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
 		ErrorButton->SetVisibility(ESlateVisibility::Collapsed);
 	}
+
+	EmptyBox1->SetVisibility(ESlateVisibility::Collapsed);
+	DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 TArray<FXDGLoginTypeModel> UXDGUserCenterWidget::GetSdkTypes()
@@ -256,7 +258,14 @@ void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TShared
 				{
 					UTDUHUD::ShowToast(langModel->tds_bind_error);
 				}
-				
+			}
+			if (BindCallBack != nullptr) {
+				TSharedPtr<FXDGError> TempError = nullptr;
+				if (!ResponseModel.IsValid()) {
+					TempError = MakeShareable(new FXDGError(Error));
+				}
+				int Type = Paras->GetNumberField("type");
+				BindCallBack((LoginType)Type, TempError);
 			}
 		});
 	};
@@ -306,9 +315,16 @@ void UXDGUserCenterWidget::UnBind(UXDGUserCenterItemWidget* CurrentWidget, TShar
 			{
 				UTDUHUD::ShowToast(langModel->tds_unbind_guest_return);
 			}
-				
+		}
+		if (UnbindCallBack != nullptr) {
+			TSharedPtr<FXDGError> TempError = nullptr;
+			if (!ResponseModel.IsValid()) {
+				TempError = MakeShareable(new FXDGError(Error));
+			}
+			UnbindCallBack((LoginType)Model->loginType, TempError);
 		}
 	});
+
 }
 
 int UXDGUserCenterWidget::GetBindCount()

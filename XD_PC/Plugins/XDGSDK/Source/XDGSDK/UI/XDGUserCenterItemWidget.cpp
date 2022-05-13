@@ -1,5 +1,6 @@
 #include "XDGUserCenterItemWidget.h"
 
+#include "InitConfigModel.h"
 #include "LanguageManager.h"
 #include "XDGLoginTypeModel.h"
 
@@ -56,5 +57,31 @@ void UXDGUserCenterItemWidget::OnBindBtnClick()
 	if (BindCallBack)
 	{
 		BindCallBack(this, BindModel);
+	}
+}
+
+void UXDGUserCenterItemWidget::ProcessShowOrNot() {
+	auto md = FInitConfigModel::GetLocalModel();
+	if (!BindModel.IsValid() || !md.IsValid()) {
+		return;
+	}
+	for (auto BindEntry : md->configs.bindEntriesConfig) {
+		if (BindModel->loginName.ToLower() == BindEntry.entryName.ToLower()) {
+			if (BindModel->status == FXDGBindType::Bind) {
+				ShowBindBt(BindEntry.canBind);
+			} else {
+				ShowBindBt(BindEntry.canUnbind);
+			}
+			break;
+		}
+	}
+	
+}
+
+void UXDGUserCenterItemWidget::ShowBindBt(int Show) {
+	if (Show == 1) {
+		BindButton->SetVisibility(ESlateVisibility::Visible);
+	} else {
+		BindButton->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

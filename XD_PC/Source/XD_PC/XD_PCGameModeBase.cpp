@@ -60,9 +60,25 @@ void AXD_PCGameModeBase::Test()
 	UXDGAPI::Test();
 }
 
-void AXD_PCGameModeBase::OpenUserCenter()
-{
-	UXDGAPI::OpenUserCenter();
+void AXD_PCGameModeBase::OpenUserCenter() {
+	UXDGAPI::OpenUserCenter(
+		[](LoginType Type, TSharedPtr<FXDGError> Error) {
+			if (Error.IsValid()) {
+				TDUDebuger::DisplayShow( FString::Printf(TEXT("绑定失败, Error: %s"), *Error->msg));
+			}
+			else {
+				TDUDebuger::DisplayShow( FString::Printf(TEXT("绑定成功, Type: %d"), Type));
+			}
+		},
+		[](LoginType Type, TSharedPtr<FXDGError> Error) {
+			if (Error.IsValid()) {
+				TDUDebuger::DisplayShow( FString::Printf(TEXT("解绑失败, Error: %s"), *Error->msg));
+			}
+			else {
+				TDUDebuger::DisplayShow( FString::Printf(TEXT("解绑成功, Type: %d"), Type));
+			}
+		}
+	);
 }
 
 void AXD_PCGameModeBase::OpenPayHintAlert()

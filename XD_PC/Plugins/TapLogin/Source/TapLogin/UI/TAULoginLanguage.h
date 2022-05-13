@@ -67,87 +67,87 @@ class LoginLangCN : public ILoginLang
 public:
 	virtual FString TitleUse() override
 	{
-		return "使用";
+		return TEXT("使用");
 	}
 
 	virtual FString TitleLogin() override
 	{
-		return "账号登录";
+		return TEXT("账号登录");
 	}
 
 	virtual FString QrTitleLogin() override
 	{
-		return "安全扫码登录";
+		return TEXT("安全扫码登录");
 	}
 
 	virtual FString QrRefresh() override
 	{
-		return "点击刷新";
+		return TEXT("点击刷新");
 	}
 
 	virtual FString QrNoticeUse() override
 	{
-		return "请使用";
+		return TEXT("请使用");
 	}
 
 	virtual FString QrNoticeClient() override
 	{
-		return "客户端";
+		return TEXT("客户端");
 	}
 
 	virtual FString QrNoticeScanToLogin() override
 	{
-		return "扫描二维码登录";
+		return TEXT("扫描二维码登录");
 	}
 
 	virtual FString WebLogin() override
 	{
-		return "使用网页浏览器完成授权";
+		return TEXT("使用网页浏览器完成授权");
 	}
 
 	virtual FString WebNotice() override
 	{
-		return "点击下方按钮前往网页浏览器，\n授权 TapTap 账号，完成后将自动返回游戏。";
+		return TEXT("点击下方按钮前往网页浏览器，\n授权 TapTap 账号，完成后将自动返回游戏。");
 	}
         
 	virtual FString WebButtonJumpToWeb() override
 	{
-		return "跳转至 TapTap";
+		return TEXT("跳转至 TapTap");
 	}
 
 	virtual FString QrNoticeCancel() override
 	{
-		return "您已取消此次登录";
+		return TEXT("您已取消此次登录");
 	}
 
 	virtual FString QrNoticeCancel2() override
 	{
-		return "请重新扫码";
+		return TEXT("请重新扫码");
 	}
 
 	virtual FString QrnNoticeSuccess() override
 	{
-		return "扫码成功";
+		return TEXT("扫码成功");
 	}
 
 	virtual FString QrnNoticeSuccess2() override
 	{
-		return "请在手机上确认";
+		return TEXT("请在手机上确认");
 	}
 
 	virtual FString WebNoticeLogin() override
 	{
-		return "正在登录中，请稍后";
+		return TEXT("正在登录中，请稍后");
 	}
 
 	virtual FString WebNoticeFail() override
 	{
-		return "登录失败";
+		return TEXT("登录失败");
 	}
 
 	virtual FString WebNoticeFail2() override
 	{
-		return "请重新点击打开网页进行授权";
+		return TEXT("请重新点击打开网页进行授权");
 	}
 };
 

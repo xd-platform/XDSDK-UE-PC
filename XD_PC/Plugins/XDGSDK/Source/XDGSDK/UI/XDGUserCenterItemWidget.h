@@ -50,5 +50,10 @@ private:
 
 	TSharedPtr<FXDGBindModel> BindModel;
 	// TFunction<void(bool result)> Completed;
+
+	void ProcessShowOrNot();
+
+	void ShowBindBt(int Show);
+	
 	
 };

@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "LanguageManager.h"
 #include "XDGBindModel.h"
+#include "XDGError.h"
 #include "XDGLoginTypeModel.h"
 #include "XDGUser.h"
 #include "Blueprint/UserWidget.h"
@@ -22,7 +23,7 @@ class XDGSDK_API UXDGUserCenterWidget : public UUserWidget
 public:
 	UXDGUserCenterWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void ShowWidget();
+	static void ShowWidget(TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> BindCallBack, TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack);
 
 protected:
 	
@@ -90,6 +91,9 @@ private:
 
 	TSharedPtr<FXDGUser> userMd;
 	TSharedPtr<FLanguageModel> langModel;
+
+	TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> BindCallBack;
+	TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack;
 
 	FString GetLoginTypeName();
 

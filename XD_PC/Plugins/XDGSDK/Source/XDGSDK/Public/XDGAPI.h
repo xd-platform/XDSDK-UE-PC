@@ -64,7 +64,8 @@ public:
 	
 	static void Logout();
 	
-	static void OpenUserCenter();
+	static void OpenUserCenter(TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
+	TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack);
 	
 	static void CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock);
 

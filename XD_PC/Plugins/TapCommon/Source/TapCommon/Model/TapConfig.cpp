@@ -1,13 +1,13 @@
 #include "TapConfig.h"
 
-FTapConfig * FTapConfig::Singleton = nullptr;
+FTapConfig * FTapConfig::SharedConfig = nullptr;
 
 
 FTapConfig & FTapConfig::Get()
 {
-	if (Singleton == nullptr)
+	if (SharedConfig == nullptr)
 	{
-		Singleton = new FTapConfig;
+		SharedConfig = new FTapConfig;
 	}
-	return *Singleton;
+	return *SharedConfig;
 }

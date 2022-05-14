@@ -65,7 +65,7 @@ struct TAPCOMMON_API FTapConfig
 	static FTapConfig& Get();
 
 private:
-	static FTapConfig * Singleton;
+	static FTapConfig * SharedConfig;
 	
 };
 

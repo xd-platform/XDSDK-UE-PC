@@ -89,3 +89,18 @@ FString TDSHelper::CombinParameters(const TSharedPtr<FJsonObject>& parameters, b
 	}
 	return FString::Join(keyValues, TEXT("&"));
 }
+
+#if PLATFORM_MAC
+void TDSHelper::ActivateItself() {
+	FString Path = FPlatformProcess::BaseDir();
+	int32 index = Path.Find(TEXT(".app"));
+	if (index == INDEX_NONE) {
+		return;
+	}
+	Path.LeftInline(index + 4);
+	
+	TDUDebuger::DisplayShow(Path);
+	FMacPlatformProcess::LaunchFileInDefaultExternalApplication(*Path);
+}
+#endif
+

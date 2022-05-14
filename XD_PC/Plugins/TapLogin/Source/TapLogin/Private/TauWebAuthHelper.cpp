@@ -143,6 +143,9 @@ void TauWebAuthHelper::ProcessWebAuthRequest(const FHttpServerRequest& Request, 
 		if (CallBackBlock) {
 			CallBackBlock(WebCode);
 		}
+#if PLATFORM_MAC
+		TDSHelper::ActivateItself();
+#endif
 	}
 	OnComplete(MoveTemp(ResponsePtr));
 }

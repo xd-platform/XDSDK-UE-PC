@@ -88,4 +88,8 @@ public:
 
 	static FString CombinParameters(const TSharedPtr<FJsonObject>& parameters, bool isEncode = true);
 
+#if PLATFORM_MAC
+	static void ActivateItself();
+#endif
+
 };

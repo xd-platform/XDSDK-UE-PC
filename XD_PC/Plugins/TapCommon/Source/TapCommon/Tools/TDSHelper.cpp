@@ -2,6 +2,9 @@
 #include "qrcodegen.hpp"
 #include "ImageUtils.h"
 #include "GenericPlatform/GenericPlatformHttp.h"
+#if PLATFORM_WINDOWS
+#include "Microsoft/AllowMicrosoftPlatformTypes.h"
+#endif
 
 
 UTexture2D* TDSHelper::GenerateQrCode(const FString& string)
@@ -101,6 +104,33 @@ void TDSHelper::ActivateItself() {
 	
 	TDUDebuger::DisplayShow(Path);
 	FMacPlatformProcess::LaunchFileInDefaultExternalApplication(*Path);
+}
+#endif
+
+#if PLATFORM_WINDOWS
+void TDSHelper::ActivateItself() {
+	DWORD dwProcID = GetCurrentProcessId();
+	HWND hWnd = GetTopWindow(GetDesktopWindow());
+	while(hWnd)
+	{
+		DWORD dwWndProcID = 0;
+		GetWindowThreadProcessId(hWnd, &dwWndProcID);
+		if(dwWndProcID == dwProcID)
+		{
+			break;
+		}
+		hWnd = GetNextWindow(hWnd, GW_HWNDNEXT);
+	}
+	if (!hWnd)
+	{
+		return;
+	}
+	HWND hCurWnd = ::GetForegroundWindow();
+	DWORD dwMyID = ::GetCurrentThreadId();
+	DWORD dwCurID = ::GetWindowThreadProcessId(hCurWnd, NULL);
+	::AttachThreadInput(dwCurID, dwMyID, TRUE);   
+	::SetForegroundWindow(hWnd);
+	::AttachThreadInput(dwCurID, dwMyID, FALSE);
 }
 #endif
 

@@ -185,13 +185,9 @@ bool UXDGAPI::IsPushServiceEnable() {
 void UXDGAPI::Test()
 {
 	FString Path = FPlatformProcess::BaseDir();
-	int32 index = Path.Find(TEXT(".app"));
-	if (index == INDEX_NONE) {
-		return;
-	}
-	Path.LeftInline(index + 4);
-	
 	TDUDebuger::DisplayShow(Path);
+
+
 	// FString Path = "/Users/huangyifeng/Products/Mac/XDGDemo/Product/MacNoEditor/XD_PC.app";
 	// FMacPlatformProcess::LaunchFileInDefaultExternalApplication(*Path);
 	// LaunchFileInDefaultExternalApplication

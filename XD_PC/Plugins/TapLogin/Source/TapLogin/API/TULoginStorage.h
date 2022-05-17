@@ -1,9 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "TAULoginStorage.generated.h"
+#include "TULoginStorage.generated.h"
 
 USTRUCT()
-struct FTAULoginStorage
+struct FTULoginStorage
 {
 	GENERATED_BODY()
 	static FString AccessToken;

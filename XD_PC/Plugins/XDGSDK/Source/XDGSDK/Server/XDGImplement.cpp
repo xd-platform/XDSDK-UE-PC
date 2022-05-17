@@ -4,7 +4,7 @@
 #include "TUJsonHelper.h"
 #include "LanguageManager.h"
 #include "TapBootstrapAPI.h"
-#include "TapConfig.h"
+#include "TUCommonConfig.h"
 #include "TapLoginHelper.h"
 #include "TUHelper.h"
 #include "TUHUD.h"
@@ -29,7 +29,7 @@ void XDGImplement::GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FStr
 }
 
 void XDGImplement::InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock) {
-	DataStorage<FXDGStorage>::SaveString(FXDGStorage::ClientId, sdkClientId, false);
+	TUDataStorage<FXDGStorage>::SaveString(FXDGStorage::ClientId, sdkClientId, false);
 	XDGNet::RequestConfig([=](TSharedPtr<FInitConfigModel> model, FXDGError error) {
 		if (model != nullptr && error.code == Success) {
 			model->SaveToLocal();
@@ -48,7 +48,7 @@ void XDGImplement::InitBootstrap(const TSharedPtr<FInitConfigModel>& model,
 		return;
 	}
 	auto tapCfg = model->configs.tapSdkConfig;
-	FTapConfig Config;
+	FTUCommonConfig Config;
 	Config.clientID = tapCfg.clientId;
 	Config.clientToken = tapCfg.clientToken;
 	Config.serverURL = tapCfg.serverUrl;
@@ -173,7 +173,7 @@ FString XDGImplement::GetCustomerCenter(const FString& ServerId, const FString& 
 	}
 	
 	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
-	query->SetStringField("client_id", DataStorage<FXDGStorage>::LoadString(FXDGStorage::ClientId));
+	query->SetStringField("client_id", TUDataStorage<FXDGStorage>::LoadString(FXDGStorage::ClientId));
 	query->SetStringField("access_token", tkModel->kid);
 	query->SetStringField("user_id", userMd->userId);
 	query->SetStringField("server_id", ServerId);

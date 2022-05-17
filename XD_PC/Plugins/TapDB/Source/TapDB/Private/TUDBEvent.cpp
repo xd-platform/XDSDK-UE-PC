@@ -1,4 +1,4 @@
-#include "TauDBEvent.h"
+#include "TUDBEvent.h"
 
 #include "TUDeviceInfo.h"
 #include "TAUDBEventTool.h"
@@ -9,11 +9,11 @@
 #include "VisualLogger/VisualLoggerCustomVersion.h"
 
 
-using namespace TauDBEventKey;
+using namespace TUDBEventKey;
 
 
-void TauDBEvent::TrackEvent(const FString& Name, TSharedPtr<FJsonObject> CustomProperties,
-                            TSharedPtr<FJsonObject> Properties, TauDBEnum::EventType EventType, TSharedPtr<FJsonObject> SystemParams)
+void TUDBEvent::TrackEvent(const FString& Name, TSharedPtr<FJsonObject> CustomProperties,
+                            TSharedPtr<FJsonObject> Properties, TUDBEnum::EventType EventType, TSharedPtr<FJsonObject> SystemParams)
 {
 	if (Account.IsEmpty() && ClientId.IsEmpty())
 	{
@@ -47,8 +47,8 @@ void TauDBEvent::TrackEvent(const FString& Name, TSharedPtr<FJsonObject> CustomP
 	TAUDBNet::SendEvent(EventType, DataDic);
 }
 
-void TauDBEvent::InitialEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
-	TauDBEnum::EventType EventType)
+void TUDBEvent::InitialEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
+	TUDBEnum::EventType EventType)
 {
 	auto OperationParams = GetSystemParams();
 	TUHelper::JsonObjectAppend(OperationParams, Params);
@@ -57,8 +57,8 @@ void TauDBEvent::InitialEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonOb
 	TAUDBNet::SendEvent(EventType, OperationParams);
 }
 
-void TauDBEvent::AddEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
-	TauDBEnum::EventType EventType)
+void TUDBEvent::AddEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
+	TUDBEnum::EventType EventType)
 {
 	auto OperationParams = GetSystemParams();
 	TUHelper::JsonObjectAppend(OperationParams, Params);
@@ -67,8 +67,8 @@ void TauDBEvent::AddEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject
 	TAUDBNet::SendEvent(EventType, OperationParams);
 }
 
-void TauDBEvent::UpdateEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
-	TauDBEnum::EventType EventType)
+void TUDBEvent::UpdateEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
+	TUDBEnum::EventType EventType)
 {
 	auto OperationParams = GetSystemParams();
 	TUHelper::JsonObjectAppend(OperationParams, Params);
@@ -77,7 +77,7 @@ void TauDBEvent::UpdateEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObj
 	TAUDBNet::SendEvent(EventType, OperationParams);
 }
 
-void TauDBEvent::SetAccount(const FString& _Account)
+void TUDBEvent::SetAccount(const FString& _Account)
 {
 	if (_Account.Len() <= 0 || _Account.Len() > 256)
 	{
@@ -88,7 +88,7 @@ void TauDBEvent::SetAccount(const FString& _Account)
 	GenerateKey(_Account);
 }
 
-void TauDBEvent::SetClientId(const FString& _ClientId)
+void TUDBEvent::SetClientId(const FString& _ClientId)
 {
 	if (_ClientId.Len() <= 0 || _ClientId.Len() > 256)
 	{
@@ -99,12 +99,12 @@ void TauDBEvent::SetClientId(const FString& _ClientId)
 	GenerateKey(_ClientId);
 }
 
-FString TauDBEvent::GetOpenId()
+FString TUDBEvent::GetOpenId()
 {
 	return "";
 }
 
-bool TauDBEvent::Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties)
+bool TUDBEvent::Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties)
 {
 	if (identify.IsEmpty())
 	{
@@ -123,43 +123,43 @@ bool TauDBEvent::Identify(const FString& identify, const FString& loginType, con
 	return true;
 }
 
-void TauDBEvent::SaveIdentify(const FString& identify)
+void TUDBEvent::SaveIdentify(const FString& identify)
 {
 	FString dataKey = Key;
 	if (!ClientId.IsEmpty())
 	{
 		dataKey = FTauDBStorage::ClientIdentifyKey;
 	}
-	DataStorage<FTauDBStorage>::SaveString(dataKey, identify);
+	TUDataStorage<FTauDBStorage>::SaveString(dataKey, identify);
 }
 
-FString TauDBEvent::GetSavedIdentify()
+FString TUDBEvent::GetSavedIdentify()
 {
 	FString dataKey = Key;
 	if (!ClientId.IsEmpty())
 	{
 		dataKey = FTauDBStorage::ClientIdentifyKey;
 	}
-	return DataStorage<FTauDBStorage>::LoadString(dataKey);
+	return TUDataStorage<FTauDBStorage>::LoadString(dataKey);
 }
 
-bool TauDBEvent::HasSavedIdentify()
+bool TUDBEvent::HasSavedIdentify()
 {
 	return GetSavedIdentify().Len() > 0;
 }
 
-void TauDBEvent::ClearIdentify()
+void TUDBEvent::ClearIdentify()
 {
 	_Identify = FString();
-	DataStorage<FTauDBStorage>::Remove(Key);
+	TUDataStorage<FTauDBStorage>::Remove(Key);
 }
 
-FString TauDBEvent::GetIdentify()
+FString TUDBEvent::GetIdentify()
 {
 	return _Identify;
 }
 
-void TauDBEvent::AutoIdentifyWithProperties(const TSharedPtr<FJsonObject>& properties)
+void TUDBEvent::AutoIdentifyWithProperties(const TSharedPtr<FJsonObject>& properties)
 {
 	if (!_Identify.IsEmpty())
 	{
@@ -177,12 +177,12 @@ void TauDBEvent::AutoIdentifyWithProperties(const TSharedPtr<FJsonObject>& prope
 }
 
 
-void TauDBEvent::GenerateKey(const FString& KeyString)
+void TUDBEvent::GenerateKey(const FString& KeyString)
 {
 	Key = FString::Printf(TEXT("__tyrantdb__%s__%s__0__"), *KeyString, *GetEventCatogery());
 }
 
-TSharedPtr<FJsonObject> TauDBEvent::GetSystemParams()
+TSharedPtr<FJsonObject> TUDBEvent::GetSystemParams()
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 
@@ -194,7 +194,7 @@ TSharedPtr<FJsonObject> TauDBEvent::GetSystemParams()
 	return JsonObject;
 }
 
-TSharedPtr<FJsonObject> TauDBEvent::CombinedProperties(const TSharedPtr<FJsonObject>& Properties,
+TSharedPtr<FJsonObject> TUDBEvent::CombinedProperties(const TSharedPtr<FJsonObject>& Properties,
 	const TSharedPtr<FJsonObject>& CustomProperties)
 {
 	TSharedPtr<FJsonObject> CustomCombinedProperties = MakeShareable(new FJsonObject);
@@ -217,7 +217,7 @@ TSharedPtr<FJsonObject> TauDBEvent::CombinedProperties(const TSharedPtr<FJsonObj
 	return CombinedProperties;
 }
 
-TauDBEventUser::TauDBEventUser(const FString& AccountOrClinentID, bool isAccount)
+TUDBEventUser::TUDBEventUser(const FString& AccountOrClinentID, bool isAccount)
 {
 	if (isAccount)
 	{
@@ -228,56 +228,56 @@ TauDBEventUser::TauDBEventUser(const FString& AccountOrClinentID, bool isAccount
 	}
 }
 
-FString TauDBEventUser::GetEventCatogery()
+FString TUDBEventUser::GetEventCatogery()
 {
 	return "user_id";
 }
 
-FString TauDBEventUser::GetIdentifyKey()
+FString TUDBEventUser::GetIdentifyKey()
 {
 	return "game_user";
 }
 
-FString TauDBEventUser::GetOpenId()
+FString TUDBEventUser::GetOpenId()
 {
-	return TUHelper::InvokeFunction<FString>("TapLoginReflection", "GetOpenID");
+	return TUHelper::InvokeFunction<FString>("TULoginReflection", "GetOpenID");
 }
 
-bool TauDBEventUser::Identify(const FString& identify, const FString& loginType,
+bool TUDBEventUser::Identify(const FString& identify, const FString& loginType,
 	const TSharedPtr<FJsonObject>& properties)
 {
-	bool newIdentify = TauDBEvent::Identify(identify, loginType, properties);
+	bool newIdentify = TUDBEvent::Identify(identify, loginType, properties);
 	if (newIdentify)
 	{
-		TrackEvent("user_login", properties, nullptr, TauDBEnum::Identify);
+		TrackEvent("user_login", properties, nullptr, TUDBEnum::Identify);
 	}
 	return newIdentify;
 }
 
-void TauDBEventUser::SaveIdentify(const FString& identify)
+void TUDBEventUser::SaveIdentify(const FString& identify)
 {
 }
 
-FString TauDBEventUser::GetSavedIdentify()
+FString TUDBEventUser::GetSavedIdentify()
 {
 	return FString();
 }
 
-bool TauDBEventUser::HasSavedIdentify()
+bool TUDBEventUser::HasSavedIdentify()
 {
 	return false;
 }
 
-void TauDBEventUser::ClearIdentify()
+void TUDBEventUser::ClearIdentify()
 {
-	TauDBEvent::ClearIdentify();
+	TUDBEvent::ClearIdentify();
 	if (CommonProperties.IsValid())
 	{
 		CommonProperties->RemoveField(LOGIN_TYPE_KEY);
 	}
 }
 
-TauDBEventMobile::TauDBEventMobile(const FString& AccountOrClinentID, bool isAccount)
+TUDBEventMobile::TUDBEventMobile(const FString& AccountOrClinentID, bool isAccount)
 {
 	if (isAccount)
 	{
@@ -288,22 +288,22 @@ TauDBEventMobile::TauDBEventMobile(const FString& AccountOrClinentID, bool isAcc
 	}
 }
 
-FString TauDBEventMobile::GetEventCatogery()
+FString TUDBEventMobile::GetEventCatogery()
 {
 	return "game_mobile";
 }
 
-FString TauDBEventMobile::GetIdentifyKey()
+FString TUDBEventMobile::GetIdentifyKey()
 {
 	return "device_id";
 }
 
-bool TauDBEventMobile::Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties)
+bool TUDBEventMobile::Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties)
 {
-	bool newIdentify = TauDBEvent::Identify(identify, loginType, properties);
+	bool newIdentify = TUDBEvent::Identify(identify, loginType, properties);
 	if (newIdentify)
 	{
-		TrackEvent("device_login", properties, nullptr, TauDBEnum::Identify);
+		TrackEvent("device_login", properties, nullptr, TUDBEnum::Identify);
 	}
 	return newIdentify;
 }

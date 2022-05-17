@@ -1,6 +1,6 @@
 #pragma once
 #include "TauDB.h"
-#include "TauDBEvent.h"
+#include "TUDBEvent.h"
 
 class TauDBImplement
 {
@@ -53,8 +53,8 @@ private:
 	static FString First_login_type;
 	static FString First_open_id;
 	
-	TSharedPtr<TauDBEventMobile> TapDBEventMobile;
-	TSharedPtr<TauDBEventUser> TapDBEventUser;
+	TSharedPtr<TUDBEventMobile> TapDBEventMobile;
+	TSharedPtr<TUDBEventUser> TapDBEventUser;
 
 	static TSharedPtr<FJsonObject> CustomOperationProperties(const TSharedPtr<FJsonObject>& Properties);
 

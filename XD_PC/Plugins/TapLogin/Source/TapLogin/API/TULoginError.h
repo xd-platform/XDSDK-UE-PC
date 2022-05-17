@@ -1,9 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "TAULoginError.generated.h"
+#include "TULoginError.generated.h"
 
 USTRUCT()
-struct FTAULoginError
+struct FTULoginError
 {
 	GENERATED_BODY()
 	UPROPERTY()

@@ -1,4 +1,4 @@
-#include "TAULoginNet.h"
+#include "TULoginNet.h"
 
 #include "TUDeviceInfo.h"
 #include "TUJsonHelper.h"
@@ -8,13 +8,13 @@
 #include "TUHttpManager.h"
 #include "URLParser.h"
 
-TAULoginNet::TAULoginNet()
+TULoginNet::TULoginNet()
 {
 }
 
-FTAULoginError TAULoginNet::GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& Response)
+FTULoginError TULoginNet::GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& Response)
 {
-	FTAULoginError Error = FTAULoginError();
+	FTULoginError Error = FTULoginError();
 	if (Response->state == TUHttpResponse::clientError)
 	{
 		Error.code = TUHttpResponse::clientError;
@@ -32,13 +32,13 @@ FTAULoginError TAULoginNet::GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& 
 }
 
 template <typename StructType>
-void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& Response, TFunction<void(TSharedPtr<StructType> Model, FTAULoginError Error)> Callback)
+void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& Response, TFunction<void(TSharedPtr<StructType> Model, FTULoginError Error)> Callback)
 {
 	if (Callback == nullptr)
 	{
 		return;
 	}
-	FTAULoginError Error = TAULoginNet::GenerateErrorInfo(Response);
+	FTULoginError Error = TULoginNet::GenerateErrorInfo(Response);
 
 	auto JsonObject = TUJsonHelper::GetJsonObject(Response->contentString);
 	bool Success = false;
@@ -55,7 +55,7 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& Response, 
 			}
 		} else
 		{
-			auto Model = TUJsonHelper::GetUStruct<FTAULoginError>(*DataJsonObject);
+			auto Model = TUJsonHelper::GetUStruct<FTULoginError>(*DataJsonObject);
 			if (Model.IsValid())
 			{
 				Error = *Model.Get();
@@ -66,10 +66,10 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& Response, 
 	Callback(nullptr, Error);
 }
 
-void TAULoginNet::RequestLoginQrCode(const TArray<FString> Permissions,
-	TFunction<void(TSharedPtr<FTAUQrCodeModel> Model, FTAULoginError Error)> callback)
+void TULoginNet::RequestLoginQrCode(const TArray<FString> Permissions,
+	TFunction<void(TSharedPtr<FTAUQrCodeModel> Model, FTULoginError Error)> callback)
 {
-	const TSharedPtr<TUHttpRequest> request = MakeShareable(new TAULoginNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new TULoginNet());
 	request->Type = Post;
 	request->URL = TapTapSdk::CurrentRegion->CodeUrl();
 	request->Parameters->SetStringField("client_id", TapTapSdk::ClientId);
@@ -85,9 +85,9 @@ void TAULoginNet::RequestLoginQrCode(const TArray<FString> Permissions,
 	TUHttpManager::Get().request(request);
 }
 
-void TAULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)> callback)
+void TULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTapAccessToken> Model, FTULoginError Error)> callback)
 {
-	const TSharedPtr<TUHttpRequest> request = MakeShareable(new TAULoginNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new TULoginNet());
 	request->Type = Post;
 	request->URL = TapTapSdk::CurrentRegion->TokenUrl();
 	request->Parameters->SetStringField("grant_type", "device_token");
@@ -104,10 +104,10 @@ void TAULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(T
 	TUHttpManager::Get().request(request);
 }
 
-void TAULoginNet::RequestProfile(const FTapAccessToken& AccessToken,
-	TFunction<void(TSharedPtr<FTAUProfileModel> Model, FTAULoginError Error)> callback)
+void TULoginNet::RequestProfile(const FTapAccessToken& AccessToken,
+	TFunction<void(TSharedPtr<FTAUProfileModel> Model, FTULoginError Error)> callback)
 {
-	const TSharedPtr<TAULoginNet> request = MakeShareable(new TAULoginNet());
+	const TSharedPtr<TULoginNet> request = MakeShareable(new TULoginNet());
 	request->URL = TapTapSdk::CurrentRegion->ProfileUrl();
 	request->Parameters->SetStringField("client_id", TapTapSdk::ClientId);
 	request->AccessToken = MakeShareable(new FTapAccessToken(AccessToken));
@@ -117,9 +117,9 @@ void TAULoginNet::RequestProfile(const FTapAccessToken& AccessToken,
 	TUHttpManager::Get().request(request);
 }
 
-void TAULoginNet::RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras,
-	TFunction<void(TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)> callback) {
-	const TSharedPtr<TAULoginNet> request = MakeShareable(new TAULoginNet());
+void TULoginNet::RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras,
+	TFunction<void(TSharedPtr<FTapAccessToken> Model, FTULoginError Error)> callback) {
+	const TSharedPtr<TULoginNet> request = MakeShareable(new TULoginNet());
 	request->Type = Post;
 	request->URL = TapTapSdk::CurrentRegion->TokenUrl();
 	request->Parameters = Paras;
@@ -129,17 +129,17 @@ void TAULoginNet::RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras
 	TUHttpManager::Get().request(request);
 }
 
-TMap<FString, FString> TAULoginNet::CommonHeaders()
+TMap<FString, FString> TULoginNet::CommonHeaders()
 {
 	return TUHttpRequest::CommonHeaders();
 }
 
-TSharedPtr<FJsonObject> TAULoginNet::CommonParameters()
+TSharedPtr<FJsonObject> TULoginNet::CommonParameters()
 {
 	return TUHttpRequest::CommonParameters();
 }
 
-bool TAULoginNet::ResetHeadersBeforeRequest()
+bool TULoginNet::ResetHeadersBeforeRequest()
 {
 	if (AccessToken.IsValid())
 	{
@@ -152,7 +152,7 @@ bool TAULoginNet::ResetHeadersBeforeRequest()
 	
 }
 
-FString TAULoginNet::GetMacToken()
+FString TULoginNet::GetMacToken()
 {
 	auto tokenModel = AccessToken;
 	FString authToken;

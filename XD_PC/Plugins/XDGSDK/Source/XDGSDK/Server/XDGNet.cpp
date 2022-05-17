@@ -60,7 +60,7 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 {
 	TSharedPtr<FJsonObject> query = TUHttpRequest::CommonParameters();
 	
-	query->SetStringField("clientId", DataStorage<FXDGStorage>::LoadString(FXDGStorage::ClientId));
+	query->SetStringField("clientId", TUDataStorage<FXDGStorage>::LoadString(FXDGStorage::ClientId));
 
 	query->SetStringField("sdkLang", LanguageManager::GetLanguageKey());
 	query->SetStringField("lang", LanguageManager::GetLanguageKey());

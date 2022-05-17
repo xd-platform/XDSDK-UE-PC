@@ -4,32 +4,32 @@
 
 void FTokenModel::SaveToLocal()
 {
-	DataStorage<FXDGStorage>::SaveStruct(FXDGStorage::TokenInfo, *this, true);
+	TUDataStorage<FXDGStorage>::SaveStruct(FXDGStorage::TokenInfo, *this, true);
 }
 
 TSharedPtr<FTokenModel> FTokenModel::GetLocalModel()
 {
-	return  DataStorage<FXDGStorage>::LoadStruct<FTokenModel>(FXDGStorage::TokenInfo);
+	return  TUDataStorage<FXDGStorage>::LoadStruct<FTokenModel>(FXDGStorage::TokenInfo);
 }
 
 void FTokenModel::ClearToken()
 {
-	DataStorage<FXDGStorage>::Remove(FXDGStorage::TokenInfo);
+	TUDataStorage<FXDGStorage>::Remove(FXDGStorage::TokenInfo);
 }
 
 
 
 void FSyncTokenModel::SaveToLocal()
 {
-	DataStorage<FXDGStorage>::SaveStruct(FXDGStorage::SessionTokenKey, *this, true);
+	TUDataStorage<FXDGStorage>::SaveStruct(FXDGStorage::SessionTokenKey, *this, true);
 }
 
 TSharedPtr<FSyncTokenModel> FSyncTokenModel::GetLocalModel()
 {
-	return  DataStorage<FXDGStorage>::LoadStruct<FSyncTokenModel>(FXDGStorage::SessionTokenKey);
+	return  TUDataStorage<FXDGStorage>::LoadStruct<FSyncTokenModel>(FXDGStorage::SessionTokenKey);
 }
 
 void FSyncTokenModel::ClearToken()
 {
-	DataStorage<FXDGStorage>::Remove(FXDGStorage::SessionTokenKey);
+	TUDataStorage<FXDGStorage>::Remove(FXDGStorage::SessionTokenKey);
 }

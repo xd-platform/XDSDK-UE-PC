@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TauDBEnum.h"
+#include "TUDBEnum.h"
 #include "TUHttpRequest.h"
 
 
@@ -10,7 +10,7 @@ class TAUDBNet: public TUHttpRequest
 	
 public:
 
-	static void SendEvent(TauDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras);
+	static void SendEvent(TUDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras);
 
 	// 普通事件
 	static void SendNormalEvent(TSharedPtr<FJsonObject> Paras);

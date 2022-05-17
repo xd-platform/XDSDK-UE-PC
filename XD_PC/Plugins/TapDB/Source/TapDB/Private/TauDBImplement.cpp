@@ -24,8 +24,8 @@ TauDBImplement & TauDBImplement::Get()
 
 void TauDBImplement::Init(const TauDBInitConfig& Config, bool isAccount)
 {
-	TapDBEventMobile = MakeShareable(new TauDBEventMobile(Config.AppIdOrClientId, isAccount));
-	TapDBEventUser = MakeShareable(new TauDBEventUser(Config.AppIdOrClientId, isAccount));
+	TapDBEventMobile = MakeShareable(new TUDBEventMobile(Config.AppIdOrClientId, isAccount));
+	TapDBEventUser = MakeShareable(new TUDBEventUser(Config.AppIdOrClientId, isAccount));
 
 	TSharedPtr<FJsonObject> CommonProperties = MakeShareable(new FJsonObject);
 	if (Config.Channel.Len() > 0 && Config.Channel.Len() <= 256)
@@ -90,15 +90,15 @@ void TauDBImplement::SetUser(const FString& UserId, TSharedPtr<FJsonObject> Prop
 	if (InitialOperationProperties->Values.Num() > 0)
 	{
 		TUHelper::JsonObjectAppend(InitialOperationProperties, CustomOperationProperties(nullptr));
-		TapDBEventMobile->InitialEvent(nullptr, InitialOperationProperties, TauDBEnum::Normal);
+		TapDBEventMobile->InitialEvent(nullptr, InitialOperationProperties, TUDBEnum::Normal);
 	}
-	TapDBEventMobile->UpdateEvent(nullptr, UpdateOperationProperties, TauDBEnum::Normal);
+	TapDBEventMobile->UpdateEvent(nullptr, UpdateOperationProperties, TUDBEnum::Normal);
 
-	double PlayTime = DataStorage<FTauDBStorage>::LoadNumber(FTauDBStorage::TapDBPlayTime);
+	double PlayTime = TUDataStorage<FTauDBStorage>::LoadNumber(FTauDBStorage::TapDBPlayTime);
 	if (PlayTime > 0)
 	{
 		SendPlayTime(PlayTime);
-		DataStorage<FTauDBStorage>::Remove(FTauDBStorage::TapDBPlayTime);
+		TUDataStorage<FTauDBStorage>::Remove(FTauDBStorage::TapDBPlayTime);
 	}
 	
 }
@@ -132,7 +132,7 @@ void TauDBImplement::SetLevel(int Level)
 	TSharedPtr<FJsonObject> LevelProperties = MakeShareable(new FJsonObject);
 	LevelProperties->SetNumberField("level", Level);
 	TUHelper::JsonObjectAppend(LevelProperties, CustomOperationProperties(nullptr));
-	TapDBEventUser->UpdateEvent(nullptr, LevelProperties, TauDBEnum::Normal);
+	TapDBEventUser->UpdateEvent(nullptr, LevelProperties, TUDBEnum::Normal);
 }
 
 void TauDBImplement::SetServer(const FString& Server)
@@ -145,12 +145,12 @@ void TauDBImplement::SetServer(const FString& Server)
 	TSharedPtr<FJsonObject> ServerInitialiseProperties = MakeShareable(new FJsonObject);
 	ServerInitialiseProperties->SetStringField("first_server", Server);
 	TUHelper::JsonObjectAppend(ServerInitialiseProperties, CustomOperationProperties(nullptr));
-	TapDBEventUser->InitialEvent(nullptr, ServerInitialiseProperties, TauDBEnum::Normal);
+	TapDBEventUser->InitialEvent(nullptr, ServerInitialiseProperties, TUDBEnum::Normal);
 
 	TSharedPtr<FJsonObject> ServerUpdateProperties = MakeShareable(new FJsonObject);
 	ServerUpdateProperties->SetStringField("current_server", Server);
 	TUHelper::JsonObjectAppend(ServerUpdateProperties, CustomOperationProperties(nullptr));
-	TapDBEventUser->UpdateEvent(nullptr, ServerUpdateProperties, TauDBEnum::Normal);
+	TapDBEventUser->UpdateEvent(nullptr, ServerUpdateProperties, TUDBEnum::Normal);
 
 }
 
@@ -163,7 +163,7 @@ void TauDBImplement::SetName(const FString& Name)
 	TSharedPtr<FJsonObject> NameProperties = MakeShareable(new FJsonObject);
 	NameProperties->SetStringField("user_name", Name);
 	TUHelper::JsonObjectAppend(NameProperties, CustomOperationProperties(nullptr));
-	TapDBEventUser->UpdateEvent(nullptr, NameProperties, TauDBEnum::Normal);
+	TapDBEventUser->UpdateEvent(nullptr, NameProperties, TUDBEnum::Normal);
 }
 
 void TauDBImplement::ChargeSuccess(FString OrderId, FString Product, int64 Amount,
@@ -207,38 +207,38 @@ void TauDBImplement::TrackEvent(const FString& EventName, TSharedPtr<FJsonObject
 	// 设备事件需要带上用户属性
 	TSharedPtr<FJsonObject> SystemParams = MakeShareable(new FJsonObject);
 	SystemParams->SetStringField(TapDBEventMobile->GetIdentifyKey(), TapDBEventUser->GetIdentify());
-	SystemParams->SetStringField(TauDBEventKey::OPENID_KEY, TapDBEventUser->GetOpenId());
-	TapDBEventMobile->TrackEvent(EventName, Properties, TapDBEventUser->CommonProperties, TauDBEnum::Normal, SystemParams);
+	SystemParams->SetStringField(TUDBEventKey::OPENID_KEY, TapDBEventUser->GetOpenId());
+	TapDBEventMobile->TrackEvent(EventName, Properties, TapDBEventUser->CommonProperties, TUDBEnum::Normal, SystemParams);
 }
 
 void TauDBImplement::DeviceInitialize(TSharedPtr<FJsonObject> Properties)
 {
-	TapDBEventMobile->InitialEvent(nullptr, CustomOperationProperties(Properties), TauDBEnum::Normal);
+	TapDBEventMobile->InitialEvent(nullptr, CustomOperationProperties(Properties), TUDBEnum::Normal);
 }
 
 void TauDBImplement::DeviceUpdate(TSharedPtr<FJsonObject> Properties)
 {
-	TapDBEventMobile->UpdateEvent(nullptr, CustomOperationProperties(Properties), TauDBEnum::Normal);
+	TapDBEventMobile->UpdateEvent(nullptr, CustomOperationProperties(Properties), TUDBEnum::Normal);
 }
 
 void TauDBImplement::DeviceAdd(TSharedPtr<FJsonObject> Properties)
 {
-	TapDBEventMobile->AddEvent(nullptr, CustomOperationProperties(Properties), TauDBEnum::Normal);
+	TapDBEventMobile->AddEvent(nullptr, CustomOperationProperties(Properties), TUDBEnum::Normal);
 }
 
 void TauDBImplement::UserInitialize(TSharedPtr<FJsonObject> Properties)
 {
-	TapDBEventUser->InitialEvent(nullptr, CustomOperationProperties(Properties), TauDBEnum::Normal);
+	TapDBEventUser->InitialEvent(nullptr, CustomOperationProperties(Properties), TUDBEnum::Normal);
 }
 
 void TauDBImplement::UserUpdate(TSharedPtr<FJsonObject> Properties)
 {
-	TapDBEventUser->UpdateEvent(nullptr, CustomOperationProperties(Properties), TauDBEnum::Normal);
+	TapDBEventUser->UpdateEvent(nullptr, CustomOperationProperties(Properties), TUDBEnum::Normal);
 }
 
 void TauDBImplement::UserAdd(TSharedPtr<FJsonObject> Properties)
 {
-	TapDBEventUser->AddEvent(nullptr, CustomOperationProperties(Properties), TauDBEnum::Normal);
+	TapDBEventUser->AddEvent(nullptr, CustomOperationProperties(Properties), TUDBEnum::Normal);
 }
 
 void TauDBImplement::RegisterStaticProperties(TSharedPtr<FJsonObject> StaticProperties)
@@ -353,7 +353,7 @@ void TauDBImplement::RegisterCoreDelegate()
 		auto PlayTime = (Now - *StartTime.Get()).GetTotalSeconds();
 		if (PlayTime > 0)
 		{
-			DataStorage<FTauDBStorage>::SaveNumber(FTauDBStorage::TapDBPlayTime, PlayTime);
+			TUDataStorage<FTauDBStorage>::SaveNumber(FTauDBStorage::TapDBPlayTime, PlayTime);
 			SendPlayTime(PlayTime);
 			// 如果请求失败，等待2秒无限重试；
 			static FTimerHandle TimerHandle;
@@ -365,7 +365,7 @@ void TauDBImplement::RegisterCoreDelegate()
 					if (TAUDBNet::CacheCount == 0)
 					{
 						TUDebuger::DisplayLog("All data sended before terminated.");
-						DataStorage<FTauDBStorage>::Remove(FTauDBStorage::TapDBPlayTime);
+						TUDataStorage<FTauDBStorage>::Remove(FTauDBStorage::TapDBPlayTime);
 						GWorld->GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 					}
 				}, 0.5, true);

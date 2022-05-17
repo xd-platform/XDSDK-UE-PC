@@ -67,11 +67,11 @@ FString TUDeviceInfo::GetLoginId()
 
 FString TUDeviceInfo::GetInstallId()
 {
-	FString InstallID = DataStorage<FTUCommonStorage>::LoadString(FTUCommonStorage::InstallID);
+	FString InstallID = TUDataStorage<FTUCommonStorage>::LoadString(FTUCommonStorage::InstallID);
 	if (InstallID.Len() <= 0)
 	{
 		InstallID = FGuid::NewGuid().ToString();
-		DataStorage<FTUCommonStorage>::SaveString(FTUCommonStorage::InstallID, InstallID);
+		TUDataStorage<FTUCommonStorage>::SaveString(FTUCommonStorage::InstallID, InstallID);
 	}
 	return InstallID;
 	

@@ -1,6 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "TapConfig.generated.h"
+#include "TUCommonConfig.generated.h"
 
 UENUM()
 enum class RegionType: int8
@@ -40,7 +40,7 @@ struct TAPCOMMON_API FTapMomentConfig
 };
 
 USTRUCT()
-struct TAPCOMMON_API FTapConfig
+struct TAPCOMMON_API FTUCommonConfig
 {
 	GENERATED_BODY()
 	
@@ -62,10 +62,10 @@ struct TAPCOMMON_API FTapConfig
 	UPROPERTY()
 	FTapMomentConfig MomentConfig;
 
-	static FTapConfig& Get();
+	static FTUCommonConfig& Get();
 
 private:
-	static FTapConfig * SharedConfig;
+	static FTUCommonConfig * SharedConfig;
 	
 };
 

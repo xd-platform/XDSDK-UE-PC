@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TapCommon/Model/TapConfig.h"
+#include "TapCommon/Model/TUCommonConfig.h"
 #include "UObject/Object.h"
 #include "TapBootstrapAPI.generated.h"
 
@@ -15,5 +15,5 @@ class TAPBOOTSTRAP_API UTapBootstrap : public UObject
 {
 	GENERATED_BODY()
 public:
-	static void Init(const FTapConfig& tapConfig);
+	static void Init(const FTUCommonConfig& tapConfig);
 };

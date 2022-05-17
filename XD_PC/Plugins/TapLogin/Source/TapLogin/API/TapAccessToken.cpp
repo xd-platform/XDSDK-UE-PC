@@ -1,19 +1,19 @@
 #include "TapAccessToken.h"
-#include "DataStorage.h"
-#include "TAULoginStorage.h"
+#include "TUDataStorage.h"
+#include "TULoginStorage.h"
 
 
 void FTapAccessToken::SaveToLocal() const
 {
-	DataStorage<FTAULoginStorage>::SaveStruct(FTAULoginStorage::AccessToken, *this, true);
+	TUDataStorage<FTULoginStorage>::SaveStruct(FTULoginStorage::AccessToken, *this, true);
 }
 
 TSharedPtr<FTapAccessToken> FTapAccessToken::GetLocalModel()
 {
-	return  DataStorage<FTAULoginStorage>::LoadStruct<FTapAccessToken>(FTAULoginStorage::AccessToken);
+	return  TUDataStorage<FTULoginStorage>::LoadStruct<FTapAccessToken>(FTULoginStorage::AccessToken);
 }
 
 void FTapAccessToken::ClearLocalModel()
 {
-	DataStorage<FTAULoginStorage>::Remove(FTAULoginStorage::AccessToken);
+	TUDataStorage<FTULoginStorage>::Remove(FTULoginStorage::AccessToken);
 }

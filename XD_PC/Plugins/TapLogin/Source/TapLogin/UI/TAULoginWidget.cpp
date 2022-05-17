@@ -3,7 +3,7 @@
 
 #include "TapTapSdk.h"
 #include "TAULoginLanguage.h"
-#include "TAULoginNet.h"
+#include "TULoginNet.h"
 #include "TUHelper.h"
 #include "TUDebuger.h"
 
@@ -160,7 +160,7 @@ void UTAULoginWidget::AutoCheck()
 		bool Stop = false;
 		
 		TFunction<void()> Event = nullptr;
-		TAULoginNet::RequestAccessToken(QrCodeModel->device_code, [=, &Stop, &Event](TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)
+		TULoginNet::RequestAccessToken(QrCodeModel->device_code, [=, &Stop, &Event](TSharedPtr<FTapAccessToken> Model, FTULoginError Error)
 		{
 			if (Model.IsValid())
 			{
@@ -231,7 +231,7 @@ void UTAULoginWidget::AutoCheck()
 
 void UTAULoginWidget::GetProfile(const TSharedPtr<FTapAccessToken>& AccessToken)
 {
-	TAULoginNet::RequestProfile(*AccessToken.Get(), [=](TSharedPtr<FTAUProfileModel> Model, FTAULoginError Error)
+	TULoginNet::RequestProfile(*AccessToken.Get(), [=](TSharedPtr<FTAUProfileModel> Model, FTULoginError Error)
 	{
 		if (Model.IsValid())
 		{
@@ -264,8 +264,8 @@ void UTAULoginWidget::Close(const TapAuthResult& Result)
 
 void UTAULoginWidget::GetQrCode()
 {
-	TAULoginNet::RequestLoginQrCode(Permissions,
-	[=](TSharedPtr<FTAUQrCodeModel> Model, FTAULoginError Error)
+	TULoginNet::RequestLoginQrCode(Permissions,
+	[=](TSharedPtr<FTAUQrCodeModel> Model, FTULoginError Error)
 	{
 		if (Model.IsValid())
 		{
@@ -295,7 +295,7 @@ void UTAULoginWidget::GetTokenFromWebCode(const FString& WebCode) {
 	Paras->SetStringField("code_verifier", WebAuthHelper->GetCodeVerifier());
 
 	ShowTip(TAULoginLanguage::GetCurrentLang()->WebNoticeLogin(),"");
-	TAULoginNet::RequestAccessTokenFromWeb(Paras, [=](TSharedPtr<FTapAccessToken> Model, FTAULoginError Error) {
+	TULoginNet::RequestAccessTokenFromWeb(Paras, [=](TSharedPtr<FTapAccessToken> Model, FTULoginError Error) {
 		if (Model.IsValid()) {
 			GetProfile(Model);
 		} else {

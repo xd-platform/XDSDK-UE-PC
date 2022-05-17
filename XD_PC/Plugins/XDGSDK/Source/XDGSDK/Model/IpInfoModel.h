@@ -31,11 +31,11 @@ struct FIpInfoModel
 
 	void SaveToLocal()
 	{
-		DataStorage<FXDGStorage>::SaveStruct(FXDGStorage::IpInfo, *this, true);
+		TUDataStorage<FXDGStorage>::SaveStruct(FXDGStorage::IpInfo, *this, true);
 	}
 
 	static TSharedPtr<FIpInfoModel> GetLocalModel()
 	{
-		return  DataStorage<FXDGStorage>::LoadStruct<FIpInfoModel>(FXDGStorage::IpInfo);
+		return  TUDataStorage<FXDGStorage>::LoadStruct<FIpInfoModel>(FXDGStorage::IpInfo);
 	}
 };

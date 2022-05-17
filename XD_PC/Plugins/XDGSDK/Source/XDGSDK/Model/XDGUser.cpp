@@ -9,7 +9,7 @@ void FXDGUser::SaveToLocal()
 	{
 		CurrentModel = MakeShareable(new FXDGUser(*this));
 	}
-	DataStorage<FXDGStorage>::SaveStruct(FXDGStorage::UserInfo, *this, true);
+	TUDataStorage<FXDGStorage>::SaveStruct(FXDGStorage::UserInfo, *this, true);
 	
 }
 
@@ -17,7 +17,7 @@ TSharedPtr<FXDGUser>& FXDGUser::GetLocalModel()
 {
 	if (CurrentModel == nullptr)
 	{
-		CurrentModel = DataStorage<FXDGStorage>::LoadStruct<FXDGUser>(FXDGStorage::UserInfo);
+		CurrentModel = TUDataStorage<FXDGStorage>::LoadStruct<FXDGUser>(FXDGStorage::UserInfo);
 	}
 	return  CurrentModel;
 }
@@ -40,7 +40,7 @@ LoginType FXDGUser::GetLoginType()
 void FXDGUser::ClearUserData()
 {
 	CurrentModel = nullptr;
-	DataStorage<FXDGStorage>::Remove(FXDGStorage::UserInfo);
+	TUDataStorage<FXDGStorage>::Remove(FXDGStorage::UserInfo);
 	FSyncTokenModel::ClearToken();
 	FTokenModel::ClearToken();
 }
@@ -51,7 +51,7 @@ bool FXDGUser::IsPushServiceEnable()
 	if (user.IsValid())
 	{
 		FString key = user->userId + "_push_key";
-		return DataStorage<FXDGStorage>::LoadBool(key);
+		return TUDataStorage<FXDGStorage>::LoadBool(key);
 	} else
 	{
 		return false;
@@ -64,7 +64,7 @@ void FXDGUser::SetPushServiceEnable(bool enable)
 	if (user.IsValid())
 	{
 		FString key = user->userId + "_push_key";
-		DataStorage<FXDGStorage>::SaveBool(key, enable);
+		TUDataStorage<FXDGStorage>::SaveBool(key, enable);
 	}
 }
 

@@ -5,7 +5,7 @@
 
 #include "TapLoginHelper.h"
 
-void UTapBootstrap::Init(const FTapConfig& tapConfig)
+void UTapBootstrap::Init(const FTUCommonConfig& tapConfig)
 {
 	UTapLoginHelper::Init(tapConfig.clientID, tapConfig.regionType == RegionType::CN, false);
 }

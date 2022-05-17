@@ -1,18 +1,18 @@
 #include "TAUProfileModel.h"
-#include "DataStorage.h"
-#include "TAULoginStorage.h"
+#include "TUDataStorage.h"
+#include "TULoginStorage.h"
 
 void FTAUProfileModel::SaveToLocal()
 {
-	DataStorage<FTAULoginStorage>::SaveStruct(FTAULoginStorage::Profile, *this, true);
+	TUDataStorage<FTULoginStorage>::SaveStruct(FTULoginStorage::Profile, *this, true);
 }
 	
 TSharedPtr<FTAUProfileModel> FTAUProfileModel::GetLocalModel()
 {
-	return  DataStorage<FTAULoginStorage>::LoadStruct<FTAUProfileModel>(FTAULoginStorage::Profile);
+	return  TUDataStorage<FTULoginStorage>::LoadStruct<FTAUProfileModel>(FTULoginStorage::Profile);
 }
 
 void FTAUProfileModel::ClearLocalModel()
 {
-	DataStorage<FTAULoginStorage>::Remove(FTAULoginStorage::Profile);
+	TUDataStorage<FTULoginStorage>::Remove(FTULoginStorage::Profile);
 }

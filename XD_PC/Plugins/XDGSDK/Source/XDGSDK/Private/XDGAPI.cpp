@@ -195,7 +195,7 @@ void UXDGAPI::Test()
 
 void UXDGAPI::ResetPrivacy()
 {
-	DataStorage<FXDGStorage>::Remove(FXDGStorage::PrivacyKey);
+	TUDataStorage<FXDGStorage>::Remove(FXDGStorage::PrivacyKey);
 }
 
 void UXDGAPI::OpenPayHintAlert()

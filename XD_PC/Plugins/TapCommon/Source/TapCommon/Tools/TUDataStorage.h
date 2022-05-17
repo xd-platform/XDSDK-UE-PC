@@ -4,7 +4,7 @@
 #include "TUCrypto.h"
 
 template <typename StructName>
-class DataStorage
+class TUDataStorage
 {
 public:
 	
@@ -140,5 +140,5 @@ private:
 };
 
 template <typename StructName>
-TSharedPtr<FJsonObject> DataStorage<StructName>::JsonObject = nullptr;
+TSharedPtr<FJsonObject> TUDataStorage<StructName>::JsonObject = nullptr;
 

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "TapLoginReflection.generated.h"
+#include "TULoginReflection.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TAPLOGIN_API UTapLoginReflection : public UObject
+class TAPLOGIN_API UTULoginReflection : public UObject
 {
 	GENERATED_BODY()
 

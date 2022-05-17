@@ -9,15 +9,15 @@ FTimerHandle TAUDBNet::RetryTimerHandle = FTimerHandle();
 int TAUDBNet::CacheCount = 0;
 
 
-void TAUDBNet::SendEvent(TauDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras)
+void TAUDBNet::SendEvent(TUDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras)
 {
-	if (EventType == TauDBEnum::Normal)
+	if (EventType == TUDBEnum::Normal)
 	{
 		SendNormalEvent(Paras);
-	} else if (EventType == TauDBEnum::Custom)
+	} else if (EventType == TUDBEnum::Custom)
 	{
 		SendCustomEvent(Paras);
-	} else if (EventType == TauDBEnum::Identify)
+	} else if (EventType == TUDBEnum::Identify)
 	{
 		SendIdentifyEvent(Paras);
 	}

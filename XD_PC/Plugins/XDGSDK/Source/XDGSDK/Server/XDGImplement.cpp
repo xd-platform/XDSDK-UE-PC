@@ -6,8 +6,8 @@
 #include "TapBootstrapAPI.h"
 #include "TapConfig.h"
 #include "TapLoginHelper.h"
-#include "TDSHelper.h"
-#include "TDUHUD.h"
+#include "TUHelper.h"
+#include "TUHUD.h"
 #include "URLParser.h"
 #include "URLParser.h"
 #include "XDGSDK.h"
@@ -80,9 +80,9 @@ void XDGImplement::LoginByType(LoginType loginType,
 	}
 	else {
 		GetLoginParam(loginType, [=](TSharedPtr<FJsonObject> paras) {
-			UTDUHUD::ShowWait();
+			UTUHUD::ShowWait();
 			TFunction<void(FXDGError error)> ErrorCallBack = [=](FXDGError error) {
-				UTDUHUD::Dismiss();
+				UTUHUD::Dismiss();
 				if (ErrorBlock) {
 					ErrorBlock(error);
 				}
@@ -90,7 +90,7 @@ void XDGImplement::LoginByType(LoginType loginType,
 			RequestKidToken(paras, [=](TSharedPtr<FTokenModel> kidToken) {
 				RequestUserInfo(false, [=](TSharedPtr<FXDGUser> user) {
 					AsyncNetworkTdsUser(user->userId, [=](FString SessionToken) {
-						UTDUHUD::Dismiss();
+						UTUHUD::Dismiss();
 						CheckPrivacyAlert([=]() {
 							user->SaveToLocal();
 							resultBlock(user);
@@ -191,7 +191,7 @@ FString XDGImplement::GetCustomerCenter(const FString& ServerId, const FString& 
 	query->SetStringField("brand", TUDeviceInfo::GetGPU());
 	query->SetStringField("game_name", TUDeviceInfo::GetProjectName());
 
-	FString QueryStr = TDSHelper::CombinParameters(query);
+	FString QueryStr = TUHelper::CombinParameters(query);
 	FString UrlStr = cfgMd->configs.reportUrl;
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
@@ -215,7 +215,7 @@ FString XDGImplement::GetPayUrl(const FString& ServerId, const FString& RoleId) 
 	query->SetStringField("lang", LanguageManager::GetLanguageKey());
 	
 
-	FString QueryStr = TDSHelper::CombinParameters(query);
+	FString QueryStr = TUHelper::CombinParameters(query);
 	FString UrlStr = cfgMd->configs.webPayUrl;
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);

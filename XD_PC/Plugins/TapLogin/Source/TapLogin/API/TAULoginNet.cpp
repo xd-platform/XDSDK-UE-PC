@@ -4,7 +4,7 @@
 #include "TUJsonHelper.h"
 #include "TapTapSdk.h"
 #include "TUCrypto.h"
-#include "TDSHelper.h"
+#include "TUHelper.h"
 #include "TUHttpManager.h"
 #include "URLParser.h"
 
@@ -163,7 +163,7 @@ FString TAULoginNet::GetMacToken()
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(this->GetFinalUrl());
 	FString timeStr = FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp());
-	FString nonce = TDSHelper::GetRandomStr(5);
+	FString nonce = TUHelper::GetRandomStr(5);
 	FString md = this->Type == Get ? "GET" : "POST";
 
 	FString pathAndQuery = Parse.GetPath();

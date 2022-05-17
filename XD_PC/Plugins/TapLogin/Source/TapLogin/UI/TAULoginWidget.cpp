@@ -4,7 +4,7 @@
 #include "TapTapSdk.h"
 #include "TAULoginLanguage.h"
 #include "TAULoginNet.h"
-#include "TDSHelper.h"
+#include "TUHelper.h"
 #include "TUDebuger.h"
 
 
@@ -102,7 +102,7 @@ void UTAULoginWidget::HiddenRefreshButton()
 void UTAULoginWidget::ResetQrCode(const FString& Content)
 {
 	HiddenRefreshButton();
-	auto texture = TDSHelper::GenerateQrCode(Content);
+	auto texture = TUHelper::GenerateQrCode(Content);
 	QRImage->SetBrushFromTexture(texture);
 }
 

@@ -2,7 +2,7 @@
 
 #include "Http.h"
 #include "TUJsonHelper.h"
-#include "TDSHelper.h"
+#include "TUHelper.h"
 
 TUHttpManager* TUHttpManager::Singleton = nullptr;
 
@@ -48,7 +48,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TUHttpR
 	case TUHttpRequest::Type::Get:
 		{
 			Request->SetVerb("GET");
-			FString queryString = TDSHelper::CombinParameters(tdsReq->Parameters);
+			FString queryString = TUHelper::CombinParameters(tdsReq->Parameters);
 			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
@@ -60,7 +60,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TUHttpR
 	case TUHttpRequest::Type::Post:
 		{
 			Request->SetVerb("POST");
-			FString queryString = TDSHelper::CombinParameters(tdsReq->PostUrlParameters);
+			FString queryString = TUHelper::CombinParameters(tdsReq->PostUrlParameters);
 			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
@@ -69,7 +69,7 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TUHttpR
 			Request->SetURL(url);
 			if (tdsReq->Form == TUHttpRequest::Form::Default)
 			{
-				FString body = TDSHelper::CombinParameters(tdsReq->Parameters);
+				FString body = TUHelper::CombinParameters(tdsReq->Parameters);
 				Request->SetContentAsString(body);
 			} else if (tdsReq->Form == TUHttpRequest::Form::Json)
 			{

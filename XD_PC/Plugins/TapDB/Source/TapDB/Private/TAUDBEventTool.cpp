@@ -1,7 +1,7 @@
 #include "TAUDBEventTool.h"
 
 #include "TUDeviceInfo.h"
-#include "TDSHelper.h"
+#include "TUHelper.h"
 
 
 TAUDBEventTool * TAUDBEventTool::Singleton = nullptr;
@@ -9,7 +9,7 @@ TAUDBEventTool * TAUDBEventTool::Singleton = nullptr;
 TSharedPtr<FJsonObject> TAUDBEventTool::GetPresetProperties()
 {
 	TSharedPtr<FJsonObject> PresetProperties = MakeShareable(new FJsonObject);
-	TDSHelper::JsonObjectAppend(PresetProperties, GetStaticPresetProperties());
+	TUHelper::JsonObjectAppend(PresetProperties, GetStaticPresetProperties());
 	PresetProperties->SetNumberField("event_index", GetEventIndex());
 	PresetProperties->SetStringField("event_uuid", FGuid::NewGuid().ToString());
 	PresetProperties->SetStringField("session_uuid", GetSessionUUID());

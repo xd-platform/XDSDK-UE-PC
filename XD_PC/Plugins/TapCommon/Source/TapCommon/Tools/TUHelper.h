@@ -2,7 +2,7 @@
 #include "TUDebuger.h"
 #include "Blueprint/UserWidget.h"
 
-class TAPCOMMON_API TDSHelper
+class TAPCOMMON_API TUHelper
 {
 public:
 	

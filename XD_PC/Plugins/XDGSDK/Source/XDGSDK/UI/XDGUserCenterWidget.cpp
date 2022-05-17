@@ -1,7 +1,7 @@
 #include "XDGUserCenterWidget.h"
 
 #include "TUDebuger.h"
-#include "TDUHUD.h"
+#include "TUHUD.h"
 #include "XDGAPI.h"
 #include "XDGImplement.h"
 #include "XDGNet.h"
@@ -64,7 +64,7 @@ void UXDGUserCenterWidget::OnCloseBtnClick()
 void UXDGUserCenterWidget::OnCopyBtnClick()
 {
 	FPlatformApplicationMisc::ClipboardCopy(*userMd->userId);
-	UTDUHUD::ShowToast(langModel->tds_copy_success);
+	UTUHUD::ShowToast(langModel->tds_copy_success);
 }
 
 void UXDGUserCenterWidget::OnErrorBtnClick()
@@ -80,10 +80,10 @@ void UXDGUserCenterWidget::OnDeleteBtnClick()
 	}
 	UXDGUserCenterTipWidget::Show(UXDGUserCenterTipWidget::DeleteGuest, LoginType::Guest, [=]()
 	{
-		UTDUHUD::ShowWait();
+		UTUHUD::ShowWait();
 		XDGNet::Unbind((int)LoginType::Guest, [=](TSharedPtr<FXDGResponseModel> Model, FXDGError Error)
 		{
-			UTDUHUD::Dismiss();
+			UTUHUD::Dismiss();
 			if (Model.IsValid())
 			{
 				DeleteAccount(langModel->tds_unbind_guest_return);
@@ -91,10 +91,10 @@ void UXDGUserCenterWidget::OnDeleteBtnClick()
 			{
 				if (Error.code > 200)
 				{
-					UTDUHUD::ShowToast(Error.msg);
+					UTUHUD::ShowToast(Error.msg);
 				} else
 				{
-					UTDUHUD::ShowToast(langModel->tds_unbind_guest_return);
+					UTUHUD::ShowToast(langModel->tds_unbind_guest_return);
 				}
 				
 			}
@@ -115,10 +115,10 @@ FString UXDGUserCenterWidget::GetLoginTypeName()
 
 void UXDGUserCenterWidget::RequestList()
 {
-	UTDUHUD::ShowWait();
+	UTUHUD::ShowWait();
 	XDGNet::RequestBindList([=](TSharedPtr<FXDGBindResponseModel> Model, FXDGError Error)
 	{
-		UTDUHUD::Dismiss();
+		UTUHUD::Dismiss();
 		if (Model.IsValid())
 		{
 			ShouldShowErrorButton(false);
@@ -230,7 +230,7 @@ TArray<FXDGLoginTypeModel> UXDGUserCenterWidget::GetSupportTypes()
 
 void UXDGUserCenterWidget::DeleteAccount(const FString& Tip)
 {
-	UTDUHUD::ShowToast(Tip);
+	UTUHUD::ShowToast(Tip);
 	UXDGAPI::Logout();
 	UXDGAPI::ResetPrivacy();
 	RemoveFromParent();
@@ -240,23 +240,23 @@ void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TShared
 {
 	TFunction<void(TSharedPtr<FJsonObject> paras)> BindBlock = [=](TSharedPtr<FJsonObject> Paras)
 	{
-		UTDUHUD::ShowWait();
+		UTUHUD::ShowWait();
 		XDGNet::Bind(Paras, [=](TSharedPtr<FXDGResponseModel> ResponseModel, FXDGError Error)
 		{
-			UTDUHUD::Dismiss();
+			UTUHUD::Dismiss();
 			if (ResponseModel.IsValid())
 			{
 				Model->status = (int) FXDGBindType::Bind;
 				CurrentWidget->SetBindModel(Model);
-				UTDUHUD::ShowToast(langModel->tds_bind_success);
+				UTUHUD::ShowToast(langModel->tds_bind_success);
 			} else
 			{
 				if (Error.code > 200)
 				{
-					UTDUHUD::ShowToast(Error.msg);
+					UTUHUD::ShowToast(Error.msg);
 				} else
 				{
-					UTDUHUD::ShowToast(langModel->tds_bind_error);
+					UTUHUD::ShowToast(langModel->tds_bind_error);
 				}
 			}
 			if (BindCallBack != nullptr) {
@@ -278,10 +278,10 @@ void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TShared
 		{
 			if (error.code ==  80081)
 			{
-				UTDUHUD::ShowToast(langModel->tds_login_cancel);
+				UTUHUD::ShowToast(langModel->tds_login_cancel);
 			} else
 			{
-				UTDUHUD::ShowToast(error.msg);
+				UTUHUD::ShowToast(error.msg);
 			}
 		});
 	}
@@ -291,10 +291,10 @@ void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TShared
 
 void UXDGUserCenterWidget::UnBind(UXDGUserCenterItemWidget* CurrentWidget, TSharedPtr<FXDGBindModel> Model)
 {
-	UTDUHUD::ShowWait();
+	UTUHUD::ShowWait();
 	XDGNet::Unbind(Model->loginType, [=](TSharedPtr<FXDGResponseModel> ResponseModel, FXDGError Error)
 	{
-		UTDUHUD::Dismiss();
+		UTUHUD::Dismiss();
 		if (ResponseModel.IsValid())
 		{
 			if (GetBindCount() <= 1)
@@ -304,16 +304,16 @@ void UXDGUserCenterWidget::UnBind(UXDGUserCenterItemWidget* CurrentWidget, TShar
 			{
 				Model->status = (int) FXDGBindType::UnBind;
 				CurrentWidget->SetBindModel(Model);
-				UTDUHUD::ShowToast(langModel->tds_unbind_success);
+				UTUHUD::ShowToast(langModel->tds_unbind_success);
 			}
 		} else
 		{
 			if (Error.code > 200)
 			{
-				UTDUHUD::ShowToast(Error.msg);
+				UTUHUD::ShowToast(Error.msg);
 			} else
 			{
-				UTDUHUD::ShowToast(langModel->tds_unbind_guest_return);
+				UTUHUD::ShowToast(langModel->tds_unbind_guest_return);
 			}
 		}
 		if (UnbindCallBack != nullptr) {

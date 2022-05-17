@@ -1,9 +1,9 @@
-#include "TDUHUD.h"
+#include "TUHUD.h"
 // WidgetBlueprint'/TapCommon/BPTDUHUD.BPTDUHUD'
 
-UTDUHUD* UTDUHUD::HUD = nullptr;
+UTUHUD* UTUHUD::HUD = nullptr;
 
-UTDUHUD*& UTDUHUD::GetCurrentHUD()
+UTUHUD*& UTUHUD::GetCurrentHUD()
 {
 	if (HUD)
 	{
@@ -16,11 +16,11 @@ UTDUHUD*& UTDUHUD::GetCurrentHUD()
 		return HUD;
 	} else
 	{
-		if (UClass* MyWidgetClass = LoadClass<UTDUHUD>(nullptr, TEXT("WidgetBlueprint'/TapCommon/BPTDUHUD.BPTDUHUD_C'")))
+		if (UClass* MyWidgetClass = LoadClass<UTUHUD>(nullptr, TEXT("WidgetBlueprint'/TapCommon/BPTDUHUD.BPTDUHUD_C'")))
 		{
 			if (GWorld && GWorld->GetWorld())
 			{
-        		HUD = CreateWidget<UTDUHUD>(GWorld->GetWorld(), MyWidgetClass);
+        		HUD = CreateWidget<UTUHUD>(GWorld->GetWorld(), MyWidgetClass);
 				HUD->AddToViewport(MAX_int16);
         	}
         }
@@ -28,28 +28,28 @@ UTDUHUD*& UTDUHUD::GetCurrentHUD()
 	}
 }
 
-UTDUHUD::UTDUHUD(const FObjectInitializer& ObjectInitializer)  : Super(ObjectInitializer)
+UTUHUD::UTUHUD(const FObjectInitializer& ObjectInitializer)  : Super(ObjectInitializer)
 {
 }
 
-void UTDUHUD::ShowWait()
+void UTUHUD::ShowWait()
 {
-	UTDUHUD* Current = GetCurrentHUD();
+	UTUHUD* Current = GetCurrentHUD();
 	Current->TitleLabel->SetVisibility(ESlateVisibility::Collapsed);
 	Current->ImageBox->SetVisibility(ESlateVisibility::Visible);
 	Current->BackView->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UTDUHUD::ShowWaitAndToast(const FString& Toast)
+void UTUHUD::ShowWaitAndToast(const FString& Toast)
 {
-	UTDUHUD* Current = GetCurrentHUD();
+	UTUHUD* Current = GetCurrentHUD();
 	Current->TitleLabel->SetVisibility(ESlateVisibility::Visible);
 	Current->ImageBox->SetVisibility(ESlateVisibility::Visible);
 	Current->TitleLabel->SetText(FText::FromString(Toast));
 	Current->BackView->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UTDUHUD::Dismiss()
+void UTUHUD::Dismiss()
 {
 	if (!HUD)
 	{
@@ -63,9 +63,9 @@ void UTDUHUD::Dismiss()
 	HUD = nullptr;
 }
 
-void UTDUHUD::ShowToast(const FString& Toast, float TimeInterval)
+void UTUHUD::ShowToast(const FString& Toast, float TimeInterval)
 {
-	UTDUHUD* Current = GetCurrentHUD();
+	UTUHUD* Current = GetCurrentHUD();
 	Current->TitleLabel->SetVisibility(ESlateVisibility::Visible);
 	Current->ImageBox->SetVisibility(ESlateVisibility::Collapsed);
 	Current->BackView->SetVisibility(ESlateVisibility::HitTestInvisible);
@@ -78,7 +78,7 @@ void UTDUHUD::ShowToast(const FString& Toast, float TimeInterval)
 	}, TimeInterval, false);
 }
 
-void UTDUHUD::NativeConstruct()
+void UTUHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
 	DismissTimerHandle.Invalidate();

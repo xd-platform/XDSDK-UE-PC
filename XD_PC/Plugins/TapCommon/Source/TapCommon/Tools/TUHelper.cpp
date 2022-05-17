@@ -1,4 +1,4 @@
-#include "TDSHelper.h"
+#include "TUHelper.h"
 #include "qrcodegen.hpp"
 #include "ImageUtils.h"
 #include "GenericPlatform/GenericPlatformHttp.h"
@@ -7,7 +7,7 @@
 #endif
 
 
-UTexture2D* TDSHelper::GenerateQrCode(const FString& string)
+UTexture2D* TUHelper::GenerateQrCode(const FString& string)
 {
 	qrcodegen::QrCode qr = qrcodegen::QrCode::encodeText(TCHAR_TO_UTF8(*string), qrcodegen::QrCode::Ecc::LOW);
 	int border = 0;
@@ -31,7 +31,7 @@ UTexture2D* TDSHelper::GenerateQrCode(const FString& string)
 	return texture;
 }
 
-FString TDSHelper::GetRandomStr(int len)
+FString TUHelper::GetRandomStr(int len)
 {
 	FString LetterStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	FString SB;
@@ -43,7 +43,7 @@ FString TDSHelper::GetRandomStr(int len)
 	return SB;
 }
 
-void TDSHelper::GenerateBrush(FSlateBrush& Brush, const FString& TexturePath)
+void TUHelper::GenerateBrush(FSlateBrush& Brush, const FString& TexturePath)
 {
 	UTexture2D *Texture = LoadObject<UTexture2D>(nullptr, *TexturePath);
 	if(IsValid(Texture) && Brush.GetResourceObject() != Texture)
@@ -64,7 +64,7 @@ void TDSHelper::GenerateBrush(FSlateBrush& Brush, const FString& TexturePath)
 	}
 }
 
-void TDSHelper::JsonObjectAppend(TSharedPtr<FJsonObject>& Object, const TSharedPtr<FJsonObject>& Adder)
+void TUHelper::JsonObjectAppend(TSharedPtr<FJsonObject>& Object, const TSharedPtr<FJsonObject>& Adder)
 {
 	if (Object.IsValid() && Adder.IsValid())
 	{
@@ -72,7 +72,7 @@ void TDSHelper::JsonObjectAppend(TSharedPtr<FJsonObject>& Object, const TSharedP
 	}
 }
 
-void TDSHelper::JsonObjectAddNotEmptyString(TSharedPtr<FJsonObject>& Object, const FString& Key, const FString& Value)
+void TUHelper::JsonObjectAddNotEmptyString(TSharedPtr<FJsonObject>& Object, const FString& Key, const FString& Value)
 {
 	if (Value.Len() > 0)
 	{
@@ -80,7 +80,7 @@ void TDSHelper::JsonObjectAddNotEmptyString(TSharedPtr<FJsonObject>& Object, con
 	}
 }
 
-FString TDSHelper::CombinParameters(const TSharedPtr<FJsonObject>& parameters, bool isEncode) {
+FString TUHelper::CombinParameters(const TSharedPtr<FJsonObject>& parameters, bool isEncode) {
 	TArray<FString> keyValues;
 	for (auto para : parameters->Values)
 	{
@@ -94,7 +94,7 @@ FString TDSHelper::CombinParameters(const TSharedPtr<FJsonObject>& parameters, b
 }
 
 #if PLATFORM_MAC
-void TDSHelper::ActivateItself() {
+void TUHelper::ActivateItself() {
 	FString Path = FPlatformProcess::BaseDir();
 	int32 index = Path.Find(TEXT(".app"));
 	if (index == INDEX_NONE) {

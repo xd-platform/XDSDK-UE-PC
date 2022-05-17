@@ -5,7 +5,7 @@
 #include "TauDB.h"
 #include "TAUDBNet.h"
 #include "TauDBStorage.h"
-#include "TDSHelper.h"
+#include "TUHelper.h"
 
 TauDBImplement * TauDBImplement::Singleton = nullptr;
 FString TauDBImplement::First_login_type = "";
@@ -82,14 +82,14 @@ void TauDBImplement::SetUser(const FString& UserId, TSharedPtr<FJsonObject> Prop
 		}
 	}
 
-	TDSHelper::JsonObjectAppend(InitialOperationProperties, Properties);
+	TUHelper::JsonObjectAppend(InitialOperationProperties, Properties);
 	
-	TDSHelper::JsonObjectAppend(UpdateOperationProperties, Properties);
-	TDSHelper::JsonObjectAppend(UpdateOperationProperties, CustomOperationProperties(nullptr));
+	TUHelper::JsonObjectAppend(UpdateOperationProperties, Properties);
+	TUHelper::JsonObjectAppend(UpdateOperationProperties, CustomOperationProperties(nullptr));
 
 	if (InitialOperationProperties->Values.Num() > 0)
 	{
-		TDSHelper::JsonObjectAppend(InitialOperationProperties, CustomOperationProperties(nullptr));
+		TUHelper::JsonObjectAppend(InitialOperationProperties, CustomOperationProperties(nullptr));
 		TapDBEventMobile->InitialEvent(nullptr, InitialOperationProperties, TauDBEnum::Normal);
 	}
 	TapDBEventMobile->UpdateEvent(nullptr, UpdateOperationProperties, TauDBEnum::Normal);
@@ -131,7 +131,7 @@ void TauDBImplement::SetLevel(int Level)
 	}
 	TSharedPtr<FJsonObject> LevelProperties = MakeShareable(new FJsonObject);
 	LevelProperties->SetNumberField("level", Level);
-	TDSHelper::JsonObjectAppend(LevelProperties, CustomOperationProperties(nullptr));
+	TUHelper::JsonObjectAppend(LevelProperties, CustomOperationProperties(nullptr));
 	TapDBEventUser->UpdateEvent(nullptr, LevelProperties, TauDBEnum::Normal);
 }
 
@@ -144,12 +144,12 @@ void TauDBImplement::SetServer(const FString& Server)
 	
 	TSharedPtr<FJsonObject> ServerInitialiseProperties = MakeShareable(new FJsonObject);
 	ServerInitialiseProperties->SetStringField("first_server", Server);
-	TDSHelper::JsonObjectAppend(ServerInitialiseProperties, CustomOperationProperties(nullptr));
+	TUHelper::JsonObjectAppend(ServerInitialiseProperties, CustomOperationProperties(nullptr));
 	TapDBEventUser->InitialEvent(nullptr, ServerInitialiseProperties, TauDBEnum::Normal);
 
 	TSharedPtr<FJsonObject> ServerUpdateProperties = MakeShareable(new FJsonObject);
 	ServerUpdateProperties->SetStringField("current_server", Server);
-	TDSHelper::JsonObjectAppend(ServerUpdateProperties, CustomOperationProperties(nullptr));
+	TUHelper::JsonObjectAppend(ServerUpdateProperties, CustomOperationProperties(nullptr));
 	TapDBEventUser->UpdateEvent(nullptr, ServerUpdateProperties, TauDBEnum::Normal);
 
 }
@@ -162,7 +162,7 @@ void TauDBImplement::SetName(const FString& Name)
 	}
 	TSharedPtr<FJsonObject> NameProperties = MakeShareable(new FJsonObject);
 	NameProperties->SetStringField("user_name", Name);
-	TDSHelper::JsonObjectAppend(NameProperties, CustomOperationProperties(nullptr));
+	TUHelper::JsonObjectAppend(NameProperties, CustomOperationProperties(nullptr));
 	TapDBEventUser->UpdateEvent(nullptr, NameProperties, TauDBEnum::Normal);
 }
 
@@ -275,7 +275,7 @@ void TauDBImplement::RegisterDynamicProperties(TFunction<TSharedPtr<FJsonObject>
 TSharedPtr<FJsonObject> TauDBImplement::CustomOperationProperties(const TSharedPtr<FJsonObject>& Properties)
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
-	TDSHelper::JsonObjectAppend(JsonObject, Properties);
+	TUHelper::JsonObjectAppend(JsonObject, Properties);
 	JsonObject->SetStringField("sdk_version", TAPDB_VERSION);
 	return JsonObject;
 }

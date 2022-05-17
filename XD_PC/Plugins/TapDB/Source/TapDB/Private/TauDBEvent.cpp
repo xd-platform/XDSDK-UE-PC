@@ -2,7 +2,7 @@
 
 #include "TUDeviceInfo.h"
 #include "TAUDBEventTool.h"
-#include "TDSHelper.h"
+#include "TUHelper.h"
 #include "TUDebuger.h"
 #include "TAUDBNet.h"
 #include "TauDBStorage.h"
@@ -28,8 +28,8 @@ void TauDBEvent::TrackEvent(const FString& Name, TSharedPtr<FJsonObject> CustomP
 	TSharedPtr<FJsonObject> DataDic =  GetSystemParams();
 	DataDic->SetStringField(TYPE_KEY, "track");
 	DataDic->SetStringField(NAME_KEY, Name);
-	TDSHelper::JsonObjectAppend(DataDic, SystemParams);
-	TDSHelper::JsonObjectAppend(DataDic, SysProperties);
+	TUHelper::JsonObjectAppend(DataDic, SystemParams);
+	TUHelper::JsonObjectAppend(DataDic, SysProperties);
 
 	TSharedPtr<FJsonObject> MutableProperties = GetSystemParams();
 	// if (Name == "device_login" || Name == "user_login") {
@@ -38,9 +38,9 @@ void TauDBEvent::TrackEvent(const FString& Name, TSharedPtr<FJsonObject> CustomP
 	if (Name == "device_login") {
 		MutableProperties->SetNumberField("boot_timestamp", FDateTime::UtcNow().ToUnixTimestamp());
 	}
-	TDSHelper::JsonObjectAppend(MutableProperties, Properties);
+	TUHelper::JsonObjectAppend(MutableProperties, Properties);
 
-	TDSHelper::JsonObjectAppend(DataDic, CombinedProperties(MutableProperties, CustomProperties));
+	TUHelper::JsonObjectAppend(DataDic, CombinedProperties(MutableProperties, CustomProperties));
 
 	DataDic->SetStringField(OPENID_KEY, GetOpenId());
 	
@@ -51,7 +51,7 @@ void TauDBEvent::InitialEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonOb
 	TauDBEnum::EventType EventType)
 {
 	auto OperationParams = GetSystemParams();
-	TDSHelper::JsonObjectAppend(OperationParams, Params);
+	TUHelper::JsonObjectAppend(OperationParams, Params);
 	OperationParams->SetStringField(TYPE_KEY, "initialise");
 	OperationParams->SetObjectField(PROPERTIES_KEY, Properties);
 	TAUDBNet::SendEvent(EventType, OperationParams);
@@ -61,7 +61,7 @@ void TauDBEvent::AddEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject
 	TauDBEnum::EventType EventType)
 {
 	auto OperationParams = GetSystemParams();
-	TDSHelper::JsonObjectAppend(OperationParams, Params);
+	TUHelper::JsonObjectAppend(OperationParams, Params);
 	OperationParams->SetStringField(TYPE_KEY, "add");
 	OperationParams->SetObjectField(PROPERTIES_KEY, Properties);
 	TAUDBNet::SendEvent(EventType, OperationParams);
@@ -71,7 +71,7 @@ void TauDBEvent::UpdateEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObj
 	TauDBEnum::EventType EventType)
 {
 	auto OperationParams = GetSystemParams();
-	TDSHelper::JsonObjectAppend(OperationParams, Params);
+	TUHelper::JsonObjectAppend(OperationParams, Params);
 	OperationParams->SetStringField(TYPE_KEY, "update");
 	OperationParams->SetObjectField(PROPERTIES_KEY, Properties);
 	TAUDBNet::SendEvent(EventType, OperationParams);
@@ -186,10 +186,10 @@ TSharedPtr<FJsonObject> TauDBEvent::GetSystemParams()
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 
-	TDSHelper::JsonObjectAddNotEmptyString(JsonObject, CLIENTID_KEY, ClientId);
-	TDSHelper::JsonObjectAddNotEmptyString(JsonObject, INDEX_KEY, Account);
-	TDSHelper::JsonObjectAddNotEmptyString(JsonObject, GetIdentifyKey(), _Identify);
-	TDSHelper::JsonObjectAddNotEmptyString(JsonObject, "ip_v6", TUDeviceInfo::GetIpv6());
+	TUHelper::JsonObjectAddNotEmptyString(JsonObject, CLIENTID_KEY, ClientId);
+	TUHelper::JsonObjectAddNotEmptyString(JsonObject, INDEX_KEY, Account);
+	TUHelper::JsonObjectAddNotEmptyString(JsonObject, GetIdentifyKey(), _Identify);
+	TUHelper::JsonObjectAddNotEmptyString(JsonObject, "ip_v6", TUDeviceInfo::GetIpv6());
 	
 	return JsonObject;
 }
@@ -200,17 +200,17 @@ TSharedPtr<FJsonObject> TauDBEvent::CombinedProperties(const TSharedPtr<FJsonObj
 	TSharedPtr<FJsonObject> CustomCombinedProperties = MakeShareable(new FJsonObject);
 
 	/* 添加自定义属性*/
-	TDSHelper::JsonObjectAppend(CustomCombinedProperties, CustomStaticProperties);
+	TUHelper::JsonObjectAppend(CustomCombinedProperties, CustomStaticProperties);
 	if (CustomDynamicPropertiesCaculator)
 	{
-		TDSHelper::JsonObjectAppend(CustomCombinedProperties, CustomDynamicPropertiesCaculator());
+		TUHelper::JsonObjectAppend(CustomCombinedProperties, CustomDynamicPropertiesCaculator());
 	}
-	TDSHelper::JsonObjectAppend(CustomCombinedProperties, CustomProperties);
+	TUHelper::JsonObjectAppend(CustomCombinedProperties, CustomProperties);
 
 	/* 添加预置属性*/
-	TDSHelper::JsonObjectAppend(CustomCombinedProperties, TAUDBEventTool::GetPresetProperties());
-	TDSHelper::JsonObjectAppend(CustomCombinedProperties, CommonProperties);
-	TDSHelper::JsonObjectAppend(CustomCombinedProperties, Properties);
+	TUHelper::JsonObjectAppend(CustomCombinedProperties, TAUDBEventTool::GetPresetProperties());
+	TUHelper::JsonObjectAppend(CustomCombinedProperties, CommonProperties);
+	TUHelper::JsonObjectAppend(CustomCombinedProperties, Properties);
 
 	TSharedPtr<FJsonObject> CombinedProperties = MakeShareable(new FJsonObject);
 	CombinedProperties->SetObjectField(PROPERTIES_KEY, CustomCombinedProperties);
@@ -240,7 +240,7 @@ FString TauDBEventUser::GetIdentifyKey()
 
 FString TauDBEventUser::GetOpenId()
 {
-	return TDSHelper::InvokeFunction<FString>("TapLoginReflection", "GetOpenID");
+	return TUHelper::InvokeFunction<FString>("TapLoginReflection", "GetOpenID");
 }
 
 bool TauDBEventUser::Identify(const FString& identify, const FString& loginType,

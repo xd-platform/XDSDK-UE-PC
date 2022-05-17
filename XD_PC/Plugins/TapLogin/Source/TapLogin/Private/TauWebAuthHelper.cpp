@@ -4,7 +4,7 @@
 #include "HttpServerResponse.h"
 #include "TapTapSdk.h"
 #include "TUCrypto.h"
-#include "TDSHelper.h"
+#include "TUHelper.h"
 #include "TUDebuger.h"
 #include "TUOpenSSL.h"
 
@@ -12,7 +12,7 @@ static FString WebAuthPath = "authorize";
 
 TauWebAuthHelper::TauWebAuthHelper() {
 	State = FGuid::NewGuid().ToString();
-	CodeVerifier = TDSHelper::GetRandomStr(16);
+	CodeVerifier = TUHelper::GetRandomStr(16);
 }
 
 TauWebAuthHelper::~TauWebAuthHelper() {
@@ -144,7 +144,7 @@ void TauWebAuthHelper::ProcessWebAuthRequest(const FHttpServerRequest& Request, 
 			CallBackBlock(WebCode);
 		}
 #if PLATFORM_MAC || PLATFORM_WINDOWS
-		TDSHelper::ActivateItself();
+		TUHelper::ActivateItself();
 #endif
 	}
 	OnComplete(MoveTemp(ResponsePtr));
@@ -160,6 +160,6 @@ FString TauWebAuthHelper::GenerateWebAuthUrl() {
 	Paras->SetStringField("code_challenge_method", "S256");
 	Paras->SetStringField("scope", FString::Join(Permissions, TEXT(",")));
 	Paras->SetStringField("flow", "pc_localhost");
-	FString ParaStr = TDSHelper::CombinParameters(Paras);
+	FString ParaStr = TUHelper::CombinParameters(Paras);
 	return TapTapSdk::CurrentRegion->AccountUrl() + "?" + ParaStr;
 }

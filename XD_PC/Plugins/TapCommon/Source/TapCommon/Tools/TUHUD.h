@@ -6,16 +6,16 @@
 #include "Components/Overlay.h"
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
-#include "TDUHUD.generated.h"
+#include "TUHUD.generated.h"
 
 
 UCLASS()
-class TAPCOMMON_API UTDUHUD : public UUserWidget
+class TAPCOMMON_API UTUHUD : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-	UTDUHUD(const FObjectInitializer& ObjectInitializer);
+	UTUHUD(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable, Category = "UTDUHUD", meta = (DisplayName = "Show Wait"))
 	static void ShowWait();
@@ -45,9 +45,9 @@ public:
 
 private:
 
-	static UTDUHUD* HUD;
+	static UTUHUD* HUD;
 
-	static UTDUHUD*& GetCurrentHUD();
+	static UTUHUD*& GetCurrentHUD();
 
 	FTimerHandle DismissTimerHandle;
 };

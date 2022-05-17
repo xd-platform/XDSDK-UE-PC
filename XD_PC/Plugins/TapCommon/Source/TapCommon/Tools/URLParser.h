@@ -23,7 +23,7 @@ fragment						ref
 */ 
 
 
-namespace TauCommon
+namespace TUCommon
 {
 
 	class TAPCOMMON_API FURL_RFC3986

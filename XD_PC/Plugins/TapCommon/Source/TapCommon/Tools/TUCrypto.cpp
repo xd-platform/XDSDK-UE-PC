@@ -1,7 +1,7 @@
-#include "TDSCrypto.h"
+#include "TUCrypto.h"
 
 
-TArray<uint8> TDSCrypto::UTF8Encode(const FString& content)
+TArray<uint8> TUCrypto::UTF8Encode(const FString& content)
 {
 	FTCHARToUTF8 cnv(*content);
 	int32 Len = cnv.Length();
@@ -11,7 +11,7 @@ TArray<uint8> TDSCrypto::UTF8Encode(const FString& content)
 	return OutArray;
 }
 
-FString TDSCrypto::UTF8Encode(const TArray<uint8>& data)
+FString TUCrypto::UTF8Encode(const TArray<uint8>& data)
 {
 	FUTF8ToTCHAR cnv((const ANSICHAR*)data.GetData(), data.Num());
 	FString UTF8Text(cnv.Length(), cnv.Get());
@@ -21,19 +21,19 @@ FString TDSCrypto::UTF8Encode(const TArray<uint8>& data)
 }
 
 
-FString TDSCrypto::Base64Encode(const TArray<uint8>& data)
+FString TUCrypto::Base64Encode(const TArray<uint8>& data)
 {
 	return FBase64::Encode(data);
 }
 
-TArray<uint8> TDSCrypto::Base64Decode(const FString& content)
+TArray<uint8> TUCrypto::Base64Decode(const FString& content)
 {
 	TArray<uint8> outData;
 	FBase64::Decode(content, outData);
 	return outData;
 }
 
-FString TDSCrypto::UrlBase64Encode(const TArray<uint8>& data) {
+FString TUCrypto::UrlBase64Encode(const TArray<uint8>& data) {
 	FString Result = Base64Encode(data);
 	Result.ReplaceInline(TEXT("+"), TEXT("-"));
 	Result.ReplaceInline(TEXT("/"), TEXT("_"));
@@ -41,7 +41,7 @@ FString TDSCrypto::UrlBase64Encode(const TArray<uint8>& data) {
 	return Result;
 }
 
-TArray<uint8> TDSCrypto::UrlBase64Decode(const FString& content) {
+TArray<uint8> TUCrypto::UrlBase64Decode(const FString& content) {
 	FString Result = content;
 	Result.ReplaceInline(TEXT("-"), TEXT("+"));
 	Result.ReplaceInline(TEXT("_"), TEXT("/"));
@@ -54,7 +54,7 @@ TArray<uint8> TDSCrypto::UrlBase64Decode(const FString& content) {
 	return Base64Decode(Result);
 }
 
-TArray<uint8> TDSCrypto::HmacSHA1(const TArray<uint8>& content, const TArray<uint8>& key)
+TArray<uint8> TUCrypto::HmacSHA1(const TArray<uint8>& content, const TArray<uint8>& key)
 {
 	TArray<uint8> sign;
 	sign.SetNum(20); // sha1 固定20位
@@ -62,7 +62,7 @@ TArray<uint8> TDSCrypto::HmacSHA1(const TArray<uint8>& content, const TArray<uin
 	return sign;
 }
 
-TArray<uint8> TDSCrypto::AesEncode(const TArray<uint8>& content, const TArray<uint8>& key, bool isPadding)
+TArray<uint8> TUCrypto::AesEncode(const TArray<uint8>& content, const TArray<uint8>& key, bool isPadding)
 {
 	FAES::FAESKey AesKey;
 	FMemory::Memcpy(AesKey.Key, key.GetData(), FMath::Min(FAES::FAESKey::KeySize, key.Num()));
@@ -89,7 +89,7 @@ TArray<uint8> TDSCrypto::AesEncode(const TArray<uint8>& content, const TArray<ui
 	return ContentData;
 }
 
-TArray<uint8> TDSCrypto::AesDecode(const TArray<uint8>& content, const TArray<uint8>& key, bool isPadding)
+TArray<uint8> TUCrypto::AesDecode(const TArray<uint8>& content, const TArray<uint8>& key, bool isPadding)
 {
 	FAES::FAESKey AesKey;
 	FMemory::Memcpy(AesKey.Key, key.GetData(), FMath::Min(FAES::FAESKey::KeySize, key.Num()));

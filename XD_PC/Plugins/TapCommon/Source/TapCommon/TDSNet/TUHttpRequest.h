@@ -1,13 +1,13 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "TDUHttpResponse.h"
+#include "TUHttpResponse.h"
 
-class TAPCOMMON_API TDUHttpRequest
+class TAPCOMMON_API TUHttpRequest
 {
-	friend class TDUHttpManager;
+	friend class TUHttpManager;
 public:
-	TDUHttpRequest();
-	virtual ~TDUHttpRequest() = default;
+	TUHttpRequest();
+	virtual ~TUHttpRequest() = default;
 	// virtual ~TDUHttpRequest();
 
 	enum Type
@@ -40,7 +40,7 @@ public:
 
 	Form Form = Default;
 
-	DECLARE_DELEGATE_OneParam(CompletedBlock, TSharedPtr<TDUHttpResponse>);
+	DECLARE_DELEGATE_OneParam(CompletedBlock, TSharedPtr<TUHttpResponse>);
 	CompletedBlock onCompleted;
 
 	FString GetFinalUrl();

@@ -3,9 +3,9 @@
 #include "LanguageManager.h"
 #include "XDGStorage.h"
 #include "IpInfoModel.h"
-#include "DeviceInfo.h"
-#include "JsonHelper.h"
-#include "TDSCrypto.h"
+#include "TUDeviceInfo.h"
+#include "TUJsonHelper.h"
+#include "TUCrypto.h"
 #include "TDSHelper.h"
 #include "TokenModel.h"
 #include "URLParser.h"
@@ -50,7 +50,7 @@ XDGNet::XDGNet()
 
 TMap<FString, FString> XDGNet::CommonHeaders()
 {
-	TMap<FString, FString> headers = TDUHttpRequest::CommonHeaders();
+	TMap<FString, FString> headers = TUHttpRequest::CommonHeaders();
 	headers.Add("Content-Type", "application/json;charset=utf-8");
 	headers.Add("Accept-Language", LanguageManager::GetLanguageKey());
 	return headers;
@@ -58,7 +58,7 @@ TMap<FString, FString> XDGNet::CommonHeaders()
 
 TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 {
-	TSharedPtr<FJsonObject> query = TDUHttpRequest::CommonParameters();
+	TSharedPtr<FJsonObject> query = TUHttpRequest::CommonParameters();
 	
 	query->SetStringField("clientId", DataStorage<FXDGStorage>::LoadString(FXDGStorage::ClientId));
 
@@ -80,18 +80,18 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 
 	query->SetStringField("sdkVer", FXDGSDKModule::VersionName);
 
-	query->SetStringField("did", DeviceInfo::GetLoginId());
-	query->SetStringField("pt", DeviceInfo::GetPlatform());
-	query->SetStringField("pkgName", DeviceInfo::GetProjectName());
-	query->SetStringField("os", DeviceInfo::GetOSVersion());
-	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), DeviceInfo::GetScreenWidth(), DeviceInfo::GetScreenHeight()));
+	query->SetStringField("did", TUDeviceInfo::GetLoginId());
+	query->SetStringField("pt", TUDeviceInfo::GetPlatform());
+	query->SetStringField("pkgName", TUDeviceInfo::GetProjectName());
+	query->SetStringField("os", TUDeviceInfo::GetOSVersion());
+	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), TUDeviceInfo::GetScreenWidth(), TUDeviceInfo::GetScreenHeight()));
 	
 	query->SetStringField("time", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
 
 	// query->SetStringField("appVer", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
 	
-	query->SetStringField("appVer", DeviceInfo::GetProjectVersion());
-	query->SetStringField("appVerCode", DeviceInfo::GetProjectVersion());
+	query->SetStringField("appVer", TUDeviceInfo::GetProjectVersion());
+	query->SetStringField("appVerCode", TUDeviceInfo::GetProjectVersion());
 	
 	auto cfgMd = FInitConfigModel::GetLocalModel();
 	query->SetStringField("appId", cfgMd == nullptr ? "" : cfgMd->configs.appId);
@@ -116,37 +116,37 @@ bool XDGNet::ResetHeadersBeforeRequest()
 
 
 
-FXDGError XDGNet::GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& response)
+FXDGError XDGNet::GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& response)
 {
 	FXDGError error;
-	if (response->state == TDUHttpResponse::clientError)
+	if (response->state == TUHttpResponse::clientError)
 	{
-		error.code = TDUHttpResponse::clientError;
+		error.code = TUHttpResponse::clientError;
 		error.msg = "request fail";
-	} else if (response->state == TDUHttpResponse::serverError)
+	} else if (response->state == TUHttpResponse::serverError)
 	{
-		error.code = TDUHttpResponse::serverError;
+		error.code = TUHttpResponse::serverError;
 		error.msg = "server error";
-	} else if (response->state == TDUHttpResponse::networkError)
+	} else if (response->state == TUHttpResponse::networkError)
 	{
-		error.code = TDUHttpResponse::networkError;
+		error.code = TUHttpResponse::networkError;
 		error.msg = "network connection error";
 	}
 	return error;
 }
 
 template <typename StructType>
-TSharedPtr<StructType> GenerateStructPtr(const TSharedPtr<TDUHttpResponse>& response)
+TSharedPtr<StructType> GenerateStructPtr(const TSharedPtr<TUHttpResponse>& response)
 {
-	if (response != nullptr && response->state == TDUHttpResponse::success) {
-		return JsonHelper::GetUStruct<StructType>(response->contentString);
+	if (response != nullptr && response->state == TUHttpResponse::success) {
+		return TUJsonHelper::GetUStruct<StructType>(response->contentString);
 	} else {
 		return nullptr;
 	}
 }
 
 template <typename StructType>
-void PerfromCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
+void PerfromCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
 {
 	if (callback == nullptr)
 	{
@@ -156,14 +156,14 @@ void PerfromCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunction<void
 	FXDGError error = XDGNet::GenerateErrorInfo(response);
 	if (model == nullptr && error.code == 0)
 	{
-		error.code = TDUHttpResponse::clientError;
+		error.code = TUHttpResponse::clientError;
 		error.msg = "json parse error";
 	}
 	callback(model, error);
 }
 
 template <typename StructType>
-void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
+void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
 {
 	if (callback == nullptr)
 	{
@@ -182,7 +182,7 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& response,
 		error.msg = Wrapper->msg;
 		error.detail = Wrapper->detail;
 	}
-	if (response->state == TDUHttpResponse::success)
+	if (response->state == TUHttpResponse::success)
 	{
 		callback(model, error);
 	} else
@@ -192,13 +192,13 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& response,
 }
 
 template <typename StructType>
-void PerfromResponseCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
+void PerfromResponseCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
 {
 	if (callback == nullptr)
 	{
 		return;
 	}
-	TSharedPtr<FXDGResponseModel> Wrapper = JsonHelper::GetUStruct<StructType>(response->contentString);;
+	TSharedPtr<FXDGResponseModel> Wrapper = TUJsonHelper::GetUStruct<StructType>(response->contentString);;
 	FXDGError error;
 	if (Wrapper == nullptr)
 	{
@@ -210,7 +210,7 @@ void PerfromResponseCallBack(const TSharedPtr<TDUHttpResponse>& response, TFunct
 		error.detail = Wrapper->detail;
 	}
 
-	if (response->state == TDUHttpResponse::success)
+	if (response->state == TUHttpResponse::success)
 	{
 		callback(StaticCastSharedPtr<StructType>(Wrapper), error);
 	} else
@@ -226,7 +226,7 @@ FString XDGNet::GetMacToken() {
 	{
 		return authToken;
 	}
-	auto Parse = TauCommon::FURL_RFC3986();
+	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(this->GetFinalUrl());
 	FString timeStr = FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp());
 	FString nonce = TDSHelper::GetRandomStr(5);
@@ -241,8 +241,8 @@ FString XDGNet::GetMacToken() {
 	FString port = Parse.GetPort();
 
 	FString dataStr = timeStr + "\n" + nonce + "\n" + md + "\n" + pathAndQuery + "\n" + domain + "\n" + port + "\n";
-	auto sha1 = TDSCrypto::HmacSHA1(TDSCrypto::UTF8Encode(dataStr), TDSCrypto::UTF8Encode(tokenModel->macKey));
-	FString mac = TDSCrypto::Base64Encode(sha1);
+	auto sha1 = TUCrypto::HmacSHA1(TUCrypto::UTF8Encode(dataStr), TUCrypto::UTF8Encode(tokenModel->macKey));
+	FString mac = TUCrypto::Base64Encode(sha1);
 	
 	authToken = FString::Printf(TEXT("MAC id=\"%s\",ts=\"%s\",nonce=\"%s\",mac=\"%s\""), *tokenModel->kid, *timeStr, *nonce, *mac);
 	return authToken;
@@ -251,115 +251,115 @@ FString XDGNet::GetMacToken() {
 
 void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = IP_INFO;
 	request->isPure = true;
 	request->RepeatCount = 3;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromCallBack(response, callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = INIT_SDK_URL;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<void(TSharedPtr<FTokenModel> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_COMMON_LOGIN;
 	request->Parameters = paras;
 	request->Type = Post;
 	request->isPure = true;
 	request->Headers = request->CommonHeaders();
 	request->PostUrlParameters = request->CommonParameters();
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestUserInfo(TFunction<void(TSharedPtr<FXDGUser> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_USER_PROFILE;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> model, FXDGError error)> callback)
 {
-	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_LOGIN_SYN;
 	request->Type = Post;
 	request->isPure = true;
 	request->Headers = request->CommonHeaders();
 	request->PostUrlParameters = request->CommonParameters();
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> callback)
 {
-	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = Url;
 	// request->isPure = true;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		callback(response->contentString);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void XDGNet::RequestBindList(TFunction<void(TSharedPtr<FXDGBindResponseModel> Model, FXDGError Error)> Callback)
 {
 	const TSharedPtr<XDGNet> request = MakeShareable(new XDGNet());
 	request->URL = XDG_BIND_LIST;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromResponseCallBack(response, Callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void XDGNet::Bind(const TSharedPtr<FJsonObject>& Paras,
 	TFunction<void(TSharedPtr<FXDGResponseModel> Model, FXDGError Error)> Callback)
 {
-	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_BIND_INTERFACE;
 	request->Parameters = Paras;
 	request->Type = Post;
 	request->isPure = true;
 	request->Headers = request->CommonHeaders();
 	request->PostUrlParameters = request->CommonParameters();
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromResponseCallBack(response, Callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void XDGNet::Unbind(int LoginType, TFunction<void(TSharedPtr<FXDGResponseModel> Model, FXDGError Error)> Callback)
 {
-	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_UNBIND_INTERFACE;
 	request->Parameters->SetNumberField("type", LoginType);
 	request->Type = Post;
 	request->isPure = true;
 	request->Headers = request->CommonHeaders();
 	request->PostUrlParameters = request->CommonParameters();
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromResponseCallBack(response, Callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void XDGNet::CheckPay(TFunction<void(TSharedPtr<FXDIPayCheckResponseModel> Model, FXDGError Error)> Callback)
@@ -367,8 +367,8 @@ void XDGNet::CheckPay(TFunction<void(TSharedPtr<FXDIPayCheckResponseModel> Model
 	const TSharedPtr<XDGNet> request = MakeShareable(new XDGNet());
 	request->URL = XDG_PAYBACK_LIST;
 	request->Parameters->SetStringField("userId", FXDGUser::GetLocalModel()->userId);
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, Callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }

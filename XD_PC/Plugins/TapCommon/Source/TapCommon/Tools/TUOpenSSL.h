@@ -1,6 +1,6 @@
 #pragma once
 
-class TAPCOMMON_API TduOpenSSL {
+class TAPCOMMON_API TUOpenSSL {
 public:
 	
 	static FString LexToString(const TArray<uint8>& Content);

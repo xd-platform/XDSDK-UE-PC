@@ -1,6 +1,6 @@
 #pragma once
 
-class TAPCOMMON_API TdsLanguage {
+class TAPCOMMON_API TULanguage {
 public:
 	enum Type {
 		Unknow = -1,	// 未知
@@ -28,8 +28,8 @@ public:
 
 
 private:
-	static TdsLanguage& Get();
-	static TdsLanguage *SingleInstance;
+	static TULanguage& Get();
+	static TULanguage *SingleInstance;
 
 	TMap<Type, FString> LanguageMap;
 	void ParseLanguages();

@@ -1,7 +1,7 @@
 #include "TauDBImplement.h"
 
-#include "DeviceInfo.h"
-#include "JsonHelper.h"
+#include "TUDeviceInfo.h"
+#include "TUJsonHelper.h"
 #include "TauDB.h"
 #include "TAUDBNet.h"
 #include "TauDBStorage.h"
@@ -37,7 +37,7 @@ void TauDBImplement::Init(const TauDBInitConfig& Config, bool isAccount)
 		CommonProperties->SetStringField("app_version", Config.GameVersion);
 	} else
 	{
-		CommonProperties->SetStringField("app_version", DeviceInfo::GetProjectVersion());
+		CommonProperties->SetStringField("app_version", TUDeviceInfo::GetProjectVersion());
 	}
 	CommonProperties->SetStringField("sdk_version", TAPDB_VERSION);
 
@@ -126,7 +126,7 @@ void TauDBImplement::SetLevel(int Level)
 	}
 	if (Level < 0)
 	{
-		TDUDebuger::ErrorLog("level is illegal, should >= 0");
+		TUDebuger::ErrorLog("level is illegal, should >= 0");
 		return;
 	}
 	TSharedPtr<FJsonObject> LevelProperties = MakeShareable(new FJsonObject);
@@ -173,7 +173,7 @@ void TauDBImplement::ChargeSuccess(FString OrderId, FString Product, int64 Amoun
 		return;
 	}
 	if (Amount <= 0 || Amount > 100000000000) {
-		TDUDebuger::ErrorLog("amount is illegal, shoud > 0 and <= 100000000000");
+		TUDebuger::ErrorLog("amount is illegal, shoud > 0 and <= 100000000000");
 		return;
 	}
 	if (!CheckStringParam(OrderId, "OrderId")) {
@@ -201,7 +201,7 @@ void TauDBImplement::TrackEvent(const FString& EventName, TSharedPtr<FJsonObject
 {
 	if (EventName.IsEmpty())
 	{
-		TDUDebuger::ErrorLog("eventName is empty, will do nothing.");
+		TUDebuger::ErrorLog("eventName is empty, will do nothing.");
 		return;
 	}
 	// 设备事件需要带上用户属性
@@ -284,7 +284,7 @@ bool TauDBImplement::CheckIdentify()
 {
 	if (TapDBEventUser->GetIdentify().IsEmpty())
 	{
-		TDUDebuger::ErrorLog("please call setUser first");
+		TUDebuger::ErrorLog("please call setUser first");
 		return false;
 	}
 	return true;
@@ -301,7 +301,7 @@ bool TauDBImplement::CheckStringParam(const FString& Para, const FString& ParaNa
 {
 	if (Para.IsEmpty() || Para.Len() > 256)
 	{
-		TDUDebuger::ErrorLog(FString::Printf(TEXT("%s is illegal, length should > 0 and <= 256"), *ParaName));
+		TUDebuger::ErrorLog(FString::Printf(TEXT("%s is illegal, length should > 0 and <= 256"), *ParaName));
 		return false;
 	}
 	return true;
@@ -311,7 +311,7 @@ void TauDBImplement::RegisterCoreDelegate()
 {
 	FCoreDelegates::ApplicationWillDeactivateDelegate.AddLambda([=]()
 	{
-		TDUDebuger::DisplayLog("Enter background.");
+		TUDebuger::DisplayLog("Enter background.");
 		PauseTime = MakeShareable(new FDateTime(FDateTime::Now()));
 	});
 
@@ -326,7 +326,7 @@ void TauDBImplement::RegisterCoreDelegate()
 		{
 			if ((Now - *PauseTime.Get()).GetTotalSeconds() > 30)
 			{  //算作一次新的游戏
-				TDUDebuger::DisplayLog("Start with a new session.");
+				TUDebuger::DisplayLog("Start with a new session.");
 				auto PlayTime = (*PauseTime.Get() - *StartTime.Get()).GetTotalSeconds();
 				if (PlayTime > 0)
 				{
@@ -364,7 +364,7 @@ void TauDBImplement::RegisterCoreDelegate()
 					// 说明所有请求都发送成功了
 					if (TAUDBNet::CacheCount == 0)
 					{
-						TDUDebuger::DisplayLog("All data sended before terminated.");
+						TUDebuger::DisplayLog("All data sended before terminated.");
 						DataStorage<FTauDBStorage>::Remove(FTauDBStorage::TapDBPlayTime);
 						GWorld->GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 					}
@@ -381,7 +381,7 @@ void TauDBImplement::StartOperation(const TSharedPtr<FJsonObject>& Properties)
 		TapDBEventMobile->AutoIdentifyWithProperties(Properties);
 	} else
 	{
-		TapDBEventMobile->Identify(DeviceInfo::GetLoginId(), FString(), Properties);
+		TapDBEventMobile->Identify(TUDeviceInfo::GetLoginId(), FString(), Properties);
 	}
 }
 

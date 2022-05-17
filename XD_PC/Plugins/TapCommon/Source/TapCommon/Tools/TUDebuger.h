@@ -1,6 +1,6 @@
 #pragma once
 
-class TAPCOMMON_API TDUDebuger
+class TAPCOMMON_API TUDebuger
 {
 public:
 	static void DisplayLog(const FString& Info);

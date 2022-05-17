@@ -1,23 +1,23 @@
-#include "TDUDebuger.h"
+#include "TUDebuger.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TapLog, Log, All);
 
-void TDUDebuger::DisplayLog(const FString& Info)
+void TUDebuger::DisplayLog(const FString& Info)
 {
 	UE_LOG(TapLog, Display, TEXT("%s"), *Info);
 }
 
-void TDUDebuger::WarningLog(const FString& Info)
+void TUDebuger::WarningLog(const FString& Info)
 {
 	UE_LOG(TapLog, Warning, TEXT("%s"), *Info);
 }
 
-void TDUDebuger::ErrorLog(const FString& Info)
+void TUDebuger::ErrorLog(const FString& Info)
 {
 	UE_LOG(TapLog, Error, TEXT("%s"), *Info);
 }
 
-void TDUDebuger::DisplayShow(const FString& Info, float Duration)
+void TUDebuger::DisplayShow(const FString& Info, float Duration)
 {
 	if (GEngine)
 	{
@@ -25,7 +25,7 @@ void TDUDebuger::DisplayShow(const FString& Info, float Duration)
 	}
 }
 
-void TDUDebuger::WarningShow(const FString& Info, float Duration)
+void TUDebuger::WarningShow(const FString& Info, float Duration)
 {
 	if (GEngine)
 	{
@@ -33,7 +33,7 @@ void TDUDebuger::WarningShow(const FString& Info, float Duration)
 	}
 }
 
-void TDUDebuger::ErrorShow(const FString& Info, float Duration)
+void TUDebuger::ErrorShow(const FString& Info, float Duration)
 {
 	if (GEngine)
 	{

@@ -1,9 +1,9 @@
 #include "TauDBEvent.h"
 
-#include "DeviceInfo.h"
+#include "TUDeviceInfo.h"
 #include "TAUDBEventTool.h"
 #include "TDSHelper.h"
-#include "TDUDebuger.h"
+#include "TUDebuger.h"
 #include "TAUDBNet.h"
 #include "TauDBStorage.h"
 #include "VisualLogger/VisualLoggerCustomVersion.h"
@@ -17,12 +17,12 @@ void TauDBEvent::TrackEvent(const FString& Name, TSharedPtr<FJsonObject> CustomP
 {
 	if (Account.IsEmpty() && ClientId.IsEmpty())
 	{
-		TDUDebuger::ErrorLog("Haven't set Appid/Clientid yet, please call onStart first.");
+		TUDebuger::ErrorLog("Haven't set Appid/Clientid yet, please call onStart first.");
 		return;
 	}
 	if (_Identify.IsEmpty())
 	{
-		TDUDebuger::ErrorLog("Haven't set identify yet, please call autoIdentify or identify first.");
+		TUDebuger::ErrorLog("Haven't set identify yet, please call autoIdentify or identify first.");
 		return;
 	}
 	TSharedPtr<FJsonObject> DataDic =  GetSystemParams();
@@ -81,7 +81,7 @@ void TauDBEvent::SetAccount(const FString& _Account)
 {
 	if (_Account.Len() <= 0 || _Account.Len() > 256)
 	{
-		TDUDebuger::ErrorLog("account is illegal, length should > 0 and <= 256");
+		TUDebuger::ErrorLog("account is illegal, length should > 0 and <= 256");
 		return;
 	}
 	this->Account = _Account;
@@ -92,7 +92,7 @@ void TauDBEvent::SetClientId(const FString& _ClientId)
 {
 	if (_ClientId.Len() <= 0 || _ClientId.Len() > 256)
 	{
-		TDUDebuger::ErrorLog("clientId is illegal, length should > 0 and <= 256");
+		TUDebuger::ErrorLog("clientId is illegal, length should > 0 and <= 256");
 		return;
 	}
 	this->ClientId = _ClientId;
@@ -108,7 +108,7 @@ bool TauDBEvent::Identify(const FString& identify, const FString& loginType, con
 {
 	if (identify.IsEmpty())
 	{
-		TDUDebuger::ErrorLog("invalid UserID!!");
+		TUDebuger::ErrorLog("invalid UserID!!");
 		return false;
 	}
 	this->_Identify = identify;
@@ -163,7 +163,7 @@ void TauDBEvent::AutoIdentifyWithProperties(const TSharedPtr<FJsonObject>& prope
 {
 	if (!_Identify.IsEmpty())
 	{
-		TDUDebuger::DisplayLog("Already exists identify");
+		TUDebuger::DisplayLog("Already exists identify");
 		return;
 	}
 	auto identy = GetSavedIdentify();
@@ -189,7 +189,7 @@ TSharedPtr<FJsonObject> TauDBEvent::GetSystemParams()
 	TDSHelper::JsonObjectAddNotEmptyString(JsonObject, CLIENTID_KEY, ClientId);
 	TDSHelper::JsonObjectAddNotEmptyString(JsonObject, INDEX_KEY, Account);
 	TDSHelper::JsonObjectAddNotEmptyString(JsonObject, GetIdentifyKey(), _Identify);
-	TDSHelper::JsonObjectAddNotEmptyString(JsonObject, "ip_v6", DeviceInfo::GetIpv6());
+	TDSHelper::JsonObjectAddNotEmptyString(JsonObject, "ip_v6", TUDeviceInfo::GetIpv6());
 	
 	return JsonObject;
 }

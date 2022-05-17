@@ -1,7 +1,7 @@
 #include "LanguageManager.h"
-#include "JsonHelper.h"
+#include "TUJsonHelper.h"
 #include "JsonObjectConverter.h"
-#include "TDUDebuger.h"
+#include "TUDebuger.h"
 #include "XDGSDK.h"
 
 static FString LanguageJsonPath = FPaths::ProjectPluginsDir() / TEXT("XDGSDK/Content") / TEXT("XDGAssets/Language.json");
@@ -102,7 +102,7 @@ void LanguageManager::UpdateLanguageModel()
 	FString JsonStr;
 	if(FFileHelper::LoadFileToString(JsonStr, *LanguageJsonPath))
 	{
-		TSharedPtr<FJsonObject> JsonObject = JsonHelper::GetJsonObject(JsonStr);
+		TSharedPtr<FJsonObject> JsonObject = TUJsonHelper::GetJsonObject(JsonStr);
 		const TSharedPtr<FJsonObject>* languageObject = nullptr;
 		if (JsonObject.IsValid() && JsonObject->TryGetObjectField(GetLanguageKey(), languageObject))
 		{

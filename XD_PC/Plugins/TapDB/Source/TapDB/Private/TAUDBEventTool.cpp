@@ -1,6 +1,6 @@
 #include "TAUDBEventTool.h"
 
-#include "DeviceInfo.h"
+#include "TUDeviceInfo.h"
 #include "TDSHelper.h"
 
 
@@ -21,13 +21,13 @@ TSharedPtr<FJsonObject>& TAUDBEventTool::GetStaticPresetProperties()
 	if (!Get().StaticPresetProperties.IsValid())
 	{
 		TSharedPtr<FJsonObject> Temp = MakeShareable(new FJsonObject);
-		Temp->SetNumberField("width", DeviceInfo::GetScreenWidth());
-		Temp->SetNumberField("height", DeviceInfo::GetScreenHeight());
-		Temp->SetStringField("os", DeviceInfo::GetPlatform());
-		Temp->SetStringField("os_version", DeviceInfo::GetOSVersion());
-		Temp->SetStringField("install_uuid", DeviceInfo::GetInstallId());
-		Temp->SetStringField("persist_uuid", DeviceInfo::GetLoginId());
-		Temp->SetStringField("device_id1", DeviceInfo::GetLoginId());
+		Temp->SetNumberField("width", TUDeviceInfo::GetScreenWidth());
+		Temp->SetNumberField("height", TUDeviceInfo::GetScreenHeight());
+		Temp->SetStringField("os", TUDeviceInfo::GetPlatform());
+		Temp->SetStringField("os_version", TUDeviceInfo::GetOSVersion());
+		Temp->SetStringField("install_uuid", TUDeviceInfo::GetInstallId());
+		Temp->SetStringField("persist_uuid", TUDeviceInfo::GetLoginId());
+		Temp->SetStringField("device_id1", TUDeviceInfo::GetLoginId());
 		Get().StaticPresetProperties = Temp;
 	}
 	return Get().StaticPresetProperties;

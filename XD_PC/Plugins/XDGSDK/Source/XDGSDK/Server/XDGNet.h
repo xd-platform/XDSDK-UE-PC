@@ -1,6 +1,6 @@
 #pragma once
 #include "InitConfigModel.h"
-#include "TDUHttpManager.h"
+#include "TUHttpManager.h"
 #include "IpInfoModel.h"
 #include "TokenModel.h"
 #include "XDGBindModel.h"
@@ -8,7 +8,7 @@
 #include "XDGUser.h"
 #include "XDIPayCheckModel.h"
 
-class XDGNet: public TDUHttpRequest
+class XDGNet: public TUHttpRequest
 {
 public:
 
@@ -27,7 +27,7 @@ public:
 	static void CheckPay(TFunction<void(TSharedPtr<FXDIPayCheckResponseModel> Model, FXDGError Error)> Callback);
 
 
-	static FXDGError GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& response);
+	static FXDGError GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& response);
 private:
 	virtual TMap<FString, FString> CommonHeaders() override;
 	virtual TSharedPtr<FJsonObject> CommonParameters() override;

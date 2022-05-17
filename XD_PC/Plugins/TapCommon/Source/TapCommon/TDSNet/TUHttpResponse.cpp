@@ -1,14 +1,14 @@
-#include "TDUHttpResponse.h"
+#include "TUHttpResponse.h"
 
-#include "JsonHelper.h"
-#include "TDUHttpRequest.h"
+#include "TUJsonHelper.h"
+#include "TUHttpRequest.h"
 
 // TDUHttpResponse::~TDUHttpResponse()
 // {
 // 	UE_LOG(LogTemp, Display, TEXT("TDUHttpResponse销毁了-----"));
 // }
 
-FString TDUHttpResponse::GenerateDebugString()
+FString TUHttpResponse::GenerateDebugString()
 {
 	FString DebugString;
 	if (request == nullptr)
@@ -16,7 +16,7 @@ FString TDUHttpResponse::GenerateDebugString()
 		return DebugString;
 	}
 	DebugString += "------------------------------------------\n";
-	DebugString += (request->Type == TDUHttpRequest::Post ? "POST: " : "GET: ") + request->GetFinalUrl() + "\n";
+	DebugString += (request->Type == TUHttpRequest::Post ? "POST: " : "GET: ") + request->GetFinalUrl() + "\n";
 	if (request->Headers.Num() > 0)
 	{
 		DebugString += "Headers:\n";
@@ -25,9 +25,9 @@ FString TDUHttpResponse::GenerateDebugString()
 			DebugString += "\t" + Header.Key + ": " + Header.Value + "\n";
 		}
 	}
-	if (request->Type == TDUHttpRequest::Post && request->Parameters->Values.Num() > 0)
+	if (request->Type == TUHttpRequest::Post && request->Parameters->Values.Num() > 0)
 	{
-		FString body = JsonHelper::GetJsonString(request->Parameters);
+		FString body = TUJsonHelper::GetJsonString(request->Parameters);
 		DebugString += "Body:\n";
 		DebugString += body + "\n";
 	}

@@ -1,19 +1,19 @@
-#include "TDUHttpRequest.h"
+#include "TUHttpRequest.h"
 #include "Http.h"
 
 
-TDUHttpRequest::TDUHttpRequest()
+TUHttpRequest::TUHttpRequest()
 {
 	Parameters = MakeShareable(new FJsonObject);
 	PostUrlParameters = MakeShareable(new FJsonObject);
 }
 
-FString TDUHttpRequest::GetFinalUrl()
+FString TUHttpRequest::GetFinalUrl()
 {
 	return FinalURL;
 }
 
-TMap<FString, FString> TDUHttpRequest::CommonHeaders()
+TMap<FString, FString> TUHttpRequest::CommonHeaders()
 {
 	TMap<FString, FString> CommonHeaders;
 	if (Form == Default)
@@ -26,7 +26,7 @@ TMap<FString, FString> TDUHttpRequest::CommonHeaders()
 	return CommonHeaders;
 }
 
-TSharedPtr<FJsonObject> TDUHttpRequest::CommonParameters()
+TSharedPtr<FJsonObject> TUHttpRequest::CommonParameters()
 {
 	return MakeShareable(new FJsonObject);
 }

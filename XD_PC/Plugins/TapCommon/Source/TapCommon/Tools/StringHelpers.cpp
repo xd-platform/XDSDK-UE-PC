@@ -2,7 +2,7 @@
 
 #include "StringHelpers.h"
 
-namespace TauCommon
+namespace TUCommon
 {
 	namespace StringHelpers
 	{

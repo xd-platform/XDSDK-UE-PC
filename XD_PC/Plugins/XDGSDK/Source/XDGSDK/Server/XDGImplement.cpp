@@ -1,7 +1,7 @@
 #include "XDGImplement.h"
 #include "XDGStorage.h"
-#include "DeviceInfo.h"
-#include "JsonHelper.h"
+#include "TUDeviceInfo.h"
+#include "TUJsonHelper.h"
 #include "LanguageManager.h"
 #include "TapBootstrapAPI.h"
 #include "TapConfig.h"
@@ -55,7 +55,7 @@ void XDGImplement::InitBootstrap(const TSharedPtr<FInitConfigModel>& model,
 	Config.regionType = RegionType::IO;
 	Config.dbConfig.enable = tapCfg.enableTapDB;
 	Config.dbConfig.channel = tapCfg.tapDBChannel;
-	Config.dbConfig.gameVersion = DeviceInfo::GetProjectVersion();
+	Config.dbConfig.gameVersion = TUDeviceInfo::GetProjectVersion();
 	UTapBootstrap::Init(Config);
 
 	if (resultBlock) { resultBlock(true, msg); }
@@ -108,7 +108,7 @@ void XDGImplement::GetLoginParam(LoginType loginType,
 	if (loginType == LoginType::Guest) {
 		TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 		JsonObject->SetNumberField("type", (int)loginType);
-		JsonObject->SetStringField("token", DeviceInfo::GetLoginId());
+		JsonObject->SetStringField("token", TUDeviceInfo::GetLoginId());
 		resultBlock(JsonObject);
 	}
 	else if (loginType == LoginType::TapTap) {
@@ -182,18 +182,18 @@ FString XDGImplement::GetCustomerCenter(const FString& ServerId, const FString& 
 	query->SetStringField("region", cfgMd->configs.region);
 	query->SetStringField("sdk_ver", FXDGSDKModule::VersionName);
 	query->SetStringField("sdk_lang", LanguageManager::GetCustomerCenterLang());
-	query->SetStringField("app_ver", DeviceInfo::GetProjectVersion());
-	query->SetStringField("app_ver_code", DeviceInfo::GetProjectVersion());
-	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), DeviceInfo::GetScreenWidth(), DeviceInfo::GetScreenHeight()));
-	query->SetStringField("cpu", DeviceInfo::GetCPU());
-	query->SetStringField("pt", DeviceInfo::GetPlatform());
-	query->SetStringField("os", DeviceInfo::GetOSVersion());
-	query->SetStringField("brand", DeviceInfo::GetGPU());
-	query->SetStringField("game_name", DeviceInfo::GetProjectName());
+	query->SetStringField("app_ver", TUDeviceInfo::GetProjectVersion());
+	query->SetStringField("app_ver_code", TUDeviceInfo::GetProjectVersion());
+	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), TUDeviceInfo::GetScreenWidth(), TUDeviceInfo::GetScreenHeight()));
+	query->SetStringField("cpu", TUDeviceInfo::GetCPU());
+	query->SetStringField("pt", TUDeviceInfo::GetPlatform());
+	query->SetStringField("os", TUDeviceInfo::GetOSVersion());
+	query->SetStringField("brand", TUDeviceInfo::GetGPU());
+	query->SetStringField("game_name", TUDeviceInfo::GetProjectName());
 
 	FString QueryStr = TDSHelper::CombinParameters(query);
 	FString UrlStr = cfgMd->configs.reportUrl;
-	auto Parse = TauCommon::FURL_RFC3986();
+	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
 	UrlStr = FString::Printf(TEXT("%s://%s?%s"), *Parse.GetScheme(), *Parse.GetHost(), *QueryStr);
 	return UrlStr;
@@ -217,7 +217,7 @@ FString XDGImplement::GetPayUrl(const FString& ServerId, const FString& RoleId) 
 
 	FString QueryStr = TDSHelper::CombinParameters(query);
 	FString UrlStr = cfgMd->configs.webPayUrl;
-	auto Parse = TauCommon::FURL_RFC3986();
+	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
 	UrlStr = FString::Printf(TEXT("%s://%s?%s"), *Parse.GetScheme(), *Parse.GetHost(), *QueryStr);
 	return UrlStr;

@@ -3,7 +3,7 @@
 #include "URLParser.h"
 
 
-namespace TauCommon
+namespace TUCommon
 {
 
 	static inline void _SwapStrings(FString& a, FString& b)

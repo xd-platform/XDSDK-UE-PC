@@ -1,5 +1,5 @@
 #pragma once
-#include "TDUDebuger.h"
+#include "TUDebuger.h"
 #include "Blueprint/UserWidget.h"
 
 class TAPCOMMON_API TDSHelper
@@ -36,7 +36,7 @@ public:
 		TReturn Value;
 		if (CLassName.IsEmpty() || FunctionName.IsEmpty())
 		{
-			TDUDebuger::ErrorLog("类名或者方法名不得为空");
+			TUDebuger::ErrorLog("类名或者方法名不得为空");
 			return Value;
 		}
 		UClass* ResultClass = FindObject<UClass>(ANY_PACKAGE, *CLassName);
@@ -60,7 +60,7 @@ public:
 				return Value;
 			}
 		}
-		TDUDebuger::WarningLog("映射调用失败");
+		TUDebuger::WarningLog("映射调用失败");
 		return Value;
 	}
 
@@ -69,7 +69,7 @@ public:
 	{
 		if (CLassName.IsEmpty() || FunctionName.IsEmpty())
 		{
-			TDUDebuger::ErrorLog("类名或者方法名不得为空");
+			TUDebuger::ErrorLog("类名或者方法名不得为空");
 			return;
 		}
 		UClass* ResultClass = FindObject<UClass>(ANY_PACKAGE, *CLassName);
@@ -83,7 +83,7 @@ public:
 				return;
 			}
 		}
-		TDUDebuger::WarningLog("映射调用失败");
+		TUDebuger::WarningLog("映射调用失败");
 	}
 
 	static FString CombinParameters(const TSharedPtr<FJsonObject>& parameters, bool isEncode = true);

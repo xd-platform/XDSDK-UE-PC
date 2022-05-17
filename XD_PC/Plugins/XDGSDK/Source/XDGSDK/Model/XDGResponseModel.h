@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "JsonHelper.h"
+#include "TUJsonHelper.h"
 #include "XDGResponseModel.generated.h"
 
 // {"code":50000,"msg":"Unknown Error","detail":"Required String parameter 'clientId' is not present","data":""}
@@ -24,17 +24,17 @@ struct FXDGResponseModel
 	template <class UStructType>
 	static void ParseJson(const FString& json, TSharedPtr<FXDGResponseModel>& model, TSharedPtr<UStructType>& data)
 	{
-		auto JsonObject = JsonHelper::GetJsonObject(json);
+		auto JsonObject = TUJsonHelper::GetJsonObject(json);
 		if (!JsonObject.IsValid()) {
 			model = nullptr;
 			data = nullptr;
 			return;
 		}
-		model = JsonHelper::GetUStruct<FXDGResponseModel>(JsonObject);
+		model = TUJsonHelper::GetUStruct<FXDGResponseModel>(JsonObject);
 		const TSharedPtr<FJsonObject>* dataJsonObject;
 		if (JsonObject->TryGetObjectField("data", dataJsonObject))
 		{
-			data = JsonHelper::GetUStruct<UStructType>(*dataJsonObject);
+			data = TUJsonHelper::GetUStruct<UStructType>(*dataJsonObject);
 		} else
 		{
 			data = nullptr;

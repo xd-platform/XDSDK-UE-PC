@@ -3,10 +3,10 @@
 #include "TAULoginError.h"
 #include "TAUProfileModel.h"
 #include "TAUQrCodeModel.h"
-#include "TDUHttpRequest.h"
+#include "TUHttpRequest.h"
 
 
-class TAULoginNet: public TDUHttpRequest
+class TAULoginNet: public TUHttpRequest
 {
 public:
 
@@ -21,7 +21,7 @@ public:
 	static void RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)> callback);
 
 
-	static FTAULoginError GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& Response);
+	static FTAULoginError GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& Response);
 private:
 	virtual TMap<FString, FString> CommonHeaders() override;
 	virtual TSharedPtr<FJsonObject> CommonParameters() override;

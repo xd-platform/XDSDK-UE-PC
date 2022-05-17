@@ -1,7 +1,7 @@
 #pragma once
 #include "JsonObjectConverter.h"
 
-class TAPCOMMON_API JsonHelper
+class TAPCOMMON_API TUJsonHelper
 {
 public:
 	static FString GetJsonString(const TSharedPtr<FJsonObject>& JsonObject)

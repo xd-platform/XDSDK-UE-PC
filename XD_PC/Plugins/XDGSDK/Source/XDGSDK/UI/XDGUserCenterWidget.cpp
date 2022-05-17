@@ -1,6 +1,6 @@
 #include "XDGUserCenterWidget.h"
 
-#include "TDUDebuger.h"
+#include "TUDebuger.h"
 #include "TDUHUD.h"
 #include "XDGAPI.h"
 #include "XDGImplement.h"
@@ -144,7 +144,7 @@ void UXDGUserCenterWidget::RequestList()
 		} else
 		{
 			ShouldShowErrorButton(true);
-			TDUDebuger::WarningLog(Error.msg);
+			TUDebuger::WarningLog(Error.msg);
 		}
 	});
 }

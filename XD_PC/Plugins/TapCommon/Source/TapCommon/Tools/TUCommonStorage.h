@@ -1,10 +1,10 @@
 #pragma once
 #include "DataStorage.h"
 #include "CoreMinimal.h"
-#include "TAUCommonStorage.generated.h"
+#include "TUCommonStorage.generated.h"
 
 USTRUCT()
-struct FTAUCommonStorage
+struct FTUCommonStorage
 {
 	GENERATED_BODY()
 

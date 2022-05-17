@@ -1,11 +1,11 @@
-#include "TdsLanguage.h"
+#include "TULanguage.h"
 #include "Internationalization/Culture.h"
 
-TdsLanguage* TdsLanguage::SingleInstance = nullptr;
+TULanguage* TULanguage::SingleInstance = nullptr;
 
-TdsLanguage& TdsLanguage::Get() {
+TULanguage& TULanguage::Get() {
 	if (SingleInstance == nullptr) {
-		SingleInstance = new TdsLanguage();
+		SingleInstance = new TULanguage();
 		SingleInstance->ParseLanguages();
 		FInternationalization::Get().OnCultureChanged().AddLambda([]() {
 			SingleInstance->LanguageChangedEvent.Broadcast(SingleInstance->GetCurrentType());
@@ -14,7 +14,7 @@ TdsLanguage& TdsLanguage::Get() {
 	return *SingleInstance;
 }
 
-void TdsLanguage::ParseLanguages() {
+void TULanguage::ParseLanguages() {
 	TArray<FString> Names = FTextLocalizationManager::Get().GetLocalizedCultureNames(ELocalizationLoadFlags::Game);
 	for (auto Name : Names) {
 		if (Name.StartsWith("zh")) {
@@ -49,7 +49,7 @@ void TdsLanguage::ParseLanguages() {
 	}
 }
 
-TdsLanguage::Type TdsLanguage::GetNativeType() {
+TULanguage::Type TULanguage::GetNativeType() {
 	FString Name = FTextLocalizationManager::Get().GetNativeCultureName(ELocalizedTextSourceCategory::Game);
 	const Type * FindKey = Get().LanguageMap.FindKey(Name);
 	if (FindKey == nullptr) {
@@ -58,7 +58,7 @@ TdsLanguage::Type TdsLanguage::GetNativeType() {
 	return *FindKey;
 }
 
-TdsLanguage::Type TdsLanguage::GetCurrentType() {
+TULanguage::Type TULanguage::GetCurrentType() {
 	FString Name = FInternationalization::Get().GetCurrentCulture().Get().GetName();
 	const Type * FindKey = Get().LanguageMap.FindKey(Name);
 	if (FindKey == nullptr) {
@@ -67,7 +67,7 @@ TdsLanguage::Type TdsLanguage::GetCurrentType() {
 	return *FindKey;
 }
 
-bool TdsLanguage::SetCurrentType(Type Type) {
+bool TULanguage::SetCurrentType(Type Type) {
 	FString* Name = Get().LanguageMap.Find(Type);
 	if (Name == nullptr) {
 		return false;

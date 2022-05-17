@@ -5,7 +5,7 @@
 #include "TAULoginLanguage.h"
 #include "TAULoginNet.h"
 #include "TDSHelper.h"
-#include "TDUDebuger.h"
+#include "TUDebuger.h"
 
 
 
@@ -84,7 +84,7 @@ void UTAULoginWidget::OnJumpWebBtnClick()
 	WebAuthHelper->ProcessWebAuth(Permissions, [=](FString WebCode) {
 		GetTokenFromWebCode(WebCode);
 	});
-	TDUDebuger::DisplayShow("OnJumpWebBtnClick");
+	TUDebuger::DisplayShow("OnJumpWebBtnClick");
 }
 
 void UTAULoginWidget::ShowRefreshButton()
@@ -272,18 +272,18 @@ void UTAULoginWidget::GetQrCode()
 			QrCodeModel = Model;
 			ResetQrCode(Model->qrcode_url);
 			StartCheck();
-			TDUDebuger::DisplayLog("QRCODE Get");
+			TUDebuger::DisplayLog("QRCODE Get");
 		} else
 		{
 			ShowRefreshButton();
-			TDUDebuger::WarningLog("QRCODE Get Fail");
+			TUDebuger::WarningLog("QRCODE Get Fail");
 		}
 	});
 }
 
 void UTAULoginWidget::GetTokenFromWebCode(const FString& WebCode) {
 	if (!WebAuthHelper.IsValid()) {
-		TDUDebuger::ErrorLog("WebAuthHelper is invalid, please check code");
+		TUDebuger::ErrorLog("WebAuthHelper is invalid, please check code");
 		return;
 	}
 	TSharedPtr<FJsonObject> Paras = MakeShareable(new FJsonObject);
@@ -299,7 +299,7 @@ void UTAULoginWidget::GetTokenFromWebCode(const FString& WebCode) {
 		if (Model.IsValid()) {
 			GetProfile(Model);
 		} else {
-			TDUDebuger::WarningLog("web login fail");
+			TUDebuger::WarningLog("web login fail");
 			ShowTip(TAULoginLanguage::GetCurrentLang()->WebNoticeFail(), TAULoginLanguage::GetCurrentLang()->WebNoticeFail2());
 		}
 	});

@@ -4,8 +4,8 @@
 
 DEFINE_LOG_CATEGORY_STATIC(TDUHttpLog, Log, All);
 
-class TDUHttpRequest;
-class TAPCOMMON_API TDUHttpResponse
+class TUHttpRequest;
+class TAPCOMMON_API TUHttpResponse
 {
 	
 public:
@@ -31,7 +31,7 @@ public:
 	 */
 	TArray<FString> headers;
 
-	TSharedPtr<TDUHttpRequest> request;
+	TSharedPtr<TUHttpRequest> request;
 
 	FString GenerateDebugString();
 };

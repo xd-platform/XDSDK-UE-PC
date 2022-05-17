@@ -5,7 +5,7 @@
 #include "XDGImplement.h"
 #include "LanguageManager.h"
 #include "TapLoginHelper.h"
-#include "TDUDebuger.h"
+#include "TUDebuger.h"
 #include "XDGSDK.h"
 #include "Blueprint/UserWidget.h"
 #include "XDGSDK/UI/XDGUserCenterWidget.h"
@@ -123,7 +123,7 @@ void UXDGAPI::Logout()
 void UXDGAPI::OpenUserCenter(TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
 	TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
 	if (!FXDGUser::GetLocalModel().IsValid()) {
-		TDUDebuger::WarningLog("Please Login First");
+		TUDebuger::WarningLog("Please Login First");
 		return;
 	}
 
@@ -157,7 +157,7 @@ void UXDGAPI::OpenCustomerCenter(FString ServerId, FString RoleId, FString RoleN
 	FString UrlStr = XDGImplement::GetCustomerCenter(ServerId, RoleId, RoleName);
 
 	if (UrlStr.IsEmpty()) {
-		TDUDebuger::ErrorLog("please login first");
+		TUDebuger::ErrorLog("please login first");
 	} else {
 		FPlatformProcess::LaunchURL(*UrlStr, nullptr, nullptr);
 	}
@@ -167,9 +167,9 @@ void UXDGAPI::OpenWebPay(FString ServerId, FString RoleId) {
 	FString UrlStr = XDGImplement::GetPayUrl(ServerId, RoleId);
 
 	if (UrlStr.IsEmpty()) {
-		TDUDebuger::ErrorLog("please login first");
+		TUDebuger::ErrorLog("please login first");
 	} else {
-		TDUDebuger::DisplayLog(FString::Printf(TEXT("web pay url: %s"), *UrlStr));
+		TUDebuger::DisplayLog(FString::Printf(TEXT("web pay url: %s"), *UrlStr));
 		FPlatformProcess::LaunchURL(*UrlStr, nullptr, nullptr);
 	}
 }
@@ -185,7 +185,7 @@ bool UXDGAPI::IsPushServiceEnable() {
 void UXDGAPI::Test()
 {
 	FString Path = FPlatformProcess::BaseDir();
-	TDUDebuger::DisplayShow(Path);
+	TUDebuger::DisplayShow(Path);
 
 
 	// FString Path = "/Users/huangyifeng/Products/Mac/XDGDemo/Product/MacNoEditor/XD_PC.app";

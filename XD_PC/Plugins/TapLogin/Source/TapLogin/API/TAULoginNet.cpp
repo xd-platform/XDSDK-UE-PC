@@ -1,38 +1,38 @@
 #include "TAULoginNet.h"
 
-#include "DeviceInfo.h"
-#include "JsonHelper.h"
+#include "TUDeviceInfo.h"
+#include "TUJsonHelper.h"
 #include "TapTapSdk.h"
-#include "TDSCrypto.h"
+#include "TUCrypto.h"
 #include "TDSHelper.h"
-#include "TDUHttpManager.h"
+#include "TUHttpManager.h"
 #include "URLParser.h"
 
 TAULoginNet::TAULoginNet()
 {
 }
 
-FTAULoginError TAULoginNet::GenerateErrorInfo(const TSharedPtr<TDUHttpResponse>& Response)
+FTAULoginError TAULoginNet::GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& Response)
 {
 	FTAULoginError Error = FTAULoginError();
-	if (Response->state == TDUHttpResponse::clientError)
+	if (Response->state == TUHttpResponse::clientError)
 	{
-		Error.code = TDUHttpResponse::clientError;
+		Error.code = TUHttpResponse::clientError;
 		Error.msg = "request fail";
-	} else if (Response->state == TDUHttpResponse::serverError)
+	} else if (Response->state == TUHttpResponse::serverError)
 	{
-		Error.code = TDUHttpResponse::serverError;
+		Error.code = TUHttpResponse::serverError;
 		Error.msg = "server error";
-	} else if (Response->state == TDUHttpResponse::networkError)
+	} else if (Response->state == TUHttpResponse::networkError)
 	{
-		Error.code = TDUHttpResponse::networkError;
+		Error.code = TUHttpResponse::networkError;
 		Error.msg = "network connection error";
 	}
 	return Error;
 }
 
 template <typename StructType>
-void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& Response, TFunction<void(TSharedPtr<StructType> Model, FTAULoginError Error)> Callback)
+void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& Response, TFunction<void(TSharedPtr<StructType> Model, FTAULoginError Error)> Callback)
 {
 	if (Callback == nullptr)
 	{
@@ -40,14 +40,14 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& Response,
 	}
 	FTAULoginError Error = TAULoginNet::GenerateErrorInfo(Response);
 
-	auto JsonObject = JsonHelper::GetJsonObject(Response->contentString);
+	auto JsonObject = TUJsonHelper::GetJsonObject(Response->contentString);
 	bool Success = false;
 	const TSharedPtr<FJsonObject>* DataJsonObject = nullptr;
 	if (JsonObject.IsValid() && JsonObject->TryGetBoolField("success", Success) && JsonObject->TryGetObjectField("data", DataJsonObject))
 	{
 		if (Success)
 		{
-			auto Model = JsonHelper::GetUStruct<StructType>(*DataJsonObject);
+			auto Model = TUJsonHelper::GetUStruct<StructType>(*DataJsonObject);
 			if (Model.IsValid())
 			{
 				Callback(Model, Error);
@@ -55,7 +55,7 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& Response,
 			}
 		} else
 		{
-			auto Model = JsonHelper::GetUStruct<FTAULoginError>(*DataJsonObject);
+			auto Model = TUJsonHelper::GetUStruct<FTAULoginError>(*DataJsonObject);
 			if (Model.IsValid())
 			{
 				Error = *Model.Get();
@@ -69,7 +69,7 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TDUHttpResponse>& Response,
 void TAULoginNet::RequestLoginQrCode(const TArray<FString> Permissions,
 	TFunction<void(TSharedPtr<FTAUQrCodeModel> Model, FTAULoginError Error)> callback)
 {
-	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new TAULoginNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new TAULoginNet());
 	request->Type = Post;
 	request->URL = TapTapSdk::CurrentRegion->CodeUrl();
 	request->Parameters->SetStringField("client_id", TapTapSdk::ClientId);
@@ -77,17 +77,17 @@ void TAULoginNet::RequestLoginQrCode(const TArray<FString> Permissions,
 	request->Parameters->SetStringField("scope", FString::Join(Permissions, TEXT(",")));
 	request->Parameters->SetStringField("version", TapTapSdk::Version);
 	request->Parameters->SetStringField("platform", "ue");
-	request->Parameters->SetStringField("info", FString::Printf(TEXT("{\"device_id\":\"%s\"}"), *DeviceInfo::GetLoginId()));
+	request->Parameters->SetStringField("info", FString::Printf(TEXT("{\"device_id\":\"%s\"}"), *TUDeviceInfo::GetLoginId()));
 
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void TAULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTapAccessToken> Model, FTAULoginError Error)> callback)
 {
-	const TSharedPtr<TDUHttpRequest> request = MakeShareable(new TAULoginNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new TAULoginNet());
 	request->Type = Post;
 	request->URL = TapTapSdk::CurrentRegion->TokenUrl();
 	request->Parameters->SetStringField("grant_type", "device_token");
@@ -96,12 +96,12 @@ void TAULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(T
 	request->Parameters->SetStringField("code", DeviceCode);
 	request->Parameters->SetStringField("version", "1.0");
 	request->Parameters->SetStringField("platform", "ue");
-	request->Parameters->SetStringField("info", FString::Printf(TEXT("{\"device_id\":\"%s\"}"), *DeviceInfo::GetLoginId()));
+	request->Parameters->SetStringField("info", FString::Printf(TEXT("{\"device_id\":\"%s\"}"), *TUDeviceInfo::GetLoginId()));
 
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void TAULoginNet::RequestProfile(const FTapAccessToken& AccessToken,
@@ -111,10 +111,10 @@ void TAULoginNet::RequestProfile(const FTapAccessToken& AccessToken,
 	request->URL = TapTapSdk::CurrentRegion->ProfileUrl();
 	request->Parameters->SetStringField("client_id", TapTapSdk::ClientId);
 	request->AccessToken = MakeShareable(new FTapAccessToken(AccessToken));
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 void TAULoginNet::RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras,
@@ -123,20 +123,20 @@ void TAULoginNet::RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras
 	request->Type = Post;
 	request->URL = TapTapSdk::CurrentRegion->TokenUrl();
 	request->Parameters = Paras;
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> response) {
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
-	TDUHttpManager::Get().request(request);
+	TUHttpManager::Get().request(request);
 }
 
 TMap<FString, FString> TAULoginNet::CommonHeaders()
 {
-	return TDUHttpRequest::CommonHeaders();
+	return TUHttpRequest::CommonHeaders();
 }
 
 TSharedPtr<FJsonObject> TAULoginNet::CommonParameters()
 {
-	return TDUHttpRequest::CommonParameters();
+	return TUHttpRequest::CommonParameters();
 }
 
 bool TAULoginNet::ResetHeadersBeforeRequest()
@@ -147,7 +147,7 @@ bool TAULoginNet::ResetHeadersBeforeRequest()
 		return true;
 	} else
 	{
-		return TDUHttpRequest::ResetHeadersBeforeRequest();
+		return TUHttpRequest::ResetHeadersBeforeRequest();
 	}
 	
 }
@@ -160,7 +160,7 @@ FString TAULoginNet::GetMacToken()
 	{
 		return authToken;
 	}
-	auto Parse = TauCommon::FURL_RFC3986();
+	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(this->GetFinalUrl());
 	FString timeStr = FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp());
 	FString nonce = TDSHelper::GetRandomStr(5);
@@ -175,8 +175,8 @@ FString TAULoginNet::GetMacToken()
 	FString port = Parse.GetPort();
 
 	FString dataStr = timeStr + "\n" + nonce + "\n" + md + "\n" + pathAndQuery + "\n" + domain + "\n" + port + "\n\n";
-	auto sha1 = TDSCrypto::HmacSHA1(TDSCrypto::UTF8Encode(dataStr), TDSCrypto::UTF8Encode(tokenModel->mac_key));
-	FString mac = TDSCrypto::Base64Encode(sha1);
+	auto sha1 = TUCrypto::HmacSHA1(TUCrypto::UTF8Encode(dataStr), TUCrypto::UTF8Encode(tokenModel->mac_key));
+	FString mac = TUCrypto::Base64Encode(sha1);
 	
 	authToken = FString::Printf(TEXT("MAC id=\"%s\",ts=\"%s\",nonce=\"%s\",mac=\"%s\""), *tokenModel->kid, *timeStr, *nonce, *mac);
 	return authToken;

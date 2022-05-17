@@ -1,6 +1,6 @@
 #pragma once
 
-class TAPCOMMON_API DeviceInfo
+class TAPCOMMON_API TUDeviceInfo
 {
 public:
 	

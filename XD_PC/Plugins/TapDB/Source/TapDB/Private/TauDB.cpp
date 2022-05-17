@@ -3,10 +3,10 @@
 
 #include "TauDB.h"
 
-#include "DeviceInfo.h"
+#include "TUDeviceInfo.h"
 #include "TauDBConfig.h"
 #include "TauDBImplement.h"
-#include "TDUDebuger.h"
+#include "TUDebuger.h"
 
 void UTauDB::StartByAppID(const TauDBInitConfig& Config)
 {
@@ -117,7 +117,7 @@ void UTauDB::Start(bool isClientID, const TauDBInitConfig& Config)
 {
 	if (Config.AppIdOrClientId.Len() <= 0 || Config.AppIdOrClientId.Len() > 256)
 	{
-		TDUDebuger::ErrorLog("AppIdOrClientId is illegal, TapDB will not work.");
+		TUDebuger::ErrorLog("AppIdOrClientId is illegal, TapDB will not work.");
 	}
 	TauDBConfig::Get().isCN = Config.isCN;
 	TauDBImplement::Get().Init(Config, !isClientID);

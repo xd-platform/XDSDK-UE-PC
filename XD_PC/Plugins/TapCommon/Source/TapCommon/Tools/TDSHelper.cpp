@@ -102,7 +102,7 @@ void TDSHelper::ActivateItself() {
 	}
 	Path.LeftInline(index + 4);
 	
-	TDUDebuger::DisplayShow(Path);
+	TUDebuger::DisplayShow(Path);
 	FMacPlatformProcess::LaunchFileInDefaultExternalApplication(*Path);
 }
 #endif

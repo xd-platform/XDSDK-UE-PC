@@ -1,9 +1,9 @@
-#include "TduOpenSSL.h"
+#include "TUOpenSSL.h"
 #include <openssl/sha.h>
 // #include <openssl/hmac.h>
 
 
-FString TduOpenSSL::LexToString(const TArray<uint8>& Content) {
+FString TUOpenSSL::LexToString(const TArray<uint8>& Content) {
 	FString Result;
 	for (TArray<uint8>::TConstIterator it(Content); it; ++it) {
 		Result += FString::Printf(TEXT("%02x"), *it);
@@ -11,7 +11,7 @@ FString TduOpenSSL::LexToString(const TArray<uint8>& Content) {
 	return Result;
 }
 
-TArray<uint8> TduOpenSSL::Sha256(const TArray<uint8>& Content) {
+TArray<uint8> TUOpenSSL::Sha256(const TArray<uint8>& Content) {
 	TArray<uint8> Sign;
 	Sign.SetNum(32); // sha256 固定32位
 	SHA256(Content.GetData(), Content.Num(), Sign.GetData());

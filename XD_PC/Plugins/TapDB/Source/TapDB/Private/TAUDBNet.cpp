@@ -1,8 +1,8 @@
 #include "TAUDBNet.h"
 
 #include "TauDBConfig.h"
-#include "TDUDebuger.h"
-#include "TDUHttpManager.h"
+#include "TUDebuger.h"
+#include "TUHttpManager.h"
 
 TQueue<TSharedPtr<TAUDBNet>> TAUDBNet::RequestQueue;
 FTimerHandle TAUDBNet::RetryTimerHandle = FTimerHandle();
@@ -48,8 +48,8 @@ void TAUDBNet::SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras)
 	request->Type = Post;
 	request->Parameters = Paras;
 	// 查下有没有循环引用
-	request->onCompleted.BindLambda([=](TSharedPtr<TDUHttpResponse> Response) {
-		if (Response->state == TDUHttpResponse::success)
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> Response) {
+		if (Response->state == TUHttpResponse::success)
 		{
 			// 如果请求成功，那么去掉队列的第一个，执行下一个请求
 			if (!RequestQueue.IsEmpty() && request == *RequestQueue.Peek())
@@ -103,9 +103,9 @@ void TAUDBNet::PerformRequest(const TSharedPtr<TAUDBNet>& Request)
 	{
 		return;
 	}
-	TDUHttpManager::Get().request(Request);
+	TUHttpManager::Get().request(Request);
 	if (CacheCount >= 1)
 	{
-		TDUDebuger::WarningLog(FString::Printf(TEXT("TapDB 缓存请求数量：%d"), CacheCount));
+		TUDebuger::WarningLog(FString::Printf(TEXT("TapDB 缓存请求数量：%d"), CacheCount));
 	}
 }

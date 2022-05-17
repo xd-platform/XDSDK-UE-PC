@@ -3,10 +3,10 @@
 #include "HttpServerModule.h"
 #include "HttpServerResponse.h"
 #include "TapTapSdk.h"
-#include "TDSCrypto.h"
+#include "TUCrypto.h"
 #include "TDSHelper.h"
-#include "TDUDebuger.h"
-#include "TduOpenSSL.h"
+#include "TUDebuger.h"
+#include "TUOpenSSL.h"
 
 static FString WebAuthPath = "authorize";
 
@@ -46,7 +46,7 @@ void TauWebAuthHelper::StopProcess() {
 
 bool TauWebAuthHelper::GetHttpRouter() {
 	if (HttpRouter.IsValid()) {
-		TDUDebuger::DisplayLog("HttpRouter already exist");
+		TUDebuger::DisplayLog("HttpRouter already exist");
 		return true;
 	}
 	static uint32 Port = 16445;
@@ -57,7 +57,7 @@ bool TauWebAuthHelper::GetHttpRouter() {
 		HttpRouter = FHttpServerModule::Get().GetHttpRouter(Port++);
 		if (Port >= EndPort) {
 			Port = EndPort;
-			TDUDebuger::ErrorLog("The login end port is occupied");
+			TUDebuger::ErrorLog("The login end port is occupied");
 			return false;
 		}
 	}
@@ -65,9 +65,9 @@ bool TauWebAuthHelper::GetHttpRouter() {
 #if  PLATFORM_MAC
 	// Mac版第二次接回调失效，可能是兼容问题，先新开一个端口解决下bug。
 	Port++;
-	TDUDebuger::DisplayLog("Http port add 1");
+	TUDebuger::DisplayLog("Http port add 1");
 #endif
-	TDUDebuger::DisplayLog("HttpRouter get success");
+	TUDebuger::DisplayLog("HttpRouter get success");
 	return true;
 }
 
@@ -81,7 +81,7 @@ FString TauWebAuthHelper::GetCodeVerifier() const {
 
 bool TauWebAuthHelper::SetAuthHandle() {
 	if (AuthHandle.IsValid()) {
-		TDUDebuger::DisplayLog("AuthHandle already exist");
+		TUDebuger::DisplayLog("AuthHandle already exist");
 		return true;
 	}
 	if (!HttpRouter.IsValid() && !GetHttpRouter()) {
@@ -92,7 +92,7 @@ bool TauWebAuthHelper::SetAuthHandle() {
 	AuthHandle = HttpRouter->BindRoute(FHttpPath("/" + WebAuthPath), EHttpServerRequestVerbs::VERB_GET | EHttpServerRequestVerbs::VERB_POST,
 		[WeakThisPtr](const FHttpServerRequest& Request, const FHttpResultCallback& OnComplete)
 	{
-			TDUDebuger::DisplayLog("web call back success");
+			TUDebuger::DisplayLog("web call back success");
 		auto SharedThis = WeakThisPtr.Pin();
 		if (!SharedThis.IsValid()) { return false; }
 			
@@ -102,17 +102,17 @@ bool TauWebAuthHelper::SetAuthHandle() {
 	});
 	if(!AuthHandle.IsValid())
 	{
-		TDUDebuger::ErrorLog("TauWebLoginHelper unable bind route: /web login");
+		TUDebuger::ErrorLog("TauWebLoginHelper unable bind route: /web login");
 		return false;
 	}
-	TDUDebuger::DisplayLog("AuthHandle create success");
+	TUDebuger::DisplayLog("AuthHandle create success");
 	FHttpServerModule::Get().StartAllListeners();
 	return true;
 }
 
 void TauWebAuthHelper::ProcessWebAuthRequest(const FHttpServerRequest& Request, const FHttpResultCallback& OnComplete) {
 	for (auto QueryParam : Request.QueryParams) {
-		TDUDebuger::DisplayLog(QueryParam.Key + ": " + QueryParam.Value);
+		TUDebuger::DisplayLog(QueryParam.Key + ": " + QueryParam.Value);
 	}
 	FString WebState = Request.QueryParams.FindRef("state");
 	FString WebCode = Request.QueryParams.FindRef("code");
@@ -128,7 +128,7 @@ void TauWebAuthHelper::ProcessWebAuthRequest(const FHttpServerRequest& Request, 
 			ResponsePtr->Headers.Add("Content-Type", {"image/gif"});
 			ResponsePtr->Headers.Add("Access-Control-Allow-Origin", {"*"});
 			FString GifBase64Str = "R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw==";
-			ResponsePtr->Body.Append(TDSCrypto::Base64Decode(GifBase64Str));
+			ResponsePtr->Body.Append(TUCrypto::Base64Decode(GifBase64Str));
 		} else if (WebMode == "redirect") {
 			ResponsePtr = MakeUnique<FHttpServerResponse>();
 			ResponsePtr->Code = EHttpServerResponseCodes::Moved;
@@ -138,7 +138,7 @@ void TauWebAuthHelper::ProcessWebAuthRequest(const FHttpServerRequest& Request, 
 			ResponsePtr->Code = EHttpServerResponseCodes::Ok;
 			ResponsePtr->Headers.Add("Content-Type", {"text/plain"});
 			ResponsePtr->Headers.Add("Access-Control-Allow-Origin", {"*"});
-			ResponsePtr->Body.Append(TDSCrypto::UTF8Encode(FString("ok")));
+			ResponsePtr->Body.Append(TUCrypto::UTF8Encode(FString("ok")));
 		}
 		if (CallBackBlock) {
 			CallBackBlock(WebCode);
@@ -156,7 +156,7 @@ FString TauWebAuthHelper::GenerateWebAuthUrl() {
 	Paras->SetStringField("response_type", "code");
 	Paras->SetStringField("redirect_uri", GetRedirectUri());
 	Paras->SetStringField("state", State);
-	Paras->SetStringField("code_challenge", TDSCrypto::UrlBase64Encode(TduOpenSSL::Sha256(TDSCrypto::UTF8Encode(CodeVerifier))));
+	Paras->SetStringField("code_challenge", TUCrypto::UrlBase64Encode(TUOpenSSL::Sha256(TUCrypto::UTF8Encode(CodeVerifier))));
 	Paras->SetStringField("code_challenge_method", "S256");
 	Paras->SetStringField("scope", FString::Join(Permissions, TEXT(",")));
 	Paras->SetStringField("flow", "pc_localhost");

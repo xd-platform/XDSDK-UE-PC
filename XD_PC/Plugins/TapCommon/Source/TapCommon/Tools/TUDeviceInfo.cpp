@@ -1,43 +1,43 @@
-#include "DeviceInfo.h"
+#include "TUDeviceInfo.h"
 #include "SocketSubsystem.h"
-#include "TAUCommonStorage.h"
+#include "TUCommonStorage.h"
 
 
-FString DeviceInfo::GetCPU()
+FString TUDeviceInfo::GetCPU()
 {
 	return FPlatformMisc::GetCPUBrand();
 }
 	
-FString DeviceInfo::GetGPU()
+FString TUDeviceInfo::GetGPU()
 {
 	return FPlatformMisc::GetPrimaryGPUBrand();
 }
 
 // ++UE4+Release-4.27-CL-18319896
-FString DeviceInfo::GetBuildVersion()
+FString TUDeviceInfo::GetBuildVersion()
 {
 	return FApp::GetBuildVersion();
 }
 
 // 4.27.2-18319896+++UE4+Release-4.27
-FString DeviceInfo::GetEngineVersion()
+FString TUDeviceInfo::GetEngineVersion()
 {
 	return FEngineVersion::Current().ToString();
 }
 
 // 4.27.0-17155196+++UE4+Release-4.27
-FString DeviceInfo::GetCompatibleEngineVersion()
+FString TUDeviceInfo::GetCompatibleEngineVersion()
 {
 	return FEngineVersion::CompatibleWith().ToString();
 }
 	
 //OS: 10.16 (21E258)
-FString DeviceInfo::GetOSVersion()
+FString TUDeviceInfo::GetOSVersion()
 {
 	return FPlatformMisc::GetOSVersion();
 }
 
-int DeviceInfo::GetScreenWidth()
+int TUDeviceInfo::GetScreenWidth()
 {
 	if (GEngine)
 	{
@@ -49,7 +49,7 @@ int DeviceInfo::GetScreenWidth()
 	
 }
 
-int DeviceInfo::GetScreenHeight()
+int TUDeviceInfo::GetScreenHeight()
 {
 	if (GEngine)
 	{
@@ -60,18 +60,18 @@ int DeviceInfo::GetScreenHeight()
 	}
 }
 
-FString DeviceInfo::GetLoginId()
+FString TUDeviceInfo::GetLoginId()
 {
 	return FPlatformMisc::GetLoginId();
 }
 
-FString DeviceInfo::GetInstallId()
+FString TUDeviceInfo::GetInstallId()
 {
-	FString InstallID = DataStorage<FTAUCommonStorage>::LoadString(FTAUCommonStorage::InstallID);
+	FString InstallID = DataStorage<FTUCommonStorage>::LoadString(FTUCommonStorage::InstallID);
 	if (InstallID.Len() <= 0)
 	{
 		InstallID = FGuid::NewGuid().ToString();
-		DataStorage<FTAUCommonStorage>::SaveString(FTAUCommonStorage::InstallID, InstallID);
+		DataStorage<FTUCommonStorage>::SaveString(FTUCommonStorage::InstallID, InstallID);
 	}
 	return InstallID;
 	
@@ -88,7 +88,7 @@ FString DeviceInfo::GetInstallId()
 // 	return FString::Join(MacAddrStr, TEXT(":"));
 // }
 
-FString DeviceInfo::GetPlatform()
+FString TUDeviceInfo::GetPlatform()
 {
 	FString OS;
 #if PLATFORM_IOS
@@ -105,23 +105,23 @@ FString DeviceInfo::GetPlatform()
 	return OS;
 }
 
-FString DeviceInfo::GetProjectName()
+FString TUDeviceInfo::GetProjectName()
 {
 	return FApp::GetProjectName();
 }
 
-FString DeviceInfo::GetDeviceId()
+FString TUDeviceInfo::GetDeviceId()
 {
 	return FPlatformMisc::GetDeviceId();
 }
 
-FString DeviceInfo::GetProjectVersion()
+FString TUDeviceInfo::GetProjectVersion()
 {
 	// 待实现
 	return "1.0.1";
 }
 
-FString DeviceInfo::GetIpv4()
+FString TUDeviceInfo::GetIpv4()
 {
 	ISocketSubsystem *socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
 	FString HostName;
@@ -148,7 +148,7 @@ FString DeviceInfo::GetIpv4()
 	return Ipv4;
 }
 
-FString DeviceInfo::GetIpv6()
+FString TUDeviceInfo::GetIpv6()
 {
 	ISocketSubsystem *socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
 	FString HostName;

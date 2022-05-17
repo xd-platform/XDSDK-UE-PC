@@ -5,7 +5,7 @@
 
 inline void LexFromStringHex(int32& OutValue, const TCHAR* Buffer) { OutValue = FCString::Strtoi(Buffer, nullptr, 16); }
 
-namespace TauCommon
+namespace TUCommon
 {
 
 	namespace StringHelpers

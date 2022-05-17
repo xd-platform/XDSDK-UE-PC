@@ -1,7 +1,7 @@
 #pragma once
 #include "JsonObjectConverter.h"
-#include "JsonHelper.h"
-#include "TDSCrypto.h"
+#include "TUJsonHelper.h"
+#include "TUCrypto.h"
 
 template <typename StructName>
 class DataStorage
@@ -100,8 +100,8 @@ public:
 	static void SaveToFile()
 	{
 		FString filePath = DataStoragePath();
-		FString jsonStr = JsonHelper::GetJsonString(JsonObject);
-		auto data = TDSCrypto::AesEncode(TDSCrypto::UTF8Encode(jsonStr), TDSCrypto::UTF8Encode(DataStorageKey()));
+		FString jsonStr = TUJsonHelper::GetJsonString(JsonObject);
+		auto data = TUCrypto::AesEncode(TUCrypto::UTF8Encode(jsonStr), TUCrypto::UTF8Encode(DataStorageKey()));
 		FFileHelper::SaveArrayToFile(data, *filePath);
 	}
 
@@ -115,8 +115,8 @@ private:
 			TArray<uint8> data;
 			if(FFileHelper::LoadFileToArray(data, *filePath))
 			{
-				auto JsonStr = TDSCrypto::UTF8Encode(TDSCrypto::AesDecode(data, TDSCrypto::UTF8Encode(DataStorageKey())));
-				JsonObject = JsonHelper::GetJsonObject(JsonStr);
+				auto JsonStr = TUCrypto::UTF8Encode(TUCrypto::AesDecode(data, TUCrypto::UTF8Encode(DataStorageKey())));
+				JsonObject = TUJsonHelper::GetJsonObject(JsonStr);
 				// UE_LOG(LogTemp, Display, TEXT("JsonStr: %s"), *JsonStr);
 			}
 		}

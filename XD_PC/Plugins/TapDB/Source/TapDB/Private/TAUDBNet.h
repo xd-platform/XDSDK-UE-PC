@@ -1,11 +1,11 @@
 #pragma once
 
 #include "TauDBEnum.h"
-#include "TDUHttpRequest.h"
+#include "TUHttpRequest.h"
 
 
 
-class TAUDBNet: public TDUHttpRequest
+class TAUDBNet: public TUHttpRequest
 {
 	
 public:

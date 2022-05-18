@@ -5,7 +5,7 @@
 
 
 
-class TAUDBNet: public TUHttpRequest
+class TUDBNet: public TUHttpRequest
 {
 	
 public:
@@ -27,9 +27,9 @@ private:
 
 	static void SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras);
 
-	static void PerformRequest(const TSharedPtr<TAUDBNet>& Request);
+	static void PerformRequest(const TSharedPtr<TUDBNet>& Request);
 
-	static TQueue<TSharedPtr<TAUDBNet>> RequestQueue;
+	static TQueue<TSharedPtr<TUDBNet>> RequestQueue;
 
 	static FTimerHandle RetryTimerHandle;
 

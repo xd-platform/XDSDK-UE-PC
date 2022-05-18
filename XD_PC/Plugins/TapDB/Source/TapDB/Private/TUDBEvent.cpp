@@ -1,11 +1,11 @@
 #include "TUDBEvent.h"
 
 #include "TUDeviceInfo.h"
-#include "TAUDBEventTool.h"
+#include "TUDBEventTool.h"
 #include "TUHelper.h"
 #include "TUDebuger.h"
-#include "TAUDBNet.h"
-#include "TauDBStorage.h"
+#include "TUDBNet.h"
+#include "TUDBStorage.h"
 #include "VisualLogger/VisualLoggerCustomVersion.h"
 
 
@@ -44,7 +44,7 @@ void TUDBEvent::TrackEvent(const FString& Name, TSharedPtr<FJsonObject> CustomPr
 
 	DataDic->SetStringField(OPENID_KEY, GetOpenId());
 	
-	TAUDBNet::SendEvent(EventType, DataDic);
+	TUDBNet::SendEvent(EventType, DataDic);
 }
 
 void TUDBEvent::InitialEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
@@ -54,7 +54,7 @@ void TUDBEvent::InitialEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObj
 	TUHelper::JsonObjectAppend(OperationParams, Params);
 	OperationParams->SetStringField(TYPE_KEY, "initialise");
 	OperationParams->SetObjectField(PROPERTIES_KEY, Properties);
-	TAUDBNet::SendEvent(EventType, OperationParams);
+	TUDBNet::SendEvent(EventType, OperationParams);
 }
 
 void TUDBEvent::AddEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
@@ -64,7 +64,7 @@ void TUDBEvent::AddEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject>
 	TUHelper::JsonObjectAppend(OperationParams, Params);
 	OperationParams->SetStringField(TYPE_KEY, "add");
 	OperationParams->SetObjectField(PROPERTIES_KEY, Properties);
-	TAUDBNet::SendEvent(EventType, OperationParams);
+	TUDBNet::SendEvent(EventType, OperationParams);
 }
 
 void TUDBEvent::UpdateEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
@@ -74,7 +74,7 @@ void TUDBEvent::UpdateEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObje
 	TUHelper::JsonObjectAppend(OperationParams, Params);
 	OperationParams->SetStringField(TYPE_KEY, "update");
 	OperationParams->SetObjectField(PROPERTIES_KEY, Properties);
-	TAUDBNet::SendEvent(EventType, OperationParams);
+	TUDBNet::SendEvent(EventType, OperationParams);
 }
 
 void TUDBEvent::SetAccount(const FString& _Account)
@@ -128,9 +128,9 @@ void TUDBEvent::SaveIdentify(const FString& identify)
 	FString dataKey = Key;
 	if (!ClientId.IsEmpty())
 	{
-		dataKey = FTauDBStorage::ClientIdentifyKey;
+		dataKey = FTUDBStorage::ClientIdentifyKey;
 	}
-	TUDataStorage<FTauDBStorage>::SaveString(dataKey, identify);
+	TUDataStorage<FTUDBStorage>::SaveString(dataKey, identify);
 }
 
 FString TUDBEvent::GetSavedIdentify()
@@ -138,9 +138,9 @@ FString TUDBEvent::GetSavedIdentify()
 	FString dataKey = Key;
 	if (!ClientId.IsEmpty())
 	{
-		dataKey = FTauDBStorage::ClientIdentifyKey;
+		dataKey = FTUDBStorage::ClientIdentifyKey;
 	}
-	return TUDataStorage<FTauDBStorage>::LoadString(dataKey);
+	return TUDataStorage<FTUDBStorage>::LoadString(dataKey);
 }
 
 bool TUDBEvent::HasSavedIdentify()
@@ -151,7 +151,7 @@ bool TUDBEvent::HasSavedIdentify()
 void TUDBEvent::ClearIdentify()
 {
 	_Identify = FString();
-	TUDataStorage<FTauDBStorage>::Remove(Key);
+	TUDataStorage<FTUDBStorage>::Remove(Key);
 }
 
 FString TUDBEvent::GetIdentify()
@@ -208,7 +208,7 @@ TSharedPtr<FJsonObject> TUDBEvent::CombinedProperties(const TSharedPtr<FJsonObje
 	TUHelper::JsonObjectAppend(CustomCombinedProperties, CustomProperties);
 
 	/* 添加预置属性*/
-	TUHelper::JsonObjectAppend(CustomCombinedProperties, TAUDBEventTool::GetPresetProperties());
+	TUHelper::JsonObjectAppend(CustomCombinedProperties, TUDBEventTool::GetPresetProperties());
 	TUHelper::JsonObjectAppend(CustomCombinedProperties, CommonProperties);
 	TUHelper::JsonObjectAppend(CustomCombinedProperties, Properties);
 

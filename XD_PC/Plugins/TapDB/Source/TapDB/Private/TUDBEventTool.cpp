@@ -1,12 +1,12 @@
-#include "TAUDBEventTool.h"
+#include "TUDBEventTool.h"
 
 #include "TUDeviceInfo.h"
 #include "TUHelper.h"
 
 
-TAUDBEventTool * TAUDBEventTool::Singleton = nullptr;
+TUDBEventTool * TUDBEventTool::Singleton = nullptr;
 
-TSharedPtr<FJsonObject> TAUDBEventTool::GetPresetProperties()
+TSharedPtr<FJsonObject> TUDBEventTool::GetPresetProperties()
 {
 	TSharedPtr<FJsonObject> PresetProperties = MakeShareable(new FJsonObject);
 	TUHelper::JsonObjectAppend(PresetProperties, GetStaticPresetProperties());
@@ -16,7 +16,7 @@ TSharedPtr<FJsonObject> TAUDBEventTool::GetPresetProperties()
 	return PresetProperties;
 }
 
-TSharedPtr<FJsonObject>& TAUDBEventTool::GetStaticPresetProperties()
+TSharedPtr<FJsonObject>& TUDBEventTool::GetStaticPresetProperties()
 {
 	if (!Get().StaticPresetProperties.IsValid())
 	{
@@ -33,18 +33,18 @@ TSharedPtr<FJsonObject>& TAUDBEventTool::GetStaticPresetProperties()
 	return Get().StaticPresetProperties;
 }
 
-int TAUDBEventTool::GetEventIndex()
+int TUDBEventTool::GetEventIndex()
 {
 	Get().EventIndex++;
 	return Get().EventIndex;
 }
 
-void TAUDBEventTool::ResetEventIndex()
+void TUDBEventTool::ResetEventIndex()
 {
 	Get().EventIndex = 0;
 }
 
-FString& TAUDBEventTool::GetSessionUUID()
+FString& TUDBEventTool::GetSessionUUID()
 {
 	if (Get().SessionUUID.Len() <= 0)
 	{
@@ -53,11 +53,11 @@ FString& TAUDBEventTool::GetSessionUUID()
 	return Get().SessionUUID;
 }
 
-TAUDBEventTool & TAUDBEventTool::Get()
+TUDBEventTool & TUDBEventTool::Get()
 {
 	if (Singleton == nullptr)
 	{
-		Singleton = new TAUDBEventTool;
+		Singleton = new TUDBEventTool;
 	}
 	return *Singleton;
 }

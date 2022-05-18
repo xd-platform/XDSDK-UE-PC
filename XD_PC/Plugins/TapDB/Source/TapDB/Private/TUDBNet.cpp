@@ -1,15 +1,15 @@
-#include "TAUDBNet.h"
+#include "TUDBNet.h"
 
-#include "TauDBConfig.h"
+#include "TUDBConfig.h"
 #include "TUDebuger.h"
 #include "TUHttpManager.h"
 
-TQueue<TSharedPtr<TAUDBNet>> TAUDBNet::RequestQueue;
-FTimerHandle TAUDBNet::RetryTimerHandle = FTimerHandle();
-int TAUDBNet::CacheCount = 0;
+TQueue<TSharedPtr<TUDBNet>> TUDBNet::RequestQueue;
+FTimerHandle TUDBNet::RetryTimerHandle = FTimerHandle();
+int TUDBNet::CacheCount = 0;
 
 
-void TAUDBNet::SendEvent(TUDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras)
+void TUDBNet::SendEvent(TUDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras)
 {
 	if (EventType == TUDBEnum::Normal)
 	{
@@ -23,27 +23,27 @@ void TAUDBNet::SendEvent(TUDBEnum::EventType EventType, TSharedPtr<FJsonObject> 
 	}
 }
 
-void TAUDBNet::SendNormalEvent(TSharedPtr<FJsonObject> Paras)
+void TUDBNet::SendNormalEvent(TSharedPtr<FJsonObject> Paras)
 {
-	FString Url = TauDBConfig::GetHost() + "event";
+	FString Url = TUDBConfig::GetHost() + "event";
 	SendEvent(Url, Paras);
 }
 
-void TAUDBNet::SendCustomEvent(TSharedPtr<FJsonObject> Paras)
+void TUDBNet::SendCustomEvent(TSharedPtr<FJsonObject> Paras)
 {
-	FString Url = TauDBConfig::GetHost() + "custom";
+	FString Url = TUDBConfig::GetHost() + "custom";
 	SendEvent(Url, Paras);
 }
 
-void TAUDBNet::SendIdentifyEvent(TSharedPtr<FJsonObject> Paras)
+void TUDBNet::SendIdentifyEvent(TSharedPtr<FJsonObject> Paras)
 {
-	FString Url = TauDBConfig::GetHost() + "identify";
+	FString Url = TUDBConfig::GetHost() + "identify";
 	SendEvent(Url, Paras);
 }
 
-void TAUDBNet::SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras)
+void TUDBNet::SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras)
 {
-	const TSharedPtr<TAUDBNet> request = MakeShareable(new TAUDBNet);
+	const TSharedPtr<TUDBNet> request = MakeShareable(new TUDBNet);
 	request->URL = Url;
 	request->Type = Post;
 	request->Parameters = Paras;
@@ -76,7 +76,7 @@ void TAUDBNet::SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras)
 	PerformRequest(request);
 }
 
-void TAUDBNet::PerformRequest(const TSharedPtr<TAUDBNet>& Request)
+void TUDBNet::PerformRequest(const TSharedPtr<TUDBNet>& Request)
 {
 	if (!Request.IsValid())
 	{

@@ -1,9 +1,9 @@
-#include "TauDBConfig.h"
+#include "TUDBConfig.h"
 
 
-TauDBConfig * TauDBConfig::Singleton = nullptr;
+TUDBConfig * TUDBConfig::Singleton = nullptr;
 
-FString TauDBConfig::GetHost()
+FString TUDBConfig::GetHost()
 {
 	if (Get().isCN)
 	{
@@ -14,11 +14,11 @@ FString TauDBConfig::GetHost()
 	}
 }
 
-TauDBConfig & TauDBConfig::Get()
+TUDBConfig & TUDBConfig::Get()
 {
 	if (Singleton == nullptr)
 	{
-		Singleton = new TauDBConfig;
+		Singleton = new TUDBConfig;
 	}
 	return *Singleton;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-class TAUDBEventTool
+class TUDBEventTool
 {
 public:
 
@@ -13,8 +13,8 @@ public:
 
 
 private:
-	static TAUDBEventTool *Singleton;
-	static TAUDBEventTool& Get();
+	static TUDBEventTool *Singleton;
+	static TUDBEventTool& Get();
 	TSharedPtr<FJsonObject> StaticPresetProperties;
 	int EventIndex = 0;
 	FString SessionUUID;

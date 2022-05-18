@@ -1,13 +1,13 @@
 #pragma once
-#include "TauDB.h"
+#include "TUDB.h"
 #include "TUDBEvent.h"
 
-class TauDBImplement
+class TUDBImplement
 {
 public:
-	static TauDBImplement& Get();
+	static TUDBImplement& Get();
 
-	void Init(const TauDBInitConfig& Config, bool isAccount);
+	void Init(const TUDBInitConfig& Config, bool isAccount);
 
 	void SetUser(const FString& UserId, TSharedPtr<FJsonObject> Properties = nullptr, const FString& LoginType = FString());
 	void ClearUser();
@@ -49,7 +49,7 @@ public:
 private:
 	static FString TAPDB_VERSION;
 
-	static TauDBImplement *Singleton;
+	static TUDBImplement *Singleton;
 	static FString First_login_type;
 	static FString First_open_id;
 	

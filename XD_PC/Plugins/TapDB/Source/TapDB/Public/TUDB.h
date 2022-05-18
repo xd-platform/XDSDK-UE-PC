@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "TauDB.generated.h"
+#include "TUDB.generated.h"
 
-struct TauDBInitConfig
+struct TUDBInitConfig
 {
 	
 	// 注册游戏时获得的APP ID
@@ -30,7 +30,7 @@ struct TauDBInitConfig
  * 
  */
 
-namespace TauDBLoginType
+namespace TUDBLoginType
 {
 	static FString TapTap = "TapTap";
 	static FString WeiXin = "WeiXin";
@@ -46,14 +46,14 @@ namespace TauDBLoginType
 
 
 UCLASS()
-class TAPDB_API UTauDB : public UObject
+class TAPDB_API UTUDB : public UObject
 {
 	GENERATED_BODY()
 public:
 
 	
-	static void StartByAppID(const TauDBInitConfig& Config);
-	static void StartByClientID(const TauDBInitConfig& Config);
+	static void StartByAppID(const TUDBInitConfig& Config);
+	static void StartByClientID(const TUDBInitConfig& Config);
 
 	/// 记录一个用户（不是游戏角色！！！！），需要保证唯一性
 	/// @param UserId 用户ID。不同用户需要保证ID的唯一性
@@ -147,6 +147,6 @@ public:
 	static void RegisterDynamicProperties(TFunction<TSharedPtr<FJsonObject>()> DynamicPropertiesCaculator);
 
 private:
-	static void Start(bool isClientID, const TauDBInitConfig& Config);
+	static void Start(bool isClientID, const TUDBInitConfig& Config);
 	
 };

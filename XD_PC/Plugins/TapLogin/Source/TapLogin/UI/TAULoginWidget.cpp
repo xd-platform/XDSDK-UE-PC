@@ -40,9 +40,7 @@ void UTAULoginWidget::NativeConstruct()
 	TitleLoginLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->TitleLogin()));
 	QrTitleLoginLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrTitleLogin()));
 	QrRefreshLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrRefresh()));
-	QrNoticeUseLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrNoticeUse()));
-	QrNoticeClientLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrNoticeClient()));
-	QrNoticeScanToLoginLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrNoticeScanToLogin()));
+	QrNoticeScanToLoginRichLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->QrNoticeScanToLogin()));
 	WebLoginLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->WebLogin()));
 	WebNoticeLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->WebNotice()));
 	WebButtonJumpToWebLabel->SetText(FText::FromString(TAULoginLanguage::GetCurrentLang()->WebButtonJumpToWeb()));

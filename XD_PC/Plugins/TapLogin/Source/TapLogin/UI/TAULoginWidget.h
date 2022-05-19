@@ -11,6 +11,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "TauWebAuthHelper.h"
+#include "Components/RichTextBlock.h"
 #include "TAULoginWidget.generated.h"
 
 /**
@@ -71,13 +72,7 @@ private:
 	UTextBlock* QrRefreshLabel; //return "点击刷新";
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* QrNoticeUseLabel; //return "请使用";
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* QrNoticeClientLabel; //return "客户端";
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* QrNoticeScanToLoginLabel; //return "扫描二维码登录";
+	URichTextBlock* QrNoticeScanToLoginRichLabel; //return "扫描二维码登录";
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* WebLoginLabel; //return "使用网页浏览器完成授权";

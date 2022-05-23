@@ -17,11 +17,6 @@ void TapUELogin::Init(Config Config) {
 	TULoginImpl::Get()->Init(Config);
 }
 
-void TapUELogin::ChangeLanguage(LanguageType LanguageType) {
-	checkf(IsInitialized, TEXT("Please Init First"));
-	TULoginImpl::Get()->ChangeLanguage(LanguageType);
-}
-
 TSharedPtr<FTULoginProfileModel> TapUELogin::GetProfile() {
 	checkf(IsInitialized, TEXT("Please Init First"));
 	return TULoginImpl::Get()->GetProfile();
@@ -53,6 +48,15 @@ void TapUELogin::Logout() {
 	TULoginImpl::Get()->Logout();
 }
 
+#if PLATFORM_MAC || PLATFORM_WINDOWS
+	
+void TapUELogin::ChangeLanguage(LanguageType LanguageType) {
+	checkf(IsInitialized, TEXT("Please Init First"));
+	TULoginImpl::Get()->ChangeLanguage(LanguageType);
+}
+
+#elif PLATFORM_IOS || PLATFORM_ANDROID
+	
 void TapUELogin::GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack) {
 	checkf(IsInitialized, TEXT("Please Init First"));
 	TULoginImpl::Get()->GetTestQualification(CallBack);
@@ -63,3 +67,4 @@ void TapUELogin::QueryMutualList(FString Cursor, int Size,
 	checkf(IsInitialized, TEXT("Please Init First"));
 	TULoginImpl::Get()->QueryMutualList(Cursor, Size, CallBack);
 }
+#endif

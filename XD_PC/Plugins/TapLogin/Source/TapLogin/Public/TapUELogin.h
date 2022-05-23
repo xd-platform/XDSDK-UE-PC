@@ -13,6 +13,7 @@ public:
 		IO
 	};
 
+#if PLATFORM_MAC || PLATFORM_WINDOWS
 	enum LanguageType {
 		AUTO,   // 海外默认英语，国内默认简体中文
 		ZH,		// 简体中文
@@ -23,14 +24,18 @@ public:
 		TH,		// 泰文
 		ZHTW,	// 繁体中文
 	};
+#endif
 
 
 	class Config {
 	public:
 		FString ClientID;
 		RegionType RegionType = CN;
-		LanguageType LanguageType = AUTO;
 		bool RoundCorner = true;
+
+#if PLATFORM_MAC || PLATFORM_WINDOWS
+		LanguageType LanguageType = AUTO;
+#endif
 	};
 
 	class PermissionScope {
@@ -41,8 +46,6 @@ public:
 
 	// 只能初始化一次
 	static void Init(Config Config);
-
-	static void ChangeLanguage(LanguageType LanguageType);
 
 	// 未登录的话为nullptr
 	static TSharedPtr<FTULoginProfileModel> GetProfile();
@@ -58,8 +61,15 @@ public:
 
 	static void Logout();
 
+#if PLATFORM_MAC || PLATFORM_WINDOWS
+	
+	static void ChangeLanguage(LanguageType LanguageType);
+
+#elif PLATFORM_IOS || PLATFORM_ANDROID
+	
 	static void GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack);
 	
 	static void QueryMutualList(FString Cursor, int Size, TFunction<void(TSharedPtr<FTULoginFriendResult> ModelPtr, const FTUError& Error)> CallBack);
-	
+
+#endif
 };

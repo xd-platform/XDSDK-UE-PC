@@ -29,6 +29,3 @@ void TULoginPCImpl::Logout() {
 	TULoginImpl::Logout();
 }
 
-void TULoginPCImpl::GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack) {
-	TULoginImpl::GetTestQualification(CallBack);
-}

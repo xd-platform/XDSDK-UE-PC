@@ -11,6 +11,5 @@ public:
 	virtual TSharedPtr<FTUAccessToken> GetAccessToken() override;
 	virtual void Login(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> CallBack) override;
 	virtual void Logout() override;
-	virtual void GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack) override;
 
 };

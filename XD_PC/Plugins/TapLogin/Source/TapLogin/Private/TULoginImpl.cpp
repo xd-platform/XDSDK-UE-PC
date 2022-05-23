@@ -1,11 +1,22 @@
 #include "TULoginImpl.h"
 #include "TUDebuger.h"
+#if PLATFORM_MAC || PLATFORM_WINDOWS
+#include "TULoginPCImpl.h"
+#elif PLATFORM_IOS || PLATFORM_ANDROID
+#include "TULoginMobileImpl.h"
+#endif
 
 TSharedPtr<TULoginImpl> TULoginImpl::Instance = nullptr;
 
 TSharedPtr<TULoginImpl>& TULoginImpl::Get() {
 	if (!Instance.IsValid()) {
-		
+#if PLATFORM_MAC || PLATFORM_WINDOWS
+		Instance = MakeShareable(new TULoginPCImpl);
+#elif PLATFORM_IOS || PLATFORM_ANDROID
+		Instance = MakeShareable(new TULoginMobileImpl);
+#else
+		Instance = MakeShareable(new TULoginImpl);
+#endif
 	}
 	return Instance;
 }

@@ -4,6 +4,7 @@
 
 class TULoginImpl {
 public:
+	virtual ~TULoginImpl() = default;
 
 	static TSharedPtr<TULoginImpl>& Get();
 	

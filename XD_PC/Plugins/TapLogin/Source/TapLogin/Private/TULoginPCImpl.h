@@ -1,6 +1,16 @@
 #pragma once
+#include "TULoginImpl.h"
 
-class TULoginPCImpl {
+class TULoginPCImpl: public TULoginImpl {
 public:
-	
+	virtual void Init(TapUELogin::Config Config) override;
+	virtual void ChangeLanguage(TapUELogin::LanguageType LanguageType) override;
+	virtual TSharedPtr<FTULoginProfileModel> GetProfile() override;
+	virtual void FetchProfile(
+		TFunction<void(TSharedPtr<FTULoginProfileModel> ModelPtr, const FTUError& Error)> CallBack) override;
+	virtual TSharedPtr<FTUAccessToken> GetAccessToken() override;
+	virtual void Login(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> CallBack) override;
+	virtual void Logout() override;
+	virtual void GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack) override;
+
 };

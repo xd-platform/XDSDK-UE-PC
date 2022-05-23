@@ -2,11 +2,12 @@
 
 #include "TUDeviceInfo.h"
 #include "TUJsonHelper.h"
-#include "TapTapSdk.h"
 #include "TUCrypto.h"
 #include "TUHelper.h"
 #include "TUHttpManager.h"
+#include "TULoginRegionConfig.h"
 #include "URLParser.h"
+#include "TULoginImpl.h"
 
 TULoginNet::TULoginNet()
 {
@@ -67,15 +68,15 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& Response, 
 }
 
 void TULoginNet::RequestLoginQrCode(const TArray<FString> Permissions,
-	TFunction<void(TSharedPtr<FTAUQrCodeModel> Model, FTULoginError Error)> callback)
+	TFunction<void(TSharedPtr<FTUQrCodeModel> Model, FTULoginError Error)> callback)
 {
 	const TSharedPtr<TUHttpRequest> request = MakeShareable(new TULoginNet());
 	request->Type = Post;
-	request->URL = TapTapSdk::CurrentRegion->CodeUrl();
-	request->Parameters->SetStringField("client_id", TapTapSdk::ClientId);
+	request->URL = TULoginRegionConfig::Get()->CodeUrl();
+	request->Parameters->SetStringField("client_id", TULoginImpl::Get()->Config.ClientID);
 	request->Parameters->SetStringField("response_type", "device_code");
 	request->Parameters->SetStringField("scope", FString::Join(Permissions, TEXT(",")));
-	request->Parameters->SetStringField("version", TapTapSdk::Version);
+	request->Parameters->SetStringField("version", TULoginRegionConfig::Get()->TapTapSDKVersion);
 	request->Parameters->SetStringField("platform", "ue");
 	request->Parameters->SetStringField("info", FString::Printf(TEXT("{\"device_id\":\"%s\"}"), *TUDeviceInfo::GetLoginId()));
 
@@ -89,9 +90,9 @@ void TULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(TS
 {
 	const TSharedPtr<TUHttpRequest> request = MakeShareable(new TULoginNet());
 	request->Type = Post;
-	request->URL = TapTapSdk::CurrentRegion->TokenUrl();
+	request->URL = TULoginRegionConfig::Get()->TokenUrl();
 	request->Parameters->SetStringField("grant_type", "device_token");
-	request->Parameters->SetStringField("client_id", TapTapSdk::ClientId);
+	request->Parameters->SetStringField("client_id", TULoginImpl::Get()->Config.ClientID);
 	request->Parameters->SetStringField("secret_type", "hmac-sha-1");
 	request->Parameters->SetStringField("code", DeviceCode);
 	request->Parameters->SetStringField("version", "1.0");
@@ -108,8 +109,8 @@ void TULoginNet::RequestProfile(const FTUAccessToken& AccessToken,
 	TFunction<void(TSharedPtr<FTULoginProfileModel> Model, FTULoginError Error)> callback)
 {
 	const TSharedPtr<TULoginNet> request = MakeShareable(new TULoginNet());
-	request->URL = TapTapSdk::CurrentRegion->ProfileUrl();
-	request->Parameters->SetStringField("client_id", TapTapSdk::ClientId);
+	request->URL = TULoginRegionConfig::Get()->ProfileUrl();
+	request->Parameters->SetStringField("client_id", TULoginImpl::Get()->Config.ClientID);
 	request->AccessToken = MakeShareable(new FTUAccessToken(AccessToken));
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
@@ -121,7 +122,7 @@ void TULoginNet::RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras,
 	TFunction<void(TSharedPtr<FTUAccessToken> Model, FTULoginError Error)> callback) {
 	const TSharedPtr<TULoginNet> request = MakeShareable(new TULoginNet());
 	request->Type = Post;
-	request->URL = TapTapSdk::CurrentRegion->TokenUrl();
+	request->URL = TULoginRegionConfig::Get()->TokenUrl();
 	request->Parameters = Paras;
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);

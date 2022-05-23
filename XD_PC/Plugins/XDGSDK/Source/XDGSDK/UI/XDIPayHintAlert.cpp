@@ -7,7 +7,7 @@ UXDIPayHintAlert::UXDIPayHintAlert(const FObjectInitializer& ObjectInitializer) 
 {
 }
 
-void UXDIPayHintAlert::Show(CheckPayType CheckType)
+void UXDIPayHintAlert::Show(XDCheckPayType CheckType)
 {
 	if (CheckType == None)
 	{

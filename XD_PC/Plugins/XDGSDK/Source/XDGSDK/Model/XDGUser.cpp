@@ -27,14 +27,14 @@ TSharedPtr<FTokenModel> FXDGUser::Token()
 	return  FTokenModel::GetLocalModel();
 }
 
-LoginType FXDGUser::GetLoginType()
+XDLoginType FXDGUser::GetLoginType()
 {
 	if (loginType == 0){
-		return LoginType::Guest;
+		return XDLoginType::Guest;
 	} else if (loginType == 5){
-		return LoginType::TapTap;
+		return XDLoginType::TapTap;
 	}
-	return LoginType::Guest;
+	return XDLoginType::Guest;
 }
 
 void FXDGUser::ClearUserData()

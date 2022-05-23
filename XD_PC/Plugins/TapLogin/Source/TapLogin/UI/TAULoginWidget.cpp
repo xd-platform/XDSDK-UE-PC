@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "TAULoginWidget.h"
 
-#include "TapTapSdk.h"
+#include "TULoginImpl.h"
 #include "TAULoginLanguage.h"
 #include "TULoginNet.h"
 #include "TUHelper.h"
@@ -14,8 +14,7 @@ UTAULoginWidget::UTAULoginWidget(const FObjectInitializer& ObjectInitializer) : 
 
 }
 
-void UTAULoginWidget::ShowLoginUI(TArray<FString> Permissions, TFunction<void(TUAuthResult result)> Completed)
-{
+void UTAULoginWidget::ShowLoginUI(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> Completed) {
 	if (UClass* MyWidgetClass = LoadClass<UTAULoginWidget>(nullptr, TEXT("WidgetBlueprint'/TapLogin/BPTapLoginUI.BPTapLoginUI_C'")))
 	{
 		if (GWorld && GWorld->GetWorld())
@@ -263,7 +262,7 @@ void UTAULoginWidget::Close(const TUAuthResult& Result)
 void UTAULoginWidget::GetQrCode()
 {
 	TULoginNet::RequestLoginQrCode(Permissions,
-	[=](TSharedPtr<FTAUQrCodeModel> Model, FTULoginError Error)
+	[=](TSharedPtr<FTUQrCodeModel> Model, FTULoginError Error)
 	{
 		if (Model.IsValid())
 		{
@@ -285,7 +284,7 @@ void UTAULoginWidget::GetTokenFromWebCode(const FString& WebCode) {
 		return;
 	}
 	TSharedPtr<FJsonObject> Paras = MakeShareable(new FJsonObject);
-	Paras->SetStringField("client_id", TapTapSdk::ClientId);
+	Paras->SetStringField("client_id", TULoginImpl::Get()->Config.ClientID);
 	Paras->SetStringField("grant_type", "authorization_code");
 	Paras->SetStringField("secret_type", "hmac-sha-1");
 	Paras->SetStringField("code", WebCode);

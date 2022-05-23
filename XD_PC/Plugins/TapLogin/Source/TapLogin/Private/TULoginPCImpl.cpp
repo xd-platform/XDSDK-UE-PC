@@ -1,7 +1,9 @@
 #include "TULoginPCImpl.h"
 
-void TULoginPCImpl::Init(TapUELogin::Config Config) {
-	TULoginImpl::Init(Config);
+#include "TAULoginWidget.h"
+
+void TULoginPCImpl::Init(TapUELogin::Config _Config) {
+	this->Config = _Config;
 }
 
 void TULoginPCImpl::ChangeLanguage(TapUELogin::LanguageType LanguageType) {
@@ -9,7 +11,7 @@ void TULoginPCImpl::ChangeLanguage(TapUELogin::LanguageType LanguageType) {
 }
 
 TSharedPtr<FTULoginProfileModel> TULoginPCImpl::GetProfile() {
-	return TULoginImpl::GetProfile();
+	return FTULoginProfileModel::GetLocalModel();
 }
 
 void TULoginPCImpl::FetchProfile(
@@ -18,14 +20,14 @@ void TULoginPCImpl::FetchProfile(
 }
 
 TSharedPtr<FTUAccessToken> TULoginPCImpl::GetAccessToken() {
-	return TULoginImpl::GetAccessToken();
+	return FTUAccessToken::GetLocalModel();
 }
 
 void TULoginPCImpl::Login(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> CallBack) {
-	TULoginImpl::Login(Permissions, CallBack);
+	UTAULoginWidget::ShowLoginUI(Permissions, CallBack);
 }
 
 void TULoginPCImpl::Logout() {
-	TULoginImpl::Logout();
+	FTULoginProfileModel::ClearLocalModel();
+	FTUAccessToken::ClearLocalModel();
 }
-

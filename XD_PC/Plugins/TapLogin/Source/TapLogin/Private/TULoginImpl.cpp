@@ -21,7 +21,7 @@ TSharedPtr<TULoginImpl>& TULoginImpl::Get() {
 	return Instance;
 }
 
-void TULoginImpl::Init(TapUELogin::Config Config) {
+void TULoginImpl::Init(TapUELogin::Config _Config) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
 }
 

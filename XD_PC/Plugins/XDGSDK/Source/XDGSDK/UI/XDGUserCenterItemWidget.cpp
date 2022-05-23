@@ -28,7 +28,7 @@ void UXDGUserCenterItemWidget::SetBindModel(const TSharedPtr<FXDGBindModel>& Mod
 	FString Content = langModel->tds_account_format.Replace(TEXT("%s"), *Model->loginName);
 	TitleLabel->SetText(FText::FromString(Content));
 	
-	if (Model->loginType == (int)LoginType::TapTap)
+	if (Model->loginType == (int)XDLoginType::TapTap)
 	{
 		UTexture2D *TapTexture = LoadObject<UTexture2D>(nullptr, TEXT("Texture2D'/XDGSDK/Images/type_icon_tap.type_icon_tap'"));
 		TitleImage->SetBrushFromTexture(TapTexture);

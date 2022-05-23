@@ -4,7 +4,7 @@
 #include "XDGAPI.h"
 #include "XDGImplement.h"
 #include "LanguageManager.h"
-#include "TapLoginHelper.h"
+#include "TapUELogin.h"
 #include "TUDebuger.h"
 #include "XDGSDK.h"
 #include "Blueprint/UserWidget.h"
@@ -73,7 +73,7 @@ void UXDGAPI::InitSDK(const FString& ClientId, TFunction<void(bool Result, FStri
 	});
 }
 
-void UXDGAPI::LoginByType(LoginType LoginType, TFunction<void(FXDGUser User)> SuccessBlock,
+void UXDGAPI::LoginByType(XDLoginType LoginType, TFunction<void(FXDGUser User)> SuccessBlock,
 	TFunction<void(FXDGError Error)> FailBlock)
 {
 	if (!IsInitialized())
@@ -102,7 +102,7 @@ void UXDGAPI::LoginByType(LoginType LoginType, TFunction<void(FXDGUser User)> Su
 	});
 }
 
-void UXDGAPI::SetLanguage(LangType type)
+void UXDGAPI::SetLanguage(XDLangType type)
 {
 	LanguageManager::SetLanguageType(type);
 }
@@ -116,12 +116,12 @@ bool UXDGAPI::IsInitialized()
 void UXDGAPI::Logout()
 {
 	// await TDSUser.Logout();
-	UTapLoginHelper::Logout();
+	TapUELogin::Logout();
 	FXDGUser::ClearUserData();
 }
 
-void UXDGAPI::OpenUserCenter(TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
-	TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
+void UXDGAPI::OpenUserCenter(TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
+	TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
 	if (!FXDGUser::GetLocalModel().IsValid()) {
 		TUDebuger::WarningLog("Please Login First");
 		return;
@@ -130,7 +130,7 @@ void UXDGAPI::OpenUserCenter(TFunction<void(LoginType Type, TSharedPtr<FXDGError
 	UXDGUserCenterWidget::ShowWidget(BindCallBack, UnbindCallBack);
 }
 
-void UXDGAPI::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock)
+void UXDGAPI::CheckPay(TFunction<void(XDCheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock)
 {
 	if (!FXDGUser::GetLocalModel().IsValid()) {
 		if (FailBlock)
@@ -139,7 +139,7 @@ void UXDGAPI::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFu
 		}
 		return;
 	}
-	XDGImplement::CheckPay([=](CheckPayType CheckType)
+	XDGImplement::CheckPay([=](XDCheckPayType CheckType)
 	{
 		if (CheckType != None)
 		{

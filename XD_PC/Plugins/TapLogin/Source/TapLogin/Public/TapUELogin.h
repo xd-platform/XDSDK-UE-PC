@@ -1,11 +1,13 @@
 #pragma once
 #include "TUError.h"
-#include "TULoginFriendResult.h"
 #include "TULoginProfileModel.h"
 #include "TUAccessToken.h"
 #include "TUAuthResult.h"
+#if PLATFORM_IOS || PLATFORM_ANDROID
+#include "TULoginFriendResult.h"
+#endif
 
-class TapUELogin {
+class TAPLOGIN_API TapUELogin {
 public:
 	// 这个影响服务的host以及TapTap授权客户端的种类（是国内还是海外）
 	enum RegionType {

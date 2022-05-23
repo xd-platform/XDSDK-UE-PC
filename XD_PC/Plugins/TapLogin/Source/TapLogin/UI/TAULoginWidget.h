@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "TUAuthResult.h"
-#include "TAUQrCodeModel.h"
+#include "TUQrCodeModel.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Border.h"
 #include "Components/Button.h"
@@ -25,7 +25,7 @@ class TAPLOGIN_API UTAULoginWidget : public UUserWidget
 public:
 	UTAULoginWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void ShowLoginUI(TArray<FString> Permissions, TFunction<void(TUAuthResult result)> Completed);
+	static void ShowLoginUI(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> Completed);
 
 protected:
 
@@ -91,11 +91,11 @@ private:
 
 private:
 	
-	TFunction<void(TUAuthResult result)> Completed;
+	TFunction<void(const TUAuthResult& Result)> Completed;
 	
 	TArray<FString> Permissions;
 
-	TSharedPtr<FTAUQrCodeModel> QrCodeModel = nullptr;
+	TSharedPtr<FTUQrCodeModel> QrCodeModel = nullptr;
 
 	FTimerHandle TipTimerHandle;
 

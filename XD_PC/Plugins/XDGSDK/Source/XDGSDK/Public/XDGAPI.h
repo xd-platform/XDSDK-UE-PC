@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "XDGEnumType.h"
+#include "XDEnumType.h"
 #include "XDGError.h"
 #include "XDGUser.h"
 #include "XDGAPI.generated.h"
@@ -56,18 +56,18 @@ public:
 
 	static void InitSDK(const FString& ClientId, TFunction<void(bool Result, FString Message)> CallBack);
 
-	static void LoginByType(LoginType LoginType, TFunction<void(FXDGUser User)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock);
+	static void LoginByType(XDLoginType LoginType, TFunction<void(FXDGUser User)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock);
 
 	static bool IsInitialized();
 
-	static void SetLanguage(LangType Type);
+	static void SetLanguage(XDLangType Type);
 	
 	static void Logout();
 	
-	static void OpenUserCenter(TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
-	TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack);
+	static void OpenUserCenter(TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
+	TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack);
 	
-	static void CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock);
+	static void CheckPay(TFunction<void(XDCheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock);
 
 	static void OpenCustomerCenter(FString ServerId, FString RoleId, FString RoleName);
 

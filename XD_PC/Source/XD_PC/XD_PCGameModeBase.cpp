@@ -22,7 +22,7 @@ void AXD_PCGameModeBase::InitSDK(const FString& ClientId)
 	});
 }
 
-void AXD_PCGameModeBase::LoginByType(LoginType LoginType)
+void AXD_PCGameModeBase::LoginByType(XDLoginType LoginType)
 {
 	UXDGAPI::LoginByType(LoginType, [](FXDGUser User)
 	{
@@ -38,7 +38,7 @@ bool AXD_PCGameModeBase::IsInitialized()
 	return UXDGAPI::IsInitialized();
 }
 
-void AXD_PCGameModeBase::SetLanguage(LangType type)
+void AXD_PCGameModeBase::SetLanguage(XDLangType type)
 {
 	UXDGAPI::SetLanguage(type);
 }
@@ -62,7 +62,7 @@ void AXD_PCGameModeBase::Test()
 
 void AXD_PCGameModeBase::OpenUserCenter() {
 	UXDGAPI::OpenUserCenter(
-		[](LoginType Type, TSharedPtr<FXDGError> Error) {
+		[](XDLoginType Type, TSharedPtr<FXDGError> Error) {
 			if (Error.IsValid()) {
 				TUDebuger::DisplayShow( FString::Printf(TEXT("绑定失败, Error: %s"), *Error->msg));
 			}
@@ -70,7 +70,7 @@ void AXD_PCGameModeBase::OpenUserCenter() {
 				TUDebuger::DisplayShow( FString::Printf(TEXT("绑定成功, Type: %d"), Type));
 			}
 		},
-		[](LoginType Type, TSharedPtr<FXDGError> Error) {
+		[](XDLoginType Type, TSharedPtr<FXDGError> Error) {
 			if (Error.IsValid()) {
 				TUDebuger::DisplayShow( FString::Printf(TEXT("解绑失败, Error: %s"), *Error->msg));
 			}
@@ -88,7 +88,7 @@ void AXD_PCGameModeBase::OpenPayHintAlert()
 
 void AXD_PCGameModeBase::CheckPay()
 {
-	UXDGAPI::CheckPay([](CheckPayType CheckType)
+	UXDGAPI::CheckPay([](XDCheckPayType CheckType)
 	{
 		switch (CheckType)
 		{

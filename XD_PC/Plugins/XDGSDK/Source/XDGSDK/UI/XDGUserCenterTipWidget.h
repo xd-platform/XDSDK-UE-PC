@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "XDGEnumType.h"
+#include "XDEnumType.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
@@ -24,7 +24,7 @@ public:
 	};
 	UXDGUserCenterTipWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void Show(AlertType AlertType, LoginType LoginType, TFunction<void()> SureCallBack, TFunction<void()> CancelCallBack);
+	static void Show(AlertType AlertType, XDLoginType LoginType, TFunction<void()> SureCallBack, TFunction<void()> CancelCallBack);
 
 
 protected:
@@ -69,7 +69,7 @@ private:
 
 
 	AlertType AlertType;
-	LoginType LoginType;
+	XDLoginType LoginType;
 	TFunction<void()> SureCallBack;
 	TFunction<void()> CancelCallBack;
 

@@ -3,7 +3,7 @@
 
 class TULoginPCImpl: public TULoginImpl {
 public:
-	virtual void Init(TapUELogin::Config Config) override;
+	virtual void Init(TapUELogin::Config _Config) override;
 	virtual void ChangeLanguage(TapUELogin::LanguageType LanguageType) override;
 	virtual TSharedPtr<FTULoginProfileModel> GetProfile() override;
 	virtual void FetchProfile(

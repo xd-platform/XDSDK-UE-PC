@@ -2,7 +2,7 @@
 #include "TUAccessToken.h"
 #include "TULoginError.h"
 #include "TULoginProfileModel.h"
-#include "TAUQrCodeModel.h"
+#include "TUQrCodeModel.h"
 #include "TUHttpRequest.h"
 
 
@@ -15,7 +15,7 @@ public:
 	
 	
 
-	static void RequestLoginQrCode(const TArray<FString> Permissions, TFunction<void(TSharedPtr<FTAUQrCodeModel> Model, FTULoginError Error)> callback);
+	static void RequestLoginQrCode(const TArray<FString> Permissions, TFunction<void(TSharedPtr<FTUQrCodeModel> Model, FTULoginError Error)> callback);
 	static void RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTUAccessToken> Model, FTULoginError Error)> callback);
 	static void RequestProfile(const FTUAccessToken& AccessToken, TFunction<void(TSharedPtr<FTULoginProfileModel> Model, FTULoginError Error)> callback);
 	static void RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FTUAccessToken> Model, FTULoginError Error)> callback);

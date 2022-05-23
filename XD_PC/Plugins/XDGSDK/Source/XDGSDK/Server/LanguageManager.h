@@ -1,14 +1,14 @@
 #pragma once
-#include "XDGEnumType.h"
+#include "XDEnumType.h"
 #include "LanguageModel.h"
 
 class LanguageManager
 {
 public:
 	
-	static void SetLanguageType(LangType type);
+	static void SetLanguageType(XDLangType type);
 
-	static LangType GetCurrentType();
+	static XDLangType GetCurrentType();
 
 	static TSharedPtr<FLanguageModel> GetCurrentModel();
 
@@ -18,7 +18,7 @@ public:
 
 private:
 
-	static LangType anguageType;
+	static XDLangType anguageType;
 	static TSharedPtr<FLanguageModel> currentModel;
 
 	static void UpdateLanguageModel();

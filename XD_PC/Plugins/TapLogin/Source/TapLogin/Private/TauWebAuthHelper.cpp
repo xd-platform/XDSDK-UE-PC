@@ -2,10 +2,11 @@
 
 #include "HttpServerModule.h"
 #include "HttpServerResponse.h"
-#include "TapTapSdk.h"
+#include "TULoginImpl.h"
 #include "TUCrypto.h"
 #include "TUHelper.h"
 #include "TUDebuger.h"
+#include "TULoginRegionConfig.h"
 #include "TUOpenSSL.h"
 
 static FString WebAuthPath = "authorize";
@@ -132,7 +133,7 @@ void TauWebAuthHelper::ProcessWebAuthRequest(const FHttpServerRequest& Request, 
 		} else if (WebMode == "redirect") {
 			ResponsePtr = MakeUnique<FHttpServerResponse>();
 			ResponsePtr->Code = EHttpServerResponseCodes::Moved;
-			ResponsePtr->Headers.Add("Location", {FString::Printf(TEXT("open-taptap-%s://authorize"), *TapTapSdk::ClientId)});
+			ResponsePtr->Headers.Add("Location", {FString::Printf(TEXT("open-taptap-%s://authorize"), *TULoginImpl::Get()->Config.ClientID)});
 		} else {
 			ResponsePtr = MakeUnique<FHttpServerResponse>();
 			ResponsePtr->Code = EHttpServerResponseCodes::Ok;
@@ -152,7 +153,7 @@ void TauWebAuthHelper::ProcessWebAuthRequest(const FHttpServerRequest& Request, 
 
 FString TauWebAuthHelper::GenerateWebAuthUrl() {
 	TSharedPtr<FJsonObject> Paras = MakeShareable(new FJsonObject);
-	Paras->SetStringField("client_id", TapTapSdk::ClientId);
+	Paras->SetStringField("client_id", TULoginImpl::Get()->Config.ClientID);
 	Paras->SetStringField("response_type", "code");
 	Paras->SetStringField("redirect_uri", GetRedirectUri());
 	Paras->SetStringField("state", State);
@@ -161,5 +162,5 @@ FString TauWebAuthHelper::GenerateWebAuthUrl() {
 	Paras->SetStringField("scope", FString::Join(Permissions, TEXT(",")));
 	Paras->SetStringField("flow", "pc_localhost");
 	FString ParaStr = TUHelper::CombinParameters(Paras);
-	return TapTapSdk::CurrentRegion->AccountUrl() + "?" + ParaStr;
+	return TULoginRegionConfig::Get()->AccountUrl() + "?" + ParaStr;
 }

@@ -21,7 +21,7 @@ void UXDGUserCenterTipWidget::OnTextBoxValueChange(const FText& Content)
 
 }
 
-void UXDGUserCenterTipWidget::Show(enum AlertType AlertType, ::LoginType LoginType, TFunction<void()> SureCallBack,
+void UXDGUserCenterTipWidget::Show(enum AlertType AlertType, ::XDLoginType LoginType, TFunction<void()> SureCallBack,
                                    TFunction<void()> CancelCallBack)
 {
 	if (UClass* MyWidgetClass = LoadClass<UXDGUserCenterTipWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXDGUserCenterTIp.BPXDGUserCenterTIp_C'")))

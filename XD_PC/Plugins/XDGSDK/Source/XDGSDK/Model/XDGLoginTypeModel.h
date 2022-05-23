@@ -1,5 +1,5 @@
 #pragma once
-#include "XDGEnumType.h"
+#include "XDEnumType.h"
 #include "XDGLoginTypeModel.generated.h"
 
 
@@ -9,7 +9,7 @@ struct FXDGLoginTypeModel
 	GENERATED_BODY()
 	
 	UPROPERTY()
-	LoginType type;
+	XDLoginType type;
 
 	UPROPERTY()
 	FString typeName;
@@ -21,17 +21,17 @@ struct FXDGLoginTypeModel
 	
 
 	static FString GetName(int Type) {
-		if (Type == (int)LoginType::TapTap)
+		if (Type == (int)XDLoginType::TapTap)
 		{
 			return  "TapTap";
-		} else if (Type == (int)LoginType::Guest)
+		} else if (Type == (int)XDLoginType::Guest)
 		{
 			return  "Guest";
 		}
 		return "";
 	}
 
-	FXDGLoginTypeModel(LoginType type) : type(type), typeValue((int)type)
+	FXDGLoginTypeModel(XDLoginType type) : type(type), typeValue((int)type)
 	{
 		typeName = GetName((int)type);
 	}

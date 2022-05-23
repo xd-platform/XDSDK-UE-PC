@@ -19,13 +19,13 @@ class XD_PC_API AXD_PCGameModeBase : public AGameModeBase
 	static void InitSDK(const FString& ClientId);
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "LoginByType"))
-	static void LoginByType(LoginType LoginType);
+	static void LoginByType(XDLoginType LoginType);
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "IsInitialized"))
 	static bool IsInitialized();
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "SetLanguage"))
-	static void SetLanguage(LangType type);
+	static void SetLanguage(XDLangType type);
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "ResetPrivacy"))
 	static void ResetPrivacy();

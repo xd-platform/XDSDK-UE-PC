@@ -6,10 +6,10 @@
 
 static FString LanguageJsonPath = FPaths::ProjectPluginsDir() / TEXT("XDGSDK/Content") / TEXT("XDGAssets/Language.json");
 
-LangType LanguageManager::anguageType = LangType::ZH_CN;
+XDLangType LanguageManager::anguageType = XDLangType::XD_ZH_CN;
 TSharedPtr<FLanguageModel> LanguageManager::currentModel = nullptr;
 
-void LanguageManager::SetLanguageType(LangType type)
+void LanguageManager::SetLanguageType(XDLangType type)
 {
 	if (type != anguageType)
 	{
@@ -18,7 +18,7 @@ void LanguageManager::SetLanguageType(LangType type)
 	} 
 }
 
-LangType LanguageManager::GetCurrentType()
+XDLangType LanguageManager::GetCurrentType()
 {
 	return anguageType;
 }
@@ -35,31 +35,31 @@ TSharedPtr<FLanguageModel> LanguageManager::GetCurrentModel()
 
 FString LanguageManager::GetLanguageKey()
 {
-	if (anguageType == LangType::ZH_CN){
+	if (anguageType == XDLangType::XD_ZH_CN){
 		return "zh_CN";
-	} else if (anguageType == LangType::ZH_TW){
+	} else if (anguageType == XDLangType::XD_ZH_TW){
 		return "zh_TW";
-	} else if (anguageType == LangType::EN){
+	} else if (anguageType == XDLangType::XD_EN){
 		return "en_US";
-	} else if (anguageType == LangType::TH){
+	} else if (anguageType == XDLangType::XD_TH){
 		return "th_TH";
-	} else if (anguageType == LangType::ID){
+	} else if (anguageType == XDLangType::XD_ID){
 		return "in_ID";
-	} else if (anguageType == LangType::KR){
+	} else if (anguageType == XDLangType::XD_KR){
 		return "ko_KR";
-	} else if (anguageType == LangType::JP){
+	} else if (anguageType == XDLangType::XD_JP){
 		return "ja_JP";
-	} else if (anguageType == LangType::DE){
+	} else if (anguageType == XDLangType::XD_DE){
 		return "de_DE";
-	} else if (anguageType == LangType::FR){
+	} else if (anguageType == XDLangType::XD_FR){
 		return "fr_FR";
-	} else if (anguageType == LangType::PT){
+	} else if (anguageType == XDLangType::XD_PT){
 		return "pt_PT";
-	} else if (anguageType == LangType::ES){
+	} else if (anguageType == XDLangType::XD_ES){
 		return "es_ES";
-	} else if (anguageType == LangType::TR){
+	} else if (anguageType == XDLangType::XD_TR){
 		return "tr_TR";
-	} else if (anguageType == LangType::RU){
+	} else if (anguageType == XDLangType::XD_RU){
 		return "ru_RU";
 	}
 	return "en_US";
@@ -67,31 +67,31 @@ FString LanguageManager::GetLanguageKey()
 
 FString LanguageManager::GetCustomerCenterLang()
 {
-	if (anguageType == LangType::ZH_CN){
+	if (anguageType == XDLangType::XD_ZH_CN){
 		return "cn";
-	} else if (anguageType == LangType::ZH_TW){
+	} else if (anguageType == XDLangType::XD_ZH_TW){
 		return "tw";
-	} else if (anguageType == LangType::EN){
+	} else if (anguageType == XDLangType::XD_EN){
 		return "us";
-	} else if (anguageType == LangType::TH){
+	} else if (anguageType == XDLangType::XD_TH){
 		return "th";
-	} else if (anguageType == LangType::ID){
+	} else if (anguageType == XDLangType::XD_ID){
 		return "id";
-	} else if (anguageType == LangType::KR){
+	} else if (anguageType == XDLangType::XD_KR){
 		return "kr";
-	} else if (anguageType == LangType::JP){
+	} else if (anguageType == XDLangType::XD_JP){
 		return "jp";
-	} else if (anguageType == LangType::DE){
+	} else if (anguageType == XDLangType::XD_DE){
 		return "de";
-	} else if (anguageType == LangType::FR){
+	} else if (anguageType == XDLangType::XD_FR){
 		return "fr";
-	} else if (anguageType == LangType::PT){
+	} else if (anguageType == XDLangType::XD_PT){
 		return "pt";
-	} else if (anguageType == LangType::ES){
+	} else if (anguageType == XDLangType::XD_ES){
 		return "es";
-	} else if (anguageType == LangType::TR){
+	} else if (anguageType == XDLangType::XD_TR){
 		return "tr";
-	} else if (anguageType == LangType::RU){
+	} else if (anguageType == XDLangType::XD_RU){
 		return "ru";
 	}
 	return "us";

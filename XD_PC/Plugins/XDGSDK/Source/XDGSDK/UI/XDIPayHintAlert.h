@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "XDGEnumType.h"
+#include "XDEnumType.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
@@ -16,7 +16,7 @@ class XDGSDK_API UXDIPayHintAlert : public UUserWidget
 public:
 	UXDIPayHintAlert(const FObjectInitializer& ObjectInitializer);
 
-	static void Show(CheckPayType CheckType);
+	static void Show(XDCheckPayType CheckType);
 
 protected:
 	
@@ -45,7 +45,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UButton* ContactCustomerServiceButton;
 
-	CheckPayType CheckType = None;
+	XDCheckPayType CheckType = None;
 	
 };
 

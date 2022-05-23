@@ -4,11 +4,10 @@
 #include "TUJsonHelper.h"
 #include "LanguageManager.h"
 #include "TapBootstrapAPI.h"
+#include "TapUELogin.h"
 #include "TUCommonConfig.h"
-#include "TapLoginHelper.h"
 #include "TUHelper.h"
 #include "TUHUD.h"
-#include "URLParser.h"
 #include "URLParser.h"
 #include "XDGSDK.h"
 #include "XDGSDK/UI/XDGPrivacyWidget.h"
@@ -62,11 +61,11 @@ void XDGImplement::InitBootstrap(const TSharedPtr<FInitConfigModel>& model,
 }
 
 
-void XDGImplement::LoginByType(LoginType loginType,
+void XDGImplement::LoginByType(XDLoginType loginType,
                                TFunction<void(TSharedPtr<FXDGUser> user)> resultBlock,
                                TFunction<void(FXDGError error)> ErrorBlock) {
 	auto lmd = LanguageManager::GetCurrentModel();
-	if (loginType == LoginType::Default) {
+	if (loginType == XDLoginType::Default) {
 		auto localUser = FXDGUser::GetLocalModel();
 		if (localUser.IsValid()) {
 			RequestUserInfo(true, [=](TSharedPtr<FXDGUser> user) {
@@ -102,16 +101,16 @@ void XDGImplement::LoginByType(LoginType loginType,
 	}
 }
 
-void XDGImplement::GetLoginParam(LoginType loginType,
+void XDGImplement::GetLoginParam(XDLoginType loginType,
                                  TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock,
                                  TFunction<void(FXDGError error)> ErrorBlock) {
-	if (loginType == LoginType::Guest) {
+	if (loginType == XDLoginType::Guest) {
 		TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 		JsonObject->SetNumberField("type", (int)loginType);
 		JsonObject->SetStringField("token", TUDeviceInfo::GetLoginId());
 		resultBlock(JsonObject);
 	}
-	else if (loginType == LoginType::TapTap) {
+	else if (loginType == XDLoginType::TapTap) {
 		RequestTapToken(
 			[=](FTUAccessToken AccessToken) {
 				TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
@@ -126,7 +125,7 @@ void XDGImplement::GetLoginParam(LoginType loginType,
 	}
 }
 
-void XDGImplement::CheckPay(TFunction<void(CheckPayType CheckType)> SuccessBlock,
+void XDGImplement::CheckPay(TFunction<void(XDCheckPayType CheckType)> SuccessBlock,
                             TFunction<void(FXDGError Error)> FailBlock) {
 	XDGNet::CheckPay([=](TSharedPtr<FXDIPayCheckResponseModel> Model, FXDGError Error) {
 		if (Model.IsValid()) {
@@ -312,7 +311,7 @@ void XDGImplement::CheckPrivacyAlert(TFunction<void()> Callback) {
 
 void XDGImplement::RequestTapToken(TFunction<void(FTUAccessToken AccessToken)> callback,
                                    TFunction<void(FXDGError error)> ErrorBlock) {
-	UTapLoginHelper::Login(
+	TapUELogin::Login(
 		[=](TUAuthResult Result) {
 			if (Result.GetType() == TUAuthResult::Success) {
 				callback(*Result.GetToken().Get());

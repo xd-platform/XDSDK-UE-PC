@@ -14,8 +14,8 @@ UXDGUserCenterWidget::UXDGUserCenterWidget(const FObjectInitializer& ObjectIniti
 
 }
 
-void UXDGUserCenterWidget::ShowWidget(TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
-	TFunction<void(LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
+void UXDGUserCenterWidget::ShowWidget(TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
+	TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
 	if (UClass* MyWidgetClass = LoadClass<UXDGUserCenterWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXDGUserCenter.BPXDGUserCenter_C'")))
 	{
 		if (GWorld && GWorld->GetWorld())
@@ -74,14 +74,14 @@ void UXDGUserCenterWidget::OnErrorBtnClick()
 
 void UXDGUserCenterWidget::OnDeleteBtnClick()
 {
-	if (userMd->loginType != (int)LoginType::Guest)
+	if (userMd->loginType != (int)XDLoginType::Guest)
 	{
 		return;
 	}
-	UXDGUserCenterTipWidget::Show(UXDGUserCenterTipWidget::DeleteGuest, LoginType::Guest, [=]()
+	UXDGUserCenterTipWidget::Show(UXDGUserCenterTipWidget::DeleteGuest, XDLoginType::Guest, [=]()
 	{
 		UTUHUD::ShowWait();
-		XDGNet::Unbind((int)LoginType::Guest, [=](TSharedPtr<FXDGResponseModel> Model, FXDGError Error)
+		XDGNet::Unbind((int)XDLoginType::Guest, [=](TSharedPtr<FXDGResponseModel> Model, FXDGError Error)
 		{
 			UTUHUD::Dismiss();
 			if (Model.IsValid())
@@ -105,7 +105,7 @@ void UXDGUserCenterWidget::OnDeleteBtnClick()
 FString UXDGUserCenterWidget::GetLoginTypeName()
 {
 	FString result = langModel->tds_guest;
-	if (userMd->GetLoginType() == LoginType::TapTap)
+	if (userMd->GetLoginType() == XDLoginType::TapTap)
 	{
 		result = "TapTap";
 	}
@@ -162,7 +162,7 @@ void UXDGUserCenterWidget::ResetListBoxAndDeleteButton()
 			if (Model->status == FXDGBindType::Bind)
 			{
 				enum UXDGUserCenterTipWidget::AlertType AlertType = GetBindCount() <= 1 ? UXDGUserCenterTipWidget::DeleteThird : UXDGUserCenterTipWidget::UnbindThird;
-				UXDGUserCenterTipWidget::Show(AlertType, LoginType::TapTap, [=]()
+				UXDGUserCenterTipWidget::Show(AlertType, XDLoginType::TapTap, [=]()
 				{
 					UnBind(CurrentWidget, Model);
 				}, nullptr);
@@ -205,7 +205,7 @@ void UXDGUserCenterWidget::ShouldShowErrorButton(bool Should)
 TArray<FXDGLoginTypeModel> UXDGUserCenterWidget::GetSdkTypes()
 {
 	TArray<FXDGLoginTypeModel> list;
-	list.Add(FXDGLoginTypeModel(LoginType::TapTap));
+	list.Add(FXDGLoginTypeModel(XDLoginType::TapTap));
 	return list;
 }
 
@@ -265,13 +265,13 @@ void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TShared
 					TempError = MakeShareable(new FXDGError(Error));
 				}
 				int Type = Paras->GetNumberField("type");
-				BindCallBack((LoginType)Type, TempError);
+				BindCallBack((XDLoginType)Type, TempError);
 			}
 		});
 	};
-	if (Model->loginType == (int)LoginType::TapTap)
+	if (Model->loginType == (int)XDLoginType::TapTap)
 	{
-		XDGImplement::GetLoginParam(LoginType::TapTap, [=](TSharedPtr<FJsonObject> Paras)
+		XDGImplement::GetLoginParam(XDLoginType::TapTap, [=](TSharedPtr<FJsonObject> Paras)
 		{
 			BindBlock(Paras);
 		}, [=](FXDGError error)
@@ -321,7 +321,7 @@ void UXDGUserCenterWidget::UnBind(UXDGUserCenterItemWidget* CurrentWidget, TShar
 			if (!ResponseModel.IsValid()) {
 				TempError = MakeShareable(new FXDGError(Error));
 			}
-			UnbindCallBack((LoginType)Model->loginType, TempError);
+			UnbindCallBack((XDLoginType)Model->loginType, TempError);
 		}
 	});
 

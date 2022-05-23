@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "TokenModel.h"
-#include "XDGEnumType.h"
+#include "XDEnumType.h"
 #include "XDGUser.generated.h"
 
 USTRUCT(BlueprintType)
@@ -33,7 +33,7 @@ struct FXDGUser
 	
 	TSharedPtr<FTokenModel> Token();
 
-	LoginType GetLoginType();
+	XDLoginType GetLoginType();
 
 	static void ClearUserData();
 	

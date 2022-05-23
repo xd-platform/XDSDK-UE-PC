@@ -1,5 +1,6 @@
 #pragma once
 #include "TapUELogin.h"
+#include "TULoginFriendResult.h"
 
 
 class TULoginImpl {
@@ -7,8 +8,10 @@ public:
 	virtual ~TULoginImpl() = default;
 
 	static TSharedPtr<TULoginImpl>& Get();
+
+	TapUELogin::Config Config;
 	
-	virtual void Init(TapUELogin::Config Config);
+	virtual void Init(TapUELogin::Config _Config);
 
 	virtual void ChangeLanguage(TapUELogin::LanguageType LanguageType);
 	
@@ -28,5 +31,4 @@ public:
 
 private:
 	static TSharedPtr<TULoginImpl> Instance;
-	
 };

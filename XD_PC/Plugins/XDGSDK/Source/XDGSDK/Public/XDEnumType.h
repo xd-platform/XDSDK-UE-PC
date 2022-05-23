@@ -16,26 +16,28 @@
 	TR = 11, 土耳其语
 	RU = 12, 俄罗斯语
 */
+
+
 UENUM(BlueprintType)
-enum LangType
+enum XDLangType
 {
-	ZH_CN = 0 UMETA(DisplayName = "ZH_CN"),
-	ZH_TW = 1 UMETA(DisplayName = "ZH_TW"),
-	EN = 2 UMETA(DisplayName = "EN"),
-	TH = 3 UMETA(DisplayName = "TH"),
-	ID = 4 UMETA(DisplayName = "ID"),
-	KR = 5 UMETA(DisplayName = "KR"),
-	JP = 6 UMETA(DisplayName = "JP"),
-	DE = 7 UMETA(DisplayName = "DE"),
-	FR = 8 UMETA(DisplayName = "FR"),
-	PT = 9 UMETA(DisplayName = "PT"),
-	ES = 10 UMETA(DisplayName = "ES"),
-	TR = 11 UMETA(DisplayName = "TR"),
-	RU = 12 UMETA(DisplayName = "RU"),
+	XD_ZH_CN = 0 UMETA(DisplayName = "ZH_CN"),
+	XD_ZH_TW = 1 UMETA(DisplayName = "ZH_TW"),
+	XD_EN = 2 UMETA(DisplayName = "EN"),
+	XD_TH = 3 UMETA(DisplayName = "TH"),
+	XD_ID = 4 UMETA(DisplayName = "ID"),
+	XD_KR = 5 UMETA(DisplayName = "KR"),
+	XD_JP = 6 UMETA(DisplayName = "JP"),
+	XD_DE = 7 UMETA(DisplayName = "DE"),
+	XD_FR = 8 UMETA(DisplayName = "FR"),
+	XD_PT = 9 UMETA(DisplayName = "PT"),
+	XD_ES = 10 UMETA(DisplayName = "ES"),
+	XD_TR = 11 UMETA(DisplayName = "TR"),
+	XD_RU = 12 UMETA(DisplayName = "RU"),
 };
 
 UENUM(BlueprintType)
-enum class LoginType: uint8
+enum class XDLoginType: uint8
 {
 	Default = uint8(-1) UMETA(DisplayName = "Default"),
 	Guest  = 0 UMETA(DisplayName = "Guest"),
@@ -53,7 +55,7 @@ enum class LoginType: uint8
 // XDGLoginInfoTypeTwitter = 7
 
 UENUM(BlueprintType)
-enum CheckPayType{
+enum XDCheckPayType{
 	iOS				UMETA(DisplayName = "iOS"),					//只有iOS需要补款
 	Android			UMETA(DisplayName = "Android"),				//只有Android需要补款
 	iOSAndAndroid	UMETA(DisplayName = "iOS And Android"),		//iOS Android 都需要补款

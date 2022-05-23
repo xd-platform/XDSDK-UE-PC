@@ -1,9 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "TAUQrCodeModel.generated.h"
+#include "TUQrCodeModel.generated.h"
 
 USTRUCT()
-struct FTAUQrCodeModel
+struct FTUQrCodeModel
 {
 	GENERATED_BODY()
 

@@ -2,10 +2,17 @@
 
 
 #include "TapBootstrapAPI.h"
-
-#include "TapLoginHelper.h"
+#include "TapUELogin.h"
 
 void UTapBootstrap::Init(const FTUCommonConfig& tapConfig)
 {
-	UTapLoginHelper::Init(tapConfig.clientID, tapConfig.regionType == RegionType::CN, false);
+	TapUELogin::Config Config;
+	Config.ClientID = tapConfig.clientID;
+	if (tapConfig.regionType == RegionType::CN) {
+		Config.RegionType = TapUELogin::CN;
+	}
+	else {
+		Config.RegionType = TapUELogin::IO;
+	}
+	TapUELogin::Init(Config);
 }

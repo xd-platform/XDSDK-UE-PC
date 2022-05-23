@@ -1,6 +1,6 @@
 #include "TULoginMobileImpl.h"
 
-void TULoginMobileImpl::Init(TapUELogin::Config Config) {
+void TULoginMobileImpl::Init(TapUELogin::Config _Config) {
 	TULoginImpl::Init(Config);
 }
 

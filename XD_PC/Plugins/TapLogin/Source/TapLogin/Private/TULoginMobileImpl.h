@@ -3,7 +3,7 @@
 
 class TULoginMobileImpl: public TULoginImpl{
 public:
-	virtual void Init(TapUELogin::Config Config) override;
+	virtual void Init(TapUELogin::Config _Config) override;
 	virtual TSharedPtr<FTULoginProfileModel> GetProfile() override;
 	virtual void FetchProfile(
 		TFunction<void(TSharedPtr<FTULoginProfileModel> ModelPtr, const FTUError& Error)> CallBack) override;

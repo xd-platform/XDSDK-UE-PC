@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TapAuthResult.h"
-#include "TAUProfileModel.h"
+#include "TUAuthResult.h"
+#include "TULoginProfileModel.h"
 #include "UObject/Object.h"
 #include "TapLoginHelper.generated.h"
 
@@ -28,13 +28,13 @@ public:
 	
 	static void Init(const FString& clientID, bool isCn, bool roundCorner);
 
-	static void Login(TFunction<void(TapAuthResult Result)> CallBack);
-	static void Login(TArray<FString> Permissions, TFunction<void(TapAuthResult Result)> CallBack);
+	static void Login(TFunction<void(TUAuthResult Result)> CallBack);
+	static void Login(TArray<FString> Permissions, TFunction<void(TUAuthResult Result)> CallBack);
 
 	static void Logout();
 
-	static TSharedPtr<FTAUProfileModel> GetProfile();
-	static TSharedPtr<FTapAccessToken> GetAccessToken();
+	static TSharedPtr<FTULoginProfileModel> GetProfile();
+	static TSharedPtr<FTUAccessToken> GetAccessToken();
 
 
 

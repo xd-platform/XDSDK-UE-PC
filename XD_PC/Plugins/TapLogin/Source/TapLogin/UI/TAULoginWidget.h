@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TapAuthResult.h"
+#include "TUAuthResult.h"
 #include "TAUQrCodeModel.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Border.h"
@@ -25,7 +25,7 @@ class TAPLOGIN_API UTAULoginWidget : public UUserWidget
 public:
 	UTAULoginWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void ShowLoginUI(TArray<FString> Permissions, TFunction<void(TapAuthResult result)> Completed);
+	static void ShowLoginUI(TArray<FString> Permissions, TFunction<void(TUAuthResult result)> Completed);
 
 protected:
 
@@ -91,7 +91,7 @@ private:
 
 private:
 	
-	TFunction<void(TapAuthResult result)> Completed;
+	TFunction<void(TUAuthResult result)> Completed;
 	
 	TArray<FString> Permissions;
 
@@ -111,8 +111,8 @@ private:
 	void ShowTip(const FString& Tip, const FString& SubTip);
 	void StartCheck();
 	void AutoCheck();
-	void GetProfile(const TSharedPtr<FTapAccessToken>& AccessToken);
-	void Close(const TapAuthResult& Result);
+	void GetProfile(const TSharedPtr<FTUAccessToken>& AccessToken);
+	void Close(const TUAuthResult& Result);
 
 	void GetQrCode();
 

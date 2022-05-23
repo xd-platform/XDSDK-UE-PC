@@ -15,7 +15,7 @@ TapLoginImpl& TapLoginImpl::Get()
 	return *Singleton;
 }
 
-void TapLoginImpl::Login(TArray<FString> Permissions, TFunction<void(TapAuthResult)> CallBack)
+void TapLoginImpl::Login(TArray<FString> Permissions, TFunction<void(TUAuthResult)> CallBack)
 {
 	UTAULoginWidget::ShowLoginUI(Permissions, CallBack);
 }

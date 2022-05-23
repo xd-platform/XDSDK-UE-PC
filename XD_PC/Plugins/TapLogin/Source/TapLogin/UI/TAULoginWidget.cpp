@@ -14,7 +14,7 @@ UTAULoginWidget::UTAULoginWidget(const FObjectInitializer& ObjectInitializer) : 
 
 }
 
-void UTAULoginWidget::ShowLoginUI(TArray<FString> Permissions, TFunction<void(TapAuthResult result)> Completed)
+void UTAULoginWidget::ShowLoginUI(TArray<FString> Permissions, TFunction<void(TUAuthResult result)> Completed)
 {
 	if (UClass* MyWidgetClass = LoadClass<UTAULoginWidget>(nullptr, TEXT("WidgetBlueprint'/TapLogin/BPTapLoginUI.BPTapLoginUI_C'")))
 	{
@@ -64,7 +64,7 @@ void UTAULoginWidget::NativeDestruct() {
 
 void UTAULoginWidget::OnCloseBtnClick()
 {
-	Close(TapAuthResult::CancelInit());
+	Close(TUAuthResult::CancelInit());
 }
 
 void UTAULoginWidget::OnRefreshBtnClick()
@@ -158,7 +158,7 @@ void UTAULoginWidget::AutoCheck()
 		bool Stop = false;
 		
 		TFunction<void()> Event = nullptr;
-		TULoginNet::RequestAccessToken(QrCodeModel->device_code, [=, &Stop, &Event](TSharedPtr<FTapAccessToken> Model, FTULoginError Error)
+		TULoginNet::RequestAccessToken(QrCodeModel->device_code, [=, &Stop, &Event](TSharedPtr<FTUAccessToken> Model, FTULoginError Error)
 		{
 			if (Model.IsValid())
 			{
@@ -227,26 +227,26 @@ void UTAULoginWidget::AutoCheck()
 	}
 }
 
-void UTAULoginWidget::GetProfile(const TSharedPtr<FTapAccessToken>& AccessToken)
+void UTAULoginWidget::GetProfile(const TSharedPtr<FTUAccessToken>& AccessToken)
 {
-	TULoginNet::RequestProfile(*AccessToken.Get(), [=](TSharedPtr<FTAUProfileModel> Model, FTULoginError Error)
+	TULoginNet::RequestProfile(*AccessToken.Get(), [=](TSharedPtr<FTULoginProfileModel> Model, FTULoginError Error)
 	{
 		if (Model.IsValid())
 		{
 			AccessToken->SaveToLocal();
 			Model->SaveToLocal();
-			Close(TapAuthResult::SuccessInit(AccessToken));
+			Close(TUAuthResult::SuccessInit(AccessToken));
 		} else
 		{
-			FTapError TapError;
+			FTUError TapError;
 			TapError.code = Error.code;
 			TapError.error_description = Error.error_description + "./t" + "Get profile error";
-			Close(TapAuthResult::FailInit(TapError));
+			Close(TUAuthResult::FailInit(TapError));
 		}
 	});
 }
 
-void UTAULoginWidget::Close(const TapAuthResult& Result)
+void UTAULoginWidget::Close(const TUAuthResult& Result)
 {
 	RemoveFromParent();
 	if (Completed)
@@ -293,7 +293,7 @@ void UTAULoginWidget::GetTokenFromWebCode(const FString& WebCode) {
 	Paras->SetStringField("code_verifier", WebAuthHelper->GetCodeVerifier());
 
 	ShowTip(TAULoginLanguage::GetCurrentLang()->WebNoticeLogin(),"");
-	TULoginNet::RequestAccessTokenFromWeb(Paras, [=](TSharedPtr<FTapAccessToken> Model, FTULoginError Error) {
+	TULoginNet::RequestAccessTokenFromWeb(Paras, [=](TSharedPtr<FTUAccessToken> Model, FTULoginError Error) {
 		if (Model.IsValid()) {
 			GetProfile(Model);
 		} else {

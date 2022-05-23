@@ -1,9 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "TAUProfileModel.generated.h"
+#include "TULoginProfileModel.generated.h"
 
 USTRUCT()
-struct FTAUProfileModel
+struct FTULoginProfileModel
 {
 	GENERATED_BODY()
 
@@ -21,7 +21,7 @@ struct FTAUProfileModel
 
 	void SaveToLocal();
 	
-	static TSharedPtr<FTAUProfileModel> GetLocalModel();
+	static TSharedPtr<FTULoginProfileModel> GetLocalModel();
 
 	static void ClearLocalModel();
 	

@@ -3,12 +3,12 @@
 
 #include "TULoginReflection.h"
 
-#include "TAUProfileModel.h"
+#include "TULoginProfileModel.h"
 
 
 FString UTULoginReflection::GetOpenID()
 {
-	auto Profile = FTAUProfileModel::GetLocalModel();
+	auto Profile = FTULoginProfileModel::GetLocalModel();
 	if (Profile.IsValid())
 	{
 		return Profile->openid;

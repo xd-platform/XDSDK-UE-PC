@@ -85,7 +85,7 @@ void TULoginNet::RequestLoginQrCode(const TArray<FString> Permissions,
 	TUHttpManager::Get().request(request);
 }
 
-void TULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTapAccessToken> Model, FTULoginError Error)> callback)
+void TULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTUAccessToken> Model, FTULoginError Error)> callback)
 {
 	const TSharedPtr<TUHttpRequest> request = MakeShareable(new TULoginNet());
 	request->Type = Post;
@@ -104,13 +104,13 @@ void TULoginNet::RequestAccessToken(const FString& DeviceCode, TFunction<void(TS
 	TUHttpManager::Get().request(request);
 }
 
-void TULoginNet::RequestProfile(const FTapAccessToken& AccessToken,
-	TFunction<void(TSharedPtr<FTAUProfileModel> Model, FTULoginError Error)> callback)
+void TULoginNet::RequestProfile(const FTUAccessToken& AccessToken,
+	TFunction<void(TSharedPtr<FTULoginProfileModel> Model, FTULoginError Error)> callback)
 {
 	const TSharedPtr<TULoginNet> request = MakeShareable(new TULoginNet());
 	request->URL = TapTapSdk::CurrentRegion->ProfileUrl();
 	request->Parameters->SetStringField("client_id", TapTapSdk::ClientId);
-	request->AccessToken = MakeShareable(new FTapAccessToken(AccessToken));
+	request->AccessToken = MakeShareable(new FTUAccessToken(AccessToken));
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});
@@ -118,7 +118,7 @@ void TULoginNet::RequestProfile(const FTapAccessToken& AccessToken,
 }
 
 void TULoginNet::RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras,
-	TFunction<void(TSharedPtr<FTapAccessToken> Model, FTULoginError Error)> callback) {
+	TFunction<void(TSharedPtr<FTUAccessToken> Model, FTULoginError Error)> callback) {
 	const TSharedPtr<TULoginNet> request = MakeShareable(new TULoginNet());
 	request->Type = Post;
 	request->URL = TapTapSdk::CurrentRegion->TokenUrl();

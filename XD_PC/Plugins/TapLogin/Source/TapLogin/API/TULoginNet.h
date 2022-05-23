@@ -1,7 +1,7 @@
 #pragma once
-#include "TapAccessToken.h"
+#include "TUAccessToken.h"
 #include "TULoginError.h"
-#include "TAUProfileModel.h"
+#include "TULoginProfileModel.h"
 #include "TAUQrCodeModel.h"
 #include "TUHttpRequest.h"
 
@@ -16,9 +16,9 @@ public:
 	
 
 	static void RequestLoginQrCode(const TArray<FString> Permissions, TFunction<void(TSharedPtr<FTAUQrCodeModel> Model, FTULoginError Error)> callback);
-	static void RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTapAccessToken> Model, FTULoginError Error)> callback);
-	static void RequestProfile(const FTapAccessToken& AccessToken, TFunction<void(TSharedPtr<FTAUProfileModel> Model, FTULoginError Error)> callback);
-	static void RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FTapAccessToken> Model, FTULoginError Error)> callback);
+	static void RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTUAccessToken> Model, FTULoginError Error)> callback);
+	static void RequestProfile(const FTUAccessToken& AccessToken, TFunction<void(TSharedPtr<FTULoginProfileModel> Model, FTULoginError Error)> callback);
+	static void RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FTUAccessToken> Model, FTULoginError Error)> callback);
 
 
 	static FTULoginError GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& Response);
@@ -27,7 +27,7 @@ private:
 	virtual TSharedPtr<FJsonObject> CommonParameters() override;
 	virtual bool ResetHeadersBeforeRequest() override;
 
-	TSharedPtr<FTapAccessToken> AccessToken = nullptr;
+	TSharedPtr<FTUAccessToken> AccessToken = nullptr;
 	FString GetMacToken();
 
 	

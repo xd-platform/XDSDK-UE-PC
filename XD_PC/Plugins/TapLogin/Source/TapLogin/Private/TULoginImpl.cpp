@@ -1,0 +1,63 @@
+#include "TULoginImpl.h"
+#include "TUDebuger.h"
+
+TSharedPtr<TULoginImpl> TULoginImpl::Instance = nullptr;
+
+TSharedPtr<TULoginImpl>& TULoginImpl::Get() {
+	if (!Instance.IsValid()) {
+		
+	}
+	return Instance;
+}
+
+void TULoginImpl::Init(TapUELogin::Config Config) {
+	TUDebuger::ErrorLog("Unsupported Platforms");
+}
+
+void TULoginImpl::ChangeLanguage(TapUELogin::LanguageType LanguageType) {
+	TUDebuger::ErrorLog("Unsupported Platforms");
+}
+
+TSharedPtr<FTULoginProfileModel> TULoginImpl::GetProfile() {
+	TUDebuger::ErrorLog("Unsupported Platforms");
+	return nullptr;
+}
+
+void TULoginImpl::FetchProfile(TFunction<void(TSharedPtr<FTULoginProfileModel> ModelPtr, const FTUError& Error)> CallBack) {
+	TUDebuger::ErrorLog("Unsupported Platforms");
+	if (CallBack) {
+		CallBack(nullptr, FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
+	}
+}
+
+TSharedPtr<FTUAccessToken> TULoginImpl::GetAccessToken() {
+	TUDebuger::ErrorLog("Unsupported Platforms");
+	return nullptr;
+}
+
+void TULoginImpl::Login(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> CallBack) {
+	TUDebuger::ErrorLog("Unsupported Platforms");
+	if (CallBack) {
+		TUAuthResult Result = TUAuthResult::FailInit(FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
+		CallBack(Result);
+	}
+}
+
+void TULoginImpl::Logout() {
+	TUDebuger::ErrorLog("Unsupported Platforms");
+}
+
+void TULoginImpl::GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack) {
+	TUDebuger::ErrorLog("Unsupported Platforms");
+	if (CallBack) {
+		CallBack(false, FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
+	}
+}
+
+void TULoginImpl::QueryMutualList(FString Cursor, int Size,
+	TFunction<void(TSharedPtr<FTULoginFriendResult> ModelPtr, const FTUError& Error)> CallBack) {
+	TUDebuger::ErrorLog("Unsupported Platforms");
+	if (CallBack) {
+		CallBack(nullptr, FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
+	}
+}

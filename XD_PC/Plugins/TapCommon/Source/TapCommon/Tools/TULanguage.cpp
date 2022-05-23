@@ -19,60 +19,59 @@ void TULanguage::ParseLanguages() {
 	for (auto Name : Names) {
 		if (Name.StartsWith("zh")) {
 			if (Name == "zh-TW") {
-				LanguageMap.Add(ZH_TW, Name);
+				LanguageMap.Add(Name, ZH_HANS);
 			} else {
-				LanguageMap.Add(ZH_CN, Name);
+				LanguageMap.Add(Name, ZH_HANT);
 			}
 		} else if (Name.StartsWith("en")) {
-			LanguageMap.Add(EN, Name);
+			LanguageMap.Add(Name, EN);
 		} else if (Name.StartsWith("de")) {
-			LanguageMap.Add(DE, Name);
+			LanguageMap.Add(Name, DE);
 		} else if (Name.StartsWith("es")) {
-			LanguageMap.Add(ES, Name);
+			LanguageMap.Add(Name, ES);
 		} else if (Name.StartsWith("fr")) {
-			LanguageMap.Add(FR, Name);
+			LanguageMap.Add(Name, FR);
 		} else if (Name.StartsWith("id")) {
-			LanguageMap.Add(ID, Name);
+			LanguageMap.Add(Name, ID);
 		} else if (Name.StartsWith("ja")) {
-			LanguageMap.Add(JP, Name);
+			LanguageMap.Add(Name, JA);
 		} else if (Name.StartsWith("ko")) {
-			LanguageMap.Add(KR, Name);
+			LanguageMap.Add(Name, KO);
 		} else if (Name.StartsWith("pt")) {
-			LanguageMap.Add(PT, Name);
+			LanguageMap.Add(Name, PT);
 		} else if (Name.StartsWith("ru")) {
-			LanguageMap.Add(RU, Name);
+			LanguageMap.Add(Name, RU);
 		} else if (Name.StartsWith("th")) {
-			LanguageMap.Add(TH, Name);
+			LanguageMap.Add(Name, TH);
 		} else if (Name.StartsWith("tr")) {
-			LanguageMap.Add(TR, Name);
+			LanguageMap.Add(Name, TR);
 		} 
 	}
 }
 
 TULanguage::Type TULanguage::GetNativeType() {
 	FString Name = FTextLocalizationManager::Get().GetNativeCultureName(ELocalizedTextSourceCategory::Game);
-	const Type * FindKey = Get().LanguageMap.FindKey(Name);
+	const Type * FindKey = Get().LanguageMap.Find(Name);
 	if (FindKey == nullptr) {
-		return Unknow;
+		return EN;
 	}
 	return *FindKey;
 }
 
 TULanguage::Type TULanguage::GetCurrentType() {
+	if (Get().CurrentType != AUTO) {
+		return Get().CurrentType;
+	}
 	FString Name = FInternationalization::Get().GetCurrentCulture().Get().GetName();
-	const Type * FindKey = Get().LanguageMap.FindKey(Name);
+	const Type * FindKey = Get().LanguageMap.Find(Name);
 	if (FindKey == nullptr) {
-		return Unknow;
+		return EN;
 	}
 	return *FindKey;
 }
 
-bool TULanguage::SetCurrentType(Type Type) {
-	FString* Name = Get().LanguageMap.Find(Type);
-	if (Name == nullptr) {
-		return false;
-	}
-	return FInternationalization::Get().SetCurrentCulture(*Name);
+void TULanguage::SetCurrentType(Type Type) {
+	Get().CurrentType = Type;
 }
 
 

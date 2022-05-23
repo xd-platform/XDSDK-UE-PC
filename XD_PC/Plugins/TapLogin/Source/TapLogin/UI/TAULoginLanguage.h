@@ -41,19 +41,24 @@ public:
 
 class TAULoginLanguage {
 public:
+	enum Type {
+		CN,		// 简体中文
+		IO,		// 英文，海外默认语言
+		ID,		// 印尼文
+		JA,		// 日语
+		KO,		// 韩语
+		TH,		// 泰文
+		ZHTW,	// 繁体中文
+	};
+	
 	static TSharedPtr<ILoginLang> GetCurrentLang();
 
+	static void SetLangType(Type Type);
+
 private:
-	TAULoginLanguage();
 
-	TSharedPtr<ILoginLang> cn;
-
-	TSharedPtr<ILoginLang> io;
-
-	static TSharedPtr<TAULoginLanguage> Instance;
-
-	static TSharedPtr<TAULoginLanguage>& Get();
-
+	static TSharedPtr<ILoginLang> CurrentLang;
+	
 };
 
 class LoginLangCN : public ILoginLang {

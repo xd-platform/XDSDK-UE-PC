@@ -212,9 +212,9 @@ void UTapLoginBPLibrary::OnBridgeCallback(const FString& result)
 
 		if (loginWrapper.loginCallbackCode == 0)
 		{
-			FTapAccessToken accessToken;
+			FTUAccessToken accessToken;
 			UE_LOG(LogTemp, Warning, TEXT("TapLogin OnLoginSuccess:%s"), *loginWrapper.wrapper);
-			FJsonObjectConverter::JsonObjectStringToUStruct<FTapAccessToken>(loginWrapper.wrapper, &accessToken, 0, 0);
+			FJsonObjectConverter::JsonObjectStringToUStruct<FTUAccessToken>(loginWrapper.wrapper, &accessToken, 0, 0);
 			FTapLoginModule::OnLoginSuccess.Broadcast(accessToken);
 			return;
 		}
@@ -223,8 +223,8 @@ void UTapLoginBPLibrary::OnBridgeCallback(const FString& result)
 			FTapLoginModule::OnLoginCancel.Broadcast();
 			return;
 		}
-		FTapError loginError;
-		FJsonObjectConverter::JsonObjectStringToUStruct<FTapError>(loginWrapper.wrapper, &loginError, 0, 0);
+		FTUError loginError;
+		FJsonObjectConverter::JsonObjectStringToUStruct<FTUError>(loginWrapper.wrapper, &loginError, 0, 0);
 		FTapLoginModule::OnLoginError.Broadcast(loginError);
 		return;
 	}
@@ -233,14 +233,14 @@ void UTapLoginBPLibrary::OnBridgeCallback(const FString& result)
 	{
 		if (!UTapCommonBPLibrary::CheckResult(tapResult))
 		{
-			FTapError Error;
+			FTUError Error;
 			Error = {80080, "TapLogin get AccessToken error!"};
 			FTapLoginModule::OnGetTestQualificationError.Broadcast(Error);
 			return;
 		}
-		FTapAccessToken AccessToken;
+		FTUAccessToken AccessToken;
 		UE_LOG(LogTemp, Warning, TEXT("TapLogin OnLoginSuccess:%s"), *tapResult.content);
-		FJsonObjectConverter::JsonObjectStringToUStruct<FTapAccessToken>(tapResult.content, &AccessToken, 0, 0);
+		FJsonObjectConverter::JsonObjectStringToUStruct<FTUAccessToken>(tapResult.content, &AccessToken, 0, 0);
 		FTapLoginModule::OnGetAccessTokenSuccess.Broadcast(AccessToken);
 		return;
 	}
@@ -249,7 +249,7 @@ void UTapLoginBPLibrary::OnBridgeCallback(const FString& result)
 	{
 		if (!UTapCommonBPLibrary::CheckResult(tapResult))
 		{
-			FTapError Error;
+			FTUError Error;
 			Error = {80080, "TapLogin get profile error"};
 			FTapLoginModule::OnGetProfileError.Broadcast(Error);
 			return;
@@ -263,7 +263,7 @@ void UTapLoginBPLibrary::OnBridgeCallback(const FString& result)
 			FTapLoginModule::OnGetProfileSuccess.Broadcast(profile);
 			return;
 		}
-		FTapError Error;
+		FTUError Error;
 		Error = {80080, Wrapper.wrapper};
 		FTapLoginModule::OnGetProfileError.Broadcast(Error);
 		return;
@@ -274,8 +274,8 @@ void UTapLoginBPLibrary::OnBridgeCallback(const FString& result)
 		FFriendWrapper Response;
 		FJsonObjectConverter::JsonObjectStringToUStruct(tapResult.content, &Response, 0, 0);
 
-		FTapError Error;
-		FTapFriendResult Result;
+		FTUError Error;
+		FTULoginFriendResult Result;
 		FString Link;
 		if (Response.success == false)
 		{
@@ -291,7 +291,7 @@ void UTapLoginBPLibrary::OnBridgeCallback(const FString& result)
 
 	if (tapResult.callbackId.Equals(TAP_LOGIN_GET_TEST_QUALIFICATION_ID))
 	{
-		FTapError error;
+		FTUError error;
 		if (!UTapCommonBPLibrary::CheckResult(tapResult))
 		{
 			error = {80080, "TapSDK get TestQualification error!"};
@@ -309,7 +309,7 @@ void UTapLoginBPLibrary::OnBridgeCallback(const FString& result)
 			if (!testQualification)
 			{
 				FString testInnerStr = testQualificationRoot->GetStringField(TEXT("error"));
-				FJsonObjectConverter::JsonObjectStringToUStruct<FTapError>(testInnerStr, &error, 0, 0);
+				FJsonObjectConverter::JsonObjectStringToUStruct<FTUError>(testInnerStr, &error, 0, 0);
 				FTapLoginModule::OnGetTestQualificationError.Broadcast(error);
 			}
 			FTapLoginModule::OnGetTestQualification.Broadcast(testQualification);

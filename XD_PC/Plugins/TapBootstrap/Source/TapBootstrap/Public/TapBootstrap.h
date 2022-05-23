@@ -3,8 +3,8 @@
 #pragma once
 
 #include "Modules/ModuleManager.h"
-#include "TapAccessToken.h"
-#include "TapError.h"
+#include "TUAccessToken.h"
+#include "TUError.h"
 #include "TapUser.h"
 #include "TapUserDetail.h"
 
@@ -30,7 +30,7 @@ public:
     /** RegisterLoginResultListener Callback */
     DECLARE_MULTICAST_DELEGATE_OneParam(FLoginSuccess, const FTapUser);
 
-    DECLARE_MULTICAST_DELEGATE_OneParam(FLoginError, const FTapError);
+    DECLARE_MULTICAST_DELEGATE_OneParam(FLoginError, const FTUError);
 
     DECLARE_MULTICAST_DELEGATE(FLoginCancel);
 
@@ -44,20 +44,20 @@ public:
     static FLoginCancel OnLoginCancel;
 
     /** RegisterUserStatusChangedListener Callback */
-    DECLARE_MULTICAST_DELEGATE_OneParam(FLogout, const FTapError);
+    DECLARE_MULTICAST_DELEGATE_OneParam(FLogout, const FTUError);
 
     UPROPERTY(BlueprintAssignable, Category = "TapBootstrap")
     static FLogout OnLogout;
 
     /** GetAccessToken Callback */
-    DECLARE_MULTICAST_DELEGATE_OneParam(FGetAccessToken, const FTapAccessToken);
+    DECLARE_MULTICAST_DELEGATE_OneParam(FGetAccessToken, const FTUAccessToken);
     
     UPROPERTY(BlueprintAssignable, Category = "TapBootstrap")
     static FGetAccessToken OnGetAccessToken;
 
     /** GetUser Callback */
     DECLARE_MULTICAST_DELEGATE_OneParam(FGetUserSuccess,const FTapUser&);
-    DECLARE_MULTICAST_DELEGATE_OneParam(FGetUserError,const FTapError&);
+    DECLARE_MULTICAST_DELEGATE_OneParam(FGetUserError,const FTUError&);
 
     UPROPERTY(BlueprintAssignable, Category = "TapBootstrap")
     static FGetUserSuccess OnGetUserSuccess;
@@ -67,7 +67,7 @@ public:
 
     /** GetUserDetail Callback */
     DECLARE_MULTICAST_DELEGATE_OneParam(FGetUserDetailSuccess, const FTapUserDetail);
-    DECLARE_MULTICAST_DELEGATE_OneParam(FGetUserDetailError, const FTapError);
+    DECLARE_MULTICAST_DELEGATE_OneParam(FGetUserDetailError, const FTUError);
 
     UPROPERTY(BlueprintAssignable, Category = "TapBootstrap")
     static FGetUserDetailSuccess OnGetUserDetailSuccess;
@@ -77,7 +77,7 @@ public:
 
     /** GetTestQualification Callback */
     DECLARE_MULTICAST_DELEGATE_OneParam(FGetTestQualification, const bool);
-    DECLARE_MULTICAST_DELEGATE_OneParam(FGetTestQualificationError, const FTapError);
+    DECLARE_MULTICAST_DELEGATE_OneParam(FGetTestQualificationError, const FTUError);
 
     UPROPERTY(BlueprintAssignable, Category = "TapBootstrap")
     static FGetTestQualification OnGetTestQualification;

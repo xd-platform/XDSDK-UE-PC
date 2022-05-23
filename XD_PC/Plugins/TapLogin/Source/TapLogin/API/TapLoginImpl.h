@@ -1,5 +1,5 @@
 #pragma once
-#include "TapAuthResult.h"
+#include "TUAuthResult.h"
 
 class TapLoginImpl
 {
@@ -8,7 +8,7 @@ public:
 
 	static TapLoginImpl& Get();
 
-	static void Login(TArray<FString> Permissions, TFunction<void(TapAuthResult)> CallBack);
+	static void Login(TArray<FString> Permissions, TFunction<void(TUAuthResult)> CallBack);
 
 
 private:

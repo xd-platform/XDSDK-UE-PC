@@ -113,7 +113,7 @@ void XDGImplement::GetLoginParam(LoginType loginType,
 	}
 	else if (loginType == LoginType::TapTap) {
 		RequestTapToken(
-			[=](FTapAccessToken AccessToken) {
+			[=](FTUAccessToken AccessToken) {
 				TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 				JsonObject->SetNumberField("type", (int)loginType);
 				JsonObject->SetStringField("token", AccessToken.kid);
@@ -310,20 +310,20 @@ void XDGImplement::CheckPrivacyAlert(TFunction<void()> Callback) {
 	}
 }
 
-void XDGImplement::RequestTapToken(TFunction<void(FTapAccessToken AccessToken)> callback,
+void XDGImplement::RequestTapToken(TFunction<void(FTUAccessToken AccessToken)> callback,
                                    TFunction<void(FXDGError error)> ErrorBlock) {
 	UTapLoginHelper::Login(
-		[=](TapAuthResult Result) {
-			if (Result.GetType() == TapAuthResult::Success) {
+		[=](TUAuthResult Result) {
+			if (Result.GetType() == TUAuthResult::Success) {
 				callback(*Result.GetToken().Get());
 			}
-			else if (Result.GetType() == TapAuthResult::Cancel) {
+			else if (Result.GetType() == TUAuthResult::Cancel) {
 				FXDGError Error;
 				Error.msg = "Login Cancel";
-				Error.code = FTapError::ERROR_CODE_LOGIN_CANCEL;
+				Error.code = FTUError::ERROR_CODE_LOGIN_CANCEL;
 				ErrorBlock(Error);
 			}
-			else if (Result.GetType() == TapAuthResult::Fail) {
+			else if (Result.GetType() == TUAuthResult::Fail) {
 				FXDGError Error;
 				Error.msg = Result.GetError()->error_description;
 				Error.code = Result.GetError()->code;

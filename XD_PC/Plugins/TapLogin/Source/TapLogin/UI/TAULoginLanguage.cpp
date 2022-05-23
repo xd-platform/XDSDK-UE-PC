@@ -1,33 +1,71 @@
 #include "TAULoginLanguage.h"
 
-TSharedPtr<TAULoginLanguage> TAULoginLanguage::Instance = nullptr;
+#include "TULanguage.h"
 
-TSharedPtr<TAULoginLanguage>& TAULoginLanguage::Get()
-{
-	if (!Instance.IsValid())
-	{
-		Instance = MakeShareable(new TAULoginLanguage);
-	}
-	return Instance;
-}
 
-TAULoginLanguage::TAULoginLanguage()
-{
-	cn = MakeShareable(new LoginLangCN);
-	io = MakeShareable(new LoginLangIO);
-}
+TSharedPtr<ILoginLang> TAULoginLanguage::CurrentLang = nullptr;
 
 TSharedPtr<ILoginLang> TAULoginLanguage::GetCurrentLang()
 {
-	// zh 和 en 2
-	FString lan;
-	FInternationalization::Get().GetCulture(lan);
-	if (lan == "zh")
-	{
-		return Get()->cn;
-	} else
-	{
-		return Get()->io;
+	if (CurrentLang.IsValid()) {
+		return CurrentLang;
+	}
+	auto CurrentSysType = TULanguage::GetCurrentType();
+	switch (CurrentSysType) {
+	case TULanguage::ZH_HANS:
+		SetLangType(CN);
+		break;
+	case TULanguage::EN:
+		SetLangType(IO);
+		break;
+	case TULanguage::ID:
+		SetLangType(ID);
+		break;
+	case TULanguage::JA:
+		SetLangType(JA);
+		break;
+	case TULanguage::KO:
+		SetLangType(KO);
+		break;
+	case TULanguage::TH:
+		SetLangType(TH);
+		break;
+	case TULanguage::ZH_HANT:
+		SetLangType(ZHTW);
+		break;
+	default:
+		SetLangType(IO);
+		break;
+	}
+	return CurrentLang;
+}
+
+void TAULoginLanguage::SetLangType(Type Type) {
+	switch (Type) {
+	case CN:
+		CurrentLang = MakeShareable(new LoginLangCN);
+		break;
+	case IO:
+		CurrentLang = MakeShareable(new LoginLangIO);
+		break;
+	case ID:
+		CurrentLang = MakeShareable(new LoginLangID);
+		break;
+	case JA:
+		CurrentLang = MakeShareable(new LoginLangJA);
+		break;
+	case KO:
+		CurrentLang = MakeShareable(new LoginLangKO);
+		break;
+	case TH:
+		CurrentLang = MakeShareable(new LoginLangTH);
+		break;
+	case ZHTW:
+		CurrentLang = MakeShareable(new LoginLangZHTW);
+		break;
+	default:
+		CurrentLang = MakeShareable(new LoginLangIO);
+		break;
 	}
 }
 

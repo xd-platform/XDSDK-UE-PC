@@ -34,9 +34,9 @@ NSString * IOSHelper::convertString(FString& string) {
 	return string.GetNSString();
 }
 
-FTapError IOSHelper::convertError(NSError *error)
+FTUError IOSHelper::convertError(NSError *error)
 {
-	FTapError tapError;
+	FTUError tapError;
 	tapError.code = (int)error.code;
 	tapError.error_description = IOSHelper::convertString(error.localizedDescription);
 	return tapError;

@@ -1,9 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "TapAccessToken.generated.h"
+#include "TUAccessToken.generated.h"
 
 USTRUCT(BlueprintType)
-struct FTapAccessToken
+struct FTUAccessToken
 {
 	GENERATED_BODY()
 
@@ -27,7 +27,7 @@ struct FTapAccessToken
 
 	void SaveToLocal() const;
 	
-	static TSharedPtr<FTapAccessToken> GetLocalModel();
+	static TSharedPtr<FTUAccessToken> GetLocalModel();
 
 	static void ClearLocalModel();
 	

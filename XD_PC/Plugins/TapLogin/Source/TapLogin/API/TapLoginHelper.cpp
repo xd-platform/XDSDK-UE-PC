@@ -11,30 +11,30 @@ void UTapLoginHelper::Init(const FString& clientID, bool isCn, bool roundCorner)
 	TapLoginImpl::Get().Init(clientID, isCn, roundCorner);
 }
 
-void UTapLoginHelper::Login(TFunction<void(TapAuthResult Result)> CallBack)
+void UTapLoginHelper::Login(TFunction<void(TUAuthResult Result)> CallBack)
 {
 	TArray<FString> Permissions;
 	Permissions.Add(TapLoginPermissionScope::Profile);
 	Login(Permissions, CallBack);
 }
 
-void UTapLoginHelper::Login(TArray<FString> Permissions, TFunction<void(TapAuthResult Result)> CallBack)
+void UTapLoginHelper::Login(TArray<FString> Permissions, TFunction<void(TUAuthResult Result)> CallBack)
 {
 	TapLoginImpl::Get().Login(Permissions, CallBack);
 }
 
 void UTapLoginHelper::Logout()
 {
-	FTAUProfileModel::ClearLocalModel();
-	FTapAccessToken::ClearLocalModel();
+	FTULoginProfileModel::ClearLocalModel();
+	FTUAccessToken::ClearLocalModel();
 }
 
-TSharedPtr<FTAUProfileModel> UTapLoginHelper::GetProfile()
+TSharedPtr<FTULoginProfileModel> UTapLoginHelper::GetProfile()
 {
-	return FTAUProfileModel::GetLocalModel();
+	return FTULoginProfileModel::GetLocalModel();
 }
 
-TSharedPtr<FTapAccessToken> UTapLoginHelper::GetAccessToken()
+TSharedPtr<FTUAccessToken> UTapLoginHelper::GetAccessToken()
 {
-	return FTapAccessToken::GetLocalModel();
+	return FTUAccessToken::GetLocalModel();
 }

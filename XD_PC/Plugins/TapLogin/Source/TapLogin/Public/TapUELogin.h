@@ -3,9 +3,7 @@
 #include "TULoginProfileModel.h"
 #include "TUAccessToken.h"
 #include "TUAuthResult.h"
-#if PLATFORM_IOS || PLATFORM_ANDROID
 #include "TULoginFriendResult.h"
-#endif
 
 class TAPLOGIN_API TapUELogin {
 public:
@@ -15,7 +13,6 @@ public:
 		IO
 	};
 
-#if PLATFORM_MAC || PLATFORM_WINDOWS
 	enum LanguageType {
 		AUTO,   // 海外默认英语，国内默认简体中文
 		ZH,		// 简体中文
@@ -26,7 +23,6 @@ public:
 		TH,		// 泰文
 		ZHTW,	// 繁体中文
 	};
-#endif
 
 
 	class Config {
@@ -34,10 +30,7 @@ public:
 		FString ClientID;
 		RegionType RegionType = CN;
 		bool RoundCorner = true;
-
-#if PLATFORM_MAC || PLATFORM_WINDOWS
 		LanguageType LanguageType = AUTO;
-#endif
 	};
 
 	class PermissionScope {
@@ -63,15 +56,13 @@ public:
 
 	static void Logout();
 
-#if PLATFORM_MAC || PLATFORM_WINDOWS
-	
+	// 仅支持PC端
 	static void ChangeLanguage(LanguageType LanguageType);
 
-#elif PLATFORM_IOS || PLATFORM_ANDROID
-	
+	// 仅支持移动端
 	static void GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack);
 	
 	static void QueryMutualList(FString Cursor, int Size, TFunction<void(TSharedPtr<FTULoginFriendResult> ModelPtr, const FTUError& Error)> CallBack);
 
-#endif
+
 };

@@ -6,15 +6,12 @@ using System;
 
 public class TapLogin : ModuleRules
 {
+
 	public TapLogin(ReadOnlyTargetRules Target) : base(Target)
 	{
+		
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-		
-		PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Server")));
-		PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "API")));
-		PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Model")));
-		PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "UI")));
-		
+
 		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...

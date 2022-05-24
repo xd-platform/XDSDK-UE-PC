@@ -6,7 +6,7 @@
 #include "TUCrypto.h"
 #include "TUHelper.h"
 #include "TUDebuger.h"
-#include "TULoginRegionConfig.h"
+#include "Server/TULoginRegionConfig.h"
 #include "TUOpenSSL.h"
 
 static FString WebAuthPath = "authorize";

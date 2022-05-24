@@ -1,5 +1,4 @@
 #include "TapUELogin.h"
-
 #include "TUDebuger.h"
 #include "TULoginImpl.h"
 
@@ -48,14 +47,11 @@ void TapUELogin::Logout() {
 	TULoginImpl::Get()->Logout();
 }
 
-#if PLATFORM_MAC || PLATFORM_WINDOWS
 	
 void TapUELogin::ChangeLanguage(LanguageType LanguageType) {
 	checkf(IsInitialized, TEXT("Please Init First"));
 	TULoginImpl::Get()->ChangeLanguage(LanguageType);
 }
-
-#elif PLATFORM_IOS || PLATFORM_ANDROID
 	
 void TapUELogin::GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack) {
 	checkf(IsInitialized, TEXT("Please Init First"));
@@ -67,4 +63,3 @@ void TapUELogin::QueryMutualList(FString Cursor, int Size,
 	checkf(IsInitialized, TEXT("Please Init First"));
 	TULoginImpl::Get()->QueryMutualList(Cursor, Size, CallBack);
 }
-#endif

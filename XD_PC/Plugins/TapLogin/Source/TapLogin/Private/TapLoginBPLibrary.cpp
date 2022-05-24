@@ -151,15 +151,15 @@ void UTapLoginBPLibrary::QueryMutualList(FString cursor, int size)
 	option.size = size;
 	option.cursor = cursor.GetNSString();
 	[TapFriends queryMutualListWithOption:option callback:^(TapFriendResult * _Nullable result, NSError * _Nullable error) {
-		FTapError Error;
-		FTapFriendResult Result;
+		FTUError Error;
+		FTULoginFriendResult Result;
 		if (error) {
 			Error = IOSHelper::convertError(error);
 			NSLog(@"TDSFriendLogError-%@: %@", @"queryMutualListWithOption", error);
 		} else {
 			Result.cursor = IOSHelper::convertString(result.cursor);
 			for (TapFriendInfo *info in result.data) {
-				FLoginTapFriendInfo Info;
+				FTULoginFriendInfo Info;
 				Info.name = IOSHelper::convertString(info.name);
 				Info.avatar = IOSHelper::convertString(info.avatar);
 				Info.openid = IOSHelper::convertString(info.openid);

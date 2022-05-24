@@ -2,7 +2,7 @@
 #include "TUAccessToken.h"
 #include "TULoginError.h"
 #include "TULoginProfileModel.h"
-#include "TUQrCodeModel.h"
+#include "Desktop/TUQrCodeModel.h"
 #include "TUHttpRequest.h"
 
 
@@ -11,8 +11,6 @@ class TULoginNet: public TUHttpRequest
 public:
 
 	TULoginNet();
-
-	
 	
 
 	static void RequestLoginQrCode(const TArray<FString> Permissions, TFunction<void(TSharedPtr<FTUQrCodeModel> Model, FTULoginError Error)> callback);

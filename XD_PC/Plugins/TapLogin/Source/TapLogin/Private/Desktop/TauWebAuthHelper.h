@@ -1,7 +1,5 @@
 #pragma once
 #include "IHttpRouter.h"
-#include "TUAccessToken.h"
-#include "TULoginError.h"
 
 class TauWebAuthHelper: public TSharedFromThis<TauWebAuthHelper> {
 public:

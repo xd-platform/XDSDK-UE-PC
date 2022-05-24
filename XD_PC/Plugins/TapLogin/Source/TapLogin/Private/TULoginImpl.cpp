@@ -1,9 +1,9 @@
 #include "TULoginImpl.h"
 #include "TUDebuger.h"
 #if PLATFORM_MAC || PLATFORM_WINDOWS
-#include "TULoginPCImpl.h"
+#include "Desktop/TULoginPCImpl.h"
 #elif PLATFORM_IOS || PLATFORM_ANDROID
-#include "TULoginMobileImpl.h"
+#include "Mobile/TULoginMobileImpl.h"
 #endif
 
 TSharedPtr<TULoginImpl> TULoginImpl::Instance = nullptr;
@@ -22,10 +22,6 @@ TSharedPtr<TULoginImpl>& TULoginImpl::Get() {
 }
 
 void TULoginImpl::Init(TapUELogin::Config _Config) {
-	TUDebuger::ErrorLog("Unsupported Platforms");
-}
-
-void TULoginImpl::ChangeLanguage(TapUELogin::LanguageType LanguageType) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
 }
 
@@ -55,6 +51,10 @@ void TULoginImpl::Login(TArray<FString> Permissions, TFunction<void(const TUAuth
 }
 
 void TULoginImpl::Logout() {
+	TUDebuger::ErrorLog("Unsupported Platforms");
+}
+
+void TULoginImpl::ChangeLanguage(TapUELogin::LanguageType LanguageType) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
 }
 

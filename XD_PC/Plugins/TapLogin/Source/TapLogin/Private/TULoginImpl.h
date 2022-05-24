@@ -12,8 +12,6 @@ public:
 	TapUELogin::Config Config;
 	
 	virtual void Init(TapUELogin::Config _Config);
-
-	virtual void ChangeLanguage(TapUELogin::LanguageType LanguageType);
 	
 	virtual TSharedPtr<FTULoginProfileModel> GetProfile();
 	
@@ -24,7 +22,9 @@ public:
 	virtual void Login(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> CallBack);
 
 	virtual void Logout();
-
+	
+	virtual void ChangeLanguage(TapUELogin::LanguageType LanguageType);
+	
 	virtual void GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack);
 	
 	virtual void QueryMutualList(FString Cursor, int Size, TFunction<void(TSharedPtr<FTULoginFriendResult> ModelPtr, const FTUError& Error)> CallBack);

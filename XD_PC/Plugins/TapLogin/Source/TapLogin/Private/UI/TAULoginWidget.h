@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "TUAuthResult.h"
-#include "TUQrCodeModel.h"
+#include "Desktop/TUQrCodeModel.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "TauWebAuthHelper.h"
+#include "Desktop/TauWebAuthHelper.h"
 #include "Components/RichTextBlock.h"
 #include "TAULoginWidget.generated.h"
 

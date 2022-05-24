@@ -1,12 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "TAULoginWidget.h"
-
 #include "TULoginImpl.h"
-#include "TAULoginLanguage.h"
-#include "TULoginNet.h"
+#include "Desktop/TAULoginLanguage.h"
+#include "Server/TULoginNet.h"
 #include "TUHelper.h"
 #include "TUDebuger.h"
-
+#include "Desktop/TauWebAuthHelper.h"
 
 
 UTAULoginWidget::UTAULoginWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)

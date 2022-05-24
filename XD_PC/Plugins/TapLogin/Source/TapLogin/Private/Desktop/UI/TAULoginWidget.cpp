@@ -2,7 +2,7 @@
 #include "TAULoginWidget.h"
 #include "TULoginImpl.h"
 #include "Desktop/TAULoginLanguage.h"
-#include "Server/TULoginNet.h"
+#include "Desktop/Server/TULoginNet.h"
 #include "TUHelper.h"
 #include "TUDebuger.h"
 #include "Desktop/TauWebAuthHelper.h"

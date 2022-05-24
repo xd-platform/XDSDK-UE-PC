@@ -1,6 +1,8 @@
 #include "TUAccessToken.h"
-#include "TUDataStorage.h"
-#include "Server/TULoginStorage.h"
+
+#if PLATFORM_MAC || PLATFORM_WINDOWS
+
+#include "Desktop/Server/TULoginStorage.h"
 
 
 void FTUAccessToken::SaveToLocal() const
@@ -17,3 +19,6 @@ void FTUAccessToken::ClearLocalModel()
 {
 	TUDataStorage<FTULoginStorage>::Remove(FTULoginStorage::AccessToken);
 }
+
+#endif
+

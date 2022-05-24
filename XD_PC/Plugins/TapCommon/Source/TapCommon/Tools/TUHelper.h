@@ -17,8 +17,6 @@ public:
 		return view;
 	}
 
-	static UTexture2D* GenerateQrCode(const FString& string);
-
 
 	static FString GetRandomStr(int len);
 
@@ -89,7 +87,13 @@ public:
 	static FString CombinParameters(const TSharedPtr<FJsonObject>& parameters, bool isEncode = true);
 
 #if PLATFORM_MAC || PLATFORM_WINDOWS
+	
+	static UTexture2D* GenerateQrCode(const FString& string);
+	
 	static void ActivateItself();
 #endif
+
+
+	
 
 };

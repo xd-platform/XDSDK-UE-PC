@@ -19,10 +19,15 @@ struct FTULoginProfileModel
 	UPROPERTY()
 	FString unionid;
 
+#if PLATFORM_MAC || PLATFORM_WINDOWS
+
 	void SaveToLocal();
 	
 	static TSharedPtr<FTULoginProfileModel> GetLocalModel();
 
 	static void ClearLocalModel();
+
+#endif
+
 	
 };

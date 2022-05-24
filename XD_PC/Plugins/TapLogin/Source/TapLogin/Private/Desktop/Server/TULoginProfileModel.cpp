@@ -1,5 +1,6 @@
 #include "TULoginProfileModel.h"
-#include "TUDataStorage.h"
+#if PLATFORM_MAC || PLATFORM_WINDOWS
+
 #include "TULoginStorage.h"
 
 void FTULoginProfileModel::SaveToLocal()
@@ -16,3 +17,5 @@ void FTULoginProfileModel::ClearLocalModel()
 {
 	TUDataStorage<FTULoginStorage>::Remove(FTULoginStorage::Profile);
 }
+
+#endif

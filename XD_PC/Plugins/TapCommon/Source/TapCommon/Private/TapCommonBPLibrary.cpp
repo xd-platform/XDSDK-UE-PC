@@ -116,11 +116,11 @@ void UTapCommonBPLibrary::OpenReviewInTapGlobal(FString appId){
 
 TMap<FString, FString> UTapCommonBPLibrary::RemoveEmptyKey(TMap<FString, FString> stringMap)
 {
-    // FTapError Error;
+    // FTUError Error;
     // Error.code = 10;
     // Error.error_description = TEXT("哈哈__123'1；231_。。。。");
     // FString ErrorJson;
-    // FJsonObjectConverter::UStructToJsonObjectString(FTapError::StaticStruct(), &Error, ErrorJson, 0, 0);
+    // FJsonObjectConverter::UStructToJsonObjectString(FTUError::StaticStruct(), &Error, ErrorJson, 0, 0);
     // UE_LOG(LogTemp, Display, TEXT("hyf__%s"), *ErrorJson);
     stringMap.Remove("");
     return stringMap;

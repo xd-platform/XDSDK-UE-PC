@@ -25,10 +25,16 @@ struct FTUAccessToken
 	UPROPERTY()
 	uint64 scope;
 
+#if PLATFORM_MAC || PLATFORM_WINDOWS
+
 	void SaveToLocal() const;
 	
 	static TSharedPtr<FTUAccessToken> GetLocalModel();
 
 	static void ClearLocalModel();
+
+#endif
+
+
 	
 };

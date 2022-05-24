@@ -6,7 +6,6 @@
 #include "TUDebuger.h"
 #include "TUDBNet.h"
 #include "TUDBStorage.h"
-#include "VisualLogger/VisualLoggerCustomVersion.h"
 
 
 using namespace TUDBEventKey;

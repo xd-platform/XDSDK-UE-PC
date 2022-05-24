@@ -94,7 +94,7 @@ void UTapBootstrapBPLibrary::Login(TArray<FString> permissions)
     dispatch_async(dispatch_get_main_queue(), ^{
         [TDSUser loginByTapTapWithPermissions: IOSHelper::convertArray(permissions) callback:^(TDSUser *_Nullable user, NSError *_Nullable error) {
           if (error) {
-              FTapError Error = IOSHelper::convertError(error);
+              FTUError Error = IOSHelper::convertError(error);
               FTapBootstrapModule::OnLoginError.Broadcast(Error);
           } else {
               FTapUser User = FTapUser((NSObject *)user);
@@ -157,7 +157,7 @@ void UTapBootstrapBPLibrary::GetUser()
         FTapUser user = FTapUser((NSObject *)iOSUser);
         FTapBootstrapModule::OnGetUserSuccess.Broadcast(user);
     } else {
-        FTapError userError;
+        FTUError userError;
         userError.code = 1;
         userError.error_description = TEXT("user信息为空");
         FTapBootstrapModule::OnGetUserError.Broadcast(userError);
@@ -235,8 +235,8 @@ void UTapBootstrapBPLibrary::OnBridgeCallback(const FString& result)
             FJsonObjectConverter::JsonObjectStringToUStruct<FTapUser>(loginWrapper.wrapper,&user,0,0);
             FTapBootstrapModule::OnLoginSuccess.Broadcast(user);
         } else {
-            FTapError loginError;
-            FJsonObjectConverter::JsonObjectStringToUStruct<FTapError>(loginWrapper.wrapper,&loginError,0,0);
+            FTUError loginError;
+            FJsonObjectConverter::JsonObjectStringToUStruct<FTUError>(loginWrapper.wrapper,&loginError,0,0);
             FTapBootstrapModule::OnLoginError.Broadcast(loginError);
             UE_LOG(LogTemp,Warning,TEXT("TapBootstrap OnLoginError:%s"),*loginWrapper.wrapper);
         }
@@ -253,15 +253,15 @@ void UTapBootstrapBPLibrary::OnBridgeCallback(const FString& result)
             FJsonObjectConverter::JsonObjectStringToUStruct<FTapUser>(userWrapper.wrapper,&user,0,0);
             FTapBootstrapModule::OnGetUserSuccess.Broadcast(user);
         } else {
-            FTapError userError;
-            FJsonObjectConverter::JsonObjectStringToUStruct<FTapError>(userWrapper.wrapper,&userError,0,0);
+            FTUError userError;
+            FJsonObjectConverter::JsonObjectStringToUStruct<FTUError>(userWrapper.wrapper,&userError,0,0);
             FTapBootstrapModule::OnGetUserError.Broadcast(userError);
         }
         return;
     }
 
     if(tapResult.callbackId.Equals(TAP_BOOTSTRAP_GET_TEST_QUALIFICATION_ID)){
-            FTapError error;
+            FTUError error;
             if(!UTapCommonBPLibrary::CheckResult(tapResult)){
                 error = {80080,"TapSDK get TestQualification error!"};
                 FTapBootstrapModule::OnGetTestQualificationError.Broadcast(error);
@@ -275,7 +275,7 @@ void UTapBootstrapBPLibrary::OnBridgeCallback(const FString& result)
                 bool testQualification = testQualificationRoot->GetIntegerField(TEXT("userTestQualification")) == 1;
                 if(!testQualification){
                     FString testInnerStr = testQualificationRoot->GetStringField(TEXT("error"));
-                    FJsonObjectConverter::JsonObjectStringToUStruct<FTapError>(testInnerStr,&error,0,0);
+                    FJsonObjectConverter::JsonObjectStringToUStruct<FTUError>(testInnerStr,&error,0,0);
                     FTapBootstrapModule::OnGetTestQualificationError.Broadcast(error);
                 }
                 FTapBootstrapModule::OnGetTestQualification.Broadcast(testQualification);

@@ -1,5 +1,6 @@
 #include "TULoginPCImpl.h"
 
+#include "Server/TULoginNet.h"
 #include "UI/TAULoginWidget.h"
 
 void TULoginPCImpl::Init(TapUELogin::Config _Config) {
@@ -16,7 +17,17 @@ TSharedPtr<FTULoginProfileModel> TULoginPCImpl::GetProfile() {
 
 void TULoginPCImpl::FetchProfile(
 	TFunction<void(TSharedPtr<FTULoginProfileModel> ModelPtr, const FTUError& Error)> CallBack) {
-	TULoginImpl::FetchProfile(CallBack);
+
+	auto AccessTokenPtr = GetAccessToken();
+	if (!AccessTokenPtr.IsValid() && CallBack != nullptr) {
+		CallBack(nullptr, FTUError(-1, "no login"));
+		return;
+	}
+	TULoginNet::RequestProfile(*AccessTokenPtr.Get(), [=](TSharedPtr<FTULoginProfileModel> Model, FTULoginError Error) {
+		if (CallBack) {
+			CallBack(Model, FTUError(Error.code, Error.msg));
+		}
+	});
 }
 
 TSharedPtr<FTUAccessToken> TULoginPCImpl::GetAccessToken() {

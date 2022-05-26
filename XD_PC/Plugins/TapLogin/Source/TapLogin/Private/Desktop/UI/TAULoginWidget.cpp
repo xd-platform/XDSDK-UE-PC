@@ -208,7 +208,6 @@ void UTAULoginWidget::AutoCheck()
 			   WaitEvent->Trigger();
 			}
 		});
-		// 有空改成信号量 FEvent
 		WaitEvent->Wait();
 		
 		if (WidgetIsClosed)

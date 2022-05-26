@@ -17,9 +17,9 @@ public:
 	static TUAuthResult SuccessInit(const TSharedPtr<FTUAccessToken>& Token);
 	static TUAuthResult FailInit(const FTUError& Error);
 
-	Type GetType();
-	TSharedPtr<FTUAccessToken> GetToken();
-	TSharedPtr<FTUError> GetError();
+	Type GetType() const;
+	TSharedPtr<FTUAccessToken> GetToken() const;
+	TSharedPtr<FTUError> GetError() const;
 
 private:
 	Type Type = Cancel;

@@ -1,6 +1,7 @@
 #include "IOSBridge.h"
 #include "TapCommon.h"
 #include "Engine.h"
+#include "TUMobileBridge.h"
 
 IOSBridge::IOSBridge()
 {
@@ -33,5 +34,6 @@ void IOSBridge::CallHandler(FString command)
 {
     FString resultMsg = UTF8_TO_TCHAR([result UTF8String]);
     FTapCommonModule::OnBridgeCallback.Broadcast(resultMsg);
+	TUMobileBridge::DoCallBack(resultMsg);
 }
 @end

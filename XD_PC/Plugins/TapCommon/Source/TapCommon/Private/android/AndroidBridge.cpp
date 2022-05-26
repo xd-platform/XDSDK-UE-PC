@@ -94,6 +94,7 @@ extern "C"
         const char *cMsg = jenv->GetStringUTFChars(msg, 0);
         FString fMsg = UTF8_TO_TCHAR(cMsg);
         FTapCommonModule::OnBridgeCallback.Broadcast(fMsg);
+        TUMobileBridge::DoCallBack(fMsg);
         jenv->ReleaseStringUTFChars(msg, cMsg);
     }
 

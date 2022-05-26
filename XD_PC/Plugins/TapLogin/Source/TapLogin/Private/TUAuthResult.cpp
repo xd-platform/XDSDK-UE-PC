@@ -21,18 +21,15 @@ TUAuthResult TUAuthResult::FailInit(const FTUError& Error)
 	return Result;
 }
 
-enum TUAuthResult::Type TUAuthResult::GetType()
-{
+enum TUAuthResult::Type TUAuthResult::GetType() const {
 	return Type;
 }
 
-TSharedPtr<FTUAccessToken> TUAuthResult::GetToken()
-{
+TSharedPtr<FTUAccessToken> TUAuthResult::GetToken() const {
 	return Token;
 }
 
-TSharedPtr<FTUError> TUAuthResult::GetError()
-{
+TSharedPtr<FTUError> TUAuthResult::GetError() const {
 	return Error;
 }
 

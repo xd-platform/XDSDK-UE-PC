@@ -3,6 +3,8 @@
 
 class TULoginMobileImpl: public TULoginImpl{
 public:
+	TULoginMobileImpl();
+	
 	virtual void Init(TapUELogin::Config _Config) override;
 	virtual TSharedPtr<FTULoginProfileModel> GetProfile() override;
 	virtual void FetchProfile(

@@ -39,7 +39,8 @@ namespace XUType {
 	class Config {
 	public:
 		FString ClientId;
-		RegionType RegionType;
-		LangType LangType;
+		RegionType RegionType = CN;
+		LangType LangType = ZH_CN;
+		FString GameVersion = "1.0.0";
 	};
 }

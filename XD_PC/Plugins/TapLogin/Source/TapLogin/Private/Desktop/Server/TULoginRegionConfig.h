@@ -1,6 +1,6 @@
 #pragma once
 
-class TAPLOGIN_API TULoginRegionConfig
+class TULoginRegionConfig
 {
 public:
 	virtual ~TULoginRegionConfig() = default;

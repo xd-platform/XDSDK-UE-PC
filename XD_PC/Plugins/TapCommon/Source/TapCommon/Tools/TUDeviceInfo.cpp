@@ -115,12 +115,6 @@ FString TUDeviceInfo::GetDeviceId()
 	return FPlatformMisc::GetDeviceId();
 }
 
-FString TUDeviceInfo::GetProjectVersion()
-{
-	// 待实现
-	return "1.0.1";
-}
-
 FString TUDeviceInfo::GetIpv4()
 {
 	ISocketSubsystem *socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);

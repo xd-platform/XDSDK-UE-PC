@@ -27,6 +27,8 @@ void XDUE::InitSDK(const XUType::Config& Config, TFunction<void(bool Result, con
 		return;
 	}
 	g_InitState = InitStateIniting;
+	XUImpl::Get()->Config = Config;
+	SetLanguage(Config.LangType);
 	XUImpl::GetIpInfo([=](TSharedPtr<FXUIpInfoModel> model, FString msg) {
 		if (model == nullptr) {
 			g_InitState = InitStateUninit;

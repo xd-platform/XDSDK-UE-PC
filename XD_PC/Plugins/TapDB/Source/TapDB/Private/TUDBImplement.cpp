@@ -35,9 +35,6 @@ void TUDBImplement::Init(const TUDBInitConfig& Config, bool isAccount)
 	if (Config.GameVersion.Len() > 0 && Config.GameVersion.Len() <= 256)
 	{
 		CommonProperties->SetStringField("app_version", Config.GameVersion);
-	} else
-	{
-		CommonProperties->SetStringField("app_version", TUDeviceInfo::GetProjectVersion());
 	}
 	CommonProperties->SetStringField("sdk_version", TAPDB_VERSION);
 

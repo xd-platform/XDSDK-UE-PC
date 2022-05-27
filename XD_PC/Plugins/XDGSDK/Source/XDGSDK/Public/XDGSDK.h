@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-XDGSDK_API int XDUESDK_VERSION_NUMBER = 60101001;
-XDGSDK_API FString XDUESDK_VERSION = "6.1.1";
+#define XDUESDK_VERSION_NUMBER "60101001"
+#define XDUESDK_VERSION "6.1.1"
 
 
 class XDGSDK_API FXDGSDKModule : public IModuleInterface

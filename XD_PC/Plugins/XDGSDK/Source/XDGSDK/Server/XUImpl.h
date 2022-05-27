@@ -21,8 +21,14 @@ public:
 	static FString GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
 
 	static FString GetPayUrl(const FString& ServerId, const FString& RoleId);
+	
+	static TSharedPtr<XUImpl>& Get();
+
+	XUType::Config Config;
+
 
 private:
+	static TSharedPtr<XUImpl> Instance;
 
 	static void InitBootstrap(const TSharedPtr<FXUInitConfigModel>& model, TFunction<void(bool successed, FString msg)> resultBlock, const FString& msg);
 	

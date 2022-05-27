@@ -13,6 +13,7 @@ void AXD_PCGameModeBase::InitSDK(const FString& ClientId)
 {
 	XUType::Config Config;
 	Config.ClientId = ClientId;
+	Config.RegionType = XUType::IO;
 	XDUE::InitSDK(Config, [](bool Result, FString Message)
 	{
 		if (Result)

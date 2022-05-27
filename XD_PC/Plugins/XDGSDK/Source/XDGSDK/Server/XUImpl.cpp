@@ -54,7 +54,7 @@ void XUImpl::InitBootstrap(const TSharedPtr<FXUInitConfigModel>& model,
 	Config.regionType = RegionType::IO;
 	Config.dbConfig.enable = tapCfg.enableTapDB;
 	Config.dbConfig.channel = tapCfg.tapDBChannel;
-	Config.dbConfig.gameVersion = TUDeviceInfo::GetProjectVersion();
+	Config.dbConfig.gameVersion = XUImpl::Get()->Config.GameVersion;
 	UTapBootstrap::Init(Config);
 
 	if (resultBlock) { resultBlock(true, msg); }
@@ -181,8 +181,8 @@ FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId
 	query->SetStringField("region", cfgMd->configs.region);
 	query->SetStringField("sdk_ver", XDUESDK_VERSION);
 	query->SetStringField("sdk_lang", XULanguageManager::GetCustomerCenterLang());
-	query->SetStringField("app_ver", TUDeviceInfo::GetProjectVersion());
-	query->SetStringField("app_ver_code", TUDeviceInfo::GetProjectVersion());
+	query->SetStringField("app_ver", XUImpl::Get()->Config.GameVersion);
+	query->SetStringField("app_ver_code", XUImpl::Get()->Config.GameVersion);
 	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), TUDeviceInfo::GetScreenWidth(), TUDeviceInfo::GetScreenHeight()));
 	query->SetStringField("cpu", TUDeviceInfo::GetCPU());
 	query->SetStringField("pt", TUDeviceInfo::GetPlatform());
@@ -222,9 +222,18 @@ FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
 	return UrlStr;
 }
 
+TSharedPtr<XUImpl> XUImpl::Instance = nullptr;
+
+TSharedPtr<XUImpl>& XUImpl::Get() {
+	if (!Instance.IsValid()) {
+		Instance = MakeShareable(new XUImpl);
+	}
+	return Instance;
+}
+
 void XUImpl::RequestKidToken(TSharedPtr<FJsonObject> paras,
-                                   TFunction<void(TSharedPtr<FXUTokenModel> kidToken)> resultBlock,
-                                   TFunction<void(FXUError error)> ErrorBlock) {
+                             TFunction<void(TSharedPtr<FXUTokenModel> kidToken)> resultBlock,
+                             TFunction<void(FXUError error)> ErrorBlock) {
 	XUNet::RequestKidToken(paras, [=](TSharedPtr<FXUTokenModel> kidToken, FXUError error) {
 		if (error.code == Success && kidToken != nullptr) {
 			kidToken->SaveToLocal();

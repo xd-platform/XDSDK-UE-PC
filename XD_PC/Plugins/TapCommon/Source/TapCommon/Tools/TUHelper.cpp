@@ -2,7 +2,7 @@
 #include "ImageUtils.h"
 #include "GenericPlatform/GenericPlatformHttp.h"
 #if PLATFORM_WINDOWS
-#include "Microsoft/AllowMicrosoftPlatformTypes.h"
+#include "Windows/WindowsWindow.h"
 #endif
 
 #if PLATFORM_MAC || PLATFORM_WINDOWS
@@ -89,9 +89,9 @@ void TUHelper::ActivateItself() {
 #endif
 
 #if PLATFORM_WINDOWS
-void TDSHelper::ActivateItself() {
-	DWORD dwProcID = GetCurrentProcessId();
-	HWND hWnd = GetTopWindow(GetDesktopWindow());
+void TUHelper::ActivateItself() {
+	DWORD dwProcID = FPlatformProcess::GetCurrentProcessId();
+	Windows::HWND hWnd = GetTopWindow(GetDesktopWindow());
 	while(hWnd)
 	{
 		DWORD dwWndProcID = 0;
@@ -106,12 +106,12 @@ void TDSHelper::ActivateItself() {
 	{
 		return;
 	}
-	HWND hCurWnd = ::GetForegroundWindow();
-	DWORD dwMyID = ::GetCurrentThreadId();
+	Windows::HWND hCurWnd = ::GetForegroundWindow();
+	DWORD dwMyID = Windows::GetCurrentThreadId();
 	DWORD dwCurID = ::GetWindowThreadProcessId(hCurWnd, NULL);
-	::AttachThreadInput(dwCurID, dwMyID, TRUE);   
+	::AttachThreadInput(dwCurID, dwMyID, true);   
 	::SetForegroundWindow(hWnd);
-	::AttachThreadInput(dwCurID, dwMyID, FALSE);
+	::AttachThreadInput(dwCurID, dwMyID, false);
 }
 #endif
 

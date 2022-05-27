@@ -1,6 +1,6 @@
 #pragma once
 #include "TUAccessToken.h"
-#include "XDEnumType.h"
+
 #include "XDGNet.h"
 #include "XDGUser.h"
 
@@ -12,11 +12,11 @@ public:
 
 	static void InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock);
 
-	static void LoginByType(XDLoginType loginType, TFunction<void(TSharedPtr<FXDGUser> user)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock);
+	static void LoginByType(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FXDGUser> user)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock);
 
-	static void GetLoginParam(XDLoginType loginType, TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock);
+	static void GetLoginParam(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock);
 
-	static void CheckPay(TFunction<void(XDCheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock);
+	static void CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock, TFunction<void(const FXDGError& Error)> FailBlock);
 
 	static FString GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
 
@@ -26,7 +26,7 @@ private:
 
 	static void InitBootstrap(const TSharedPtr<FInitConfigModel>& model, TFunction<void(bool successed, FString msg)> resultBlock, const FString& msg);
 	
-	static void RequestKidToken(TSharedPtr<FJsonObject> paras, TFunction<void(TSharedPtr<FTokenModel> kidToken)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock);
+	static void RequestKidToken(TSharedPtr<FJsonObject> paras, TFunction<void(TSharedPtr<FXUTokenModel> kidToken)> resultBlock, TFunction<void(FXDGError error)> ErrorBlock);
 
 	static void RequestUserInfo(bool saveToLocal, TFunction<void(TSharedPtr<FXDGUser> model)> callback, TFunction<void(FXDGError error)> ErrorBlock);
 

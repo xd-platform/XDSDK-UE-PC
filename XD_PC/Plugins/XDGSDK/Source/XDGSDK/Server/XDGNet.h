@@ -2,7 +2,7 @@
 #include "InitConfigModel.h"
 #include "TUHttpManager.h"
 #include "IpInfoModel.h"
-#include "TokenModel.h"
+#include "XUTokenModel.h"
 #include "XDGBindModel.h"
 #include "XDGError.h"
 #include "XDGUser.h"
@@ -17,7 +17,7 @@ public:
 
 	static void RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> Model, FXDGError Error)> Callback);
 	static void RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> Model, FXDGError Error)> Callback);
-	static void RequestKidToken(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FTokenModel> Model, FXDGError Error)> Callback);
+	static void RequestKidToken(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FXUTokenModel> Model, FXDGError Error)> Callback);
 	static void RequestUserInfo(TFunction<void(TSharedPtr<FXDGUser> Model, FXDGError Error)> Callback);
 	static void RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> Model, FXDGError Error)> Callback);
 	static void RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> Callback);

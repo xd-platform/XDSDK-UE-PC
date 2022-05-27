@@ -1,18 +1,18 @@
-#include "TokenModel.h"
+#include "XUTokenModel.h"
 #include "XDGStorage.h"
 
 
-void FTokenModel::SaveToLocal()
+void FXUTokenModel::SaveToLocal()
 {
 	TUDataStorage<FXDGStorage>::SaveStruct(FXDGStorage::TokenInfo, *this, true);
 }
 
-TSharedPtr<FTokenModel> FTokenModel::GetLocalModel()
+TSharedPtr<FXUTokenModel> FXUTokenModel::GetLocalModel()
 {
-	return  TUDataStorage<FXDGStorage>::LoadStruct<FTokenModel>(FXDGStorage::TokenInfo);
+	return  TUDataStorage<FXDGStorage>::LoadStruct<FXUTokenModel>(FXDGStorage::TokenInfo);
 }
 
-void FTokenModel::ClearToken()
+void FXUTokenModel::ClearToken()
 {
 	TUDataStorage<FXDGStorage>::Remove(FXDGStorage::TokenInfo);
 }

@@ -4,7 +4,7 @@
 #include "LanguageManager.h"
 #include "XDGBindModel.h"
 #include "XDGError.h"
-#include "XDGLoginTypeModel.h"
+#include "XULoginTypeModel.h"
 #include "XDGUser.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
@@ -23,7 +23,7 @@ class XDGSDK_API UXDGUserCenterWidget : public UUserWidget
 public:
 	UXDGUserCenterWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void ShowWidget(TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> BindCallBack, TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack);
+	static void ShowWidget(TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> BindCallBack, TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack);
 
 protected:
 	
@@ -90,10 +90,10 @@ private:
 	// TFunction<void(bool result)> Completed;
 
 	TSharedPtr<FXDGUser> userMd;
-	TSharedPtr<FLanguageModel> langModel;
+	TSharedPtr<FXULanguageModel> langModel;
 
-	TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> BindCallBack;
-	TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack;
+	TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> BindCallBack;
+	TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack;
 
 	FString GetLoginTypeName();
 
@@ -103,9 +103,9 @@ private:
 
 	void ShouldShowErrorButton(bool Should);
 
-	TArray<FXDGLoginTypeModel> GetSdkTypes();
+	TArray<XULoginTypeModel> GetSdkTypes();
 
-	TArray<FXDGLoginTypeModel> GetSupportTypes();
+	TArray<XULoginTypeModel> GetSupportTypes();
 
 	TArray<TSharedPtr<FXDGBindModel>> BindModels;
 

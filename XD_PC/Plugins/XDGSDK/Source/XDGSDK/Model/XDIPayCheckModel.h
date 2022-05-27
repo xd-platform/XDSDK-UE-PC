@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TUJsonHelper.h"
-#include "XDGResponseModel.h"
 #include "XDIPayCheckModel.generated.h"
 
 

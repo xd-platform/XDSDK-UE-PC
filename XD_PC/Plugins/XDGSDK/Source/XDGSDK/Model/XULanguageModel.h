@@ -1,9 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "LanguageModel.generated.h"
+#include "XULanguageModel.generated.h"
 
 USTRUCT()
-struct FLanguageModel
+struct FXULanguageModel
 {
 	GENERATED_BODY()
 	

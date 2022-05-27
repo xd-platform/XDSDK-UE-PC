@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "XDGAPI.h"
 #include "XD_PCGameModeBase.generated.h"
 
 /**
@@ -19,13 +18,13 @@ class XD_PC_API AXD_PCGameModeBase : public AGameModeBase
 	static void InitSDK(const FString& ClientId);
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "LoginByType"))
-	static void LoginByType(XDLoginType LoginType);
+	static void LoginByType(int LoginType);
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "IsInitialized"))
 	static bool IsInitialized();
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "SetLanguage"))
-	static void SetLanguage(XDLangType type);
+	static void SetLanguage(int LangType);
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "ResetPrivacy"))
 	static void ResetPrivacy();

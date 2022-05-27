@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TokenModel.generated.h"
+#include "XUTokenModel.generated.h"
 
 
 USTRUCT()
-struct FTokenModel
+struct FXUTokenModel
 {
 	GENERATED_BODY()
 	
@@ -28,7 +28,7 @@ struct FTokenModel
 
 	void SaveToLocal();
 
-	static TSharedPtr<FTokenModel> GetLocalModel();
+	static TSharedPtr<FXUTokenModel> GetLocalModel();
 
 	static void ClearToken();
 	

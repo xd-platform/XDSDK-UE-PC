@@ -4,19 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
-XDGSDK_API DECLARE_LOG_CATEGORY_EXTERN(XDGSDKLog, Log, All);
-#define XDG_LOG(Verbosity, Format, ...)  UE_LOG(XDGSDKLog, Verbosity, Format, ##__VA_ARGS__)
+
+static XDGSDK_API int XDUESDK_VERSION_NUMBER = 60101001;
+static XDGSDK_API FString XDUESDK_VERSION = "6.1.1";
 
 
 class XDGSDK_API FXDGSDKModule : public IModuleInterface
 {
 public:
-	// e.g 60101001
-	static int Version;
-	// e.g "6.1.1"
-	static FString VersionName;
-
-
+	
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;

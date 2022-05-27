@@ -6,11 +6,14 @@
 #include "TUJsonHelper.h"
 #include "TapMomentApi.h"
 #include "TUDebuger.h"
+#include "XDUE.h"
 
 
 void AXD_PCGameModeBase::InitSDK(const FString& ClientId)
 {
-	UXDGAPI::InitSDK(ClientId, [](bool Result, FString Message)
+	XUType::Config Config;
+	Config.ClientId = ClientId;
+	XDUE::InitSDK(Config, [](bool Result, FString Message)
 	{
 		if (Result)
 		{
@@ -22,9 +25,9 @@ void AXD_PCGameModeBase::InitSDK(const FString& ClientId)
 	});
 }
 
-void AXD_PCGameModeBase::LoginByType(XDLoginType LoginType)
+void AXD_PCGameModeBase::LoginByType(int LoginType)
 {
-	UXDGAPI::LoginByType(LoginType, [](FXDGUser User)
+	XDUE::LoginByType((XUType::LoginType)LoginType, [](FXDGUser User)
 	{
 		TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
 	}, [](FXDGError Error)
@@ -35,34 +38,34 @@ void AXD_PCGameModeBase::LoginByType(XDLoginType LoginType)
 
 bool AXD_PCGameModeBase::IsInitialized()
 {
-	return UXDGAPI::IsInitialized();
+	return XDUE::IsInitialized();
 }
 
-void AXD_PCGameModeBase::SetLanguage(XDLangType type)
+void AXD_PCGameModeBase::SetLanguage(int LangType)
 {
-	UXDGAPI::SetLanguage(type);
+	XDUE::SetLanguage((XUType::LangType)LangType);
 }
 
 void AXD_PCGameModeBase::ResetPrivacy()
 {
-	UXDGAPI::ResetPrivacy();
+	XDUE::ResetPrivacy();
 	TUDebuger::DisplayShow(TEXT("重置隐私"));
 }
 
 void AXD_PCGameModeBase::XDLogout()
 {
-	UXDGAPI::Logout();
+	XDUE::Logout();
 	TUDebuger::DisplayShow(TEXT("退出登录"));
 }
 
 void AXD_PCGameModeBase::Test()
 {
-	UXDGAPI::Test();
+	XDUE::Test();
 }
 
 void AXD_PCGameModeBase::OpenUserCenter() {
-	UXDGAPI::OpenUserCenter(
-		[](XDLoginType Type, TSharedPtr<FXDGError> Error) {
+	XDUE::OpenUserCenter(
+		[](XUType::LoginType Type, TSharedPtr<FXDGError> Error) {
 			if (Error.IsValid()) {
 				TUDebuger::DisplayShow( FString::Printf(TEXT("绑定失败, Error: %s"), *Error->msg));
 			}
@@ -70,7 +73,7 @@ void AXD_PCGameModeBase::OpenUserCenter() {
 				TUDebuger::DisplayShow( FString::Printf(TEXT("绑定成功, Type: %d"), Type));
 			}
 		},
-		[](XDLoginType Type, TSharedPtr<FXDGError> Error) {
+		[](XUType::LoginType Type, TSharedPtr<FXDGError> Error) {
 			if (Error.IsValid()) {
 				TUDebuger::DisplayShow( FString::Printf(TEXT("解绑失败, Error: %s"), *Error->msg));
 			}
@@ -83,25 +86,25 @@ void AXD_PCGameModeBase::OpenUserCenter() {
 
 void AXD_PCGameModeBase::OpenPayHintAlert()
 {
-	UXDGAPI::OpenPayHintAlert();
+	XDUE::OpenPayHintAlert();
 }
 
 void AXD_PCGameModeBase::CheckPay()
 {
-	UXDGAPI::CheckPay([](XDCheckPayType CheckType)
+	XDUE::CheckPay([](XUType::CheckPayType CheckType)
 	{
 		switch (CheckType)
 		{
-		case iOSAndAndroid:
+		case XUType::iOSAndAndroid:
 			TUDebuger::DisplayShow(TEXT("iOSAndAndroid"));
 			break;
-		case iOS:
+		case XUType::iOS:
 			TUDebuger::DisplayShow(TEXT("iOS"));
 			break;
-		case Android:
+		case XUType::Android:
 			TUDebuger::DisplayShow(TEXT("Android"));
 			break;
-		case None:
+		case XUType::None:
 			TUDebuger::DisplayShow(TEXT("None"));
 			break;
 		}
@@ -112,15 +115,15 @@ void AXD_PCGameModeBase::CheckPay()
 }
 
 void AXD_PCGameModeBase::OpenCustomerCenter() {
-	UXDGAPI::OpenCustomerCenter("serverId", "roleId", "roleName");
+	XDUE::OpenCustomerCenter("serverId", "roleId", "roleName");
 }
 
 void AXD_PCGameModeBase::OpenWebPay(FString ServerId, FString RoleId) {
-	UXDGAPI::OpenWebPay(ServerId, RoleId);
+	XDUE::OpenWebPay(ServerId, RoleId);
 }
 
 void AXD_PCGameModeBase::IsPushServiceEnable() {
-	if (UXDGAPI::IsPushServiceEnable()) {
+	if (XDUE::IsPushServiceEnable()) {
 		TUDebuger::DisplayShow("Push Service Enable");
 	} else {
 		TUDebuger::DisplayShow("Push Service Disable");

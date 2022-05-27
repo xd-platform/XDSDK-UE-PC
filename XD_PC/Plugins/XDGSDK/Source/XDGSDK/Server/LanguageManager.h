@@ -1,16 +1,16 @@
 #pragma once
-#include "XDEnumType.h"
-#include "LanguageModel.h"
+#include "XULanguageModel.h"
+#include "XUType.h"
 
 class LanguageManager
 {
 public:
 	
-	static void SetLanguageType(XDLangType type);
+	static void SetLanguageType(XUType::LangType type);
 
-	static XDLangType GetCurrentType();
+	static XUType::LangType GetCurrentType();
 
-	static TSharedPtr<FLanguageModel> GetCurrentModel();
+	static TSharedPtr<FXULanguageModel> GetCurrentModel();
 
 	static FString GetLanguageKey();
 
@@ -18,8 +18,8 @@ public:
 
 private:
 
-	static XDLangType anguageType;
-	static TSharedPtr<FLanguageModel> currentModel;
+	static XUType::LangType anguageType;
+	static TSharedPtr<FXULanguageModel> currentModel;
 
 	static void UpdateLanguageModel();
 };

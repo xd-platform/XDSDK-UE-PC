@@ -1,15 +1,15 @@
 #include "XDIPayHintAlert.h"
 
 #include "LanguageManager.h"
-#include "XDGAPI.h"
+#include "XDUE.h"
 
 UXDIPayHintAlert::UXDIPayHintAlert(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }
 
-void UXDIPayHintAlert::Show(XDCheckPayType CheckType)
+void UXDIPayHintAlert::Show(XUType::CheckPayType CheckType)
 {
-	if (CheckType == None)
+	if (CheckType == XUType::None)
 	{
 		return;
 	}
@@ -33,13 +33,13 @@ void UXDIPayHintAlert::NativeConstruct()
 	TailLabel->SetText(FText::FromString(langModel->tds_refund_custom_service_tip));
 	ButtonLabel->SetText(FText::FromString(langModel->tds_refund_contact_custom_service));
 
-	if (CheckType == iOSAndAndroid)
+	if (CheckType == XUType::iOSAndAndroid)
 	{
 		ContentLabel->SetText(FText::FromString(langModel->tds_refund_all_pay_tip));
-	} else if (CheckType == iOS)
+	} else if (CheckType == XUType::iOS)
 	{
 		ContentLabel->SetText(FText::FromString(langModel->tds_refund_ios_pay_tip));
-	} else if (CheckType == Android)
+	} else if (CheckType == XUType::Android)
 	{
 		ContentLabel->SetText(FText::FromString(langModel->tds_refund_android_pay_tip));
 	} else
@@ -53,5 +53,5 @@ void UXDIPayHintAlert::NativeConstruct()
 
 void UXDIPayHintAlert::OnContactCustomerServiceBtnClick()
 {
-	UXDGAPI::OpenCustomerCenter("", "", "");
+	XDUE::OpenCustomerCenter("", "", "");
 }

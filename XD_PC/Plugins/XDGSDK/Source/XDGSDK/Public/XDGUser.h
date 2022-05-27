@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TokenModel.h"
-#include "XDEnumType.h"
+#include "XUTokenModel.h"
+#include "XUType.h"
 #include "XDGUser.generated.h"
 
 USTRUCT(BlueprintType)
@@ -31,9 +31,9 @@ struct FXDGUser
 
 	static TSharedPtr<FXDGUser>& GetLocalModel();
 	
-	TSharedPtr<FTokenModel> Token();
+	TSharedPtr<FXUTokenModel> Token();
 
-	XDLoginType GetLoginType();
+	XUType::LoginType GetLoginType();
 
 	static void ClearUserData();
 	

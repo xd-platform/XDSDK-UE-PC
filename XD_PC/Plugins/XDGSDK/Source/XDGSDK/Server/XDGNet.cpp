@@ -7,13 +7,14 @@
 #include "TUJsonHelper.h"
 #include "TUCrypto.h"
 #include "TUHelper.h"
-#include "TokenModel.h"
+#include "XUTokenModel.h"
 #include "URLParser.h"
 #include "XDGResponseModel.h"
 #include "XDGSDK.h"
 
 // public readonly static string BASE_URL = "https://test-xdsdk-intnl-6.xd.com"; //测试
 static FString BASE_URL = "https://xdsdk-intnl-6.xd.com"; //正式
+// static NSString *TDSG_GLOBAL_SDK_DOMAIN = @"https://xdsdk-6.xd.cn";
 
 //获取配置
 static FString INIT_SDK_URL = BASE_URL + "/api/init/v1/config";
@@ -78,7 +79,7 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 	query->SetStringField("locationInfoType", "ip");
 	query->SetStringField("chn", "PC");
 
-	query->SetStringField("sdkVer", FXDGSDKModule::VersionName);
+	query->SetStringField("sdkVer", XDUESDK_VERSION);
 
 	query->SetStringField("did", TUDeviceInfo::GetLoginId());
 	query->SetStringField("pt", TUDeviceInfo::GetPlatform());
@@ -220,7 +221,7 @@ void PerfromResponseCallBack(const TSharedPtr<TUHttpResponse>& response, TFuncti
 }
 
 FString XDGNet::GetMacToken() {
-	auto tokenModel = FTokenModel::GetLocalModel();
+	auto tokenModel = FXUTokenModel::GetLocalModel();
 	FString authToken;
 	if (tokenModel == nullptr)
 	{
@@ -271,7 +272,7 @@ void XDGNet::RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FX
 	TUHttpManager::Get().request(request);
 }
 
-void XDGNet::RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<void(TSharedPtr<FTokenModel> model, FXDGError error)> callback)
+void XDGNet::RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<void(TSharedPtr<FXUTokenModel> model, FXDGError error)> callback)
 {
 	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
 	request->URL = XDG_COMMON_LOGIN;

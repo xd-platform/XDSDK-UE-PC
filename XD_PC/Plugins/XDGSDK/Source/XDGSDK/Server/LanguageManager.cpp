@@ -6,10 +6,10 @@
 
 static FString LanguageJsonPath = FPaths::ProjectPluginsDir() / TEXT("XDGSDK/Content") / TEXT("XDGAssets/Language.json");
 
-XDLangType LanguageManager::anguageType = XDLangType::XD_ZH_CN;
-TSharedPtr<FLanguageModel> LanguageManager::currentModel = nullptr;
+XUType::LangType LanguageManager::anguageType = XUType::ZH_CN;
+TSharedPtr<FXULanguageModel> LanguageManager::currentModel = nullptr;
 
-void LanguageManager::SetLanguageType(XDLangType type)
+void LanguageManager::SetLanguageType(XUType::LangType type)
 {
 	if (type != anguageType)
 	{
@@ -18,12 +18,12 @@ void LanguageManager::SetLanguageType(XDLangType type)
 	} 
 }
 
-XDLangType LanguageManager::GetCurrentType()
+XUType::LangType LanguageManager::GetCurrentType()
 {
 	return anguageType;
 }
 
-TSharedPtr<FLanguageModel> LanguageManager::GetCurrentModel()
+TSharedPtr<FXULanguageModel> LanguageManager::GetCurrentModel()
 {
 	if (currentModel == nullptr){
 		UpdateLanguageModel();
@@ -35,31 +35,31 @@ TSharedPtr<FLanguageModel> LanguageManager::GetCurrentModel()
 
 FString LanguageManager::GetLanguageKey()
 {
-	if (anguageType == XDLangType::XD_ZH_CN){
+	if (anguageType == XUType::ZH_CN){
 		return "zh_CN";
-	} else if (anguageType == XDLangType::XD_ZH_TW){
+	} else if (anguageType == XUType::ZH_TW){
 		return "zh_TW";
-	} else if (anguageType == XDLangType::XD_EN){
+	} else if (anguageType == XUType::EN){
 		return "en_US";
-	} else if (anguageType == XDLangType::XD_TH){
+	} else if (anguageType == XUType::TH){
 		return "th_TH";
-	} else if (anguageType == XDLangType::XD_ID){
+	} else if (anguageType == XUType::ID){
 		return "in_ID";
-	} else if (anguageType == XDLangType::XD_KR){
+	} else if (anguageType == XUType::KR){
 		return "ko_KR";
-	} else if (anguageType == XDLangType::XD_JP){
+	} else if (anguageType == XUType::JP){
 		return "ja_JP";
-	} else if (anguageType == XDLangType::XD_DE){
+	} else if (anguageType == XUType::DE){
 		return "de_DE";
-	} else if (anguageType == XDLangType::XD_FR){
+	} else if (anguageType == XUType::FR){
 		return "fr_FR";
-	} else if (anguageType == XDLangType::XD_PT){
+	} else if (anguageType == XUType::PT){
 		return "pt_PT";
-	} else if (anguageType == XDLangType::XD_ES){
+	} else if (anguageType == XUType::ES){
 		return "es_ES";
-	} else if (anguageType == XDLangType::XD_TR){
+	} else if (anguageType == XUType::TR){
 		return "tr_TR";
-	} else if (anguageType == XDLangType::XD_RU){
+	} else if (anguageType == XUType::RU){
 		return "ru_RU";
 	}
 	return "en_US";
@@ -67,31 +67,31 @@ FString LanguageManager::GetLanguageKey()
 
 FString LanguageManager::GetCustomerCenterLang()
 {
-	if (anguageType == XDLangType::XD_ZH_CN){
+	if (anguageType == XUType::ZH_CN){
 		return "cn";
-	} else if (anguageType == XDLangType::XD_ZH_TW){
+	} else if (anguageType == XUType::ZH_TW){
 		return "tw";
-	} else if (anguageType == XDLangType::XD_EN){
+	} else if (anguageType == XUType::EN){
 		return "us";
-	} else if (anguageType == XDLangType::XD_TH){
+	} else if (anguageType == XUType::TH){
 		return "th";
-	} else if (anguageType == XDLangType::XD_ID){
+	} else if (anguageType == XUType::ID){
 		return "id";
-	} else if (anguageType == XDLangType::XD_KR){
+	} else if (anguageType == XUType::KR){
 		return "kr";
-	} else if (anguageType == XDLangType::XD_JP){
+	} else if (anguageType == XUType::JP){
 		return "jp";
-	} else if (anguageType == XDLangType::XD_DE){
+	} else if (anguageType == XUType::DE){
 		return "de";
-	} else if (anguageType == XDLangType::XD_FR){
+	} else if (anguageType == XUType::FR){
 		return "fr";
-	} else if (anguageType == XDLangType::XD_PT){
+	} else if (anguageType == XUType::PT){
 		return "pt";
-	} else if (anguageType == XDLangType::XD_ES){
+	} else if (anguageType == XUType::ES){
 		return "es";
-	} else if (anguageType == XDLangType::XD_TR){
+	} else if (anguageType == XUType::TR){
 		return "tr";
-	} else if (anguageType == XDLangType::XD_RU){
+	} else if (anguageType == XUType::RU){
 		return "ru";
 	}
 	return "us";
@@ -106,21 +106,21 @@ void LanguageManager::UpdateLanguageModel()
 		const TSharedPtr<FJsonObject>* languageObject = nullptr;
 		if (JsonObject.IsValid() && JsonObject->TryGetObjectField(GetLanguageKey(), languageObject))
 		{
-			currentModel = MakeShareable(new FLanguageModel);
+			currentModel = MakeShareable(new FXULanguageModel);
 			if (!FJsonObjectConverter::JsonObjectToUStruct(languageObject->ToSharedRef(), currentModel.Get()))
 			{
-				XDG_LOG(Error, TEXT("%s language json content error"), *GetLanguageKey());
+				TUDebuger::ErrorLog(FString::Printf(TEXT("%s language json content error"), *GetLanguageKey()));
 			}
 			
 			// UE_LOG(LogTemp, Display, TEXT("%s, %s"), *currentModel->tds_account_bind_info, *currentModel->tds_account_safe_info)
 		} else
 		{
-			XDG_LOG(Error, TEXT("language json content error"));
+			TUDebuger::ErrorLog("language json content error");
 		}
 
 	} else
 	{
-		XDG_LOG(Error, TEXT("not found language json"));
+		TUDebuger::ErrorLog("not found language json");
 	}
 }
 

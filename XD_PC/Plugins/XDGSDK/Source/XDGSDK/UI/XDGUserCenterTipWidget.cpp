@@ -1,7 +1,7 @@
 #include "XDGUserCenterTipWidget.h"
 
 #include "LanguageManager.h"
-#include "XDGLoginTypeModel.h"
+#include "XULoginTypeModel.h"
 #include "Kismet/KismetMathLibrary.h"
 
 UXDGUserCenterTipWidget::UXDGUserCenterTipWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -21,7 +21,7 @@ void UXDGUserCenterTipWidget::OnTextBoxValueChange(const FText& Content)
 
 }
 
-void UXDGUserCenterTipWidget::Show(enum AlertType AlertType, ::XDLoginType LoginType, TFunction<void()> SureCallBack,
+void UXDGUserCenterTipWidget::Show(enum AlertType AlertType, ::XUType::LoginType LoginType, TFunction<void()> SureCallBack,
                                    TFunction<void()> CancelCallBack)
 {
 	if (UClass* MyWidgetClass = LoadClass<UXDGUserCenterTipWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXDGUserCenterTIp.BPXDGUserCenterTIp_C'")))
@@ -117,13 +117,13 @@ void UXDGUserCenterTipWidget::FirstStepUpdate()
 		break;
 	case DeleteThird:
 		TitleLabel->SetText(FText::FromString(langModel->tds_delete_account_title));
-		DetailLabel->SetText(FText::FromString(langModel->tds_unbind_delete_content.Replace(TEXT("%s"), *FXDGLoginTypeModel(LoginType).typeName)));
+		DetailLabel->SetText(FText::FromString(langModel->tds_unbind_delete_content.Replace(TEXT("%s"), *XULoginTypeModel(LoginType).typeName)));
 		GreenButtonLabel->SetText(FText::FromString(langModel->tds_cancel));
 		WhiteButtonLabel->SetText(FText::FromString(langModel->tds_delete_account_sure));
 		break;
 	case UnbindThird:
 		TitleLabel->SetText(FText::FromString(langModel->tds_unbind_account_title));
-		DetailLabel->SetText(FText::FromString(langModel->tds_unbind_content.Replace(TEXT("%s"), *FXDGLoginTypeModel(LoginType).typeName)));
+		DetailLabel->SetText(FText::FromString(langModel->tds_unbind_content.Replace(TEXT("%s"), *XULoginTypeModel(LoginType).typeName)));
 		GreenButtonLabel->SetText(FText::FromString(langModel->tds_cancel));
 		WhiteButtonLabel->SetText(FText::FromString(langModel->tds_unbind_account));
 		break;

@@ -1,5 +1,6 @@
 #include "InitConfigModel.h"
 
+#include "TUDebuger.h"
 #include "XDGNet.h"
 #include "XDGSDK.h"
 
@@ -33,7 +34,7 @@ bool FInitConfigModel::CanShowPrivacyAlert()
 	auto md = GetLocalModel();
 	if (!md.IsValid())
 	{
-		XDG_LOG(Warning, TEXT("请先初始化"));
+		TUDebuger::WarningLog(TEXT("请先初始化"));
 		return false;
 	}
 	auto preStr = TUDataStorage<FXDGStorage>::LoadString(FXDGStorage::PrivacyKey);

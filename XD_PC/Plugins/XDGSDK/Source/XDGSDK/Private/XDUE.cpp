@@ -1,16 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+#include "XDUE.h"
 
-
-#include "XDGAPI.h"
-#include "XDGImplement.h"
 #include "LanguageManager.h"
 #include "TapUELogin.h"
 #include "TUDebuger.h"
-#include "XDGSDK.h"
-#include "Blueprint/UserWidget.h"
+#include "XDGImplement.h"
 #include "XDGSDK/UI/XDGUserCenterWidget.h"
 #include "XDGSDK/UI/XDIPayHintAlert.h"
-
 
 enum InitState
 {
@@ -20,20 +15,8 @@ enum InitState
 };
 	
 static InitState g_InitState = InitStateUninit;
-// static const UXDGAPI* XDGSDKManager = nullptr;
-//
-// 	
-// const UXDGAPI*& UXDGAPI::GetXDGSDKEventDispatcher()
-// {
-// 	if (XDGSDKManager == nullptr)
-// 	{
-// 		XDGSDKManager = NewObject<UXDGAPI>();
-// 	}
-// 	return XDGSDKManager;
-// }
 
-
-void UXDGAPI::InitSDK(const FString& ClientId, TFunction<void(bool Result, FString Message)> CallBack) {
+void XDUE::InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack) {
 	if (g_InitState == InitStateIniting) {
 		return;
 	}
@@ -47,23 +30,23 @@ void UXDGAPI::InitSDK(const FString& ClientId, TFunction<void(bool Result, FStri
 	XDGImplement::GetIpInfo([=](TSharedPtr<FIpInfoModel> model, FString msg) {
 		if (model == nullptr) {
 			g_InitState = InitStateUninit;
-			XDG_LOG(Warning, TEXT("No IpInfo Model"));
+			TUDebuger::WarningLog("No IpInfo Model");
 			if (CallBack) {
 				CallBack(false, msg);
 			}
 		}
 		else {
-			XDGImplement::InitSDK(ClientId, [=](bool successed, FString InitMsg) {
+			XDGImplement::InitSDK(Config.ClientId, [=](bool successed, FString InitMsg) {
 				if (successed) {
 					g_InitState = InitStateInited;
-					XDG_LOG(Display, TEXT("init success"));
+					TUDebuger::WarningLog("No IpInfo Model");
 					if (CallBack) {
 						CallBack(true, InitMsg);
 					}
 				}
 				else {
 					g_InitState = InitStateUninit;
-					XDG_LOG(Warning, TEXT("init fail"));
+					TUDebuger::WarningLog("init fail");
 					if (CallBack) {
 						CallBack(false, InitMsg);
 					}
@@ -73,9 +56,8 @@ void UXDGAPI::InitSDK(const FString& ClientId, TFunction<void(bool Result, FStri
 	});
 }
 
-void UXDGAPI::LoginByType(XDLoginType LoginType, TFunction<void(FXDGUser User)> SuccessBlock,
-	TFunction<void(FXDGError Error)> FailBlock)
-{
+void XDUE::LoginByType(XUType::LoginType Type, TFunction<void(const FXDGUser& User)> SuccessBlock,
+	TFunction<void(const FXDGError& Error)> FailBlock) {
 	if (!IsInitialized())
 	{
 		if (FailBlock)
@@ -85,7 +67,7 @@ void UXDGAPI::LoginByType(XDLoginType LoginType, TFunction<void(FXDGUser User)> 
 		return;
 	}
 
-	XDGImplement::LoginByType(LoginType,
+	XDGImplement::LoginByType(Type,
 	[=](TSharedPtr<FXDGUser> user)
 	{
 		if (SuccessBlock)
@@ -102,26 +84,22 @@ void UXDGAPI::LoginByType(XDLoginType LoginType, TFunction<void(FXDGUser User)> 
 	});
 }
 
-void UXDGAPI::SetLanguage(XDLangType type)
-{
-	LanguageManager::SetLanguageType(type);
-}
-
-bool UXDGAPI::IsInitialized()
-{
+bool XDUE::IsInitialized() {
 	return g_InitState == InitStateInited;;
 }
 
+void XDUE::SetLanguage(XUType::LangType Type) {
+	LanguageManager::SetLanguageType(Type);
+}
 
-void UXDGAPI::Logout()
-{
+void XDUE::Logout() {
 	// await TDSUser.Logout();
 	TapUELogin::Logout();
 	FXDGUser::ClearUserData();
 }
 
-void UXDGAPI::OpenUserCenter(TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
-	TFunction<void(XDLoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
+void XDUE::OpenUserCenter(TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
+	TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
 	if (!FXDGUser::GetLocalModel().IsValid()) {
 		TUDebuger::WarningLog("Please Login First");
 		return;
@@ -130,8 +108,8 @@ void UXDGAPI::OpenUserCenter(TFunction<void(XDLoginType Type, TSharedPtr<FXDGErr
 	UXDGUserCenterWidget::ShowWidget(BindCallBack, UnbindCallBack);
 }
 
-void UXDGAPI::CheckPay(TFunction<void(XDCheckPayType CheckType)> SuccessBlock, TFunction<void(FXDGError Error)> FailBlock)
-{
+void XDUE::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock,
+	TFunction<void(const FXDGError& Error)> FailBlock) {
 	if (!FXDGUser::GetLocalModel().IsValid()) {
 		if (FailBlock)
 		{
@@ -139,9 +117,9 @@ void UXDGAPI::CheckPay(TFunction<void(XDCheckPayType CheckType)> SuccessBlock, T
 		}
 		return;
 	}
-	XDGImplement::CheckPay([=](XDCheckPayType CheckType)
+	XDGImplement::CheckPay([=](XUType::CheckPayType CheckType)
 	{
-		if (CheckType != None)
+		if (CheckType != XUType::None)
 		{
 			UXDIPayHintAlert::Show(CheckType);
 		}
@@ -150,10 +128,9 @@ void UXDGAPI::CheckPay(TFunction<void(XDCheckPayType CheckType)> SuccessBlock, T
 			SuccessBlock(CheckType);
 		}
 	}, FailBlock);
-
 }
 
-void UXDGAPI::OpenCustomerCenter(FString ServerId, FString RoleId, FString RoleName) {
+void XDUE::OpenCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName) {
 	FString UrlStr = XDGImplement::GetCustomerCenter(ServerId, RoleId, RoleName);
 
 	if (UrlStr.IsEmpty()) {
@@ -163,7 +140,7 @@ void UXDGAPI::OpenCustomerCenter(FString ServerId, FString RoleId, FString RoleN
 	}
 }
 
-void UXDGAPI::OpenWebPay(FString ServerId, FString RoleId) {
+void XDUE::OpenWebPay(const FString& ServerId, const FString& RoleId) {
 	FString UrlStr = XDGImplement::GetPayUrl(ServerId, RoleId);
 
 	if (UrlStr.IsEmpty()) {
@@ -174,33 +151,28 @@ void UXDGAPI::OpenWebPay(FString ServerId, FString RoleId) {
 	}
 }
 
-void UXDGAPI::SetPushServiceEnable(bool enable) {
+void XDUE::SetPushServiceEnable(bool enable) {
 	FXDGUser::SetPushServiceEnable(enable);
 }
 
-bool UXDGAPI::IsPushServiceEnable() {
+bool XDUE::IsPushServiceEnable() {
 	return FXDGUser::IsPushServiceEnable();
 }
 
-void UXDGAPI::Test()
-{
-	FString Path = FPlatformProcess::BaseDir();
-	TUDebuger::DisplayShow(Path);
+#if !UE_BUILD_SHIPPING
+// only test
 
-
-	// FString Path = "/Users/huangyifeng/Products/Mac/XDGDemo/Product/MacNoEditor/XD_PC.app";
-	// FMacPlatformProcess::LaunchFileInDefaultExternalApplication(*Path);
-	// LaunchFileInDefaultExternalApplication
+void XDUE::Test() {
 }
 
-void UXDGAPI::ResetPrivacy()
-{
+void XDUE::ResetPrivacy() {
 	TUDataStorage<FXDGStorage>::Remove(FXDGStorage::PrivacyKey);
 }
 
-void UXDGAPI::OpenPayHintAlert()
-{
-	UXDIPayHintAlert::Show(iOSAndAndroid);
+void XDUE::OpenPayHintAlert() {
+	UXDIPayHintAlert::Show(XUType::iOSAndAndroid);
 }
+
+#endif
 
 

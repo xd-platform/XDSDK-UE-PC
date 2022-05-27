@@ -22,19 +22,19 @@ TSharedPtr<FXDGUser>& FXDGUser::GetLocalModel()
 	return  CurrentModel;
 }
 
-TSharedPtr<FTokenModel> FXDGUser::Token()
+TSharedPtr<FXUTokenModel> FXDGUser::Token()
 {
-	return  FTokenModel::GetLocalModel();
+	return  FXUTokenModel::GetLocalModel();
 }
 
-XDLoginType FXDGUser::GetLoginType()
+XUType::LoginType FXDGUser::GetLoginType()
 {
 	if (loginType == 0){
-		return XDLoginType::Guest;
+		return XUType::Guest;
 	} else if (loginType == 5){
-		return XDLoginType::TapTap;
+		return XUType::TapTap;
 	}
-	return XDLoginType::Guest;
+	return XUType::Guest;
 }
 
 void FXDGUser::ClearUserData()
@@ -42,7 +42,7 @@ void FXDGUser::ClearUserData()
 	CurrentModel = nullptr;
 	TUDataStorage<FXDGStorage>::Remove(FXDGStorage::UserInfo);
 	FSyncTokenModel::ClearToken();
-	FTokenModel::ClearToken();
+	FXUTokenModel::ClearToken();
 }
 
 bool FXDGUser::IsPushServiceEnable()

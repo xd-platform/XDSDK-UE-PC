@@ -11,17 +11,17 @@
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
-#include "XDGUserCenterItemWidget.h"
-#include "XDGUserCenterWidget.generated.h"
+#include "XUUserCenterItemWidget.h"
+#include "XUUserCenterWidget.generated.h"
 
 
 UCLASS()
-class XDGSDK_API UXDGUserCenterWidget : public UUserWidget
+class XDGSDK_API UXUUserCenterWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-	UXDGUserCenterWidget(const FObjectInitializer& ObjectInitializer);
+	UXUUserCenterWidget(const FObjectInitializer& ObjectInitializer);
 
 	static void ShowWidget(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack, TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack);
 
@@ -113,9 +113,9 @@ private:
 
 	int GetBindCount();
 
-	void Bind(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model);
+	void Bind(UXUUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model);
 
-	void UnBind(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model);
+	void UnBind(UXUUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model);
 
 	
 

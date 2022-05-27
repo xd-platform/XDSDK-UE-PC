@@ -1,26 +1,26 @@
-#include "XDGUserCenterItemWidget.h"
+#include "XUUserCenterItemWidget.h"
 
 #include "XUInitConfigModel.h"
 #include "XULanguageManager.h"
 
-UXDGUserCenterItemWidget::UXDGUserCenterItemWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+UXUUserCenterItemWidget::UXUUserCenterItemWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }
 
-UXDGUserCenterItemWidget* UXDGUserCenterItemWidget::GenerateItem()
+UXUUserCenterItemWidget* UXUUserCenterItemWidget::GenerateItem()
 {
-	UXDGUserCenterItemWidget* widget = nullptr;
-	if (UClass* MyWidgetClass = LoadClass<UXDGUserCenterItemWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXDGUserCenterItem.BPXDGUserCenterItem_C'")))
+	UXUUserCenterItemWidget* widget = nullptr;
+	if (UClass* MyWidgetClass = LoadClass<UXUUserCenterItemWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXUUserCenterItem.BPXUUserCenterItem_C'")))
 	{
 		if (GWorld && GWorld->GetWorld())
 		{
-			widget = CreateWidget<UXDGUserCenterItemWidget>(GWorld->GetWorld(), MyWidgetClass);
+			widget = CreateWidget<UXUUserCenterItemWidget>(GWorld->GetWorld(), MyWidgetClass);
 		}
 	}
 	return widget;
 }
 
-void UXDGUserCenterItemWidget::SetBindModel(const TSharedPtr<FXUBindModel>& Model)
+void UXUUserCenterItemWidget::SetBindModel(const TSharedPtr<FXUBindModel>& Model)
 {
 	BindModel = Model;
 	auto langModel = XULanguageManager::GetCurrentModel();
@@ -45,13 +45,13 @@ void UXDGUserCenterItemWidget::SetBindModel(const TSharedPtr<FXUBindModel>& Mode
 	}
 }
 
-void UXDGUserCenterItemWidget::NativeConstruct()
+void UXUUserCenterItemWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	BindButton->OnClicked.AddUniqueDynamic(this, &UXDGUserCenterItemWidget::OnBindBtnClick);
+	BindButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterItemWidget::OnBindBtnClick);
 }
 
-void UXDGUserCenterItemWidget::OnBindBtnClick()
+void UXUUserCenterItemWidget::OnBindBtnClick()
 {
 	if (BindCallBack)
 	{
@@ -59,7 +59,7 @@ void UXDGUserCenterItemWidget::OnBindBtnClick()
 	}
 }
 
-void UXDGUserCenterItemWidget::ProcessShowOrNot() {
+void UXUUserCenterItemWidget::ProcessShowOrNot() {
 	auto md = FXUInitConfigModel::GetLocalModel();
 	if (!BindModel.IsValid() || !md.IsValid()) {
 		return;
@@ -77,7 +77,7 @@ void UXDGUserCenterItemWidget::ProcessShowOrNot() {
 	
 }
 
-void UXDGUserCenterItemWidget::ShowBindBt(int Show) {
+void UXUUserCenterItemWidget::ShowBindBt(int Show) {
 	if (Show == 1) {
 		BindButton->SetVisibility(ESlateVisibility::Visible);
 	} else {

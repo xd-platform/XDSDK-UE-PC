@@ -6,22 +6,22 @@
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "XDGUserCenterItemWidget.generated.h"
+#include "XUUserCenterItemWidget.generated.h"
 
 
 UCLASS()
-class XDGSDK_API UXDGUserCenterItemWidget : public UUserWidget
+class XDGSDK_API UXUUserCenterItemWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-	UXDGUserCenterItemWidget(const FObjectInitializer& ObjectInitializer);
+	UXUUserCenterItemWidget(const FObjectInitializer& ObjectInitializer);
 
-	static UXDGUserCenterItemWidget * GenerateItem();
+	static UXUUserCenterItemWidget * GenerateItem();
 
 	void SetBindModel(const TSharedPtr<FXUBindModel>& Model);
 
-	TFunction<void(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model)> BindCallBack;
+	TFunction<void(UXUUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model)> BindCallBack;
 
 protected:
 

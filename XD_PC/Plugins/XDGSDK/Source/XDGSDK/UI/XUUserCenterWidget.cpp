@@ -1,26 +1,26 @@
-#include "XDGUserCenterWidget.h"
+#include "XUUserCenterWidget.h"
 
 #include "TUDebuger.h"
 #include "TUHUD.h"
 #include "XUImpl.h"
 #include "XUNet.h"
 #include "XUUser.h"
-#include "XDGUserCenterTipWidget.h"
+#include "XUUserCenterTipWidget.h"
 #include "XDUE.h"
 #include "HAL/PlatformApplicationMisc.h"
 
-UXDGUserCenterWidget::UXDGUserCenterWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+UXUUserCenterWidget::UXUUserCenterWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 
 }
 
-void UXDGUserCenterWidget::ShowWidget(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack,
+void UXUUserCenterWidget::ShowWidget(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack,
 	TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack) {
-	if (UClass* MyWidgetClass = LoadClass<UXDGUserCenterWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXDGUserCenter.BPXDGUserCenter_C'")))
+	if (UClass* MyWidgetClass = LoadClass<UXUUserCenterWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXUUserCenter.BPXUUserCenter_C'")))
 	{
 		if (GWorld && GWorld->GetWorld())
 		{
-			auto widget = CreateWidget<UXDGUserCenterWidget>(GWorld->GetWorld(), MyWidgetClass);
+			auto widget = CreateWidget<UXUUserCenterWidget>(GWorld->GetWorld(), MyWidgetClass);
 			widget->AddToViewport();
 			widget->BindCallBack = BindCallBack;
 			widget->UnbindCallBack = UnbindCallBack;
@@ -29,7 +29,7 @@ void UXDGUserCenterWidget::ShowWidget(TFunction<void(XUType::LoginType Type, TSh
 }
 
 
-void UXDGUserCenterWidget::NativeConstruct()
+void UXUUserCenterWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
@@ -46,39 +46,39 @@ void UXDGUserCenterWidget::NativeConstruct()
 	BindInfoTitleLabel->SetText(FText::FromString(langModel->tds_account_bind_info));
 	DeleteButtonLabel->SetText(FText::FromString(langModel->tds_delete_account));
 	
-	CloseButton->OnClicked.AddUniqueDynamic(this, &UXDGUserCenterWidget::OnCloseBtnClick);
-	CopyButton->OnClicked.AddUniqueDynamic(this, &UXDGUserCenterWidget::OnCopyBtnClick);
-	ErrorButton->OnClicked.AddUniqueDynamic(this, &UXDGUserCenterWidget::OnErrorBtnClick);
-	DeleteButton->OnClicked.AddUniqueDynamic(this, &UXDGUserCenterWidget::OnDeleteBtnClick);
+	CloseButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterWidget::OnCloseBtnClick);
+	CopyButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterWidget::OnCopyBtnClick);
+	ErrorButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterWidget::OnErrorBtnClick);
+	DeleteButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterWidget::OnDeleteBtnClick);
 
 	ShouldShowErrorButton(false);
 
 	RequestList();
 }
 
-void UXDGUserCenterWidget::OnCloseBtnClick()
+void UXUUserCenterWidget::OnCloseBtnClick()
 {
 	RemoveFromParent();
 }
 
-void UXDGUserCenterWidget::OnCopyBtnClick()
+void UXUUserCenterWidget::OnCopyBtnClick()
 {
 	FPlatformApplicationMisc::ClipboardCopy(*userMd->userId);
 	UTUHUD::ShowToast(langModel->tds_copy_success);
 }
 
-void UXDGUserCenterWidget::OnErrorBtnClick()
+void UXUUserCenterWidget::OnErrorBtnClick()
 {
 	RequestList();
 }
 
-void UXDGUserCenterWidget::OnDeleteBtnClick()
+void UXUUserCenterWidget::OnDeleteBtnClick()
 {
 	if (userMd->loginType != (int)XUType::Guest)
 	{
 		return;
 	}
-	UXDGUserCenterTipWidget::Show(UXDGUserCenterTipWidget::DeleteGuest, XUType::Guest, [=]()
+	UXUUserCenterTipWidget::Show(UXUUserCenterTipWidget::DeleteGuest, XUType::Guest, [=]()
 	{
 		UTUHUD::ShowWait();
 		XUNet::Unbind((int)XUType::Guest, [=](TSharedPtr<FXUResponseModel> Model, FXUError Error)
@@ -102,7 +102,7 @@ void UXDGUserCenterWidget::OnDeleteBtnClick()
 	}, nullptr);
 }
 
-FString UXDGUserCenterWidget::GetLoginTypeName()
+FString UXUUserCenterWidget::GetLoginTypeName()
 {
 	FString result = langModel->tds_guest;
 	if (userMd->GetLoginType() == XUType::TapTap)
@@ -113,7 +113,7 @@ FString UXDGUserCenterWidget::GetLoginTypeName()
 	return unitStr.Replace(TEXT("%s"), *result);
 }
 
-void UXDGUserCenterWidget::RequestList()
+void UXUUserCenterWidget::RequestList()
 {
 	UTUHUD::ShowWait();
 	XUNet::RequestBindList([=](TSharedPtr<FXUBindResponseModel> Model, FXUError Error)
@@ -149,20 +149,20 @@ void UXDGUserCenterWidget::RequestList()
 	});
 }
 
-void UXDGUserCenterWidget::ResetListBoxAndDeleteButton()
+void UXUUserCenterWidget::ResetListBoxAndDeleteButton()
 {
 	ListBox->ClearChildren();
 	for (auto FxdgBindModel : BindModels)
 	{
-		UXDGUserCenterItemWidget * Item = UXDGUserCenterItemWidget::GenerateItem();
+		UXUUserCenterItemWidget * Item = UXUUserCenterItemWidget::GenerateItem();
 		Item->SetBindModel(FxdgBindModel);
 		ListBox->AddChild(Item);
-		Item->BindCallBack = [=](UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model)
+		Item->BindCallBack = [=](UXUUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model)
 		{
 			if (Model->status == FXDGBindType::Bind)
 			{
-				enum UXDGUserCenterTipWidget::AlertType AlertType = GetBindCount() <= 1 ? UXDGUserCenterTipWidget::DeleteThird : UXDGUserCenterTipWidget::UnbindThird;
-				UXDGUserCenterTipWidget::Show(AlertType, XUType::TapTap, [=]()
+				enum UXUUserCenterTipWidget::AlertType AlertType = GetBindCount() <= 1 ? UXUUserCenterTipWidget::DeleteThird : UXUUserCenterTipWidget::UnbindThird;
+				UXUUserCenterTipWidget::Show(AlertType, XUType::TapTap, [=]()
 				{
 					UnBind(CurrentWidget, Model);
 				}, nullptr);
@@ -184,7 +184,7 @@ void UXDGUserCenterWidget::ResetListBoxAndDeleteButton()
 	// }
 }
 
-void UXDGUserCenterWidget::ShouldShowErrorButton(bool Should)
+void UXUUserCenterWidget::ShouldShowErrorButton(bool Should)
 {
 	if (Should)
 	{
@@ -202,14 +202,14 @@ void UXDGUserCenterWidget::ShouldShowErrorButton(bool Should)
 	DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
 }
 
-TArray<XULoginTypeModel> UXDGUserCenterWidget::GetSdkTypes()
+TArray<XULoginTypeModel> UXUUserCenterWidget::GetSdkTypes()
 {
 	TArray<XULoginTypeModel> list;
 	list.Add(XULoginTypeModel(XUType::TapTap));
 	return list;
 }
 
-TArray<XULoginTypeModel> UXDGUserCenterWidget::GetSupportTypes()
+TArray<XULoginTypeModel> UXUUserCenterWidget::GetSupportTypes()
 {
 	TArray<XULoginTypeModel> list;
 	TArray<XULoginTypeModel> SDKList = GetSdkTypes();
@@ -228,7 +228,7 @@ TArray<XULoginTypeModel> UXDGUserCenterWidget::GetSupportTypes()
 	return list;
 }
 
-void UXDGUserCenterWidget::DeleteAccount(const FString& Tip)
+void UXUUserCenterWidget::DeleteAccount(const FString& Tip)
 {
 	UTUHUD::ShowToast(Tip);
 	XDUE::Logout();
@@ -236,7 +236,7 @@ void UXDGUserCenterWidget::DeleteAccount(const FString& Tip)
 	RemoveFromParent();
 }
 
-void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TSharedPtr<FXUBindModel> Model)
+void UXUUserCenterWidget::Bind(UXUUserCenterItemWidget* CurrentWidget, TSharedPtr<FXUBindModel> Model)
 {
 	TFunction<void(TSharedPtr<FJsonObject> paras)> BindBlock = [=](TSharedPtr<FJsonObject> Paras)
 	{
@@ -289,7 +289,7 @@ void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TShared
 	
 }
 
-void UXDGUserCenterWidget::UnBind(UXDGUserCenterItemWidget* CurrentWidget, TSharedPtr<FXUBindModel> Model)
+void UXUUserCenterWidget::UnBind(UXUUserCenterItemWidget* CurrentWidget, TSharedPtr<FXUBindModel> Model)
 {
 	UTUHUD::ShowWait();
 	XUNet::Unbind(Model->loginType, [=](TSharedPtr<FXUResponseModel> ResponseModel, FXUError Error)
@@ -327,7 +327,7 @@ void UXDGUserCenterWidget::UnBind(UXDGUserCenterItemWidget* CurrentWidget, TShar
 
 }
 
-int UXDGUserCenterWidget::GetBindCount()
+int UXUUserCenterWidget::GetBindCount()
 {
 	int num = 0;
 	for (auto FxdgBindModel : BindModels)

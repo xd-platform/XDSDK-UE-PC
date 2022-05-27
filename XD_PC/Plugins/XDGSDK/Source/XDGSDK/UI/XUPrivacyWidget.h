@@ -8,18 +8,18 @@
 #include "Components/CheckBox.h"
 #include "Components/RichTextBlock.h"
 #include "Components/TextBlock.h"
-#include "XDGPrivacyWidget.generated.h"
+#include "XUPrivacyWidget.generated.h"
 
 /**
  *  
  */
 UCLASS()
-class XDGSDK_API UXDGPrivacyWidget : public UUserWidget
+class XDGSDK_API UXUPrivacyWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-	 UXDGPrivacyWidget(const FObjectInitializer& ObjectInitializer);
+	 UXUPrivacyWidget(const FObjectInitializer& ObjectInitializer);
 
 	static void ShowPrivacy(TFunction<void(bool result)> Completed);
 

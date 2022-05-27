@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "XDGPrivacyWidget.h"
+#include "XUPrivacyWidget.h"
 
 #include "XUInitConfigModel.h"
 #include "XULanguageManager.h"
@@ -9,33 +9,33 @@
 #include "XUUser.h"
 
 
-UXDGPrivacyWidget::UXDGPrivacyWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+UXUPrivacyWidget::UXUPrivacyWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 
 }
 
-void UXDGPrivacyWidget::ShowPrivacy(TFunction<void(bool result)> Completed)
+void UXUPrivacyWidget::ShowPrivacy(TFunction<void(bool result)> Completed)
 {
-	if (UClass* MyWidgetClass = LoadClass<UXDGPrivacyWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPPrivacyUI.BPPrivacyUI_C'")))
+	if (UClass* MyWidgetClass = LoadClass<UXUPrivacyWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPPrivacyUI.BPPrivacyUI_C'")))
 	{
 		if (GWorld && GWorld->GetWorld())
 		{
-			auto widget = CreateWidget<UXDGPrivacyWidget>(GWorld->GetWorld(), MyWidgetClass);
+			auto widget = CreateWidget<UXUPrivacyWidget>(GWorld->GetWorld(), MyWidgetClass);
 			widget->Completed = Completed;
 			widget->AddToViewport();
 		}
 	}
 }
 
-void UXDGPrivacyWidget::NativeConstruct()
+void UXUPrivacyWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	ComfirmButton->SetIsEnabled(false);
 	
-	AgreeCheckBox1->OnCheckStateChanged.AddUniqueDynamic(this, &UXDGPrivacyWidget::OnCheckStateChanged);
-	AgreeCheckBox2->OnCheckStateChanged.AddUniqueDynamic(this, &UXDGPrivacyWidget::OnCheckStateChanged);
-	AdditionalCheckBox->OnCheckStateChanged.AddUniqueDynamic(this, &UXDGPrivacyWidget::OnCheckStateChanged);
+	AgreeCheckBox1->OnCheckStateChanged.AddUniqueDynamic(this, &UXUPrivacyWidget::OnCheckStateChanged);
+	AgreeCheckBox2->OnCheckStateChanged.AddUniqueDynamic(this, &UXUPrivacyWidget::OnCheckStateChanged);
+	AdditionalCheckBox->OnCheckStateChanged.AddUniqueDynamic(this, &UXUPrivacyWidget::OnCheckStateChanged);
 
 	FScriptDelegate BtnDel;
 	BtnDel.BindUFunction(this, "OnComfirmBtnClick");
@@ -77,7 +77,7 @@ void UXDGPrivacyWidget::NativeConstruct()
 	}
 }
 
-void UXDGPrivacyWidget::OnCheckStateChanged(bool isChecked)
+void UXUPrivacyWidget::OnCheckStateChanged(bool isChecked)
 {
 	if (AgreeCheckBox1->IsChecked() && AgreeCheckBox2->IsChecked())
 	{
@@ -92,7 +92,7 @@ void UXDGPrivacyWidget::OnCheckStateChanged(bool isChecked)
 	}
 }
 
-void UXDGPrivacyWidget::OnComfirmBtnClick()
+void UXUPrivacyWidget::OnComfirmBtnClick()
 {
 	FXUInitConfigModel::UpdatePrivacyState();
 	if (Completed)
@@ -105,7 +105,7 @@ void UXDGPrivacyWidget::OnComfirmBtnClick()
 	RemoveFromParent();
 }
 
-void UXDGPrivacyWidget::FormatTags(FString& Content) {
+void UXUPrivacyWidget::FormatTags(FString& Content) {
 	int index = 0;
 	TArray<int> HeadTags;
 	while (true) {
@@ -182,7 +182,7 @@ void UXDGPrivacyWidget::FormatTags(FString& Content) {
 	}
 }
 
-bool UXDGPrivacyWidget::IsInKrAndPushEnable() {
+bool UXUPrivacyWidget::IsInKrAndPushEnable() {
 	if (!FXUInitConfigModel::GetLocalModel().IsValid()) {
 		return false;
 	}
@@ -191,7 +191,7 @@ bool UXDGPrivacyWidget::IsInKrAndPushEnable() {
 	return CanPush && Region == "kr";
 }
 
-bool UXDGPrivacyWidget::IsInNorthAmerica() {
+bool UXUPrivacyWidget::IsInNorthAmerica() {
 	if (!FXUInitConfigModel::GetLocalModel().IsValid()) {
 		return false;
 	}

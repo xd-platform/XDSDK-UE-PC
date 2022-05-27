@@ -8,11 +8,11 @@
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
-#include "XDGUserCenterTipWidget.generated.h"
+#include "XUUserCenterTipWidget.generated.h"
 
 
 UCLASS()
-class XDGSDK_API UXDGUserCenterTipWidget : public UUserWidget
+class XDGSDK_API UXUUserCenterTipWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -23,7 +23,7 @@ public:
 		DeleteThird = 1,   //删除第三方
 		UnbindThird = 2,   //解绑第三方
 	};
-	UXDGUserCenterTipWidget(const FObjectInitializer& ObjectInitializer);
+	UXUUserCenterTipWidget(const FObjectInitializer& ObjectInitializer);
 
 	static void Show(AlertType AlertType, XUType::LoginType LoginType, TFunction<void()> SureCallBack, TFunction<void()> CancelCallBack);
 

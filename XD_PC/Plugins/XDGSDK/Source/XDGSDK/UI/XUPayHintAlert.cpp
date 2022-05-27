@@ -1,30 +1,30 @@
-#include "XDIPayHintAlert.h"
+#include "XUPayHintAlert.h"
 
 #include "XULanguageManager.h"
 #include "XDUE.h"
 
-UXDIPayHintAlert::UXDIPayHintAlert(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+UXUPayHintAlert::UXUPayHintAlert(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }
 
-void UXDIPayHintAlert::Show(XUType::CheckPayType CheckType)
+void UXUPayHintAlert::Show(XUType::CheckPayType CheckType)
 {
 	if (CheckType == XUType::None)
 	{
 		return;
 	}
-	if (UClass* MyWidgetClass = LoadClass<UXDIPayHintAlert>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXDIPayHintAlert.BPXDIPayHintAlert_C'")))
+	if (UClass* MyWidgetClass = LoadClass<UXUPayHintAlert>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXUPayHintAlert.BPXUPayHintAlert_C'")))
 	{
 		if (GWorld && GWorld->GetWorld())
 		{
-			auto Widget = CreateWidget<UXDIPayHintAlert>(GWorld->GetWorld(), MyWidgetClass);
+			auto Widget = CreateWidget<UXUPayHintAlert>(GWorld->GetWorld(), MyWidgetClass);
 			Widget->CheckType = CheckType;
 			Widget->AddToViewport();
 		}
 	}
 }
 
-void UXDIPayHintAlert::NativeConstruct()
+void UXUPayHintAlert::NativeConstruct()
 {
 	Super::NativeConstruct();
 	auto langModel = XULanguageManager::GetCurrentModel();
@@ -48,10 +48,10 @@ void UXDIPayHintAlert::NativeConstruct()
 	}
 
 	
-	ContactCustomerServiceButton->OnClicked.AddUniqueDynamic(this, &UXDIPayHintAlert::OnContactCustomerServiceBtnClick);
+	ContactCustomerServiceButton->OnClicked.AddUniqueDynamic(this, &UXUPayHintAlert::OnContactCustomerServiceBtnClick);
 }
 
-void UXDIPayHintAlert::OnContactCustomerServiceBtnClick()
+void UXUPayHintAlert::OnContactCustomerServiceBtnClick()
 {
 	XDUE::OpenCustomerCenter("", "", "");
 }

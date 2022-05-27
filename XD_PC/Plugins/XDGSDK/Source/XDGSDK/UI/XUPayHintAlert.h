@@ -5,16 +5,16 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
-#include "XDIPayHintAlert.generated.h"
+#include "XUPayHintAlert.generated.h"
 
 
 UCLASS()
-class XDGSDK_API UXDIPayHintAlert : public UUserWidget
+class XDGSDK_API UXUPayHintAlert : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-	UXDIPayHintAlert(const FObjectInitializer& ObjectInitializer);
+	UXUPayHintAlert(const FObjectInitializer& ObjectInitializer);
 
 	static void Show(XUType::CheckPayType CheckType);
 

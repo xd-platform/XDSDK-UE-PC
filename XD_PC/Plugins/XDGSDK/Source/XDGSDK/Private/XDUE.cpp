@@ -4,8 +4,8 @@
 #include "TapUELogin.h"
 #include "TUDebuger.h"
 #include "XUImpl.h"
-#include "XDGSDK/UI/XDGUserCenterWidget.h"
-#include "XDGSDK/UI/XDIPayHintAlert.h"
+#include "XDGSDK/UI/XUUserCenterWidget.h"
+#include "XDGSDK/UI/XUPayHintAlert.h"
 
 enum InitState
 {
@@ -105,7 +105,7 @@ void XDUE::OpenUserCenter(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUE
 		return;
 	}
 
-	UXDGUserCenterWidget::ShowWidget(BindCallBack, UnbindCallBack);
+	UXUUserCenterWidget::ShowWidget(BindCallBack, UnbindCallBack);
 }
 
 void XDUE::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock,
@@ -121,7 +121,7 @@ void XDUE::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock
 	{
 		if (CheckType != XUType::None)
 		{
-			UXDIPayHintAlert::Show(CheckType);
+			UXUPayHintAlert::Show(CheckType);
 		}
 		if (SuccessBlock)
 		{
@@ -170,7 +170,7 @@ void XDUE::ResetPrivacy() {
 }
 
 void XDUE::OpenPayHintAlert() {
-	UXDIPayHintAlert::Show(XUType::iOSAndAndroid);
+	UXUPayHintAlert::Show(XUType::iOSAndAndroid);
 }
 
 #endif

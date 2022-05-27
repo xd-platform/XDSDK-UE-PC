@@ -10,7 +10,7 @@
 #include "TUHUD.h"
 #include "URLParser.h"
 #include "XDGSDK.h"
-#include "XDGSDK/UI/XDGPrivacyWidget.h"
+#include "XDGSDK/UI/XUPrivacyWidget.h"
 
 static int Success = 200;
 
@@ -297,7 +297,7 @@ void XUImpl::AsyncLocalTdsUser(const FString& userId, const FString& sessionToke
 
 void XUImpl::CheckPrivacyAlert(TFunction<void()> Callback) {
 	if (FXUInitConfigModel::CanShowPrivacyAlert()) {
-		UXDGPrivacyWidget::ShowPrivacy(
+		UXUPrivacyWidget::ShowPrivacy(
 			[=](bool result) {
 				if (result) {
 					Callback();

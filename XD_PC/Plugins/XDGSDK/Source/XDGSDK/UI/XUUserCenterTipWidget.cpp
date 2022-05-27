@@ -1,15 +1,15 @@
-#include "XDGUserCenterTipWidget.h"
+#include "XUUserCenterTipWidget.h"
 
 #include "XULanguageManager.h"
 #include "XULoginTypeModel.h"
 #include "Kismet/KismetMathLibrary.h"
 
-UXDGUserCenterTipWidget::UXDGUserCenterTipWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+UXUUserCenterTipWidget::UXUUserCenterTipWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }
 
 
-void UXDGUserCenterTipWidget::OnTextBoxValueChange(const FText& Content)
+void UXUUserCenterTipWidget::OnTextBoxValueChange(const FText& Content)
 {
 	if (RedTipLabel->Visibility == ESlateVisibility::Visible)
 	{
@@ -21,14 +21,14 @@ void UXDGUserCenterTipWidget::OnTextBoxValueChange(const FText& Content)
 
 }
 
-void UXDGUserCenterTipWidget::Show(enum AlertType AlertType, ::XUType::LoginType LoginType, TFunction<void()> SureCallBack,
+void UXUUserCenterTipWidget::Show(enum AlertType AlertType, ::XUType::LoginType LoginType, TFunction<void()> SureCallBack,
                                    TFunction<void()> CancelCallBack)
 {
-	if (UClass* MyWidgetClass = LoadClass<UXDGUserCenterTipWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXDGUserCenterTIp.BPXDGUserCenterTIp_C'")))
+	if (UClass* MyWidgetClass = LoadClass<UXUUserCenterTipWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXUUserCenterTIp.BPXUUserCenterTIp_C'")))
 	{
 		if (GWorld && GWorld->GetWorld())
 		{
-			auto widget = CreateWidget<UXDGUserCenterTipWidget>(GWorld->GetWorld(), MyWidgetClass);
+			auto widget = CreateWidget<UXUUserCenterTipWidget>(GWorld->GetWorld(), MyWidgetClass);
 			widget->AlertType = AlertType;
 			widget->LoginType = LoginType;
 			widget->SureCallBack = SureCallBack;
@@ -38,7 +38,7 @@ void UXDGUserCenterTipWidget::Show(enum AlertType AlertType, ::XUType::LoginType
 	}
 }
 
-void UXDGUserCenterTipWidget::OnGreenBtnClick()
+void UXUUserCenterTipWidget::OnGreenBtnClick()
 {
 	if (Step == First)
 	{
@@ -87,7 +87,7 @@ void UXDGUserCenterTipWidget::OnGreenBtnClick()
 	}
 }
 
-void UXDGUserCenterTipWidget::OnWhiteBtnClick()
+void UXUUserCenterTipWidget::OnWhiteBtnClick()
 {
 	if (Step == First)
 	{
@@ -103,7 +103,7 @@ void UXDGUserCenterTipWidget::OnWhiteBtnClick()
 }
 
 
-void UXDGUserCenterTipWidget::FirstStepUpdate()
+void UXUUserCenterTipWidget::FirstStepUpdate()
 {
 	Step = First;
 	auto langModel = XULanguageManager::GetCurrentModel();
@@ -132,7 +132,7 @@ void UXDGUserCenterTipWidget::FirstStepUpdate()
 	RedTipLabel->SetVisibility(ESlateVisibility::Collapsed);
 }
 
-void UXDGUserCenterTipWidget::SecondStepUpdate()
+void UXUUserCenterTipWidget::SecondStepUpdate()
 {
 	Step = Second;
 	auto langModel = XULanguageManager::GetCurrentModel();
@@ -170,7 +170,7 @@ void UXDGUserCenterTipWidget::SecondStepUpdate()
 	RedTipLabel->SetVisibility(ESlateVisibility::Hidden);
 }
 
-UTexture2D*& UXDGUserCenterTipWidget::GetGrayTexture()
+UTexture2D*& UXUUserCenterTipWidget::GetGrayTexture()
 {
 	if (GrayTexture == nullptr)
 	{
@@ -179,7 +179,7 @@ UTexture2D*& UXDGUserCenterTipWidget::GetGrayTexture()
 	return GrayTexture;
 }
 
-UTexture2D*& UXDGUserCenterTipWidget::GetRedTexture()
+UTexture2D*& UXUUserCenterTipWidget::GetRedTexture()
 {
 	if (RedTexture == nullptr)
 	{
@@ -189,14 +189,14 @@ UTexture2D*& UXDGUserCenterTipWidget::GetRedTexture()
 }
 
 
-void UXDGUserCenterTipWidget::NativeConstruct()
+void UXUUserCenterTipWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	FirstStepUpdate();
-	GreenButton->OnClicked.AddUniqueDynamic(this, &UXDGUserCenterTipWidget::OnGreenBtnClick);
-	WhiteButton->OnClicked.AddUniqueDynamic(this, &UXDGUserCenterTipWidget::OnWhiteBtnClick);
-	TextBox->OnTextChanged.AddUniqueDynamic(this, &UXDGUserCenterTipWidget::OnTextBoxValueChange);
+	GreenButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterTipWidget::OnGreenBtnClick);
+	WhiteButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterTipWidget::OnWhiteBtnClick);
+	TextBox->OnTextChanged.AddUniqueDynamic(this, &UXUUserCenterTipWidget::OnTextBoxValueChange);
 
 	
 }

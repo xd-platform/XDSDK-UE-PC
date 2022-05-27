@@ -1,18 +1,18 @@
-#include "InitConfigModel.h"
+#include "XUInitConfigModel.h"
 
 #include "TUDebuger.h"
-#include "XDGNet.h"
+#include "XUNet.h"
 #include "XDGSDK.h"
 
-TSharedPtr<FInitConfigModel> FInitConfigModel::CurrentModel = nullptr;
+TSharedPtr<FXUInitConfigModel> FXUInitConfigModel::CurrentModel = nullptr;
 
-void FInitConfigModel::SaveToLocal()
+void FXUInitConfigModel::SaveToLocal()
 {
 	if (this != CurrentModel.Get())
 	{
-		CurrentModel = MakeShareable(new FInitConfigModel(*this));
+		CurrentModel = MakeShareable(new FXUInitConfigModel(*this));
 	}
-	TUDataStorage<FXDGStorage>::SaveStruct(FXDGStorage::InitConfig, *this, true);
+	TUDataStorage<FXUStorage>::SaveStruct(FXUStorage::InitConfig, *this, true);
 	if (CanShowPrivacyAlert())
 	{
 		SavePrivacyTxt();
@@ -20,16 +20,16 @@ void FInitConfigModel::SaveToLocal()
 	
 }
 
-TSharedPtr<FInitConfigModel>& FInitConfigModel::GetLocalModel()
+TSharedPtr<FXUInitConfigModel>& FXUInitConfigModel::GetLocalModel()
 {
 	if (CurrentModel == nullptr)
 	{
-		CurrentModel = TUDataStorage<FXDGStorage>::LoadStruct<FInitConfigModel>(FXDGStorage::InitConfig);
+		CurrentModel = TUDataStorage<FXUStorage>::LoadStruct<FXUInitConfigModel>(FXUStorage::InitConfig);
 	}
 	return  CurrentModel;
 }
 
-bool FInitConfigModel::CanShowPrivacyAlert()
+bool FXUInitConfigModel::CanShowPrivacyAlert()
 {
 	auto md = GetLocalModel();
 	if (!md.IsValid())
@@ -37,7 +37,7 @@ bool FInitConfigModel::CanShowPrivacyAlert()
 		TUDebuger::WarningLog(TEXT("请先初始化"));
 		return false;
 	}
-	auto preStr = TUDataStorage<FXDGStorage>::LoadString(FXDGStorage::PrivacyKey);
+	auto preStr = TUDataStorage<FXUStorage>::LoadString(FXUStorage::PrivacyKey);
 	FString currentStr = FString::Printf(TEXT("%s-%s-%s"), *md->version, *md->configs.serviceAgreementUrl, *md->configs.serviceTermsUrl);
 	if (preStr == currentStr)
 	{
@@ -46,17 +46,17 @@ bool FInitConfigModel::CanShowPrivacyAlert()
 	return true;
 }
 
-void FInitConfigModel::UpdatePrivacyState()
+void FXUInitConfigModel::UpdatePrivacyState()
 {
 	auto md = GetLocalModel();
 	if (md.IsValid())
 	{
 		FString currentStr = FString::Printf(TEXT("%s-%s-%s"), *md->version, *md->configs.serviceAgreementUrl, *md->configs.serviceTermsUrl);
-		TUDataStorage<FXDGStorage>::SaveString(FXDGStorage::PrivacyKey, currentStr);
+		TUDataStorage<FXUStorage>::SaveString(FXUStorage::PrivacyKey, currentStr);
 	}
 }
 
-void FInitConfigModel::GetPrivacyTxt(const FString& txtUrl, TFunction<void(FString txt)> callback)
+void FXUInitConfigModel::GetPrivacyTxt(const FString& txtUrl, TFunction<void(FString txt)> callback)
 {
 	FString *txt = nullptr;
 	if (CurrentModel.IsValid())
@@ -65,7 +65,7 @@ void FInitConfigModel::GetPrivacyTxt(const FString& txtUrl, TFunction<void(FStri
 	}
 	if (txt == nullptr)
 	{
-		XDGNet::RequestPrivacyTxt(txtUrl,
+		XUNet::RequestPrivacyTxt(txtUrl,
 		[=](FString content)
 		{
 			if (CurrentModel.IsValid())
@@ -83,7 +83,7 @@ void FInitConfigModel::GetPrivacyTxt(const FString& txtUrl, TFunction<void(FStri
 	}
 }
 
-void FInitConfigModel::SavePrivacyTxt()
+void FXUInitConfigModel::SavePrivacyTxt()
 {
 	GetPrivacyTxt(configs.serviceTermsTxt, nullptr);
 	GetPrivacyTxt(configs.serviceAgreementTxt, nullptr);

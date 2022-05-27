@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "XDGBindModel.h"
+#include "XUBindModel.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
@@ -19,9 +19,9 @@ public:
 
 	static UXDGUserCenterItemWidget * GenerateItem();
 
-	void SetBindModel(const TSharedPtr<FXDGBindModel>& Model);
+	void SetBindModel(const TSharedPtr<FXUBindModel>& Model);
 
-	TFunction<void(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXDGBindModel> Model)> BindCallBack;
+	TFunction<void(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model)> BindCallBack;
 
 protected:
 
@@ -48,7 +48,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UImage* ArrowImage;
 
-	TSharedPtr<FXDGBindModel> BindModel;
+	TSharedPtr<FXUBindModel> BindModel;
 	// TFunction<void(bool result)> Completed;
 
 	void ProcessShowOrNot();

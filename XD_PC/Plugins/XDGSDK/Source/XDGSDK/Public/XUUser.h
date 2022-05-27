@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "XUTokenModel.h"
 #include "XUType.h"
-#include "XDGUser.generated.h"
+#include "XUUser.generated.h"
 
 USTRUCT(BlueprintType)
-struct FXDGUser
+struct FXUUser
 {
 	GENERATED_BODY()
 
@@ -29,7 +29,7 @@ struct FXDGUser
 
 	void SaveToLocal();
 
-	static TSharedPtr<FXDGUser>& GetLocalModel();
+	static TSharedPtr<FXUUser>& GetLocalModel();
 	
 	TSharedPtr<FXUTokenModel> Token();
 
@@ -42,7 +42,7 @@ struct FXDGUser
 	static void SetPushServiceEnable(bool enable);
 
 private:
-	static TSharedPtr<FXDGUser> CurrentModel;
+	static TSharedPtr<FXUUser> CurrentModel;
 
 };
 

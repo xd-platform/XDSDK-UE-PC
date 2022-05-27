@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "XDIPayCheckModel.generated.h"
+#include "XUPayCheckModel.generated.h"
 
 
 USTRUCT()
-struct FXDIPayCheckModel
+struct FXUPayCheckModel
 {
 	GENERATED_BODY()
 	
@@ -42,12 +42,12 @@ struct FXDIPayCheckModel
 
 
 USTRUCT()
-struct FXDIPayCheckResponseModel
+struct FXUPayCheckResponseModel
 {
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TArray<FXDIPayCheckModel> list;
+	TArray<FXUPayCheckModel> list;
 
 };
 

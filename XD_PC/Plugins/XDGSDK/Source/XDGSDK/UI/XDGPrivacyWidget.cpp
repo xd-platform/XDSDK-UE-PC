@@ -3,10 +3,10 @@
 
 #include "XDGPrivacyWidget.h"
 
-#include "InitConfigModel.h"
-#include "LanguageManager.h"
+#include "XUInitConfigModel.h"
+#include "XULanguageManager.h"
 #include "TUHelper.h"
-#include "XDGUser.h"
+#include "XUUser.h"
 
 
 UXDGPrivacyWidget::UXDGPrivacyWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -41,7 +41,7 @@ void UXDGPrivacyWidget::NativeConstruct()
 	BtnDel.BindUFunction(this, "OnComfirmBtnClick");
 	ComfirmButton->OnClicked.Add(BtnDel);
 
-	FInitConfigModel::GetPrivacyTxt(FInitConfigModel::GetLocalModel()->configs.serviceAgreementTxt,
+	FXUInitConfigModel::GetPrivacyTxt(FXUInitConfigModel::GetLocalModel()->configs.serviceAgreementTxt,
 	[=](FString txt)
 	{
 		if (PrivacyTextView1)
@@ -51,7 +51,7 @@ void UXDGPrivacyWidget::NativeConstruct()
 			PrivacyTextView1->SetText(FText::FromString(txt));
 		}
 	});
-	FInitConfigModel::GetPrivacyTxt(FInitConfigModel::GetLocalModel()->configs.serviceTermsTxt,
+	FXUInitConfigModel::GetPrivacyTxt(FXUInitConfigModel::GetLocalModel()->configs.serviceTermsTxt,
 	[=](FString txt)
 	{
 		if (PrivacyTextView2)
@@ -62,7 +62,7 @@ void UXDGPrivacyWidget::NativeConstruct()
 		}
 		
 	});
-	auto langModel = LanguageManager::GetCurrentModel();
+	auto langModel = XULanguageManager::GetCurrentModel();
 	TitleLabel->SetText(FText::FromString(langModel->tds_terms_agreement));
 	ComfirmButtonLabel->SetText(FText::FromString(langModel->tds_confirm_agreement));
 	AgreeCheckLabel1->SetText(FText::FromString(langModel->tds_service_terms_agreement));
@@ -94,13 +94,13 @@ void UXDGPrivacyWidget::OnCheckStateChanged(bool isChecked)
 
 void UXDGPrivacyWidget::OnComfirmBtnClick()
 {
-	FInitConfigModel::UpdatePrivacyState();
+	FXUInitConfigModel::UpdatePrivacyState();
 	if (Completed)
 	{
 		Completed(true);
 	}
 	if (IsInKrAndPushEnable()) {
-		FXDGUser::SetPushServiceEnable(AdditionalCheckBox->IsChecked());
+		FXUUser::SetPushServiceEnable(AdditionalCheckBox->IsChecked());
 	}
 	RemoveFromParent();
 }
@@ -183,19 +183,19 @@ void UXDGPrivacyWidget::FormatTags(FString& Content) {
 }
 
 bool UXDGPrivacyWidget::IsInKrAndPushEnable() {
-	if (!FInitConfigModel::GetLocalModel().IsValid()) {
+	if (!FXUInitConfigModel::GetLocalModel().IsValid()) {
 		return false;
 	}
-	FString Region = FInitConfigModel::GetLocalModel()->configs.region.ToLower();
-	bool CanPush = FInitConfigModel::GetLocalModel()->configs.isKRPushServiceSwitchEnable;
+	FString Region = FXUInitConfigModel::GetLocalModel()->configs.region.ToLower();
+	bool CanPush = FXUInitConfigModel::GetLocalModel()->configs.isKRPushServiceSwitchEnable;
 	return CanPush && Region == "kr";
 }
 
 bool UXDGPrivacyWidget::IsInNorthAmerica() {
-	if (!FInitConfigModel::GetLocalModel().IsValid()) {
+	if (!FXUInitConfigModel::GetLocalModel().IsValid()) {
 		return false;
 	}
-	FString Region = FInitConfigModel::GetLocalModel()->configs.region.ToLower();
+	FString Region = FXUInitConfigModel::GetLocalModel()->configs.region.ToLower();
 	return Region == "us";
 }
 

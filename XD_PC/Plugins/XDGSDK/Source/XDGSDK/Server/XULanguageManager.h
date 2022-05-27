@@ -2,7 +2,7 @@
 #include "XULanguageModel.h"
 #include "XUType.h"
 
-class LanguageManager
+class XULanguageManager
 {
 public:
 	

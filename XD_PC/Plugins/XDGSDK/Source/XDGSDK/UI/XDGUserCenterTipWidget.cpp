@@ -1,6 +1,6 @@
 #include "XDGUserCenterTipWidget.h"
 
-#include "LanguageManager.h"
+#include "XULanguageManager.h"
 #include "XULoginTypeModel.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -106,7 +106,7 @@ void UXDGUserCenterTipWidget::OnWhiteBtnClick()
 void UXDGUserCenterTipWidget::FirstStepUpdate()
 {
 	Step = First;
-	auto langModel = LanguageManager::GetCurrentModel();
+	auto langModel = XULanguageManager::GetCurrentModel();
 	switch (AlertType)
 	{
 	case DeleteGuest:
@@ -135,7 +135,7 @@ void UXDGUserCenterTipWidget::FirstStepUpdate()
 void UXDGUserCenterTipWidget::SecondStepUpdate()
 {
 	Step = Second;
-	auto langModel = LanguageManager::GetCurrentModel();
+	auto langModel = XULanguageManager::GetCurrentModel();
 	switch (AlertType)
 	{
 	case DeleteGuest:

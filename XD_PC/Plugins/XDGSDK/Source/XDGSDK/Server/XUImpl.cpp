@@ -1,8 +1,8 @@
-#include "XDGImplement.h"
-#include "XDGStorage.h"
+#include "XUImpl.h"
+#include "XUStorage.h"
 #include "TUDeviceInfo.h"
 #include "TUJsonHelper.h"
-#include "LanguageManager.h"
+#include "XULanguageManager.h"
 #include "TapBootstrapAPI.h"
 #include "TapUELogin.h"
 #include "TUCommonConfig.h"
@@ -14,10 +14,10 @@
 
 static int Success = 200;
 
-void XDGImplement::GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FString msg)> resultBlock) {
-	XDGNet::RequestIpInfo([=](TSharedPtr<FIpInfoModel> model, FXDGError error) {
+void XUImpl::GetIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FString msg)> resultBlock) {
+	XUNet::RequestIpInfo([=](TSharedPtr<FXUIpInfoModel> model, FXUError error) {
 		if (model == nullptr) {
-			TSharedPtr<FIpInfoModel> infoModel = FIpInfoModel::GetLocalModel();
+			TSharedPtr<FXUIpInfoModel> infoModel = FXUIpInfoModel::GetLocalModel();
 			if (resultBlock) { resultBlock(infoModel, error.msg); }
 		}
 		else {
@@ -27,20 +27,20 @@ void XDGImplement::GetIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FStr
 	});
 }
 
-void XDGImplement::InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock) {
-	TUDataStorage<FXDGStorage>::SaveString(FXDGStorage::ClientId, sdkClientId, false);
-	XDGNet::RequestConfig([=](TSharedPtr<FInitConfigModel> model, FXDGError error) {
+void XUImpl::InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock) {
+	TUDataStorage<FXUStorage>::SaveString(FXUStorage::ClientId, sdkClientId, false);
+	XUNet::RequestConfig([=](TSharedPtr<FXUInitConfigModel> model, FXUError error) {
 		if (model != nullptr && error.code == Success) {
 			model->SaveToLocal();
 			InitBootstrap(model, resultBlock, error.msg);
 		}
 		else {
-			InitBootstrap(FInitConfigModel::GetLocalModel(), resultBlock, error.msg);
+			InitBootstrap(FXUInitConfigModel::GetLocalModel(), resultBlock, error.msg);
 		}
 	});
 }
 
-void XDGImplement::InitBootstrap(const TSharedPtr<FInitConfigModel>& model,
+void XUImpl::InitBootstrap(const TSharedPtr<FXUInitConfigModel>& model,
                                  TFunction<void(bool successed, FString msg)> resultBlock, const FString& msg) {
 	if (model == nullptr) {
 		if (resultBlock) { resultBlock(false, msg); }
@@ -61,33 +61,33 @@ void XDGImplement::InitBootstrap(const TSharedPtr<FInitConfigModel>& model,
 }
 
 
-void XDGImplement::LoginByType(XUType::LoginType LoginType,
-                               TFunction<void(TSharedPtr<FXDGUser> user)> resultBlock,
-                               TFunction<void(FXDGError error)> ErrorBlock) {
-	auto lmd = LanguageManager::GetCurrentModel();
+void XUImpl::LoginByType(XUType::LoginType LoginType,
+                               TFunction<void(TSharedPtr<FXUUser> user)> resultBlock,
+                               TFunction<void(FXUError error)> ErrorBlock) {
+	auto lmd = XULanguageManager::GetCurrentModel();
 	if (LoginType == XUType::Default) {
-		auto localUser = FXDGUser::GetLocalModel();
+		auto localUser = FXUUser::GetLocalModel();
 		if (localUser.IsValid()) {
-			RequestUserInfo(true, [=](TSharedPtr<FXDGUser> user) {
-				AsyncLocalTdsUser(user->userId, FSyncTokenModel::GetLocalModel()->sessionToken);
+			RequestUserInfo(true, [=](TSharedPtr<FXUUser> user) {
+				AsyncLocalTdsUser(user->userId, FXUSyncTokenModel::GetLocalModel()->sessionToken);
 				resultBlock(user);
 			}, ErrorBlock);
 		}
 		else {
-			ErrorBlock(FXDGError(lmd->tds_login_failed));
+			ErrorBlock(FXUError(lmd->tds_login_failed));
 		}
 	}
 	else {
 		GetLoginParam(LoginType, [=](TSharedPtr<FJsonObject> paras) {
 			UTUHUD::ShowWait();
-			TFunction<void(FXDGError error)> ErrorCallBack = [=](FXDGError error) {
+			TFunction<void(FXUError error)> ErrorCallBack = [=](FXUError error) {
 				UTUHUD::Dismiss();
 				if (ErrorBlock) {
 					ErrorBlock(error);
 				}
 			};
 			RequestKidToken(paras, [=](TSharedPtr<FXUTokenModel> kidToken) {
-				RequestUserInfo(false, [=](TSharedPtr<FXDGUser> user) {
+				RequestUserInfo(false, [=](TSharedPtr<FXUUser> user) {
 					AsyncNetworkTdsUser(user->userId, [=](FString SessionToken) {
 						UTUHUD::Dismiss();
 						CheckPrivacyAlert([=]() {
@@ -101,9 +101,9 @@ void XDGImplement::LoginByType(XUType::LoginType LoginType,
 	}
 }
 
-void XDGImplement::GetLoginParam(XUType::LoginType LoginType,
+void XUImpl::GetLoginParam(XUType::LoginType LoginType,
                                  TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock,
-                                 TFunction<void(FXDGError error)> ErrorBlock) {
+                                 TFunction<void(FXUError error)> ErrorBlock) {
 	if (LoginType == XUType::Guest) {
 		TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 		JsonObject->SetNumberField("type", (int)LoginType);
@@ -121,13 +121,13 @@ void XDGImplement::GetLoginParam(XUType::LoginType LoginType,
 			}, ErrorBlock);
 	}
 	else {
-		ErrorBlock(FXDGError("No Login Param"));
+		ErrorBlock(FXUError("No Login Param"));
 	}
 }
 
-void XDGImplement::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock,
-                            TFunction<void(const FXDGError& Error)> FailBlock) {
-	XDGNet::CheckPay([=](TSharedPtr<FXDIPayCheckResponseModel> Model, FXDGError Error) {
+void XUImpl::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock,
+                            TFunction<void(const FXUError& Error)> FailBlock) {
+	XUNet::CheckPay([=](TSharedPtr<FXUPayCheckResponseModel> Model, FXUError Error) {
 		if (Model.IsValid()) {
 			bool hasIOS = false;
 			bool hasAndroid = false;
@@ -163,16 +163,16 @@ void XDGImplement::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> Succ
 	});
 }
 
-FString XDGImplement::GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName) {
-	auto userMd = FXDGUser::GetLocalModel();
-	auto cfgMd = FInitConfigModel::GetLocalModel();
+FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName) {
+	auto userMd = FXUUser::GetLocalModel();
+	auto cfgMd = FXUInitConfigModel::GetLocalModel();
 	auto tkModel = FXUTokenModel::GetLocalModel();
 	if (!userMd.IsValid() || !cfgMd.IsValid() || !tkModel.IsValid()) {
 		return "";
 	}
 	
 	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
-	query->SetStringField("client_id", TUDataStorage<FXDGStorage>::LoadString(FXDGStorage::ClientId));
+	query->SetStringField("client_id", TUDataStorage<FXUStorage>::LoadString(FXUStorage::ClientId));
 	query->SetStringField("access_token", tkModel->kid);
 	query->SetStringField("user_id", userMd->userId);
 	query->SetStringField("server_id", ServerId);
@@ -180,7 +180,7 @@ FString XDGImplement::GetCustomerCenter(const FString& ServerId, const FString& 
 	query->SetStringField("role_name", RoleName);
 	query->SetStringField("region", cfgMd->configs.region);
 	query->SetStringField("sdk_ver", XDUESDK_VERSION);
-	query->SetStringField("sdk_lang", LanguageManager::GetCustomerCenterLang());
+	query->SetStringField("sdk_lang", XULanguageManager::GetCustomerCenterLang());
 	query->SetStringField("app_ver", TUDeviceInfo::GetProjectVersion());
 	query->SetStringField("app_ver_code", TUDeviceInfo::GetProjectVersion());
 	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), TUDeviceInfo::GetScreenWidth(), TUDeviceInfo::GetScreenHeight()));
@@ -198,9 +198,9 @@ FString XDGImplement::GetCustomerCenter(const FString& ServerId, const FString& 
 	return UrlStr;
 }
 
-FString XDGImplement::GetPayUrl(const FString& ServerId, const FString& RoleId) {
-	auto userMd = FXDGUser::GetLocalModel();
-	auto cfgMd = FInitConfigModel::GetLocalModel();
+FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
+	auto userMd = FXUUser::GetLocalModel();
+	auto cfgMd = FXUInitConfigModel::GetLocalModel();
 	if (!userMd.IsValid() || !cfgMd.IsValid()) {
 		return "";
 	}
@@ -211,7 +211,7 @@ FString XDGImplement::GetPayUrl(const FString& ServerId, const FString& RoleId) 
 	query->SetStringField("roleId", RoleId);
 	query->SetStringField("region", cfgMd->configs.region);
 	query->SetStringField("appId", cfgMd->configs.appId);
-	query->SetStringField("lang", LanguageManager::GetLanguageKey());
+	query->SetStringField("lang", XULanguageManager::GetLanguageKey());
 	
 
 	FString QueryStr = TUHelper::CombinParameters(query);
@@ -222,10 +222,10 @@ FString XDGImplement::GetPayUrl(const FString& ServerId, const FString& RoleId) 
 	return UrlStr;
 }
 
-void XDGImplement::RequestKidToken(TSharedPtr<FJsonObject> paras,
+void XUImpl::RequestKidToken(TSharedPtr<FJsonObject> paras,
                                    TFunction<void(TSharedPtr<FXUTokenModel> kidToken)> resultBlock,
-                                   TFunction<void(FXDGError error)> ErrorBlock) {
-	XDGNet::RequestKidToken(paras, [=](TSharedPtr<FXUTokenModel> kidToken, FXDGError error) {
+                                   TFunction<void(FXUError error)> ErrorBlock) {
+	XUNet::RequestKidToken(paras, [=](TSharedPtr<FXUTokenModel> kidToken, FXUError error) {
 		if (error.code == Success && kidToken != nullptr) {
 			kidToken->SaveToLocal();
 			resultBlock(kidToken);
@@ -242,11 +242,11 @@ void XDGImplement::RequestKidToken(TSharedPtr<FJsonObject> paras,
 	});
 }
 
-void XDGImplement::RequestUserInfo(bool saveToLocal,
-                                   TFunction<void(TSharedPtr<FXDGUser> model)> callback,
-                                   TFunction<void(FXDGError error)> ErrorBlock) {
-	XDGNet::RequestUserInfo(
-		[=](TSharedPtr<FXDGUser> user, FXDGError error) {
+void XUImpl::RequestUserInfo(bool saveToLocal,
+                                   TFunction<void(TSharedPtr<FXUUser> model)> callback,
+                                   TFunction<void(FXUError error)> ErrorBlock) {
+	XUNet::RequestUserInfo(
+		[=](TSharedPtr<FXUUser> user, FXUError error) {
 			if (error.code == Success && user != nullptr) {
 				if (saveToLocal) {
 					user->SaveToLocal();
@@ -254,7 +254,7 @@ void XDGImplement::RequestUserInfo(bool saveToLocal,
 				callback(user);
 			}
 			else {
-				auto localUser = FXDGUser::GetLocalModel();
+				auto localUser = FXUUser::GetLocalModel();
 				if (localUser == nullptr) {
 					ErrorBlock(error);
 				}
@@ -266,18 +266,18 @@ void XDGImplement::RequestUserInfo(bool saveToLocal,
 
 }
 
-void XDGImplement::AsyncNetworkTdsUser(const FString& userId,
+void XUImpl::AsyncNetworkTdsUser(const FString& userId,
                                        TFunction<void(FString SessionToken)> callback,
-                                       TFunction<void(FXDGError error)> ErrorBlock) {
-	XDGNet::RequestSyncToken(
-		[=](TSharedPtr<FSyncTokenModel> model, FXDGError error) {
+                                       TFunction<void(FXUError error)> ErrorBlock) {
+	XUNet::RequestSyncToken(
+		[=](TSharedPtr<FXUSyncTokenModel> model, FXUError error) {
 			if (error.code == Success && model != nullptr) {
 				model->SaveToLocal();
 				AsyncLocalTdsUser(userId, model->sessionToken);
 				callback(model->sessionToken);
 			}
 			else {
-				auto localModel = FSyncTokenModel::GetLocalModel();
+				auto localModel = FXUSyncTokenModel::GetLocalModel();
 				if (localModel.IsValid()) {
 					AsyncLocalTdsUser(userId, localModel->sessionToken);
 					callback(localModel->sessionToken);
@@ -289,14 +289,14 @@ void XDGImplement::AsyncNetworkTdsUser(const FString& userId,
 	);
 }
 
-void XDGImplement::AsyncLocalTdsUser(const FString& userId, const FString& sessionToken) {
+void XUImpl::AsyncLocalTdsUser(const FString& userId, const FString& sessionToken) {
 	// LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, userId) as LCUser;
 	// lcUser.SessionToken = token;
 	// await lcUser.SaveToLocal();
 }
 
-void XDGImplement::CheckPrivacyAlert(TFunction<void()> Callback) {
-	if (FInitConfigModel::CanShowPrivacyAlert()) {
+void XUImpl::CheckPrivacyAlert(TFunction<void()> Callback) {
+	if (FXUInitConfigModel::CanShowPrivacyAlert()) {
 		UXDGPrivacyWidget::ShowPrivacy(
 			[=](bool result) {
 				if (result) {
@@ -309,27 +309,27 @@ void XDGImplement::CheckPrivacyAlert(TFunction<void()> Callback) {
 	}
 }
 
-void XDGImplement::RequestTapToken(TFunction<void(FTUAccessToken AccessToken)> callback,
-                                   TFunction<void(FXDGError error)> ErrorBlock) {
+void XUImpl::RequestTapToken(TFunction<void(FTUAccessToken AccessToken)> callback,
+                                   TFunction<void(FXUError error)> ErrorBlock) {
 	TapUELogin::Login(
 		[=](TUAuthResult Result) {
 			if (Result.GetType() == TUAuthResult::Success) {
 				callback(*Result.GetToken().Get());
 			}
 			else if (Result.GetType() == TUAuthResult::Cancel) {
-				FXDGError Error;
+				FXUError Error;
 				Error.msg = "Login Cancel";
 				Error.code = FTUError::ERROR_CODE_LOGIN_CANCEL;
 				ErrorBlock(Error);
 			}
 			else if (Result.GetType() == TUAuthResult::Fail) {
-				FXDGError Error;
+				FXUError Error;
 				Error.msg = Result.GetError()->error_description;
 				Error.code = Result.GetError()->code;
 				ErrorBlock(Error);
 			}
 			else {
-				ErrorBlock(FXDGError("Login Fail"));
+				ErrorBlock(FXUError("Login Fail"));
 			}
 		});
 }

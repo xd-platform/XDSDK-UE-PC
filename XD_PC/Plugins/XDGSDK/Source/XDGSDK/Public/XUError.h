@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "XDGError.generated.h"
+#include "XUError.generated.h"
 
 USTRUCT(BlueprintType)
-struct FXDGError
+struct FXUError
 {
 	GENERATED_BODY()
 
@@ -19,7 +19,7 @@ struct FXDGError
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FString detail;
 
-	FXDGError() = default;
-	FXDGError(const FString& message) :code(-1), msg(message) {};
+	FXUError() = default;
+	FXUError(const FString& message) :code(-1), msg(message) {};
 };
 

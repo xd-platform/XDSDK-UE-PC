@@ -2,9 +2,9 @@
 
 #include "TUDebuger.h"
 #include "TUHUD.h"
-#include "XDGImplement.h"
-#include "XDGNet.h"
-#include "XDGUser.h"
+#include "XUImpl.h"
+#include "XUNet.h"
+#include "XUUser.h"
 #include "XDGUserCenterTipWidget.h"
 #include "XDUE.h"
 #include "HAL/PlatformApplicationMisc.h"
@@ -14,8 +14,8 @@ UXDGUserCenterWidget::UXDGUserCenterWidget(const FObjectInitializer& ObjectIniti
 
 }
 
-void UXDGUserCenterWidget::ShowWidget(TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
-	TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
+void UXDGUserCenterWidget::ShowWidget(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack,
+	TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack) {
 	if (UClass* MyWidgetClass = LoadClass<UXDGUserCenterWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXDGUserCenter.BPXDGUserCenter_C'")))
 	{
 		if (GWorld && GWorld->GetWorld())
@@ -33,8 +33,8 @@ void UXDGUserCenterWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	userMd = FXDGUser::GetLocalModel();
-	langModel = LanguageManager::GetCurrentModel();
+	userMd = FXUUser::GetLocalModel();
+	langModel = XULanguageManager::GetCurrentModel();
 
 	TitleLabel->SetText(FText::FromString(langModel->tds_account_safe_info));
 	InfoTitleLabel->SetText(FText::FromString(langModel->tds_account_info));
@@ -81,7 +81,7 @@ void UXDGUserCenterWidget::OnDeleteBtnClick()
 	UXDGUserCenterTipWidget::Show(UXDGUserCenterTipWidget::DeleteGuest, XUType::Guest, [=]()
 	{
 		UTUHUD::ShowWait();
-		XDGNet::Unbind((int)XUType::Guest, [=](TSharedPtr<FXDGResponseModel> Model, FXDGError Error)
+		XUNet::Unbind((int)XUType::Guest, [=](TSharedPtr<FXUResponseModel> Model, FXUError Error)
 		{
 			UTUHUD::Dismiss();
 			if (Model.IsValid())
@@ -116,7 +116,7 @@ FString UXDGUserCenterWidget::GetLoginTypeName()
 void UXDGUserCenterWidget::RequestList()
 {
 	UTUHUD::ShowWait();
-	XDGNet::RequestBindList([=](TSharedPtr<FXDGBindResponseModel> Model, FXDGError Error)
+	XUNet::RequestBindList([=](TSharedPtr<FXUBindResponseModel> Model, FXUError Error)
 	{
 		UTUHUD::Dismiss();
 		if (Model.IsValid())
@@ -126,7 +126,7 @@ void UXDGUserCenterWidget::RequestList()
 			auto SupportList = GetSupportTypes();
 			for (auto st : SupportList)
 			{
-				TSharedPtr<FXDGBindModel> md = MakeShareable(new FXDGBindModel);
+				TSharedPtr<FXUBindModel> md = MakeShareable(new FXUBindModel);
 				md->loginType = st.typeValue;
 				md->loginName = st.typeName;
 				md->status = (int) FXDGBindType::UnBind;
@@ -157,7 +157,7 @@ void UXDGUserCenterWidget::ResetListBoxAndDeleteButton()
 		UXDGUserCenterItemWidget * Item = UXDGUserCenterItemWidget::GenerateItem();
 		Item->SetBindModel(FxdgBindModel);
 		ListBox->AddChild(Item);
-		Item->BindCallBack = [=](UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXDGBindModel> Model)
+		Item->BindCallBack = [=](UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model)
 		{
 			if (Model->status == FXDGBindType::Bind)
 			{
@@ -213,7 +213,7 @@ TArray<XULoginTypeModel> UXDGUserCenterWidget::GetSupportTypes()
 {
 	TArray<XULoginTypeModel> list;
 	TArray<XULoginTypeModel> SDKList = GetSdkTypes();
-	auto md = FInitConfigModel::GetLocalModel();
+	auto md = FXUInitConfigModel::GetLocalModel();
 	for (auto Model : SDKList)
 	{
 		for (auto BindEntry : md->configs.bindEntries)
@@ -236,12 +236,12 @@ void UXDGUserCenterWidget::DeleteAccount(const FString& Tip)
 	RemoveFromParent();
 }
 
-void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TSharedPtr<FXDGBindModel> Model)
+void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TSharedPtr<FXUBindModel> Model)
 {
 	TFunction<void(TSharedPtr<FJsonObject> paras)> BindBlock = [=](TSharedPtr<FJsonObject> Paras)
 	{
 		UTUHUD::ShowWait();
-		XDGNet::Bind(Paras, [=](TSharedPtr<FXDGResponseModel> ResponseModel, FXDGError Error)
+		XUNet::Bind(Paras, [=](TSharedPtr<FXUResponseModel> ResponseModel, FXUError Error)
 		{
 			UTUHUD::Dismiss();
 			if (ResponseModel.IsValid())
@@ -260,9 +260,9 @@ void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TShared
 				}
 			}
 			if (BindCallBack != nullptr) {
-				TSharedPtr<FXDGError> TempError = nullptr;
+				TSharedPtr<FXUError> TempError = nullptr;
 				if (!ResponseModel.IsValid()) {
-					TempError = MakeShareable(new FXDGError(Error));
+					TempError = MakeShareable(new FXUError(Error));
 				}
 				int Type = Paras->GetNumberField("type");
 				BindCallBack((XUType::LoginType)Type, TempError);
@@ -271,10 +271,10 @@ void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TShared
 	};
 	if (Model->loginType == (int)XUType::TapTap)
 	{
-		XDGImplement::GetLoginParam(XUType::TapTap, [=](TSharedPtr<FJsonObject> Paras)
+		XUImpl::GetLoginParam(XUType::TapTap, [=](TSharedPtr<FJsonObject> Paras)
 		{
 			BindBlock(Paras);
-		}, [=](FXDGError error)
+		}, [=](FXUError error)
 		{
 			if (error.code ==  80081)
 			{
@@ -289,10 +289,10 @@ void UXDGUserCenterWidget::Bind(UXDGUserCenterItemWidget* CurrentWidget, TShared
 	
 }
 
-void UXDGUserCenterWidget::UnBind(UXDGUserCenterItemWidget* CurrentWidget, TSharedPtr<FXDGBindModel> Model)
+void UXDGUserCenterWidget::UnBind(UXDGUserCenterItemWidget* CurrentWidget, TSharedPtr<FXUBindModel> Model)
 {
 	UTUHUD::ShowWait();
-	XDGNet::Unbind(Model->loginType, [=](TSharedPtr<FXDGResponseModel> ResponseModel, FXDGError Error)
+	XUNet::Unbind(Model->loginType, [=](TSharedPtr<FXUResponseModel> ResponseModel, FXUError Error)
 	{
 		UTUHUD::Dismiss();
 		if (ResponseModel.IsValid())
@@ -317,9 +317,9 @@ void UXDGUserCenterWidget::UnBind(UXDGUserCenterItemWidget* CurrentWidget, TShar
 			}
 		}
 		if (UnbindCallBack != nullptr) {
-			TSharedPtr<FXDGError> TempError = nullptr;
+			TSharedPtr<FXUError> TempError = nullptr;
 			if (!ResponseModel.IsValid()) {
-				TempError = MakeShareable(new FXDGError(Error));
+				TempError = MakeShareable(new FXUError(Error));
 			}
 			UnbindCallBack((XUType::LoginType)Model->loginType, TempError);
 		}

@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "TUJsonHelper.h"
-#include "XDGResponseModel.generated.h"
+#include "XUResponseModel.generated.h"
 
 // {"code":50000,"msg":"Unknown Error","detail":"Required String parameter 'clientId' is not present","data":""}
 USTRUCT()
-struct FXDGResponseModel
+struct FXUResponseModel
 {
 	GENERATED_BODY()
 
@@ -22,7 +22,7 @@ struct FXDGResponseModel
 	FString detail;
 
 	template <class UStructType>
-	static void ParseJson(const FString& json, TSharedPtr<FXDGResponseModel>& model, TSharedPtr<UStructType>& data)
+	static void ParseJson(const FString& json, TSharedPtr<FXUResponseModel>& model, TSharedPtr<UStructType>& data)
 	{
 		auto JsonObject = TUJsonHelper::GetJsonObject(json);
 		if (!JsonObject.IsValid()) {
@@ -30,7 +30,7 @@ struct FXDGResponseModel
 			data = nullptr;
 			return;
 		}
-		model = TUJsonHelper::GetUStruct<FXDGResponseModel>(JsonObject);
+		model = TUJsonHelper::GetUStruct<FXUResponseModel>(JsonObject);
 		const TSharedPtr<FJsonObject>* dataJsonObject;
 		if (JsonObject->TryGetObjectField("data", dataJsonObject))
 		{

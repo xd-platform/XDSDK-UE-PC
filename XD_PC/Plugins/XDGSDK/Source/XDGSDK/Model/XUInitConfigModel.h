@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "XDGStorage.h"
-#include "InitConfigModel.generated.h"
+#include "XUStorage.h"
+#include "XUInitConfigModel.generated.h"
 
 USTRUCT()
-struct FBindEntriesConfig
+struct FXUBindEntriesConfig
 {
 	GENERATED_BODY()
 	
@@ -22,7 +22,7 @@ struct FBindEntriesConfig
 };
 
 USTRUCT()
-struct FTapSdkConfig
+struct FXUTapSdkConfig
 {
 	GENERATED_BODY()
 	
@@ -43,7 +43,7 @@ struct FTapSdkConfig
 };
 
 USTRUCT()
-struct FConfigsModel
+struct FXUConfigsModel
 {
 	GENERATED_BODY()
 
@@ -69,7 +69,7 @@ struct FConfigsModel
 	FString reportUrl;
 
 	UPROPERTY()
-	TArray<FBindEntriesConfig> bindEntriesConfig;
+	TArray<FXUBindEntriesConfig> bindEntriesConfig;
 
 	UPROPERTY()
 	TArray<FString> androidLoginEntries;
@@ -87,7 +87,7 @@ struct FConfigsModel
 	FString gameName;
 
 	UPROPERTY()
-	FTapSdkConfig tapSdkConfig;
+	FXUTapSdkConfig tapSdkConfig;
 
 	UPROPERTY()
 	TArray<FString> tapLoginPermissions;
@@ -110,7 +110,7 @@ struct FConfigsModel
 };
 
 USTRUCT()
-struct FInitConfigModel
+struct FXUInitConfigModel
 {
 	GENERATED_BODY()
 
@@ -121,11 +121,11 @@ struct FInitConfigModel
 	FString groupId;
 
 	UPROPERTY()
-	FConfigsModel configs;
+	FXUConfigsModel configs;
 
 	void SaveToLocal();
 
-	static TSharedPtr<FInitConfigModel>& GetLocalModel();
+	static TSharedPtr<FXUInitConfigModel>& GetLocalModel();
 
 	static bool CanShowPrivacyAlert();
 
@@ -134,7 +134,7 @@ struct FInitConfigModel
 	static void GetPrivacyTxt(const FString& txtUrl, TFunction<void(FString txt)> callback);
 
 private:
-	static TSharedPtr<FInitConfigModel> CurrentModel;
+	static TSharedPtr<FXUInitConfigModel> CurrentModel;
 	void SavePrivacyTxt();
 
 	TMap<FString, FString> Cache;

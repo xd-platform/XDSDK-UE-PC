@@ -27,10 +27,10 @@ void AXD_PCGameModeBase::InitSDK(const FString& ClientId)
 
 void AXD_PCGameModeBase::LoginByType(int LoginType)
 {
-	XDUE::LoginByType((XUType::LoginType)LoginType, [](FXDGUser User)
+	XDUE::LoginByType((XUType::LoginType)LoginType, [](FXUUser User)
 	{
 		TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
-	}, [](FXDGError Error)
+	}, [](FXUError Error)
 	{
 		TUDebuger::WarningShow(TEXT("登录失败：") + Error.msg);
 	});
@@ -65,7 +65,7 @@ void AXD_PCGameModeBase::Test()
 
 void AXD_PCGameModeBase::OpenUserCenter() {
 	XDUE::OpenUserCenter(
-		[](XUType::LoginType Type, TSharedPtr<FXDGError> Error) {
+		[](XUType::LoginType Type, TSharedPtr<FXUError> Error) {
 			if (Error.IsValid()) {
 				TUDebuger::DisplayShow( FString::Printf(TEXT("绑定失败, Error: %s"), *Error->msg));
 			}
@@ -73,7 +73,7 @@ void AXD_PCGameModeBase::OpenUserCenter() {
 				TUDebuger::DisplayShow( FString::Printf(TEXT("绑定成功, Type: %d"), Type));
 			}
 		},
-		[](XUType::LoginType Type, TSharedPtr<FXDGError> Error) {
+		[](XUType::LoginType Type, TSharedPtr<FXUError> Error) {
 			if (Error.IsValid()) {
 				TUDebuger::DisplayShow( FString::Printf(TEXT("解绑失败, Error: %s"), *Error->msg));
 			}
@@ -108,7 +108,7 @@ void AXD_PCGameModeBase::CheckPay()
 			TUDebuger::DisplayShow(TEXT("None"));
 			break;
 		}
-	}, [](FXDGError Error)
+	}, [](FXUError Error)
 	{
 		TUDebuger::DisplayShow(Error.msg);
 	});

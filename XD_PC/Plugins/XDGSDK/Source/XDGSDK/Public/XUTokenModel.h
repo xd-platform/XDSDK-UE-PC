@@ -35,7 +35,7 @@ struct FXUTokenModel
 };
 
 USTRUCT()
-struct FSyncTokenModel
+struct FXUSyncTokenModel
 {
 	GENERATED_BODY()
 
@@ -44,7 +44,7 @@ struct FSyncTokenModel
 
 	void SaveToLocal();
 
-	static TSharedPtr<FSyncTokenModel> GetLocalModel();
+	static TSharedPtr<FXUSyncTokenModel> GetLocalModel();
 
 	static void ClearToken();
 };

@@ -1,15 +1,15 @@
-#include "XDGNet.h"
+#include "XUNet.h"
 #include "JsonObjectConverter.h"
-#include "LanguageManager.h"
-#include "XDGStorage.h"
-#include "IpInfoModel.h"
+#include "XULanguageManager.h"
+#include "XUStorage.h"
+#include "XUIpInfoModel.h"
 #include "TUDeviceInfo.h"
 #include "TUJsonHelper.h"
 #include "TUCrypto.h"
 #include "TUHelper.h"
 #include "XUTokenModel.h"
 #include "URLParser.h"
-#include "XDGResponseModel.h"
+#include "XUResponseModel.h"
 #include "XDGSDK.h"
 
 // public readonly static string BASE_URL = "https://test-xdsdk-intnl-6.xd.com"; //测试
@@ -43,33 +43,33 @@ static FString XDG_UNBIND_INTERFACE = BASE_URL + "/api/account/v1/unbind";
 // 查询补款订单信息
 static FString XDG_PAYBACK_LIST = BASE_URL + "/order/v1/user/repayOrders";
 
-XDGNet::XDGNet()
+XUNet::XUNet()
 {
 	Form = Json;
 }
 
 
-TMap<FString, FString> XDGNet::CommonHeaders()
+TMap<FString, FString> XUNet::CommonHeaders()
 {
 	TMap<FString, FString> headers = TUHttpRequest::CommonHeaders();
 	headers.Add("Content-Type", "application/json;charset=utf-8");
-	headers.Add("Accept-Language", LanguageManager::GetLanguageKey());
+	headers.Add("Accept-Language", XULanguageManager::GetLanguageKey());
 	return headers;
 }
 
-TSharedPtr<FJsonObject> XDGNet::CommonParameters()
+TSharedPtr<FJsonObject> XUNet::CommonParameters()
 {
 	TSharedPtr<FJsonObject> query = TUHttpRequest::CommonParameters();
 	
-	query->SetStringField("clientId", TUDataStorage<FXDGStorage>::LoadString(FXDGStorage::ClientId));
+	query->SetStringField("clientId", TUDataStorage<FXUStorage>::LoadString(FXUStorage::ClientId));
 
-	query->SetStringField("sdkLang", LanguageManager::GetLanguageKey());
-	query->SetStringField("lang", LanguageManager::GetLanguageKey());
+	query->SetStringField("sdkLang", XULanguageManager::GetLanguageKey());
+	query->SetStringField("lang", XULanguageManager::GetLanguageKey());
 	
-	auto ipInfoModel = FIpInfoModel::GetLocalModel();
+	auto ipInfoModel = FXUIpInfoModel::GetLocalModel();
 	if (ipInfoModel == nullptr)
 	{
-		ipInfoModel = MakeShareable(new FIpInfoModel);
+		ipInfoModel = MakeShareable(new FXUIpInfoModel);
 	}
 	query->SetStringField("loc", ipInfoModel->country_code);
 	query->SetStringField("city", ipInfoModel->city);
@@ -94,7 +94,7 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 	query->SetStringField("appVer", TUDeviceInfo::GetProjectVersion());
 	query->SetStringField("appVerCode", TUDeviceInfo::GetProjectVersion());
 	
-	auto cfgMd = FInitConfigModel::GetLocalModel();
+	auto cfgMd = FXUInitConfigModel::GetLocalModel();
 	query->SetStringField("appId", cfgMd == nullptr ? "" : cfgMd->configs.appId);
 
 	
@@ -105,7 +105,7 @@ TSharedPtr<FJsonObject> XDGNet::CommonParameters()
 	return query;
 }
 
-bool XDGNet::ResetHeadersBeforeRequest()
+bool XUNet::ResetHeadersBeforeRequest()
 {
 	auto auth = GetMacToken();
 	if (auth.Len() > 0)
@@ -117,9 +117,9 @@ bool XDGNet::ResetHeadersBeforeRequest()
 
 
 
-FXDGError XDGNet::GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& response)
+FXUError XUNet::GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& response)
 {
-	FXDGError error;
+	FXUError error;
 	if (response->state == TUHttpResponse::clientError)
 	{
 		error.code = TUHttpResponse::clientError;
@@ -147,14 +147,14 @@ TSharedPtr<StructType> GenerateStructPtr(const TSharedPtr<TUHttpResponse>& respo
 }
 
 template <typename StructType>
-void PerfromCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
+void PerfromCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXUError error)> callback)
 {
 	if (callback == nullptr)
 	{
 		return;
 	}
 	TSharedPtr<StructType> model = GenerateStructPtr<StructType>(response);
-	FXDGError error = XDGNet::GenerateErrorInfo(response);
+	FXUError error = XUNet::GenerateErrorInfo(response);
 	if (model == nullptr && error.code == 0)
 	{
 		error.code = TUHttpResponse::clientError;
@@ -164,19 +164,19 @@ void PerfromCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(
 }
 
 template <typename StructType>
-void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
+void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXUError error)> callback)
 {
 	if (callback == nullptr)
 	{
 		return;
 	}
-	TSharedPtr<FXDGResponseModel> Wrapper;
+	TSharedPtr<FXUResponseModel> Wrapper;
 	TSharedPtr<StructType> model;
-	FXDGResponseModel::ParseJson(response->contentString, Wrapper, model);
-	FXDGError error;
+	FXUResponseModel::ParseJson(response->contentString, Wrapper, model);
+	FXUError error;
 	if (Wrapper == nullptr)
 	{
-		error = XDGNet::GenerateErrorInfo(response);
+		error = XUNet::GenerateErrorInfo(response);
 	} else
 	{
 		error.code = Wrapper->code;
@@ -193,17 +193,17 @@ void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& response, 
 }
 
 template <typename StructType>
-void PerfromResponseCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXDGError error)> callback)
+void PerfromResponseCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXUError error)> callback)
 {
 	if (callback == nullptr)
 	{
 		return;
 	}
-	TSharedPtr<FXDGResponseModel> Wrapper = TUJsonHelper::GetUStruct<StructType>(response->contentString);;
-	FXDGError error;
+	TSharedPtr<FXUResponseModel> Wrapper = TUJsonHelper::GetUStruct<StructType>(response->contentString);;
+	FXUError error;
 	if (Wrapper == nullptr)
 	{
-		error = XDGNet::GenerateErrorInfo(response);
+		error = XUNet::GenerateErrorInfo(response);
 	} else
 	{
 		error.code = Wrapper->code;
@@ -220,7 +220,7 @@ void PerfromResponseCallBack(const TSharedPtr<TUHttpResponse>& response, TFuncti
 	}
 }
 
-FString XDGNet::GetMacToken() {
+FString XUNet::GetMacToken() {
 	auto tokenModel = FXUTokenModel::GetLocalModel();
 	FString authToken;
 	if (tokenModel == nullptr)
@@ -250,9 +250,9 @@ FString XDGNet::GetMacToken() {
 }
 
 
-void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGError error)> callback)
+void XUNet::RequestIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FXUError error)> callback)
 {
-	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = IP_INFO;
 	request->isPure = true;
 	request->RepeatCount = 3;
@@ -262,9 +262,9 @@ void XDGNet::RequestIpInfo(TFunction<void(TSharedPtr<FIpInfoModel> model, FXDGEr
 	TUHttpManager::Get().request(request);
 }
 
-void XDGNet::RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FXDGError error)> callback)
+void XUNet::RequestConfig(TFunction<void(TSharedPtr<FXUInitConfigModel> model, FXUError error)> callback)
 {
-	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = INIT_SDK_URL;
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
@@ -272,9 +272,9 @@ void XDGNet::RequestConfig(TFunction<void(TSharedPtr<FInitConfigModel> model, FX
 	TUHttpManager::Get().request(request);
 }
 
-void XDGNet::RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<void(TSharedPtr<FXUTokenModel> model, FXDGError error)> callback)
+void XUNet::RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<void(TSharedPtr<FXUTokenModel> model, FXUError error)> callback)
 {
-	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = XDG_COMMON_LOGIN;
 	request->Parameters = paras;
 	request->Type = Post;
@@ -287,9 +287,9 @@ void XDGNet::RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<voi
 	TUHttpManager::Get().request(request);
 }
 
-void XDGNet::RequestUserInfo(TFunction<void(TSharedPtr<FXDGUser> model, FXDGError error)> callback)
+void XUNet::RequestUserInfo(TFunction<void(TSharedPtr<FXUUser> model, FXUError error)> callback)
 {
-	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = XDG_USER_PROFILE;
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
@@ -297,9 +297,9 @@ void XDGNet::RequestUserInfo(TFunction<void(TSharedPtr<FXDGUser> model, FXDGErro
 	TUHttpManager::Get().request(request);
 }
 
-void XDGNet::RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> model, FXDGError error)> callback)
+void XUNet::RequestSyncToken(TFunction<void(TSharedPtr<FXUSyncTokenModel> model, FXUError error)> callback)
 {
-	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = XDG_LOGIN_SYN;
 	request->Type = Post;
 	request->isPure = true;
@@ -311,9 +311,9 @@ void XDGNet::RequestSyncToken(TFunction<void(TSharedPtr<FSyncTokenModel> model, 
 	TUHttpManager::Get().request(request);
 }
 
-void XDGNet::RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> callback)
+void XUNet::RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> callback)
 {
-	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = Url;
 	// request->isPure = true;
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
@@ -322,9 +322,9 @@ void XDGNet::RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> 
 	TUHttpManager::Get().request(request);
 }
 
-void XDGNet::RequestBindList(TFunction<void(TSharedPtr<FXDGBindResponseModel> Model, FXDGError Error)> Callback)
+void XUNet::RequestBindList(TFunction<void(TSharedPtr<FXUBindResponseModel> Model, FXUError Error)> Callback)
 {
-	const TSharedPtr<XDGNet> request = MakeShareable(new XDGNet());
+	const TSharedPtr<XUNet> request = MakeShareable(new XUNet());
 	request->URL = XDG_BIND_LIST;
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromResponseCallBack(response, Callback);
@@ -332,10 +332,10 @@ void XDGNet::RequestBindList(TFunction<void(TSharedPtr<FXDGBindResponseModel> Mo
 	TUHttpManager::Get().request(request);
 }
 
-void XDGNet::Bind(const TSharedPtr<FJsonObject>& Paras,
-	TFunction<void(TSharedPtr<FXDGResponseModel> Model, FXDGError Error)> Callback)
+void XUNet::Bind(const TSharedPtr<FJsonObject>& Paras,
+	TFunction<void(TSharedPtr<FXUResponseModel> Model, FXUError Error)> Callback)
 {
-	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = XDG_BIND_INTERFACE;
 	request->Parameters = Paras;
 	request->Type = Post;
@@ -348,9 +348,9 @@ void XDGNet::Bind(const TSharedPtr<FJsonObject>& Paras,
 	TUHttpManager::Get().request(request);
 }
 
-void XDGNet::Unbind(int LoginType, TFunction<void(TSharedPtr<FXDGResponseModel> Model, FXDGError Error)> Callback)
+void XUNet::Unbind(int LoginType, TFunction<void(TSharedPtr<FXUResponseModel> Model, FXUError Error)> Callback)
 {
-	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XDGNet());
+	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = XDG_UNBIND_INTERFACE;
 	request->Parameters->SetNumberField("type", LoginType);
 	request->Type = Post;
@@ -363,11 +363,11 @@ void XDGNet::Unbind(int LoginType, TFunction<void(TSharedPtr<FXDGResponseModel> 
 	TUHttpManager::Get().request(request);
 }
 
-void XDGNet::CheckPay(TFunction<void(TSharedPtr<FXDIPayCheckResponseModel> Model, FXDGError Error)> Callback)
+void XUNet::CheckPay(TFunction<void(TSharedPtr<FXUPayCheckResponseModel> Model, FXUError Error)> Callback)
 {
-	const TSharedPtr<XDGNet> request = MakeShareable(new XDGNet());
+	const TSharedPtr<XUNet> request = MakeShareable(new XUNet());
 	request->URL = XDG_PAYBACK_LIST;
-	request->Parameters->SetStringField("userId", FXDGUser::GetLocalModel()->userId);
+	request->Parameters->SetStringField("userId", FXUUser::GetLocalModel()->userId);
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, Callback);
 	});

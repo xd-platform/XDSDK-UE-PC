@@ -1,4 +1,4 @@
-#include "LanguageManager.h"
+#include "XULanguageManager.h"
 #include "TUJsonHelper.h"
 #include "JsonObjectConverter.h"
 #include "TUDebuger.h"
@@ -6,10 +6,10 @@
 
 static FString LanguageJsonPath = FPaths::ProjectPluginsDir() / TEXT("XDGSDK/Content") / TEXT("XDGAssets/Language.json");
 
-XUType::LangType LanguageManager::anguageType = XUType::ZH_CN;
-TSharedPtr<FXULanguageModel> LanguageManager::currentModel = nullptr;
+XUType::LangType XULanguageManager::anguageType = XUType::ZH_CN;
+TSharedPtr<FXULanguageModel> XULanguageManager::currentModel = nullptr;
 
-void LanguageManager::SetLanguageType(XUType::LangType type)
+void XULanguageManager::SetLanguageType(XUType::LangType type)
 {
 	if (type != anguageType)
 	{
@@ -18,12 +18,12 @@ void LanguageManager::SetLanguageType(XUType::LangType type)
 	} 
 }
 
-XUType::LangType LanguageManager::GetCurrentType()
+XUType::LangType XULanguageManager::GetCurrentType()
 {
 	return anguageType;
 }
 
-TSharedPtr<FXULanguageModel> LanguageManager::GetCurrentModel()
+TSharedPtr<FXULanguageModel> XULanguageManager::GetCurrentModel()
 {
 	if (currentModel == nullptr){
 		UpdateLanguageModel();
@@ -33,7 +33,7 @@ TSharedPtr<FXULanguageModel> LanguageManager::GetCurrentModel()
 
 
 
-FString LanguageManager::GetLanguageKey()
+FString XULanguageManager::GetLanguageKey()
 {
 	if (anguageType == XUType::ZH_CN){
 		return "zh_CN";
@@ -65,7 +65,7 @@ FString LanguageManager::GetLanguageKey()
 	return "en_US";
 }
 
-FString LanguageManager::GetCustomerCenterLang()
+FString XULanguageManager::GetCustomerCenterLang()
 {
 	if (anguageType == XUType::ZH_CN){
 		return "cn";
@@ -97,7 +97,7 @@ FString LanguageManager::GetCustomerCenterLang()
 	return "us";
 }
 
-void LanguageManager::UpdateLanguageModel()
+void XULanguageManager::UpdateLanguageModel()
 {
 	FString JsonStr;
 	if(FFileHelper::LoadFileToString(JsonStr, *LanguageJsonPath))

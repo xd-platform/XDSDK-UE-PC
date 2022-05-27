@@ -1,11 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "LanguageManager.h"
-#include "XDGBindModel.h"
-#include "XDGError.h"
+#include "XULanguageManager.h"
+#include "XUBindModel.h"
+#include "XUError.h"
 #include "XULoginTypeModel.h"
-#include "XDGUser.h"
+#include "XUUser.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/SizeBox.h"
@@ -23,7 +23,7 @@ class XDGSDK_API UXDGUserCenterWidget : public UUserWidget
 public:
 	UXDGUserCenterWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void ShowWidget(TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> BindCallBack, TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack);
+	static void ShowWidget(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack, TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack);
 
 protected:
 	
@@ -89,11 +89,11 @@ private:
 	
 	// TFunction<void(bool result)> Completed;
 
-	TSharedPtr<FXDGUser> userMd;
+	TSharedPtr<FXUUser> userMd;
 	TSharedPtr<FXULanguageModel> langModel;
 
-	TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> BindCallBack;
-	TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack;
+	TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack;
+	TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack;
 
 	FString GetLoginTypeName();
 
@@ -107,15 +107,15 @@ private:
 
 	TArray<XULoginTypeModel> GetSupportTypes();
 
-	TArray<TSharedPtr<FXDGBindModel>> BindModels;
+	TArray<TSharedPtr<FXUBindModel>> BindModels;
 
 	void DeleteAccount(const FString& Tip);
 
 	int GetBindCount();
 
-	void Bind(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXDGBindModel> Model);
+	void Bind(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model);
 
-	void UnBind(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXDGBindModel> Model);
+	void UnBind(UXDGUserCenterItemWidget *CurrentWidget, TSharedPtr<FXUBindModel> Model);
 
 	
 

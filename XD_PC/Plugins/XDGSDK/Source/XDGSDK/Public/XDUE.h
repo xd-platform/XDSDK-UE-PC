@@ -1,6 +1,6 @@
 #pragma once
-#include "XDGError.h"
-#include "XDGUser.h"
+#include "XUError.h"
+#include "XUUser.h"
 #include "XUType.h"
 
 class XDGSDK_API XDUE {
@@ -8,7 +8,7 @@ public:
 	
 	static void InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack);
 
-	static void LoginByType(XUType::LoginType Type, TFunction<void(const FXDGUser& User)> SuccessBlock, TFunction<void(const FXDGError& Error)> FailBlock);
+	static void LoginByType(XUType::LoginType Type, TFunction<void(const FXUUser& User)> SuccessBlock, TFunction<void(const FXUError& Error)> FailBlock);
 
 	static bool IsInitialized();
 
@@ -16,10 +16,10 @@ public:
 	
 	static void Logout();
 	
-	static void OpenUserCenter(TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
-	TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack);
+	static void OpenUserCenter(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack,
+	TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack);
 	
-	static void CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock, TFunction<void(const FXDGError& Error)> FailBlock);
+	static void CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock, TFunction<void(const FXUError& Error)> FailBlock);
 
 	static void OpenCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
 

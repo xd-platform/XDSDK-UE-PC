@@ -1,35 +1,35 @@
 #include "XUTokenModel.h"
-#include "XDGStorage.h"
+#include "XUStorage.h"
 
 
 void FXUTokenModel::SaveToLocal()
 {
-	TUDataStorage<FXDGStorage>::SaveStruct(FXDGStorage::TokenInfo, *this, true);
+	TUDataStorage<FXUStorage>::SaveStruct(FXUStorage::TokenInfo, *this, true);
 }
 
 TSharedPtr<FXUTokenModel> FXUTokenModel::GetLocalModel()
 {
-	return  TUDataStorage<FXDGStorage>::LoadStruct<FXUTokenModel>(FXDGStorage::TokenInfo);
+	return  TUDataStorage<FXUStorage>::LoadStruct<FXUTokenModel>(FXUStorage::TokenInfo);
 }
 
 void FXUTokenModel::ClearToken()
 {
-	TUDataStorage<FXDGStorage>::Remove(FXDGStorage::TokenInfo);
+	TUDataStorage<FXUStorage>::Remove(FXUStorage::TokenInfo);
 }
 
 
 
-void FSyncTokenModel::SaveToLocal()
+void FXUSyncTokenModel::SaveToLocal()
 {
-	TUDataStorage<FXDGStorage>::SaveStruct(FXDGStorage::SessionTokenKey, *this, true);
+	TUDataStorage<FXUStorage>::SaveStruct(FXUStorage::SessionTokenKey, *this, true);
 }
 
-TSharedPtr<FSyncTokenModel> FSyncTokenModel::GetLocalModel()
+TSharedPtr<FXUSyncTokenModel> FXUSyncTokenModel::GetLocalModel()
 {
-	return  TUDataStorage<FXDGStorage>::LoadStruct<FSyncTokenModel>(FXDGStorage::SessionTokenKey);
+	return  TUDataStorage<FXUStorage>::LoadStruct<FXUSyncTokenModel>(FXUStorage::SessionTokenKey);
 }
 
-void FSyncTokenModel::ClearToken()
+void FXUSyncTokenModel::ClearToken()
 {
-	TUDataStorage<FXDGStorage>::Remove(FXDGStorage::SessionTokenKey);
+	TUDataStorage<FXUStorage>::Remove(FXUStorage::SessionTokenKey);
 }

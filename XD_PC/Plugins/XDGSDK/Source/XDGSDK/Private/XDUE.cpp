@@ -1,9 +1,9 @@
 #include "XDUE.h"
 
-#include "LanguageManager.h"
+#include "XULanguageManager.h"
 #include "TapUELogin.h"
 #include "TUDebuger.h"
-#include "XDGImplement.h"
+#include "XUImpl.h"
 #include "XDGSDK/UI/XDGUserCenterWidget.h"
 #include "XDGSDK/UI/XDIPayHintAlert.h"
 
@@ -27,7 +27,7 @@ void XDUE::InitSDK(const XUType::Config& Config, TFunction<void(bool Result, con
 		return;
 	}
 	g_InitState = InitStateIniting;
-	XDGImplement::GetIpInfo([=](TSharedPtr<FIpInfoModel> model, FString msg) {
+	XUImpl::GetIpInfo([=](TSharedPtr<FXUIpInfoModel> model, FString msg) {
 		if (model == nullptr) {
 			g_InitState = InitStateUninit;
 			TUDebuger::WarningLog("No IpInfo Model");
@@ -36,7 +36,7 @@ void XDUE::InitSDK(const XUType::Config& Config, TFunction<void(bool Result, con
 			}
 		}
 		else {
-			XDGImplement::InitSDK(Config.ClientId, [=](bool successed, FString InitMsg) {
+			XUImpl::InitSDK(Config.ClientId, [=](bool successed, FString InitMsg) {
 				if (successed) {
 					g_InitState = InitStateInited;
 					TUDebuger::WarningLog("No IpInfo Model");
@@ -56,26 +56,26 @@ void XDUE::InitSDK(const XUType::Config& Config, TFunction<void(bool Result, con
 	});
 }
 
-void XDUE::LoginByType(XUType::LoginType Type, TFunction<void(const FXDGUser& User)> SuccessBlock,
-	TFunction<void(const FXDGError& Error)> FailBlock) {
+void XDUE::LoginByType(XUType::LoginType Type, TFunction<void(const FXUUser& User)> SuccessBlock,
+	TFunction<void(const FXUError& Error)> FailBlock) {
 	if (!IsInitialized())
 	{
 		if (FailBlock)
 		{
-			FailBlock(FXDGError("Please init first"));
+			FailBlock(FXUError("Please init first"));
 		}
 		return;
 	}
 
-	XDGImplement::LoginByType(Type,
-	[=](TSharedPtr<FXDGUser> user)
+	XUImpl::LoginByType(Type,
+	[=](TSharedPtr<FXUUser> user)
 	{
 		if (SuccessBlock)
 		{
 			SuccessBlock(*user.Get());
 		}
 	},
-	[=](FXDGError error)
+	[=](FXUError error)
 	{
 		if (FailBlock)
 		{
@@ -89,18 +89,18 @@ bool XDUE::IsInitialized() {
 }
 
 void XDUE::SetLanguage(XUType::LangType Type) {
-	LanguageManager::SetLanguageType(Type);
+	XULanguageManager::SetLanguageType(Type);
 }
 
 void XDUE::Logout() {
 	// await TDSUser.Logout();
 	TapUELogin::Logout();
-	FXDGUser::ClearUserData();
+	FXUUser::ClearUserData();
 }
 
-void XDUE::OpenUserCenter(TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> BindCallBack,
-	TFunction<void(XUType::LoginType Type, TSharedPtr<FXDGError>)> UnbindCallBack) {
-	if (!FXDGUser::GetLocalModel().IsValid()) {
+void XDUE::OpenUserCenter(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack,
+	TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack) {
+	if (!FXUUser::GetLocalModel().IsValid()) {
 		TUDebuger::WarningLog("Please Login First");
 		return;
 	}
@@ -109,15 +109,15 @@ void XDUE::OpenUserCenter(TFunction<void(XUType::LoginType Type, TSharedPtr<FXDG
 }
 
 void XDUE::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock,
-	TFunction<void(const FXDGError& Error)> FailBlock) {
-	if (!FXDGUser::GetLocalModel().IsValid()) {
+	TFunction<void(const FXUError& Error)> FailBlock) {
+	if (!FXUUser::GetLocalModel().IsValid()) {
 		if (FailBlock)
 		{
-			FailBlock(FXDGError("Please Login First"));
+			FailBlock(FXUError("Please Login First"));
 		}
 		return;
 	}
-	XDGImplement::CheckPay([=](XUType::CheckPayType CheckType)
+	XUImpl::CheckPay([=](XUType::CheckPayType CheckType)
 	{
 		if (CheckType != XUType::None)
 		{
@@ -131,7 +131,7 @@ void XDUE::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock
 }
 
 void XDUE::OpenCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName) {
-	FString UrlStr = XDGImplement::GetCustomerCenter(ServerId, RoleId, RoleName);
+	FString UrlStr = XUImpl::GetCustomerCenter(ServerId, RoleId, RoleName);
 
 	if (UrlStr.IsEmpty()) {
 		TUDebuger::ErrorLog("please login first");
@@ -141,7 +141,7 @@ void XDUE::OpenCustomerCenter(const FString& ServerId, const FString& RoleId, co
 }
 
 void XDUE::OpenWebPay(const FString& ServerId, const FString& RoleId) {
-	FString UrlStr = XDGImplement::GetPayUrl(ServerId, RoleId);
+	FString UrlStr = XUImpl::GetPayUrl(ServerId, RoleId);
 
 	if (UrlStr.IsEmpty()) {
 		TUDebuger::ErrorLog("please login first");
@@ -152,11 +152,11 @@ void XDUE::OpenWebPay(const FString& ServerId, const FString& RoleId) {
 }
 
 void XDUE::SetPushServiceEnable(bool enable) {
-	FXDGUser::SetPushServiceEnable(enable);
+	FXUUser::SetPushServiceEnable(enable);
 }
 
 bool XDUE::IsPushServiceEnable() {
-	return FXDGUser::IsPushServiceEnable();
+	return FXUUser::IsPushServiceEnable();
 }
 
 #if !UE_BUILD_SHIPPING
@@ -166,7 +166,7 @@ void XDUE::Test() {
 }
 
 void XDUE::ResetPrivacy() {
-	TUDataStorage<FXDGStorage>::Remove(FXDGStorage::PrivacyKey);
+	TUDataStorage<FXUStorage>::Remove(FXUStorage::PrivacyKey);
 }
 
 void XDUE::OpenPayHintAlert() {

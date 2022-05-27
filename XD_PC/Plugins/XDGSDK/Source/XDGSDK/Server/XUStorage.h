@@ -1,10 +1,10 @@
 #pragma once
 #include "TUDataStorage.h"
 #include "CoreMinimal.h"
-#include "XDGStorage.generated.h"
+#include "XUStorage.generated.h"
 
 USTRUCT()
-struct FXDGStorage
+struct FXUStorage
 {
 	GENERATED_BODY()
 	static FString InitConfig;

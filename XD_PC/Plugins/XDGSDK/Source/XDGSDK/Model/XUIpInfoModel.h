@@ -1,10 +1,10 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "XDGStorage.h"
-#include "IpInfoModel.generated.h"
+#include "XUStorage.h"
+#include "XUIpInfoModel.generated.h"
 
 USTRUCT()
-struct FIpInfoModel
+struct FXUIpInfoModel
 {
 	GENERATED_BODY()
 
@@ -31,11 +31,11 @@ struct FIpInfoModel
 
 	void SaveToLocal()
 	{
-		TUDataStorage<FXDGStorage>::SaveStruct(FXDGStorage::IpInfo, *this, true);
+		TUDataStorage<FXUStorage>::SaveStruct(FXUStorage::IpInfo, *this, true);
 	}
 
-	static TSharedPtr<FIpInfoModel> GetLocalModel()
+	static TSharedPtr<FXUIpInfoModel> GetLocalModel()
 	{
-		return  TUDataStorage<FXDGStorage>::LoadStruct<FIpInfoModel>(FXDGStorage::IpInfo);
+		return  TUDataStorage<FXUStorage>::LoadStruct<FXUIpInfoModel>(FXUStorage::IpInfo);
 	}
 };

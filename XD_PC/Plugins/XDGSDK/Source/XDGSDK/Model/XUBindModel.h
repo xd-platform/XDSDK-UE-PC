@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "TUJsonHelper.h"
-#include "XDGResponseModel.h"
-#include "XDGBindModel.generated.h"
+#include "XUResponseModel.h"
+#include "XUBindModel.generated.h"
 
 UENUM()
 enum FXDGBindType
@@ -15,7 +15,7 @@ enum FXDGBindType
 };
 
 USTRUCT()
-struct FXDGBindModel
+struct FXUBindModel
 {
 	GENERATED_BODY()
 
@@ -40,12 +40,12 @@ struct FXDGBindModel
 };
 
 USTRUCT()
-struct FXDGBindResponseModel : public FXDGResponseModel
+struct FXUBindResponseModel : public FXUResponseModel
 {
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TArray<FXDGBindModel> data;
+	TArray<FXUBindModel> data;
 
 };
 

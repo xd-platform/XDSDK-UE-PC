@@ -1,7 +1,7 @@
 #include "XDGUserCenterItemWidget.h"
 
-#include "InitConfigModel.h"
-#include "LanguageManager.h"
+#include "XUInitConfigModel.h"
+#include "XULanguageManager.h"
 
 UXDGUserCenterItemWidget::UXDGUserCenterItemWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -20,10 +20,10 @@ UXDGUserCenterItemWidget* UXDGUserCenterItemWidget::GenerateItem()
 	return widget;
 }
 
-void UXDGUserCenterItemWidget::SetBindModel(const TSharedPtr<FXDGBindModel>& Model)
+void UXDGUserCenterItemWidget::SetBindModel(const TSharedPtr<FXUBindModel>& Model)
 {
 	BindModel = Model;
-	auto langModel = LanguageManager::GetCurrentModel();
+	auto langModel = XULanguageManager::GetCurrentModel();
 	FString Content = langModel->tds_account_format.Replace(TEXT("%s"), *Model->loginName);
 	TitleLabel->SetText(FText::FromString(Content));
 	
@@ -60,7 +60,7 @@ void UXDGUserCenterItemWidget::OnBindBtnClick()
 }
 
 void UXDGUserCenterItemWidget::ProcessShowOrNot() {
-	auto md = FInitConfigModel::GetLocalModel();
+	auto md = FXUInitConfigModel::GetLocalModel();
 	if (!BindModel.IsValid() || !md.IsValid()) {
 		return;
 	}

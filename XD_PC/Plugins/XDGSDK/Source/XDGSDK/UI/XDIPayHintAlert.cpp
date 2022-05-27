@@ -1,6 +1,6 @@
 #include "XDIPayHintAlert.h"
 
-#include "LanguageManager.h"
+#include "XULanguageManager.h"
 #include "XDUE.h"
 
 UXDIPayHintAlert::UXDIPayHintAlert(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -27,7 +27,7 @@ void UXDIPayHintAlert::Show(XUType::CheckPayType CheckType)
 void UXDIPayHintAlert::NativeConstruct()
 {
 	Super::NativeConstruct();
-	auto langModel = LanguageManager::GetCurrentModel();
+	auto langModel = XULanguageManager::GetCurrentModel();
 	TitleLabel->SetText(FText::FromString(langModel->tds_refund_login_restrict_title));
 	DetailLabel->SetText(FText::FromString(langModel->tds_refund_login_restrict_sub_title));
 	TailLabel->SetText(FText::FromString(langModel->tds_refund_custom_service_tip));

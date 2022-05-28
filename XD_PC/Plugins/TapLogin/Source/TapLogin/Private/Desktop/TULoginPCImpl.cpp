@@ -7,7 +7,7 @@ void TULoginPCImpl::Init(TULoginType::Config _Config) {
 	this->Config = _Config;
 }
 
-void TULoginPCImpl::ChangeLanguage(TULoginType::LanguageType LanguageType) {
+void TULoginPCImpl::ChangeLanguage(TUType::LanguageType LanguageType) {
 	TULoginImpl::ChangeLanguage(LanguageType);
 }
 

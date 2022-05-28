@@ -23,7 +23,7 @@ public:
 
 	virtual void Logout();
 	
-	virtual void ChangeLanguage(TULoginType::LanguageType LanguageType);
+	virtual void ChangeLanguage(TUType::LanguageType LanguageType);
 	
 	virtual void GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack);
 	

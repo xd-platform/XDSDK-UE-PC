@@ -54,7 +54,7 @@ void TULoginImpl::Logout() {
 	TUDebuger::ErrorLog("Unsupported Platforms");
 }
 
-void TULoginImpl::ChangeLanguage(TULoginType::LanguageType LanguageType) {
+void TULoginImpl::ChangeLanguage(TUType::LanguageType LanguageType) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
 }
 

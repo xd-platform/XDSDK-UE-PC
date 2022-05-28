@@ -43,12 +43,13 @@ class TAULoginLanguage {
 public:
 	enum Type {
 		CN,		// 简体中文
-		IO,		// 英文，海外默认语言
-		ID,		// 印尼文
+		EN,		// 英文，海外默认语言
+		ZHTW,	// 繁体中文
 		JA,		// 日语
 		KO,		// 韩语
 		TH,		// 泰文
-		ZHTW,	// 繁体中文
+		ID,		// 印尼文
+		
 	};
 	
 	static TSharedPtr<ILoginLang> GetCurrentLang();

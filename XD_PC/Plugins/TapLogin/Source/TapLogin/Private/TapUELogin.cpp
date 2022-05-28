@@ -63,7 +63,7 @@ void TapUELogin::Logout() {
 }
 
 	
-void TapUELogin::ChangeLanguage(TULoginType::LanguageType LanguageType) {
+void TapUELogin::ChangeLanguage(TUType::LanguageType LanguageType) {
 	if (!IsInitialized) {
 		TUDebuger::WarningShow("Please Init First");
 		return;

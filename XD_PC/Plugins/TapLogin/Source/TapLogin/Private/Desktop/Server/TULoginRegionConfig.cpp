@@ -59,7 +59,7 @@ FString TULoginRegionConfig::AccountUrl()
 
 TSharedPtr<TULoginRegionConfig>& TULoginRegionConfig::Get() {
 	if (!Instance.IsValid()) {
-		if (TULoginImpl::Get()->Config.RegionType == TULoginType::CN) {
+		if (TULoginImpl::Get()->Config.RegionType == TUType::CN) {
 			Instance = MakeShareable(new TULoginRegionConfigCN);
 		} else {
 			Instance = MakeShareable(new TULoginRegionConfigIO);

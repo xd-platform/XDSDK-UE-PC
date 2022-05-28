@@ -31,7 +31,7 @@ void TULoginMobileImpl::Init(TULoginType::Config _Config) {
 	TSharedRef<TJsonWriter<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>> Writer = TJsonWriterFactory<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>::Create(&JsonOutString);
 	Writer->WriteObjectStart();
 	Writer->WriteValue("clientID",_Config.ClientID);
-	Writer->WriteValue("regionType",_Config.RegionType == TULoginType::CN);
+	Writer->WriteValue("regionType",_Config.RegionType == TUType::CN);
 	Writer->WriteValue("roundCorner", _Config.RoundCorner);
 	Writer->WriteObjectEnd();
 	Writer->Close();
@@ -174,7 +174,9 @@ void TULoginMobileImpl::QueryMutualList(FString Cursor, int Size,
 				ModelPtr->data.Add(Info);
 			}
 		}
-		CallBack(ModelPtr, Error);
+		AsyncTask(ENamedThreads::GameThread, [=]() {
+			CallBack(ModelPtr, Error);
+		});
 	}];
 #else
 	FString JsonOutString;

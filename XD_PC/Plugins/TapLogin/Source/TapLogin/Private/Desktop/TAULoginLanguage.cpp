@@ -16,7 +16,7 @@ TSharedPtr<ILoginLang> TAULoginLanguage::GetCurrentLang()
 		SetLangType(CN);
 		break;
 	case TULanguage::EN:
-		SetLangType(IO);
+		SetLangType(EN);
 		break;
 	case TULanguage::ID:
 		SetLangType(ID);
@@ -34,7 +34,7 @@ TSharedPtr<ILoginLang> TAULoginLanguage::GetCurrentLang()
 		SetLangType(ZHTW);
 		break;
 	default:
-		SetLangType(IO);
+		SetLangType(EN);
 		break;
 	}
 	return CurrentLang;
@@ -45,7 +45,7 @@ void TAULoginLanguage::SetLangType(Type Type) {
 	case CN:
 		CurrentLang = MakeShareable(new LoginLangCN);
 		break;
-	case IO:
+	case EN:
 		CurrentLang = MakeShareable(new LoginLangIO);
 		break;
 	case ID:

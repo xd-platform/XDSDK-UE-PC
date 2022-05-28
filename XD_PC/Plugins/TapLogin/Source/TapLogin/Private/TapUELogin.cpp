@@ -2,12 +2,9 @@
 #include "TUDebuger.h"
 #include "TULoginImpl.h"
 
-FString TapUELogin::PermissionScope::Profile = "public_profile";
-FString TapUELogin::PermissionScope::Friend = "user_friends";
-
 static bool IsInitialized = false;
 
-void TapUELogin::Init(Config Config) {
+void TapUELogin::Init(TULoginType::Config Config) {
 	if (IsInitialized) {
 		TUDebuger::WarningShow("Has Initialized");
 		return;
@@ -46,7 +43,7 @@ void TapUELogin::Login(TFunction<void(const TUAuthResult& Result)> CallBack) {
 		TUDebuger::WarningShow("Please Init First");
 		return;
 	}
-	Login({PermissionScope::Profile}, CallBack);
+	Login({TULoginType::PermissionScope::Profile}, CallBack);
 }
 
 void TapUELogin::Login(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> CallBack) {
@@ -66,7 +63,7 @@ void TapUELogin::Logout() {
 }
 
 	
-void TapUELogin::ChangeLanguage(LanguageType LanguageType) {
+void TapUELogin::ChangeLanguage(TULoginType::LanguageType LanguageType) {
 	if (!IsInitialized) {
 		TUDebuger::WarningShow("Please Init First");
 		return;

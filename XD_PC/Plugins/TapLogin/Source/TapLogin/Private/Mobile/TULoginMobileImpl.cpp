@@ -26,12 +26,12 @@ TULoginMobileImpl::TULoginMobileImpl() {
 	TUMobileBridge::Register(TEXT(TAP_FRIEND_CLZ),TEXT(TAP_FRIEND_IMPL));
 }
 
-void TULoginMobileImpl::Init(TapUELogin::Config _Config) {
+void TULoginMobileImpl::Init(TULoginType::Config _Config) {
 	FString JsonOutString;
 	TSharedRef<TJsonWriter<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>> Writer = TJsonWriterFactory<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>::Create(&JsonOutString);
 	Writer->WriteObjectStart();
 	Writer->WriteValue("clientID",_Config.ClientID);
-	Writer->WriteValue("regionType",_Config.RegionType == TapUELogin::CN);
+	Writer->WriteValue("regionType",_Config.RegionType == TULoginType::CN);
 	Writer->WriteValue("roundCorner", _Config.RoundCorner);
 	Writer->WriteObjectEnd();
 	Writer->Close();

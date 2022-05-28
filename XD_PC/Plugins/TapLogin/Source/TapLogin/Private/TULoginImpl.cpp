@@ -21,7 +21,7 @@ TSharedPtr<TULoginImpl>& TULoginImpl::Get() {
 	return Instance;
 }
 
-void TULoginImpl::Init(TapUELogin::Config _Config) {
+void TULoginImpl::Init(TULoginType::Config _Config) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
 }
 
@@ -54,7 +54,7 @@ void TULoginImpl::Logout() {
 	TUDebuger::ErrorLog("Unsupported Platforms");
 }
 
-void TULoginImpl::ChangeLanguage(TapUELogin::LanguageType LanguageType) {
+void TULoginImpl::ChangeLanguage(TULoginType::LanguageType LanguageType) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
 }
 

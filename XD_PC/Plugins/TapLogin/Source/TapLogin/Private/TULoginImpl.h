@@ -9,9 +9,9 @@ public:
 
 	static TSharedPtr<TULoginImpl>& Get();
 
-	TapUELogin::Config Config;
+	TULoginType::Config Config;
 	
-	virtual void Init(TapUELogin::Config _Config);
+	virtual void Init(TULoginType::Config _Config);
 	
 	virtual TSharedPtr<FTULoginProfileModel> GetProfile();
 	
@@ -23,7 +23,7 @@ public:
 
 	virtual void Logout();
 	
-	virtual void ChangeLanguage(TapUELogin::LanguageType LanguageType);
+	virtual void ChangeLanguage(TULoginType::LanguageType LanguageType);
 	
 	virtual void GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack);
 	

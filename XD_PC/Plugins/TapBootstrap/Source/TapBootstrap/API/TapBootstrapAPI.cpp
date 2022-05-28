@@ -6,13 +6,13 @@
 
 void UTapBootstrap::Init(const FTUCommonConfig& tapConfig)
 {
-	TapUELogin::Config Config;
+	TULoginType::Config Config;
 	Config.ClientID = tapConfig.clientID;
 	if (tapConfig.regionType == RegionType::CN) {
-		Config.RegionType = TapUELogin::CN;
+		Config.RegionType = TULoginType::CN;
 	}
 	else {
-		Config.RegionType = TapUELogin::IO;
+		Config.RegionType = TULoginType::IO;
 	}
 	TapUELogin::Init(Config);
 }

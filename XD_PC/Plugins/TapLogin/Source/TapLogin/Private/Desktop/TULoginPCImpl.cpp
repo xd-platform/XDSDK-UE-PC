@@ -3,11 +3,11 @@
 #include "Server/TULoginNet.h"
 #include "UI/TAULoginWidget.h"
 
-void TULoginPCImpl::Init(TapUELogin::Config _Config) {
+void TULoginPCImpl::Init(TULoginType::Config _Config) {
 	this->Config = _Config;
 }
 
-void TULoginPCImpl::ChangeLanguage(TapUELogin::LanguageType LanguageType) {
+void TULoginPCImpl::ChangeLanguage(TULoginType::LanguageType LanguageType) {
 	TULoginImpl::ChangeLanguage(LanguageType);
 }
 

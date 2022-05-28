@@ -51,7 +51,11 @@ void XUImpl::InitBootstrap(const TSharedPtr<FXUInitConfigModel>& model,
 	Config.clientID = tapCfg.clientId;
 	Config.clientToken = tapCfg.clientToken;
 	Config.serverURL = tapCfg.serverUrl;
-	Config.regionType = RegionType::IO;
+	if (XUImpl::Get()->Config.RegionType == XUType::CN) {
+		Config.regionType = RegionType::CN;
+	} else {
+		Config.regionType = RegionType::IO;
+	}
 	Config.dbConfig.enable = tapCfg.enableTapDB;
 	Config.dbConfig.channel = tapCfg.tapDBChannel;
 	Config.dbConfig.gameVersion = XUImpl::Get()->Config.GameVersion;

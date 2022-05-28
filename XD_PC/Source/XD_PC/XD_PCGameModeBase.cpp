@@ -8,12 +8,11 @@
 #include "TUDebuger.h"
 #include "XDUE.h"
 
-
-void AXD_PCGameModeBase::InitSDK(const FString& ClientId)
+void AXD_PCGameModeBase::InitSDK(const FString& ClientId, int RegionType)
 {
 	XUType::Config Config;
 	Config.ClientId = ClientId;
-	Config.RegionType = XUType::IO;
+	Config.RegionType = (XUType::RegionType)RegionType;
 	XDUE::InitSDK(Config, [](bool Result, FString Message)
 	{
 		if (Result)

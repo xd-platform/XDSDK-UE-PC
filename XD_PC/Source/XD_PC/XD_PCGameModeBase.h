@@ -15,7 +15,7 @@ class XD_PC_API AXD_PCGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "InitSDK"))
-	static void InitSDK(const FString& ClientId);
+	static void InitSDK(const FString& ClientId, int RegionType);
 
 	UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "LoginByType"))
 	static void LoginByType(int LoginType);

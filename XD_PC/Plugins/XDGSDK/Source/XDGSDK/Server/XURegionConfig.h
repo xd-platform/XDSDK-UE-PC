@@ -4,7 +4,7 @@ class XURegionConfig {
 public:
 
 	virtual ~XURegionConfig() = default;
-	virtual FString BaseHost();
+	virtual FString BaseHost() = 0;
 
 	//获取配置
 	FString InitSDKUrl();

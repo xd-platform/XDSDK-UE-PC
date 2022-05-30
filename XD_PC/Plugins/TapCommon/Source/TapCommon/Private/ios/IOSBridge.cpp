@@ -2,9 +2,16 @@
 #include "TapCommon.h"
 #include "Engine.h"
 #include "TUMobileBridge.h"
+#include "IOSAppDelegate.h"
+#include "Misc/CoreDelegates.h"
+
+static void OnOpenURL(UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation){
+	[TDSHandleUrl handleOpenURL:url];
+}
 
 IOSBridge::IOSBridge()
 {
+	FIOSCoreDelegates::OnOpenURL.AddStatic(&OnOpenURL);
 }
 
 IOSBridge::~IOSBridge()

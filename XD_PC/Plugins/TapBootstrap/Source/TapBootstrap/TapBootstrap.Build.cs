@@ -12,7 +12,6 @@ public class TapBootstrap : ModuleRules
 
         PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Private")));
         PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "Public")));
-        PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "API")));
 
         PublicIncludePaths.AddRange(
             new string[] {

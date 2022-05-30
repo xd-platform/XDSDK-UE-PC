@@ -5,8 +5,8 @@ namespace TUType {
 
 	// 这个影响服务的host以及TapTap授权客户端的种类（是国内还是海外）
 	enum RegionType {
-		CN,
-		IO
+		CN,		// 国内
+		IO		// 海外
 	};
 
 	enum LanguageType {
@@ -20,7 +20,7 @@ namespace TUType {
 		ID,		// 印尼文
 	};
 	
-	class Config {
+	class TAPCOMMON_API Config {
 	public:
 
 		FString ClientID;
@@ -31,6 +31,7 @@ namespace TUType {
 
 		FString ServerURL;
 
+		static void Init(const Config& InitConfig);
 		static TSharedPtr<Config>& Get();
 		
 

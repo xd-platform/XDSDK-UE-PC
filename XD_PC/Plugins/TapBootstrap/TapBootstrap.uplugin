@@ -19,11 +19,6 @@
 			"Name": "TapBootstrap",
 			"Type": "Runtime",
 			"LoadingPhase": "PreLoadingScreen"
-		},
-		{
-			"Name": "TapBootstrapEditor",
-			"Type": "Editor",
-			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [

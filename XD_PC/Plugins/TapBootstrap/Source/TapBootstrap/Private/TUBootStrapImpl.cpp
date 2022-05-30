@@ -1,9 +1,9 @@
 #include "TUBootStrapImpl.h"
 #include "TUDebuger.h"
 #if PLATFORM_MAC || PLATFORM_WINDOWS
-#include "TUBootStrapPCImpl.h"
+#include "Desktop/TUBootStrapPCImpl.h"
 #elif PLATFORM_IOS || PLATFORM_ANDROID
-#include "TUBootStrapMobileImpl.h"
+#include "Mobile/TUBootStrapMobileImpl.h"
 #endif
 
 TSharedPtr<TUBootStrapImpl> TUBootStrapImpl::Instance = nullptr;

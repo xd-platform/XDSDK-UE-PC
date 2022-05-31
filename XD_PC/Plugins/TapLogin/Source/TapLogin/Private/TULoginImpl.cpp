@@ -1,5 +1,7 @@
 #include "TULoginImpl.h"
 #include "TUDebuger.h"
+#include "TULanguage.h"
+#include "Desktop/TAULoginLanguage.h"
 #if PLATFORM_MAC || PLATFORM_WINDOWS
 #include "Desktop/TULoginPCImpl.h"
 #elif PLATFORM_IOS || PLATFORM_ANDROID
@@ -55,6 +57,40 @@ void TULoginImpl::Logout() {
 }
 
 void TULoginImpl::ChangeLanguage(TUType::LanguageType LanguageType) {
+	switch (LanguageType) {
+	TULanguage::GetCurrentType();
+	case TUType::AUTO:
+		if (Config.RegionType == TUType::CN) {
+			TAULoginLanguage::SetLangType(TAULoginLanguage::CN);
+		}
+		else {
+			TAULoginLanguage::SetLangType(TAULoginLanguage::EN);
+		}
+		break;
+	case TUType::ZH:
+		TAULoginLanguage::SetLangType(TAULoginLanguage::CN);
+		break;
+	case TUType::EN:
+		TAULoginLanguage::SetLangType(TAULoginLanguage::EN);
+		break;
+	case TUType::ZHTW:
+		TAULoginLanguage::SetLangType(TAULoginLanguage::ZHTW);
+		break;
+	case TUType::JA:
+		TAULoginLanguage::SetLangType(TAULoginLanguage::JA);
+		break;
+	case TUType::KO:
+		TAULoginLanguage::SetLangType(TAULoginLanguage::KO);
+		break;
+	case TUType::TH:
+		TAULoginLanguage::SetLangType(TAULoginLanguage::TH);
+		break;
+	case TUType::ID:
+		TAULoginLanguage::SetLangType(TAULoginLanguage::ID);
+		break;
+	default: ;
+	}
+	
 	TUDebuger::ErrorLog("Unsupported Platforms");
 }
 

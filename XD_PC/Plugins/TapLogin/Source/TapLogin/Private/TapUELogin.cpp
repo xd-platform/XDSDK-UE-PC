@@ -15,7 +15,7 @@ void TapUELogin::Init(TULoginType::Config Config) {
 
 TSharedPtr<FTULoginProfileModel> TapUELogin::GetProfile() {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return nullptr;
 	}
 	return TULoginImpl::Get()->GetProfile();
@@ -24,7 +24,7 @@ TSharedPtr<FTULoginProfileModel> TapUELogin::GetProfile() {
 void TapUELogin::FetchProfile(
 	TFunction<void(TSharedPtr<FTULoginProfileModel> ModelPtr, const FTUError& Error)> CallBack) {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
 	TULoginImpl::Get()->FetchProfile(CallBack);
@@ -32,7 +32,7 @@ void TapUELogin::FetchProfile(
 
 TSharedPtr<FTUAccessToken> TapUELogin::GetAccessToken() {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return nullptr;
 	}
 	return TULoginImpl::Get()->GetAccessToken();
@@ -40,7 +40,7 @@ TSharedPtr<FTUAccessToken> TapUELogin::GetAccessToken() {
 
 void TapUELogin::Login(TFunction<void(const TUAuthResult& Result)> CallBack) {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
 	Login({TULoginType::PermissionScope::Profile}, CallBack);
@@ -48,7 +48,7 @@ void TapUELogin::Login(TFunction<void(const TUAuthResult& Result)> CallBack) {
 
 void TapUELogin::Login(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> CallBack) {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
 	TULoginImpl::Get()->Login(Permissions, CallBack);
@@ -56,7 +56,7 @@ void TapUELogin::Login(TArray<FString> Permissions, TFunction<void(const TUAuthR
 
 void TapUELogin::Logout() {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return ;
 	}
 	TULoginImpl::Get()->Logout();
@@ -64,16 +64,12 @@ void TapUELogin::Logout() {
 
 	
 void TapUELogin::ChangeLanguage(TUType::LanguageType LanguageType) {
-	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
-		return;
-	}
 	TULoginImpl::Get()->ChangeLanguage(LanguageType);
 }
 	
 void TapUELogin::GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack) {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
 	TULoginImpl::Get()->GetTestQualification(CallBack);
@@ -82,7 +78,7 @@ void TapUELogin::GetTestQualification(TFunction<void(bool IsQualified, const FTU
 void TapUELogin::QueryMutualList(FString Cursor, int Size,
 	TFunction<void(TSharedPtr<FTULoginFriendResult> ModelPtr, const FTUError& Error)> CallBack) {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
 	TULoginImpl::Get()->QueryMutualList(Cursor, Size, CallBack);

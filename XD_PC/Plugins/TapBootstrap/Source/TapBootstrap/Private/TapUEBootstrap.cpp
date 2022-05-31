@@ -18,7 +18,7 @@ void TapUEBootstrap::Init(const TUType::Config& Config) {
 void TapUEBootstrap::Login(TArray<FString> Permissions, TFunction<void(const FTapUser& User)> SuccessBlock,
 	TFunction<void(const FTUError& Error)> FailBlock) {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
 	TUBootStrapImpl::Get()->Login(Permissions, SuccessBlock, FailBlock);
@@ -27,7 +27,7 @@ void TapUEBootstrap::Login(TArray<FString> Permissions, TFunction<void(const FTa
 void TapUEBootstrap::AnonymouslyLogin(TFunction<void(const FTapUser& User)> SuccessBlock,
 	TFunction<void(const FTUError& Error)> FailBlock) {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
 	TUBootStrapImpl::Get()->AnonymouslyLogin(SuccessBlock, FailBlock);
@@ -35,7 +35,7 @@ void TapUEBootstrap::AnonymouslyLogin(TFunction<void(const FTapUser& User)> Succ
 
 void TapUEBootstrap::Logout() {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
 	TUBootStrapImpl::Get()->Logout();
@@ -43,7 +43,7 @@ void TapUEBootstrap::Logout() {
 
 TSharedPtr<FTapUser> TapUEBootstrap::GetUser() {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return nullptr;
 	}
 	return TUBootStrapImpl::Get()->GetUser();
@@ -51,7 +51,7 @@ TSharedPtr<FTapUser> TapUEBootstrap::GetUser() {
 
 void TapUEBootstrap::SetPreferLanguage(TUType::LanguageType LangType) {
 	if (!IsInitialized) {
-		TUDebuger::WarningShow("Please Init First");
+		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
 	TUBootStrapImpl::Get()->SetPreferLanguage(LangType);

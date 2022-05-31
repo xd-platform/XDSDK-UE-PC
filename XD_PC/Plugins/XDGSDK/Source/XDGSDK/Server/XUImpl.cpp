@@ -308,7 +308,7 @@ void XUImpl::AsyncLocalTdsUser(const FString& userId, const FString& sessionToke
 }
 
 void XUImpl::CheckPrivacyAlert(TFunction<void()> Callback) {
-	if (FXUInitConfigModel::CanShowPrivacyAlert()) {
+	if (FXUInitConfigModel::CanShowPrivacyAlert() && XUImpl::Get()->Config.RegionType == XUType::IO) {
 		UXUPrivacyWidget::ShowPrivacy(
 			[=](bool result) {
 				if (result) {

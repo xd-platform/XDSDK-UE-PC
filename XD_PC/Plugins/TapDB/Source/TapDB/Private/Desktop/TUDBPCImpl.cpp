@@ -9,6 +9,7 @@ FString TUDBPCImpl::First_open_id = "";
 FString TUDBPCImpl::TAPDB_VERSION = "3.0.9";
 
 void TUDBPCImpl::Init(TUDBType::Config InitConfig) {
+	Config = InitConfig;
 	TapDBEventMobile = MakeShareable(new TUDBEventMobile(Config.ClientId));
 	TapDBEventUser = MakeShareable(new TUDBEventUser(Config.ClientId));
 

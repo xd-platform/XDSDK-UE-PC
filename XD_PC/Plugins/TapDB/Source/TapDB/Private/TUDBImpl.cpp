@@ -23,7 +23,6 @@ TSharedPtr<TUDBImpl>& TUDBImpl::Get() {
 }
 
 void TUDBImpl::Init(TUDBType::Config InitConfig) {
-	Config = InitConfig;
 	TUDebuger::ErrorLog("Unsupported Platforms");
 }
 

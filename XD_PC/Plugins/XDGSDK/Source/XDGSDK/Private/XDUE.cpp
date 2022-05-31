@@ -64,7 +64,7 @@ void XDUE::LoginByType(XUType::LoginType Type, TFunction<void(const FXUUser& Use
 	{
 		if (FailBlock)
 		{
-			FailBlock(FXUError("Please init first"));
+			FailBlock(FXUError(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__))));
 		}
 		return;
 	}
@@ -92,6 +92,32 @@ bool XDUE::IsInitialized() {
 
 void XDUE::SetLanguage(XUType::LangType Type) {
 	XULanguageManager::SetLanguageType(Type);
+	switch (Type) {
+	case XUType::ZH_CN:
+		TapUELogin::ChangeLanguage(TUType::ZH);
+		break;
+	case XUType::ZH_TW:
+		TapUELogin::ChangeLanguage(TUType::ZHTW);
+		break;
+	case XUType::EN:
+		TapUELogin::ChangeLanguage(TUType::EN);
+		break;
+	case XUType::TH:
+		TapUELogin::ChangeLanguage(TUType::TH);
+		break;
+	case XUType::ID:
+		TapUELogin::ChangeLanguage(TUType::ID);
+		break;
+	case XUType::KR:
+		TapUELogin::ChangeLanguage(TUType::KO);
+		break;
+	case XUType::JP:
+		TapUELogin::ChangeLanguage(TUType::JA);
+		break;
+	default:
+		TapUELogin::ChangeLanguage(TUType::EN);
+		break;
+	}
 }
 
 void XDUE::Logout() {

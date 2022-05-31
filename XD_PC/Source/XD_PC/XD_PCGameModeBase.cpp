@@ -134,8 +134,12 @@ void AXD_PCGameModeBase::IsPushServiceEnable() {
 void AXD_PCGameModeBase::OpenWebTopic(FString AppId) {
     // TAPMOMENT_API
     TUMomentType::Config Config;
-    Config.AppId = AppId;
     Config.RegionType = TUType::Config::Get()->RegionType;
+    if (Config.RegionType == TUType::CN) {
+        Config.AppId_CN = AppId;
+    } else {
+        Config.AppId_IO = AppId;
+    }
     TapUEMoment::Init(Config);
     TapUEMoment::OpenWebTopic();
 }

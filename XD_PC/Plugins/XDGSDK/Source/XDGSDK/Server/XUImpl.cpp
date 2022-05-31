@@ -1,11 +1,10 @@
 #include "XUImpl.h"
+#include "TapUEBootstrap.h"
 #include "XUStorage.h"
 #include "TUDeviceInfo.h"
 #include "TUJsonHelper.h"
 #include "XULanguageManager.h"
-#include "TapBootstrapAPI.h"
 #include "TapUELogin.h"
-#include "TUCommonConfig.h"
 #include "TUHelper.h"
 #include "TUHUD.h"
 #include "URLParser.h"
@@ -47,19 +46,19 @@ void XUImpl::InitBootstrap(const TSharedPtr<FXUInitConfigModel>& model,
 		return;
 	}
 	auto tapCfg = model->configs.tapSdkConfig;
-	FTUCommonConfig Config;
-	Config.clientID = tapCfg.clientId;
-	Config.clientToken = tapCfg.clientToken;
-	Config.serverURL = tapCfg.serverUrl;
+	TUType::Config Config;
+	Config.ClientID = tapCfg.clientId;
+	Config.ClientToken = tapCfg.clientToken;
+	Config.ServerURL = tapCfg.serverUrl;
 	if (XUImpl::Get()->Config.RegionType == XUType::CN) {
-		Config.regionType = RegionType::CN;
+		Config.RegionType = TUType::CN;
 	} else {
-		Config.regionType = RegionType::IO;
+		Config.RegionType = TUType::IO;
 	}
-	Config.dbConfig.enable = tapCfg.enableTapDB;
-	Config.dbConfig.channel = tapCfg.tapDBChannel;
-	Config.dbConfig.gameVersion = XUImpl::Get()->Config.GameVersion;
-	UTapBootstrap::Init(Config);
+	Config.DBConfig.Enable = tapCfg.enableTapDB;
+	Config.DBConfig.Channel = tapCfg.tapDBChannel;
+	Config.DBConfig.GameVersion = XUImpl::Get()->Config.GameVersion;
+	TapUEBootstrap::Init(Config);
 
 	if (resultBlock) { resultBlock(true, msg); }
 }

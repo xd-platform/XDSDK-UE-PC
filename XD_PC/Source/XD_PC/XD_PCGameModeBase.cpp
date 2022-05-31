@@ -3,9 +3,10 @@
 
 #include "XD_PCGameModeBase.h"
 
+#include "TapUEMoment.h"
 #include "TUJsonHelper.h"
-#include "TapMomentApi.h"
 #include "TUDebuger.h"
+#include "TUMomentType.h"
 #include "XDUE.h"
 
 void AXD_PCGameModeBase::InitSDK(const FString& ClientId, int RegionType)
@@ -132,9 +133,9 @@ void AXD_PCGameModeBase::IsPushServiceEnable() {
 
 void AXD_PCGameModeBase::OpenWebTopic(FString AppId) {
     // TAPMOMENT_API
-    TapMomentConfig Config;
+    TUMomentType::Config Config;
     Config.AppId = AppId;
-    Config.IsCN = false;
-    TapMomentApi::Init(Config);
-    TapMomentApi::OpenWebTopic();
+    Config.RegionType = TUType::Config::Get()->RegionType;
+    TapUEMoment::Init(Config);
+    TapUEMoment::OpenWebTopic();
 }

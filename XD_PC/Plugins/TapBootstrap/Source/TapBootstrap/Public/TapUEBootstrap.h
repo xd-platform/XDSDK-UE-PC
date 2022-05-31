@@ -3,7 +3,7 @@
 #include "TUError.h"
 #include "TUType.h"
 
-class TapUEBootstrap {
+class TAPBOOTSTRAP_API TapUEBootstrap {
 public:
 
 	// 只能初始化一次

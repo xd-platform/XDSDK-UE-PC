@@ -1,92 +1,134 @@
 # XDGSDK-UEPC-6.0
 
-ue4 pc overseas
+目前支持海外
 
-## Getting started
+## 项目依赖库文件
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+将插件SDK拷贝到项目Plugins文件夹，然后设置依赖库
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://git.xindong.com/xd-platform/xdgsdk-6.0/xdgsdk-uepc-6.0.git
-git branch -M master
-git push -uf origin master
+```c#
+PrivateDependencyModuleNames.AddRange(new string[] { "XDGSDK", "Json", "JsonUtilities" });
 ```
 
-## Integrate with your tools
+## API介绍
 
-- [ ] [Set up project integrations](https://git.xindong.com/xd-platform/xdgsdk-6.0/xdgsdk-uepc-6.0/-/settings/integrations)
+先导入XDGSDK的头文件
+```c
+#include "XDUE.h"
+```
 
-## Collaborate with your team
+### 初始化
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+调用`XDUE::InitSDK`方法，`Result`表示结果，后续API的使用，请基于`Result`成功的时候在调用（后续版本会不在强依赖Init成功）
+```c++
+    XUType::Config Config;
+    Config.ClientId = ClientId;
+    Config.RegionType = (XUType::RegionType)RegionType;
+    XDUE::InitSDK(Config, [](bool Result, FString Message)
+    {
+        if (Result)
+        {
+            TUDebuger::DisplayShow(Message);
+        } else
+        {
+            TUDebuger::WarningShow(Message);
+        }
+    });
+```
 
-## Test and Deploy
+### 登录接口
 
-Use the built-in continuous integration in GitLab.
+`LoginType`是`Default`类型，代表了自动登录，如果已经登录的状态，会重新更新用户状态，如果没有登录，那么会提示登录失败。
+```c++
+    XDUE::LoginByType((XUType::LoginType)LoginType, [](FXUUser User)
+    {
+        TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
+    }, [](FXUError Error)
+    {
+        TUDebuger::WarningShow(TEXT("登录失败：") + Error.msg);
+    });
+```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+### 退出登录
+XDSDK支持13种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类超出了TapSDK的支持，那么在TapSDK中显示的是英语（目前TapSDK仅涉及登录模块）
+```c++
+    XDUE::Logout();
+```
 
-***
+### 多语言
+XDSDK支持13种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类超出了TapSDK的支持，那么在TapSDK中显示的是英语（目前TapSDK仅涉及登录模块）
+```c++
+    XDUE::SetLanguage(LangType);
+```
 
-# Editing this README
+### 打开用户中心
+目前提供了绑定和解绑的回调。
+```c++
+    XDUE::OpenUserCenter(
+        [](XUType::LoginType Type, TSharedPtr<FXUError> Error) {
+            if (Error.IsValid()) {
+                TUDebuger::DisplayShow( FString::Printf(TEXT("绑定失败, Error: %s"), *Error->msg));
+            }
+            else {
+                TUDebuger::DisplayShow( FString::Printf(TEXT("绑定成功, Type: %d"), Type));
+            }
+        },
+        [](XUType::LoginType Type, TSharedPtr<FXUError> Error) {
+            if (Error.IsValid()) {
+                TUDebuger::DisplayShow( FString::Printf(TEXT("解绑失败, Error: %s"), *Error->msg));
+            }
+            else {
+                TUDebuger::DisplayShow( FString::Printf(TEXT("解绑成功, Type: %d"), Type));
+            }
+        }
+    );
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### 检查补款
+```c++
+    XDUE::CheckPay([](XUType::CheckPayType CheckType)
+    {
+        switch (CheckType)
+        {
+        case XUType::iOSAndAndroid:
+            TUDebuger::DisplayShow(TEXT("iOSAndAndroid"));
+            break;
+        case XUType::iOS:
+            TUDebuger::DisplayShow(TEXT("iOS"));
+            break;
+        case XUType::Android:
+            TUDebuger::DisplayShow(TEXT("Android"));
+            break;
+        case XUType::None:
+            TUDebuger::DisplayShow(TEXT("None"));
+            break;
+        }
+    }, [](FXUError Error)
+    {
+        TUDebuger::DisplayShow(Error.msg);
+    });
+```
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### 打开客服中心
 
-## Name
-Choose a self-explaining name for your project.
+```c++
+    XDUE::OpenCustomerCenter("serverId", "roleId", "roleName");
+```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+### 打开网页支付
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+```c++
+    XDUE::OpenWebPay(ServerId, RoleId);
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### 是否允许推送服务
+韩国同意协议的时候有个是否统一推送的勾选项，韩国用户登录完后，可以用这个接口获取是否能推送。
+```c++
+    if (XDUE::IsPushServiceEnable()) {
+        TUDebuger::DisplayShow("Push Service Enable");
+    } else {
+        TUDebuger::DisplayShow("Push Service Disable");
+    }
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.

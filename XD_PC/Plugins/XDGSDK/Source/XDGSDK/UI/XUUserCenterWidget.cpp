@@ -11,7 +11,6 @@
 
 UXUUserCenterWidget::UXUUserCenterWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-
 }
 
 void UXUUserCenterWidget::ShowWidget(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack,
@@ -173,15 +172,15 @@ void UXUUserCenterWidget::ResetListBoxAndDeleteButton()
 		};
 	}
 
-	// if (userMd->loginType == (int)LoginType::Guest)
-	// {
-	// 	EmptyBox1->SetVisibility(ESlateVisibility::Visible);
-	// 	DeleteButton->SetVisibility(ESlateVisibility::Visible);
-	// } else
-	// {
-	// 	EmptyBox1->SetVisibility(ESlateVisibility::Collapsed);
-	// 	DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
-	// }
+	if (userMd->loginType == (int)XUType::LoginType::Guest)
+	{
+		EmptyBox1->SetVisibility(ESlateVisibility::Visible);
+		DeleteButton->SetVisibility(ESlateVisibility::Visible);
+	} else
+	{
+		EmptyBox1->SetVisibility(ESlateVisibility::Collapsed);
+		DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }
 
 void UXUUserCenterWidget::ShouldShowErrorButton(bool Should)

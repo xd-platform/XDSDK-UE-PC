@@ -128,7 +128,7 @@ void UXUUserCenterTipWidget::FirstStepUpdate()
 		WhiteButtonLabel->SetText(FText::FromString(langModel->tds_unbind_account));
 		break;
 	}
-	TextBox->SetVisibility(ESlateVisibility::Collapsed);
+	TextBox->SetVisibility(ESlateVisibility::Hidden);
 	RedTipLabel->SetVisibility(ESlateVisibility::Collapsed);
 }
 

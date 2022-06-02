@@ -4,6 +4,9 @@
 
 #include "Modules/ModuleManager.h"
 
+#define TapUEMoment_VERSION_NUMBER "30900001"
+#define TapUEMoment_VERSION "3.9.0"
+
 class FTapMomentModule : public IModuleInterface
 {
 public:
@@ -11,11 +14,6 @@ public:
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
-
-    DECLARE_MULTICAST_DELEGATE_TwoParams(FTapMomentCallback, const int, const FString &);
-
-    UPROPERTY(BlueprintAssignable, Category = "TapMoment")
-    static FTapMomentCallback OnMomentCallback;
 
 
 };

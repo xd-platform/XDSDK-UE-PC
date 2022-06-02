@@ -1,15 +1,12 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "TapMoment.h"
-#include "TapMomentBPLibrary.h"
 
 #define LOCTEXT_NAMESPACE "FTapMomentModule"
 
 void FTapMomentModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-
-	UTapMomentBPLibrary::SetCallback();
 }
 
 void FTapMomentModule::ShutdownModule()
@@ -22,5 +19,3 @@ void FTapMomentModule::ShutdownModule()
 #undef LOCTEXT_NAMESPACE
 	
 IMPLEMENT_MODULE(FTapMomentModule, TapMoment)
-
-FTapMomentModule::FTapMomentCallback FTapMomentModule::OnMomentCallback;

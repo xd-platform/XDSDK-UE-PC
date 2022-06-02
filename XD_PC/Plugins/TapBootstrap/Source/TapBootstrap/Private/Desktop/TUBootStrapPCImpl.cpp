@@ -14,7 +14,10 @@ void TUBootStrapPCImpl::Init(const TUType::Config& Config) {
 	TapUELogin::Init(LoginConfig);
 
 	// 初始化 TapDB
-	TUHelper::InvokeNoReturnFunction("TUDBReflection", "Init");
+	if (Config.DBConfig.Enable) {
+		TUHelper::InvokeNoReturnFunction("TUDBReflection", "Init");
+	}
+	
 }
 
 void TUBootStrapPCImpl::Login(TArray<FString> Permissions, TFunction<void(const FTapUser& User)> SuccessBlock,

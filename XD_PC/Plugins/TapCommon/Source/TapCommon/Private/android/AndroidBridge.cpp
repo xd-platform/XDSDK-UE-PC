@@ -1,6 +1,7 @@
 #include "AndroidBridge.h"
 #include "TapCommon.h"
 #include "Engine.h"
+#include "TUMobileBridge.h"
 
 #define TDS_BRIDGE_CLASS "com/tds/common/bridge/Bridge"
 

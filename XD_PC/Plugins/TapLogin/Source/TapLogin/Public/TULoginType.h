@@ -10,11 +10,5 @@ namespace TULoginType {
 		bool RoundCorner = true;
 		TUType::LanguageType LanguageType = TUType::AUTO;
 	};
-
-	class PermissionScope {
-	public:
-		static FString Profile;
-		static FString Friend;
-	};
 	
 };

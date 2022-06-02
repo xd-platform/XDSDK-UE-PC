@@ -43,7 +43,7 @@ void TapUELogin::Login(TFunction<void(const TUAuthResult& Result)> CallBack) {
 		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
-	Login({TULoginType::PermissionScope::Profile}, CallBack);
+	Login({TUType::PermissionScope::Profile}, CallBack);
 }
 
 void TapUELogin::Login(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> CallBack) {

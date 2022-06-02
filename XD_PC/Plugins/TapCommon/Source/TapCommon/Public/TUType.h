@@ -49,15 +49,23 @@ namespace TUType {
 		TapDB DBConfig;
 		
 
-		class TapMoment {
-		public:
-			FString AppID;
-		};
-
-		TapMoment MomentConfig;
+		// class TapMoment {
+		// public:
+		// 	bool Enable;
+		// 	FString AppID_CN;
+		// 	FString AppID_IO;
+		// };
+		//
+		// TapMoment MomentConfig;
 
 	private:
 		static TSharedPtr<Config> Instance;
 		
+	};
+
+	class TAPCOMMON_API PermissionScope {
+	public:
+		static FString Profile;
+		static FString Friend;
 	};
 }

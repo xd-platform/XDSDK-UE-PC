@@ -4,6 +4,9 @@
 
 #include "Modules/ModuleManager.h"
 
+#define TapUECommon_VERSION_NUMBER "30900001"
+#define TapUECommon_VERSION "3.9.0"
+
 class TAPCOMMON_API FTapCommonModule : public IModuleInterface
 {
 public:

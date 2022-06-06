@@ -19,7 +19,8 @@ public class XDGSDK : ModuleRules
 			}
 			);
 		string ConfigFile = Path.Combine(PluginDirectory, "Content/XDGAssets/**");
-		RuntimeDependencies.Add(new RuntimeDependency(ConfigFile));
+		//RuntimeDependencies.Add(new RuntimeDependency(ConfigFile));
+		RuntimeDependencies.Add(ConfigFile);
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {

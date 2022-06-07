@@ -119,8 +119,9 @@ void AXD_PCGameModeBase::OpenCustomerCenter() {
     XDUE::OpenCustomerCenter("serverId", "roleId", "roleName");
 }
 
-void AXD_PCGameModeBase::OpenWebPay(FString ServerId, FString RoleId) {
-    XDUE::OpenWebPay(ServerId, RoleId);
+void AXD_PCGameModeBase::OpenWebPay(FString ServerId, FString RoleId, FString OrderId, FString ProductId,
+    FString ProductName, float PayAmount, FString Ext) {
+    XDUE::OpenWebPay(ServerId, RoleId, OrderId, ProductId, ProductName, PayAmount, Ext);
 }
 
 void AXD_PCGameModeBase::IsPushServiceEnable() {

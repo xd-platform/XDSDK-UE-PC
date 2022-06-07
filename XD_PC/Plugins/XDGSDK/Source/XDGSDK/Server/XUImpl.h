@@ -21,6 +21,9 @@ public:
 	static FString GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
 
 	static FString GetPayUrl(const FString& ServerId, const FString& RoleId);
+
+	static FString GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId, const FString& ProductId,
+	const FString& ProductName, float PayAmount, const FString& Ext);
 	
 	static TSharedPtr<XUImpl>& Get();
 

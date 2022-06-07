@@ -23,7 +23,12 @@ public:
 
 	static void OpenCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
 
-	static void OpenWebPay(const FString& ServerId, const FString& RoleId);
+	// 海外支付
+	static void OpenWebPay(const FString& ServerId, const FString& RoleId); 
+
+	// 国内支付，海外调用该方法，自动会调用海外支付。
+	static void OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& OrderId,
+		const FString& ProductId, const FString& ProductName, float PayAmount, const FString& Ext);
 
 	static void SetPushServiceEnable(bool enable);
 

@@ -231,7 +231,7 @@ void UXUUserCenterWidget::DeleteAccount(const FString& Tip)
 {
 	UTUHUD::ShowToast(Tip);
 	XDUE::Logout();
-	XDUE::ResetPrivacy();
+	XUImpl::ResetPrivacy();
 	RemoveFromParent();
 }
 

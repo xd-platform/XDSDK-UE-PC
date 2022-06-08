@@ -210,7 +210,7 @@ void XDUE::Test() {
 }
 
 void XDUE::ResetPrivacy() {
-	TUDataStorage<FXUStorage>::Remove(FXUStorage::PrivacyKey);
+	XUImpl::ResetPrivacy();
 }
 
 void XDUE::OpenPayHintAlert() {

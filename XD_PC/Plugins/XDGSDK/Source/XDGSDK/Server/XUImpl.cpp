@@ -258,6 +258,10 @@ FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId, const 
 	return UrlStr;
 }
 
+void XUImpl::ResetPrivacy() {
+	TUDataStorage<FXUStorage>::Remove(FXUStorage::PrivacyKey);
+}
+
 TSharedPtr<XUImpl> XUImpl::Instance = nullptr;
 
 TSharedPtr<XUImpl>& XUImpl::Get() {

@@ -24,6 +24,8 @@ public:
 
 	static FString GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId, const FString& ProductId,
 	const FString& ProductName, float PayAmount, const FString& Ext);
+
+	static void ResetPrivacy();
 	
 	static TSharedPtr<XUImpl>& Get();
 

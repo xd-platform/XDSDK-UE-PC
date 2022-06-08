@@ -47,16 +47,16 @@ void UTAULoginWidget::NativeConstruct()
 
 	GetQrCode();
 
-	WidgetIsClosed = false;
-
-	WaitEvent = FPlatformProcess::GetSynchEventFromPool(false);
+	IsRequestingAccessToken = false;
+	IsWaitRequestAccessToken = false;
 }
 
 void UTAULoginWidget::NativeDestruct() {
 	Super::NativeDestruct();
-	if (WaitEvent) {
-		FPlatformProcess::ReturnSynchEventToPool(WaitEvent);
-		WaitEvent = nullptr;
+	InvalidCheckScanTimer();
+	if (WebAuthHelper.IsValid()) {
+		WebAuthHelper->StopProcess();
+		WebAuthHelper = nullptr;
 	}
 }
 
@@ -95,6 +95,68 @@ void UTAULoginWidget::HiddenRefreshButton()
 	QRCoverView->SetVisibility(ESlateVisibility::Hidden);
 }
 
+void UTAULoginWidget::InvalidCheckScanTimer() {
+	if (CheckScanTimer.IsValid()) {
+		GetWorld()->GetTimerManager().ClearTimer(CheckScanTimer);
+	}
+	CheckScanTimer.Invalidate();
+}
+
+void UTAULoginWidget::CheckScanRequest(int64 ExpireAt) {
+	int64 Now = FDateTime::UtcNow().ToUnixTimestamp();
+	if (Now > ExpireAt) {
+		ShowRefreshButton();
+		InvalidCheckScanTimer();
+		return;
+	}
+	if (IsRequestingAccessToken) {
+		IsWaitRequestAccessToken = true;
+	}
+	else {
+		const TWeakObjectPtr<UTAULoginWidget> WeakSelf(this);
+		IsRequestingAccessToken = true;
+		IsWaitRequestAccessToken = false;
+		TULoginNet::RequestAccessToken(QrCodeModel->device_code, [=](TSharedPtr<FTUAccessToken> Model, FTULoginError Error) {
+			if (!WeakSelf.IsValid()) {
+				return;
+			}
+			if (Model.IsValid()) {
+				GetProfile(Model);
+				InvalidCheckScanTimer();
+			} else {
+				if (Error.error == "authorization_pending") {
+
+				}
+				else if (Error.error == "authorization_waiting") {
+					ShowTip(TAULoginLanguage::GetCurrentLang()->QrnNoticeSuccess(),
+							TAULoginLanguage::GetCurrentLang()->QrnNoticeSuccess2());
+				}
+				else if (Error.error == "access_denied") {
+					ShowTip(TAULoginLanguage::GetCurrentLang()->QrNoticeCancel(),
+							TAULoginLanguage::GetCurrentLang()->QrNoticeCancel2());
+					GetQrCode();
+					InvalidCheckScanTimer();
+				}
+				else if (Error.error == "invalid_grant") {
+					ShowRefreshButton();
+					InvalidCheckScanTimer();
+				}
+				else if (Error.error == "slow_down") {
+
+				}
+				else {
+					ShowRefreshButton();
+					InvalidCheckScanTimer();
+				}
+			}
+			IsRequestingAccessToken = false;
+			if (IsWaitRequestAccessToken && CheckScanTimer.IsValid()) {
+				CheckScanRequest(ExpireAt);
+			}
+		});
+	}
+}
+
 void UTAULoginWidget::ResetQrCode(const FString& Content)
 {
 	HiddenRefreshButton();
@@ -115,114 +177,19 @@ void UTAULoginWidget::ShowTip(const FString& Tip, const FString& SubTip)
 		}, 3.f, false);
 }
 
-void UTAULoginWidget::StartCheck()
-{
-	AsyncTask(ENamedThreads::AnyThread,[=]()
-	{
-		AutoCheck();
-	});
-
-}
-
-void UTAULoginWidget::AutoCheck()
-{
-	if (!QrCodeModel.IsValid())
-	{
-		AsyncTask(ENamedThreads::GameThread, [=]()
-		{
-			ShowRefreshButton();
-		});
+void UTAULoginWidget::StartCheck() {
+	if (!QrCodeModel.IsValid()) {
+		ShowRefreshButton();
 		return;
 	}
 	int64 ExpireAt = FDateTime::UtcNow().ToUnixTimestamp() + QrCodeModel->expires_in;
-	// int64 ExpireAt = FDateTime::UtcNow().ToUnixTimestamp() + 10;
-	int64 LastCheckAt = 0;
-	while (true)
-	{
-		FPlatformProcess::Sleep(0.5);
-		if (WidgetIsClosed)
-		{
-			return;
-		}
-		int64 Now = FDateTime::UtcNow().ToUnixTimestamp();
-		if (Now > ExpireAt) {
-			AsyncTask(ENamedThreads::GameThread, [=]()
-			{
-				ShowRefreshButton();
-			});
-			return;
-		}
-		if (Now <= LastCheckAt + QrCodeModel->interval) {continue;}
-		bool Stop = false;
-		
-		TFunction<void()> Event = nullptr;
-		TULoginNet::RequestAccessToken(QrCodeModel->device_code, [=, &Stop, &Event](TSharedPtr<FTUAccessToken> Model, FTULoginError Error)
-		{
-			if (Model.IsValid())
-			{
-				Event = [=]()
-				{
-					GetProfile(Model);
-				};
-				Stop = true;
-			} else
-			{
-				if (Error.error == "authorization_pending")
-				{
-					
-				} else if (Error.error == "authorization_waiting")
-				{
-					Event = [=]()
-					{
-						ShowTip(TAULoginLanguage::GetCurrentLang()->QrnNoticeSuccess(), TAULoginLanguage::GetCurrentLang()->QrnNoticeSuccess2());
-					};
-				} else if (Error.error == "access_denied")
-				{
-					Event = [=]()
-					{
-						ShowTip(TAULoginLanguage::GetCurrentLang()->QrNoticeCancel(), TAULoginLanguage::GetCurrentLang()->QrNoticeCancel2());
-						GetQrCode();
-					};
-					Stop = true;
-				} else if (Error.error == "invalid_grant")
-				{
-					Event = [=]()
-					{
-						ShowRefreshButton();
-					};
-					Stop = true;
-				} else if (Error.error == "slow_down")
-				{
-					
-				} else
-				{
-					Event = [=]()
-					{
-						ShowRefreshButton();
-					};
-					Stop = true;
-				}
-			}
-			if (WaitEvent)
-			{
-			   WaitEvent->Trigger();
-			}
-		});
-		WaitEvent->Wait();
-		
-		if (WidgetIsClosed)
-		{
-			return;
-		}
-		LastCheckAt = FDateTime::UtcNow().ToUnixTimestamp();
-		if (Event){
-			AsyncTask(ENamedThreads::GameThread, Event);
-		}
-		if (Stop) {
-			break;
-		}
-	}
+	InvalidCheckScanTimer();
+	GetWorld()->GetTimerManager().SetTimer(CheckScanTimer, [=]() {
+		CheckScanRequest(ExpireAt);
+	}, QrCodeModel->interval, true);
+	
 }
+
 
 void UTAULoginWidget::GetProfile(const TSharedPtr<FTUAccessToken>& AccessToken)
 {
@@ -250,11 +217,6 @@ void UTAULoginWidget::Close(const TUAuthResult& Result)
 	{
 		Completed(Result);
 	}
-	if (WebAuthHelper.IsValid()) {
-		WebAuthHelper->StopProcess();
-		WebAuthHelper = nullptr;
-	}
-	WidgetIsClosed = true;
 }
 
 void UTAULoginWidget::GetQrCode()

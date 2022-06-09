@@ -1,5 +1,6 @@
 #include "XUUserCenterTipWidget.h"
 
+#include "TUSettings.h"
 #include "XULanguageManager.h"
 #include "XULoginTypeModel.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -33,7 +34,7 @@ void UXUUserCenterTipWidget::Show(enum AlertType AlertType, ::XUType::LoginType 
 			widget->LoginType = LoginType;
 			widget->SureCallBack = SureCallBack;
 			widget->CancelCallBack = CancelCallBack;
-			widget->AddToViewport();
+			widget->AddToViewport(TUSettings::GetUILevel());
 		}
 	}
 }

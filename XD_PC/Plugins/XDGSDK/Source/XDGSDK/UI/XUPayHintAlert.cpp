@@ -1,5 +1,6 @@
 #include "XUPayHintAlert.h"
 
+#include "TUSettings.h"
 #include "XULanguageManager.h"
 #include "XDUE.h"
 
@@ -19,7 +20,7 @@ void UXUPayHintAlert::Show(XUType::CheckPayType CheckType)
 		{
 			auto Widget = CreateWidget<UXUPayHintAlert>(GWorld->GetWorld(), MyWidgetClass);
 			Widget->CheckType = CheckType;
-			Widget->AddToViewport();
+			Widget->AddToViewport(TUSettings::GetUILevel());
 		}
 	}
 }

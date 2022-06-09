@@ -6,6 +6,7 @@
 #include "XUInitConfigModel.h"
 #include "XULanguageManager.h"
 #include "TUHelper.h"
+#include "TUSettings.h"
 #include "XUUser.h"
 
 
@@ -22,7 +23,7 @@ void UXUPrivacyWidget::ShowPrivacy(TFunction<void(bool result)> Completed)
 		{
 			auto widget = CreateWidget<UXUPrivacyWidget>(GWorld->GetWorld(), MyWidgetClass);
 			widget->Completed = Completed;
-			widget->AddToViewport();
+			widget->AddToViewport(TUSettings::GetUILevel());
 		}
 	}
 }

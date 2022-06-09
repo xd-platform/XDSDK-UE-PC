@@ -5,6 +5,7 @@
 #include "Desktop/Server/TULoginNet.h"
 #include "TUHelper.h"
 #include "TUDebuger.h"
+#include "TUSettings.h"
 #include "Desktop/TauWebAuthHelper.h"
 
 
@@ -21,7 +22,7 @@ void UTAULoginWidget::ShowLoginUI(TArray<FString> Permissions, TFunction<void(co
 			auto widget = CreateWidget<UTAULoginWidget>(GWorld->GetWorld(), MyWidgetClass);
 			widget->Permissions = Permissions;
 			widget->Completed = Completed;
-			widget->AddToViewport();
+			widget->AddToViewport(TUSettings::GetUILevel());
 		}
 	}
 }

@@ -86,6 +86,14 @@ void XDUE::LoginByType(XUType::LoginType Type, TFunction<void(const FXUUser& Use
 	});
 }
 
+TSharedPtr<FXUUser> XDUE::GetUserInfo() {
+	return FXUUser::GetLocalModel();
+}
+
+TSharedPtr<FXUTokenModel> XDUE::GetAccessToken() {
+	return FXUTokenModel::GetLocalModel();
+}
+
 bool XDUE::IsInitialized() {
 	return g_InitState == InitStateInited;;
 }

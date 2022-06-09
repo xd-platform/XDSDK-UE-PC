@@ -10,6 +10,10 @@ public:
 
 	static void LoginByType(XUType::LoginType Type, TFunction<void(const FXUUser& User)> SuccessBlock, TFunction<void(const FXUError& Error)> FailBlock);
 
+	// 使用前判断下IsValid，登录成功后才有值
+	static TSharedPtr<FXUUser> GetUserInfo();
+	static TSharedPtr<FXUTokenModel> GetAccessToken();
+
 	static bool IsInitialized();
 
 	static void SetLanguage(XUType::LangType Type);

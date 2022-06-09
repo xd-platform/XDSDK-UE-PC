@@ -18,9 +18,8 @@ void UXUUserCenterWidget::ShowWidget(TFunction<void(XUType::LoginType Type, TSha
 	TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack) {
 	if (UClass* MyWidgetClass = LoadClass<UXUUserCenterWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXUUserCenter.BPXUUserCenter_C'")))
 	{
-		if (GWorld && GWorld->GetWorld())
-		{
-			auto widget = CreateWidget<UXUUserCenterWidget>(GWorld->GetWorld(), MyWidgetClass);
+		if (TUSettings::GetGameInstance().IsValid()) {
+			auto widget = CreateWidget<UXUUserCenterWidget>(TUSettings::GetGameInstance().Get(), MyWidgetClass);
 			widget->AddToViewport(TUSettings::GetUILevel());
 			widget->BindCallBack = BindCallBack;
 			widget->UnbindCallBack = UnbindCallBack;

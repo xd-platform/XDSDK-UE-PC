@@ -1,4 +1,6 @@
 #include "TUHUD.h"
+
+#include "TUSettings.h"
 // WidgetBlueprint'/TapCommon/BPTDUHUD.BPTDUHUD'
 
 UTUHUD* UTUHUD::HUD = nullptr;
@@ -18,11 +20,10 @@ UTUHUD*& UTUHUD::GetCurrentHUD()
 	{
 		if (UClass* MyWidgetClass = LoadClass<UTUHUD>(nullptr, TEXT("WidgetBlueprint'/TapCommon/BPTDUHUD.BPTDUHUD_C'")))
 		{
-			if (GWorld && GWorld->GetWorld())
-			{
-        		HUD = CreateWidget<UTUHUD>(GWorld->GetWorld(), MyWidgetClass);
+			if (TUSettings::GetGameInstance().IsValid()) {
+				HUD = CreateWidget<UTUHUD>(TUSettings::GetGameInstance().Get(), MyWidgetClass);
 				HUD->AddToViewport(MAX_int16);
-        	}
+			}
         }
 		return HUD;
 	}

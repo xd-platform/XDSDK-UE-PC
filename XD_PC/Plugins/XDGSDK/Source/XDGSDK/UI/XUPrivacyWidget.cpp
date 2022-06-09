@@ -19,9 +19,8 @@ void UXUPrivacyWidget::ShowPrivacy(TFunction<void(bool result)> Completed)
 {
 	if (UClass* MyWidgetClass = LoadClass<UXUPrivacyWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPPrivacyUI.BPPrivacyUI_C'")))
 	{
-		if (GWorld && GWorld->GetWorld())
-		{
-			auto widget = CreateWidget<UXUPrivacyWidget>(GWorld->GetWorld(), MyWidgetClass);
+		if (TUSettings::GetGameInstance().IsValid()) {
+			auto widget = CreateWidget<UXUPrivacyWidget>(TUSettings::GetGameInstance().Get(), MyWidgetClass);
 			widget->Completed = Completed;
 			widget->AddToViewport(TUSettings::GetUILevel());
 		}

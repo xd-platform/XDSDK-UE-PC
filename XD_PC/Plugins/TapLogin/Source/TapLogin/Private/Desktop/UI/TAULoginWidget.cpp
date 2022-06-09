@@ -17,9 +17,8 @@ UTAULoginWidget::UTAULoginWidget(const FObjectInitializer& ObjectInitializer) : 
 void UTAULoginWidget::ShowLoginUI(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> Completed) {
 	if (UClass* MyWidgetClass = LoadClass<UTAULoginWidget>(nullptr, TEXT("WidgetBlueprint'/TapLogin/BPTapLoginUI.BPTapLoginUI_C'")))
 	{
-		if (GWorld && GWorld->GetWorld())
-		{
-			auto widget = CreateWidget<UTAULoginWidget>(GWorld->GetWorld(), MyWidgetClass);
+		if (TUSettings::GetGameInstance().IsValid()) {
+			auto widget = CreateWidget<UTAULoginWidget>(TUSettings::GetGameInstance().Get(), MyWidgetClass);
 			widget->Permissions = Permissions;
 			widget->Completed = Completed;
 			widget->AddToViewport(TUSettings::GetUILevel());

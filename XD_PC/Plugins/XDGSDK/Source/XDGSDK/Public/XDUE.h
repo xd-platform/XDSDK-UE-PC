@@ -1,5 +1,6 @@
 #pragma once
 #include "XUError.h"
+#include "XUIpInfoModel.h"
 #include "XUUser.h"
 #include "XUType.h"
 
@@ -13,6 +14,9 @@ public:
 	// 使用前判断下IsValid，登录成功后才有值
 	static TSharedPtr<FXUUser> GetUserInfo();
 	static TSharedPtr<FXUTokenModel> GetAccessToken();
+
+	// 初始化成功后有值。
+	static TSharedPtr<FXUIpInfoModel> GetIPInfo();
 
 	static bool IsInitialized();
 

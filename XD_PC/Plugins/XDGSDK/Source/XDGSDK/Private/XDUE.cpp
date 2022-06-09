@@ -94,6 +94,10 @@ TSharedPtr<FXUTokenModel> XDUE::GetAccessToken() {
 	return FXUTokenModel::GetLocalModel();
 }
 
+TSharedPtr<FXUIpInfoModel> XDUE::GetIPInfo() {
+	return FXUIpInfoModel::GetLocalModel();
+}
+
 bool XDUE::IsInitialized() {
 	return g_InitState == InitStateInited;;
 }

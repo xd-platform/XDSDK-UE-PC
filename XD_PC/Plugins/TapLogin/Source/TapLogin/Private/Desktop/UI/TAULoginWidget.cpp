@@ -58,6 +58,11 @@ void UTAULoginWidget::NativeDestruct() {
 		WebAuthHelper->StopProcess();
 		WebAuthHelper = nullptr;
 	}
+
+	if (TipTimerHandle.IsValid()) {
+		GetWorld()->GetTimerManager().ClearTimer(TipTimerHandle);
+		TipTimerHandle.Invalidate();
+	}
 }
 
 void UTAULoginWidget::OnCloseBtnClick()
@@ -193,8 +198,12 @@ void UTAULoginWidget::StartCheck() {
 
 void UTAULoginWidget::GetProfile(const TSharedPtr<FTUAccessToken>& AccessToken)
 {
+	const TWeakObjectPtr<UTAULoginWidget> WeakSelf(this);
 	TULoginNet::RequestProfile(*AccessToken.Get(), [=](TSharedPtr<FTULoginProfileModel> Model, FTULoginError Error)
 	{
+		if (!WeakSelf.IsValid()) {
+			return;
+		}
 		if (Model.IsValid())
 		{
 			AccessToken->SaveToLocal();
@@ -221,9 +230,13 @@ void UTAULoginWidget::Close(const TUAuthResult& Result)
 
 void UTAULoginWidget::GetQrCode()
 {
+	const TWeakObjectPtr<UTAULoginWidget> WeakSelf(this);
 	TULoginNet::RequestLoginQrCode(Permissions,
 	[=](TSharedPtr<FTUQrCodeModel> Model, FTULoginError Error)
 	{
+		if (!WeakSelf.IsValid()) {
+			return;
+		}
 		if (Model.IsValid())
 		{
 			QrCodeModel = Model;
@@ -252,7 +265,11 @@ void UTAULoginWidget::GetTokenFromWebCode(const FString& WebCode) {
 	Paras->SetStringField("code_verifier", WebAuthHelper->GetCodeVerifier());
 
 	ShowTip(TAULoginLanguage::GetCurrentLang()->WebNoticeLogin(),"");
+	const TWeakObjectPtr<UTAULoginWidget> WeakSelf(this);
 	TULoginNet::RequestAccessTokenFromWeb(Paras, [=](TSharedPtr<FTUAccessToken> Model, FTULoginError Error) {
+		if (!WeakSelf.IsValid()) {
+			return;
+		}
 		if (Model.IsValid()) {
 			GetProfile(Model);
 		} else {

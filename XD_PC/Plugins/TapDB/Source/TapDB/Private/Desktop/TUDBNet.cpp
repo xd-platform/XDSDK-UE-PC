@@ -43,6 +43,7 @@ void TUDBNet::SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras)
 	const TSharedPtr<TUDBNet> request = MakeShareable(new TUDBNet);
 	request->URL = Url;
 	request->Type = Post;
+	request->Form = Json;
 	request->Parameters = Paras;
 	// 查下有没有循环引用
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> Response) {

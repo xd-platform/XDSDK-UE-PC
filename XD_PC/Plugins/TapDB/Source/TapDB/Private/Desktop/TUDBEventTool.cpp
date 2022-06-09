@@ -23,7 +23,19 @@ TSharedPtr<FJsonObject>& TUDBEventTool::GetStaticPresetProperties()
 		TSharedPtr<FJsonObject> Temp = MakeShareable(new FJsonObject);
 		Temp->SetNumberField("width", TUDeviceInfo::GetScreenWidth());
 		Temp->SetNumberField("height", TUDeviceInfo::GetScreenHeight());
-		Temp->SetStringField("os", TUDeviceInfo::GetPlatform());
+		FString OS = "";
+#if PLATFORM_IOS
+		OS = "iOS";
+#elif PLATFORM_ANDROID
+		OS = "Android";
+#elif PLATFORM_MAC
+		OS = "Mac";
+#elif PLATFORM_WINDOWS
+		OS = "Windows";
+#elif PLATFORM_LINUX
+		OS = "Linux";
+#endif
+		Temp->SetStringField("os", OS);
 		Temp->SetStringField("os_version", TUDeviceInfo::GetOSVersion());
 		Temp->SetStringField("install_uuid", TUDeviceInfo::GetInstallId());
 		Temp->SetStringField("persist_uuid", TUDeviceInfo::GetLoginId());

@@ -1,5 +1,6 @@
 #include "XUPayHintAlert.h"
 
+#include "TUSettings.h"
 #include "XULanguageManager.h"
 #include "XDUE.h"
 
@@ -15,11 +16,10 @@ void UXUPayHintAlert::Show(XUType::CheckPayType CheckType)
 	}
 	if (UClass* MyWidgetClass = LoadClass<UXUPayHintAlert>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXUPayHintAlert.BPXUPayHintAlert_C'")))
 	{
-		if (GWorld && GWorld->GetWorld())
-		{
-			auto Widget = CreateWidget<UXUPayHintAlert>(GWorld->GetWorld(), MyWidgetClass);
+		if (TUSettings::GetGameInstance().IsValid()) {
+			auto Widget = CreateWidget<UXUPayHintAlert>(TUSettings::GetGameInstance().Get(), MyWidgetClass);
 			Widget->CheckType = CheckType;
-			Widget->AddToViewport();
+			Widget->AddToViewport(TUSettings::GetUILevel());
 		}
 	}
 }

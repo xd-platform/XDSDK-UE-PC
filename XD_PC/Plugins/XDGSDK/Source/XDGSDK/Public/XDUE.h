@@ -1,5 +1,6 @@
 #pragma once
 #include "XUError.h"
+#include "XUIpInfoModel.h"
 #include "XUUser.h"
 #include "XUType.h"
 
@@ -9,6 +10,13 @@ public:
 	static void InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack);
 
 	static void LoginByType(XUType::LoginType Type, TFunction<void(const FXUUser& User)> SuccessBlock, TFunction<void(const FXUError& Error)> FailBlock);
+
+	// 使用前判断下IsValid，登录成功后才有值
+	static TSharedPtr<FXUUser> GetUserInfo();
+	static TSharedPtr<FXUTokenModel> GetAccessToken();
+
+	// 初始化成功后有值。
+	static TSharedPtr<FXUIpInfoModel> GetIPInfo();
 
 	static bool IsInitialized();
 
@@ -23,7 +31,12 @@ public:
 
 	static void OpenCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
 
-	static void OpenWebPay(const FString& ServerId, const FString& RoleId);
+	// 海外支付
+	static void OpenWebPay(const FString& ServerId, const FString& RoleId); 
+
+	// 国内支付，海外调用该方法，自动会调用海外支付。
+	static void OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& OrderId,
+		const FString& ProductId, const FString& ProductName, float PayAmount, const FString& Ext);
 
 	static void SetPushServiceEnable(bool enable);
 

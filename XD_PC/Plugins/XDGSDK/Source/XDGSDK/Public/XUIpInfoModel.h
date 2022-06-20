@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "XUStorage.h"
 #include "XUIpInfoModel.generated.h"
 
 USTRUCT()
@@ -29,13 +28,7 @@ struct FXUIpInfoModel
 	UPROPERTY()
 	FString timeZone;
 
-	void SaveToLocal()
-	{
-		TUDataStorage<FXUStorage>::SaveStruct(FXUStorage::IpInfo, *this, true);
-	}
+	void SaveToLocal();
 
-	static TSharedPtr<FXUIpInfoModel> GetLocalModel()
-	{
-		return  TUDataStorage<FXUStorage>::LoadStruct<FXUIpInfoModel>(FXUStorage::IpInfo);
-	}
+	static TSharedPtr<FXUIpInfoModel> GetLocalModel();
 };

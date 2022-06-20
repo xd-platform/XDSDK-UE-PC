@@ -62,14 +62,16 @@ TSharedPtr<FJsonObject> XUNet::CommonParameters()
 	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), TUDeviceInfo::GetScreenWidth(), TUDeviceInfo::GetScreenHeight()));
 	
 	query->SetStringField("time", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
-
-	// query->SetStringField("appVer", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
 	
 	query->SetStringField("appVer", XUImpl::Get()->Config.GameVersion);
 	query->SetStringField("appVerCode", XUImpl::Get()->Config.GameVersion);
 	
 	auto cfgMd = FXUInitConfigModel::GetLocalModel();
 	query->SetStringField("appId", cfgMd == nullptr ? "" : cfgMd->configs.appId);
+
+	if (XUImpl::Get()->Config.RegionType == XUType::CN) {
+		query->SetStringField("region", "CN");
+	}
 
 	
 	// 		   {"mem", SystemInfo.systemMemorySize / 1024 + "GB"},
@@ -289,7 +291,7 @@ void XUNet::RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> c
 {
 	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = Url;
-	// request->isPure = true;
+	request->Headers.Add("Accept", "text/html");
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		callback(response->contentString);
 	});

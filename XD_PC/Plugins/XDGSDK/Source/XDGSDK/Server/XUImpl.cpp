@@ -197,7 +197,8 @@ FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId
 	FString UrlStr = cfgMd->configs.reportUrl;
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
-	UrlStr = FString::Printf(TEXT("%s://%s?%s"), *Parse.GetScheme(), *Parse.GetHost(), *QueryStr);
+	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
+	UrlStr = UrlStr + "?" + QueryStr;
 	return UrlStr;
 }
 
@@ -221,8 +222,44 @@ FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
 	FString UrlStr = cfgMd->configs.webPayUrl;
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
-	UrlStr = FString::Printf(TEXT("%s://%s?%s"), *Parse.GetScheme(), *Parse.GetHost(), *QueryStr);
+	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
+	UrlStr = UrlStr + "?" + QueryStr;
 	return UrlStr;
+}
+
+FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId,
+	const FString& ProductId, const FString& ProductName, float PayAmount, const FString& Ext) {
+	auto userMd = FXUUser::GetLocalModel();
+	auto cfgMd = FXUInitConfigModel::GetLocalModel();
+	if (!userMd.IsValid() || !cfgMd.IsValid()) {
+		return "";
+	}
+	
+	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
+
+	query->SetStringField("serverId", ServerId);
+	query->SetStringField("roleId", RoleId);
+	query->SetStringField("orderId", OrderId);
+	query->SetStringField("productName", ProductName);
+	query->SetStringField("payAmount", FString::Printf(TEXT("%f"), PayAmount));
+	query->SetStringField("productSkuCode", ProductId);
+	query->SetStringField("extras", Ext);
+	query->SetStringField("region", cfgMd->configs.region);
+	query->SetStringField("appId", cfgMd->configs.appId);
+	query->SetStringField("lang", XULanguageManager::GetLanguageKey());
+	
+
+	FString QueryStr = TUHelper::CombinParameters(query);
+	FString UrlStr = cfgMd->configs.webPayUrl;
+	auto Parse = TUCommon::FURL_RFC3986();
+	Parse.Parse(UrlStr);
+	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
+	UrlStr = UrlStr + "?" + QueryStr;
+	return UrlStr;
+}
+
+void XUImpl::ResetPrivacy() {
+	TUDataStorage<FXUStorage>::Remove(FXUStorage::PrivacyKey);
 }
 
 TSharedPtr<XUImpl> XUImpl::Instance = nullptr;

@@ -119,8 +119,9 @@ void AXD_PCGameModeBase::OpenCustomerCenter() {
     XDUE::OpenCustomerCenter("serverId", "roleId", "roleName");
 }
 
-void AXD_PCGameModeBase::OpenWebPay(FString ServerId, FString RoleId) {
-    XDUE::OpenWebPay(ServerId, RoleId);
+void AXD_PCGameModeBase::OpenWebPay(FString ServerId, FString RoleId, FString OrderId, FString ProductId,
+    FString ProductName, float PayAmount, FString Ext) {
+    XDUE::OpenWebPay(ServerId, RoleId, OrderId, ProductId, ProductName, PayAmount, Ext);
 }
 
 void AXD_PCGameModeBase::IsPushServiceEnable() {
@@ -136,9 +137,9 @@ void AXD_PCGameModeBase::OpenWebTopic(FString AppId) {
     TUMomentType::Config Config;
     Config.RegionType = TUType::Config::Get()->RegionType;
     if (Config.RegionType == TUType::CN) {
-        Config.AppId_CN = AppId;
+        Config.AppID = AppId;
     } else {
-        Config.AppId_IO = AppId;
+        Config.AppID = AppId;
     }
     TapUEMoment::Init(Config);
     TapUEMoment::OpenWebTopic();

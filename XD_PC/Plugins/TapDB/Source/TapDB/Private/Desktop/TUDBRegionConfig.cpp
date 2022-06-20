@@ -6,7 +6,7 @@ class TUDBRegionConfigCN: public TUDBRegionConfig
 {
 public:
 	virtual FString GetHost() {
-		return "https://e.tapdb.net/";
+		return "https://e.tapdb.net/v2";
 	}
 };
 
@@ -14,7 +14,7 @@ class TUDBRegionConfigIO: public TUDBRegionConfig
 {
 public:
 	virtual FString GetHost() {
-		return "https://e.tapdb.ap-sg.tapapis.com/";
+		return "https://e.tapdb.ap-sg.tapapis.com/v2";
 	}
 };
 
@@ -23,14 +23,6 @@ TSharedPtr<TUDBRegionConfig> TUDBRegionConfig::Instance = nullptr;
 
 FString TUDBRegionConfig::GetEventUrl() {
 	return GetHost() / "event";
-}
-
-FString TUDBRegionConfig::GetCustomUrl() {
-	return GetHost() / "custom";
-}
-
-FString TUDBRegionConfig::GetIdentifyUrl() {
-	return GetHost() / "identify";
 }
 
 TSharedPtr<TUDBRegionConfig>& TUDBRegionConfig::Get() {

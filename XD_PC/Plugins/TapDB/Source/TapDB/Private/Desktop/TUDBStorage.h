@@ -8,7 +8,8 @@ struct FTUDBStorage
 {
 	GENERATED_BODY()
 	
-	static FString ClientIdentifyKey;
+	// static FString LoginUserIDKey;
+	// static FString LoginOpenIDKey;
 	static FString TapDBPlayTime;
 	
 };

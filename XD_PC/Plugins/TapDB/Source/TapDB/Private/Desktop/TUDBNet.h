@@ -10,22 +10,13 @@ class TUDBNet: public TUHttpRequest
 	
 public:
 
-	static void SendEvent(TUDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras);
-
-	// 普通事件
-	static void SendNormalEvent(TSharedPtr<FJsonObject> Paras);
-
-	// 自定义事件
-	static void SendCustomEvent(TSharedPtr<FJsonObject> Paras);
-
-	// 设备/用户 登录事件
-	static void SendIdentifyEvent(TSharedPtr<FJsonObject> Paras);
+	static void SendEvent(TSharedPtr<FJsonObject> Paras, TFunction<void()> SuccessBlock = nullptr);
 
 	static int CacheCount;
 
 private:
 
-	static void SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras);
+	static void SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras, TFunction<void()> SuccessBlock);
 
 	static void PerformRequest(const TSharedPtr<TUDBNet>& Request);
 

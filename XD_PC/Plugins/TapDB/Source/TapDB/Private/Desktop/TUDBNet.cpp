@@ -8,46 +8,24 @@ TQueue<TSharedPtr<TUDBNet>> TUDBNet::RequestQueue;
 FTimerHandle TUDBNet::RetryTimerHandle = FTimerHandle();
 int TUDBNet::CacheCount = 0;
 
-
-void TUDBNet::SendEvent(TUDBEnum::EventType EventType, TSharedPtr<FJsonObject> Paras)
-{
-	if (EventType == TUDBEnum::Normal)
-	{
-		SendNormalEvent(Paras);
-	} else if (EventType == TUDBEnum::Custom)
-	{
-		SendCustomEvent(Paras);
-	} else if (EventType == TUDBEnum::Identify)
-	{
-		SendIdentifyEvent(Paras);
-	}
+void TUDBNet::SendEvent(TSharedPtr<FJsonObject> Paras, TFunction<void()> SuccessBlock) {
+	SendEvent(TUDBRegionConfig::Get()->GetEventUrl(), Paras, SuccessBlock);
 }
 
-void TUDBNet::SendNormalEvent(TSharedPtr<FJsonObject> Paras)
-{
-	SendEvent(TUDBRegionConfig::Get()->GetEventUrl(), Paras);
-}
-
-void TUDBNet::SendCustomEvent(TSharedPtr<FJsonObject> Paras)
-{
-	SendEvent(TUDBRegionConfig::Get()->GetCustomUrl(), Paras);
-}
-
-void TUDBNet::SendIdentifyEvent(TSharedPtr<FJsonObject> Paras)
-{
-	SendEvent(TUDBRegionConfig::Get()->GetIdentifyUrl(), Paras);
-}
-
-void TUDBNet::SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras)
+void TUDBNet::SendEvent(const FString& Url, TSharedPtr<FJsonObject> Paras, TFunction<void()> SuccessBlock)
 {
 	const TSharedPtr<TUDBNet> request = MakeShareable(new TUDBNet);
 	request->URL = Url;
 	request->Type = Post;
+	request->Form = Json;
 	request->Parameters = Paras;
 	// 查下有没有循环引用
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> Response) {
 		if (Response->state == TUHttpResponse::success)
 		{
+			if (SuccessBlock) {
+				SuccessBlock();
+			}
 			// 如果请求成功，那么去掉队列的第一个，执行下一个请求
 			if (!RequestQueue.IsEmpty() && request == *RequestQueue.Peek())
 			{

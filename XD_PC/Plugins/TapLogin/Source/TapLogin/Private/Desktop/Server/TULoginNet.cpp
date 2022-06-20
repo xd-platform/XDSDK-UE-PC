@@ -164,6 +164,7 @@ FString TULoginNet::GetMacToken()
 	Parse.Parse(this->GetFinalUrl());
 	FString timeStr = FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp());
 	FString nonce = TUHelper::GetRandomStr(5);
+	// TUDebuger::DisplayLog(FString::Printf(TEXT("random: %s"), *nonce));
 	FString md = this->Type == Get ? "GET" : "POST";
 
 	FString pathAndQuery = Parse.GetPath();

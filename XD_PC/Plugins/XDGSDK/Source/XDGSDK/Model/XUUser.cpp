@@ -3,6 +3,13 @@
 
 TSharedPtr<FXUUser> FXUUser::CurrentModel = nullptr;
 
+FXUUser::FXUUser() {
+	auto TokenPtr = FXUTokenModel::GetLocalModel();
+	if (TokenPtr.IsValid()) {
+		token = *TokenPtr.Get();
+	}
+}
+
 void FXUUser::SaveToLocal()
 {
 	if (this != CurrentModel.Get())

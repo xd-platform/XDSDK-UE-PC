@@ -1,5 +1,6 @@
 #include "XUUserCenterTipWidget.h"
 
+#include "TUSettings.h"
 #include "XULanguageManager.h"
 #include "XULoginTypeModel.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -26,14 +27,13 @@ void UXUUserCenterTipWidget::Show(enum AlertType AlertType, ::XUType::LoginType 
 {
 	if (UClass* MyWidgetClass = LoadClass<UXUUserCenterTipWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXUUserCenterTIp.BPXUUserCenterTIp_C'")))
 	{
-		if (GWorld && GWorld->GetWorld())
-		{
-			auto widget = CreateWidget<UXUUserCenterTipWidget>(GWorld->GetWorld(), MyWidgetClass);
+		if (TUSettings::GetGameInstance().IsValid()) {
+			auto widget = CreateWidget<UXUUserCenterTipWidget>(TUSettings::GetGameInstance().Get(), MyWidgetClass);
 			widget->AlertType = AlertType;
 			widget->LoginType = LoginType;
 			widget->SureCallBack = SureCallBack;
 			widget->CancelCallBack = CancelCallBack;
-			widget->AddToViewport();
+			widget->AddToViewport(TUSettings::GetUILevel());
 		}
 	}
 }

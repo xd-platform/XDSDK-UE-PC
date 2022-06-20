@@ -86,6 +86,18 @@ void XDUE::LoginByType(XUType::LoginType Type, TFunction<void(const FXUUser& Use
 	});
 }
 
+TSharedPtr<FXUUser> XDUE::GetUserInfo() {
+	return FXUUser::GetLocalModel();
+}
+
+TSharedPtr<FXUTokenModel> XDUE::GetAccessToken() {
+	return FXUTokenModel::GetLocalModel();
+}
+
+TSharedPtr<FXUIpInfoModel> XDUE::GetIPInfo() {
+	return FXUIpInfoModel::GetLocalModel();
+}
+
 bool XDUE::IsInitialized() {
 	return g_InitState == InitStateInited;;
 }
@@ -179,6 +191,22 @@ void XDUE::OpenWebPay(const FString& ServerId, const FString& RoleId) {
 	}
 }
 
+void XDUE::OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& OrderId, const FString& ProductId,
+	const FString& ProductName, float PayAmount, const FString& Ext) {
+	if (XUImpl::Get()->Config.RegionType == XUType::IO) {
+		OpenWebPay(ServerId, RoleId);
+		return;
+	}
+	FString UrlStr = XUImpl::GetPayUrl(ServerId, RoleId, OrderId, ProductId, ProductName, PayAmount, Ext);
+
+	if (UrlStr.IsEmpty()) {
+		TUDebuger::ErrorLog("please login first");
+	} else {
+		TUDebuger::DisplayLog(FString::Printf(TEXT("web pay url: %s"), *UrlStr));
+		FPlatformProcess::LaunchURL(*UrlStr, nullptr, nullptr);
+	}
+}
+
 void XDUE::SetPushServiceEnable(bool enable) {
 	FXUUser::SetPushServiceEnable(enable);
 }
@@ -194,7 +222,7 @@ void XDUE::Test() {
 }
 
 void XDUE::ResetPrivacy() {
-	TUDataStorage<FXUStorage>::Remove(FXUStorage::PrivacyKey);
+	XUImpl::ResetPrivacy();
 }
 
 void XDUE::OpenPayHintAlert() {

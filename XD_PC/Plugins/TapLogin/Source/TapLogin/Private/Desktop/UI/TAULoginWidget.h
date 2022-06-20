@@ -99,18 +99,21 @@ private:
 
 	FTimerHandle TipTimerHandle;
 
-	TSharedPtr<TauWebAuthHelper> WebAuthHelper;
-	
-	FEvent* WaitEvent;
+	FTimerHandle CheckScanTimer;
 
-	bool WidgetIsClosed = true;
+	bool IsRequestingAccessToken;
+	bool IsWaitRequestAccessToken;
+
+	TSharedPtr<TauWebAuthHelper> WebAuthHelper;
 
 	void ShowRefreshButton();
 	void HiddenRefreshButton();
+	void InvalidCheckScanTimer();
+	void CheckScanRequest(int64 ExpireAt);
+	
 	void ResetQrCode(const FString& Content);
 	void ShowTip(const FString& Tip, const FString& SubTip);
 	void StartCheck();
-	void AutoCheck();
 	void GetProfile(const TSharedPtr<FTUAccessToken>& AccessToken);
 	void Close(const TUAuthResult& Result);
 

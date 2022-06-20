@@ -22,10 +22,15 @@ struct FXUUser
 	FString nickName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int loginType;
+	int loginType = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TArray<FString> loginList; // boundAccounts
+
+	UPROPERTY(EditDefaultsOnly)
+	FXUTokenModel token;
+
+	FXUUser();
 
 	void SaveToLocal();
 

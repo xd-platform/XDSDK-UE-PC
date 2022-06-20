@@ -1,5 +1,6 @@
 #include "XUUserCenterItemWidget.h"
 
+#include "TUSettings.h"
 #include "XUInitConfigModel.h"
 #include "XULanguageManager.h"
 
@@ -12,9 +13,8 @@ UXUUserCenterItemWidget* UXUUserCenterItemWidget::GenerateItem()
 	UXUUserCenterItemWidget* widget = nullptr;
 	if (UClass* MyWidgetClass = LoadClass<UXUUserCenterItemWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPXUUserCenterItem.BPXUUserCenterItem_C'")))
 	{
-		if (GWorld && GWorld->GetWorld())
-		{
-			widget = CreateWidget<UXUUserCenterItemWidget>(GWorld->GetWorld(), MyWidgetClass);
+		if (TUSettings::GetGameInstance().IsValid()) {
+			widget = CreateWidget<UXUUserCenterItemWidget>(TUSettings::GetGameInstance().Get(), MyWidgetClass);
 		}
 	}
 	return widget;

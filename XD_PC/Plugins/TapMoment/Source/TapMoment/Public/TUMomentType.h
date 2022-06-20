@@ -7,8 +7,7 @@ namespace TUMomentType {
 	public:
 		FString ClientID;
 		TUType::RegionType RegionType;
-		FString AppId_CN;  // PC 国内论坛ID
-		FString AppId_IO;  // PC 国外论坛ID
+		FString AppID;  // PC 如果国内国外论坛ID不一样，那么在RegionType不同的时候传不同的值
 	};
 
 	enum Orientation {

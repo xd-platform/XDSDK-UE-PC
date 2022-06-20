@@ -14,10 +14,10 @@ void TapUELogin::Init(TULoginType::Config Config) {
 }
 
 TSharedPtr<FTULoginProfileModel> TapUELogin::GetProfile() {
-	if (!IsInitialized) {
-		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
-		return nullptr;
-	}
+	// if (!IsInitialized) {
+	// 	TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
+	// 	return nullptr;
+	// }
 	return TULoginImpl::Get()->GetProfile();
 }
 
@@ -31,10 +31,10 @@ void TapUELogin::FetchProfile(
 }
 
 TSharedPtr<FTUAccessToken> TapUELogin::GetAccessToken() {
-	if (!IsInitialized) {
-		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
-		return nullptr;
-	}
+	// if (!IsInitialized) {
+	// 	TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
+	// 	return nullptr;
+	// }
 	return TULoginImpl::Get()->GetAccessToken();
 }
 
@@ -55,10 +55,10 @@ void TapUELogin::Login(TArray<FString> Permissions, TFunction<void(const TUAuthR
 }
 
 void TapUELogin::Logout() {
-	if (!IsInitialized) {
-		TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
-		return ;
-	}
+	// if (!IsInitialized) {
+	// 	TUDebuger::WarningShow(FString::Printf(TEXT("Please Init First Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
+	// 	return ;
+	// }
 	TULoginImpl::Get()->Logout();
 }
 

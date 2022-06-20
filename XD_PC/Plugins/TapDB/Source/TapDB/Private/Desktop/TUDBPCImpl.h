@@ -25,20 +25,15 @@ public:
 	virtual void UserAdd(TSharedPtr<FJsonObject> Properties) override;
 
 private:
-	static FString TAPDB_VERSION;
 
 	static FString First_login_type;
 	static FString First_open_id;
 	
-	TSharedPtr<TUDBEventMobile> TapDBEventMobile;
-	TSharedPtr<TUDBEventUser> TapDBEventUser;
+	TSharedPtr<TUDBEvent> TapDBEventPtr;
 
-	static TSharedPtr<FJsonObject> CustomOperationProperties(const TSharedPtr<FJsonObject>& Properties);
-
-	bool CheckIdentify();
-	void SendPlayTime(int Interval);
-
-
+	void SendPlayTime(int Interval, TFunction<void()> SuccessBlock = nullptr);
+	void SendDeviceLogin() const;
+	
 	static bool CheckStringParam(const FString& Para, const FString& ParaName);
 
 	TSharedPtr<FDateTime> StartTime;
@@ -46,5 +41,5 @@ private:
 
 	void RegisterCoreDelegate();
 
-	void StartOperation(const TSharedPtr<FJsonObject>& Properties);
 };
+

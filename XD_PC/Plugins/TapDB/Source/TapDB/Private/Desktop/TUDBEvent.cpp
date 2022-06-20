@@ -1,281 +1,253 @@
 #include "TUDBEvent.h"
 
+#include "TapDB.h"
 #include "TUDeviceInfo.h"
-#include "TUDBEventTool.h"
+#include "TUDBImpl.h"
 #include "TUHelper.h"
 #include "TUDebuger.h"
 #include "TUDBNet.h"
 #include "TUDBStorage.h"
 
 
-using namespace TUDBEventKey;
+FString const TUDBEvent::Key::IPV6					= "ip_v6";
+FString const TUDBEvent::Key::UserID				= "user_id";
+FString const TUDBEvent::Key::DeviceID				= "device_id";
+FString const TUDBEvent::Key::OpenID				= "open_id";
+FString const TUDBEvent::Key::Name					= "name";
+FString const TUDBEvent::Key::Type					= "type";
+FString const TUDBEvent::Key::ClientID				= "client_id";
+FString const TUDBEvent::Key::Properties			= "properties";
+FString const TUDBEvent::Key::OS					= "os";
+FString const TUDBEvent::Key::DeviceModel			= "device_model";
+FString const TUDBEvent::Key::DeviceID1				= "device_id1";
+FString const TUDBEvent::Key::DeviceID2				= "device_id2";
+FString const TUDBEvent::Key::DeviceID3				= "device_id3";
+FString const TUDBEvent::Key::DeviceID4				= "device_id4";
+FString const TUDBEvent::Key::InstallID				= "install_uuid";
+FString const TUDBEvent::Key::PersistID				= "persist_uuid";
+FString const TUDBEvent::Key::Channel				= "channel";
+FString const TUDBEvent::Key::Width					= "width";
+FString const TUDBEvent::Key::Height				= "height";
+FString const TUDBEvent::Key::OSVersion				= "os_version";
+FString const TUDBEvent::Key::Provider				= "provider";
+FString const TUDBEvent::Key::Network				= "network";
+FString const TUDBEvent::Key::AppVersion			= "app_version";
+FString const TUDBEvent::Key::SDKVersion			= "sdk_version";
+FString const TUDBEvent::Key::LoginType				= "login_type";
+FString const TUDBEvent::Key::OrderID				= "order_id";
+FString const TUDBEvent::Key::Product				= "product";
+FString const TUDBEvent::Key::Amount				= "amount";
+FString const TUDBEvent::Key::VirtualCurrencyAmount = "virtual_currency_amount";
+FString const TUDBEvent::Key::CurrencyType			= "currency_type";
+FString const TUDBEvent::Key::Payment				= "payment";
+FString const TUDBEvent::Key::Duration				= "duration";
 
 
-void TUDBEvent::TrackEvent(const FString& Name, TSharedPtr<FJsonObject> CustomProperties,
-                            TSharedPtr<FJsonObject> Properties, TUDBEnum::EventType EventType, TSharedPtr<FJsonObject> SystemParams)
-{
-	if (ClientId.IsEmpty())
-	{
-		TUDebuger::ErrorLog("Haven't set Appid/Clientid yet, please call onStart first.");
-		return;
+// FString TUDBEventUser::GetOpenId()
+// {
+// 	return TUHelper::InvokeFunction<FString>("TULoginReflection", "GetOpenID");
+// }
+
+
+TUDBEvent::TUDBEvent(const FString& _ClientID) {
+	ClientID = _ClientID;
+	if (ClientID.IsEmpty()) {
+		TUDebuger::ErrorLog("TapDB ClientID is Empty");
 	}
-	if (_Identify.IsEmpty())
-	{
-		TUDebuger::ErrorLog("Haven't set identify yet, please call autoIdentify or identify first.");
-		return;
+	DeviceID = TUDeviceInfo::GetLoginId();
+	if (DeviceID.IsEmpty()) {
+		TUDebuger::ErrorLog("TapDB DeviceID is Empty");
 	}
-	TSharedPtr<FJsonObject> DataDic =  GetSystemParams();
-	DataDic->SetStringField(TYPE_KEY, "track");
-	DataDic->SetStringField(NAME_KEY, Name);
-	TUHelper::JsonObjectAppend(DataDic, SystemParams);
-	TUHelper::JsonObjectAppend(DataDic, SysProperties);
-
-	TSharedPtr<FJsonObject> MutableProperties = GetSystemParams();
-	// if (Name == "device_login" || Name == "user_login") {
-	//
+	GenerateSysProperties();
+	GenerateCommonProperties();
+	// UserID = TUDataStorage<FTUDBStorage>::LoadString(FString::Printf(TEXT("%s_%s"), *FTUDBStorage::LoginUserIDKey, *ClientID));
+	// if (!UserID.IsEmpty()) {
+	// 	SysProperties->SetStringField(Key::UserID, UserID);
 	// }
-	if (Name == "device_login") {
-		MutableProperties->SetNumberField("boot_timestamp", FDateTime::UtcNow().ToUnixTimestamp());
-	}
-	TUHelper::JsonObjectAppend(MutableProperties, Properties);
-
-	TUHelper::JsonObjectAppend(DataDic, CombinedProperties(MutableProperties, CustomProperties));
-
-	DataDic->SetStringField(OPENID_KEY, GetOpenId());
-	
-	TUDBNet::SendEvent(EventType, DataDic);
+	// FString OpenID = TUDataStorage<FTUDBStorage>::LoadString(FString::Printf(TEXT("%s_%s"), *FTUDBStorage::LoginOpenIDKey, *ClientID));
+	// if (!OpenID.IsEmpty()) {
+	// 	SysProperties->SetStringField(Key::OpenID, OpenID);
+	// }
 }
 
-void TUDBEvent::InitialEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
-	TUDBEnum::EventType EventType)
-{
-	auto OperationParams = GetSystemParams();
-	TUHelper::JsonObjectAppend(OperationParams, Params);
-	OperationParams->SetStringField(TYPE_KEY, "initialise");
-	OperationParams->SetObjectField(PROPERTIES_KEY, Properties);
-	TUDBNet::SendEvent(EventType, OperationParams);
-}
-
-void TUDBEvent::AddEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
-	TUDBEnum::EventType EventType)
-{
-	auto OperationParams = GetSystemParams();
-	TUHelper::JsonObjectAppend(OperationParams, Params);
-	OperationParams->SetStringField(TYPE_KEY, "add");
-	OperationParams->SetObjectField(PROPERTIES_KEY, Properties);
-	TUDBNet::SendEvent(EventType, OperationParams);
-}
-
-void TUDBEvent::UpdateEvent(TSharedPtr<FJsonObject> Params, TSharedPtr<FJsonObject> Properties,
-	TUDBEnum::EventType EventType)
-{
-	auto OperationParams = GetSystemParams();
-	TUHelper::JsonObjectAppend(OperationParams, Params);
-	OperationParams->SetStringField(TYPE_KEY, "update");
-	OperationParams->SetObjectField(PROPERTIES_KEY, Properties);
-	TUDBNet::SendEvent(EventType, OperationParams);
-}
-
-void TUDBEvent::SetClientId(const FString& _ClientId)
-{
-	if (_ClientId.Len() <= 0 || _ClientId.Len() > 256)
-	{
-		TUDebuger::ErrorLog("clientId is illegal, length should > 0 and <= 256");
+void TUDBEvent::SetUser(const FString& _UserID) {
+	if (_UserID.IsEmpty()) {
+		TUDebuger::ErrorLog(FString::Printf(TEXT("%s Error"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
-	this->ClientId = _ClientId;
-	GenerateKey(_ClientId);
+	UserID = _UserID;
+	SysProperties->SetStringField(Key::UserID, _UserID);
+	// TUDataStorage<FTUDBStorage>::SaveString(FString::Printf(TEXT("%s_%s"), *FTUDBStorage::LoginUserIDKey, *ClientID), _UserID);
 }
 
-FString TUDBEvent::GetOpenId()
-{
-	return "";
-}
-
-bool TUDBEvent::Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties)
-{
-	if (identify.IsEmpty())
-	{
-		TUDebuger::ErrorLog("invalid UserID!!");
-		return false;
-	}
-	this->_Identify = identify;
-	SaveIdentify(identify);
-
-	if (!CommonProperties.IsValid())
-	{
-		CommonProperties = MakeShareable(new FJsonObject);
-	}
-	CommonProperties->SetStringField(LOGIN_TYPE_KEY, loginType);
-    
-	return true;
-}
-
-void TUDBEvent::SaveIdentify(const FString& identify)
-{
-	FString dataKey = Key;
-	if (!ClientId.IsEmpty())
-	{
-		dataKey = FTUDBStorage::ClientIdentifyKey;
-	}
-	TUDataStorage<FTUDBStorage>::SaveString(dataKey, identify);
-}
-
-FString TUDBEvent::GetSavedIdentify()
-{
-	FString dataKey = Key;
-	if (!ClientId.IsEmpty())
-	{
-		dataKey = FTUDBStorage::ClientIdentifyKey;
-	}
-	return TUDataStorage<FTUDBStorage>::LoadString(dataKey);
-}
-
-bool TUDBEvent::HasSavedIdentify()
-{
-	return GetSavedIdentify().Len() > 0;
-}
-
-void TUDBEvent::ClearIdentify()
-{
-	_Identify = FString();
-	TUDataStorage<FTUDBStorage>::Remove(Key);
-}
-
-FString TUDBEvent::GetIdentify()
-{
-	return _Identify;
-}
-
-void TUDBEvent::AutoIdentifyWithProperties(const TSharedPtr<FJsonObject>& properties)
-{
-	if (!_Identify.IsEmpty())
-	{
-		TUDebuger::DisplayLog("Already exists identify");
+void TUDBEvent::SetTapTapID(const FString& TapTapID) {
+	if (TapTapID.IsEmpty()) {
+		TUDebuger::ErrorLog(FString::Printf(TEXT("%s Error"), ANSI_TO_TCHAR(__FUNCTION__)));
 		return;
 	}
-	auto identy = GetSavedIdentify();
-	if (identy.IsEmpty())
-	{
-		Identify(FGuid::NewGuid().ToString(), FString(), properties);
-	} else
-	{
-		Identify(identy, FString(), properties);
+	SysProperties->SetStringField(Key::OpenID, TapTapID);
+	// TUDataStorage<FTUDBStorage>::SaveString(FString::Printf(TEXT("%s_%s"), *FTUDBStorage::LoginOpenIDKey, *ClientID), TapTapID);
+}
+
+void TUDBEvent::ClearUser() {
+	UserID = "";
+	SysProperties->RemoveField(Key::UserID);
+	SysProperties->RemoveField(Key::OpenID);
+	// TUDataStorage<FTUDBStorage>::Remove(FString::Printf(TEXT("%s_%s"), *FTUDBStorage::LoginUserIDKey, *ClientID));
+	// TUDataStorage<FTUDBStorage>::Remove(FString::Printf(TEXT("%s_%s"), *FTUDBStorage::LoginOpenIDKey, *ClientID));
+}
+
+void TUDBEvent::TrackEvent(const FString& EventName, TSharedPtr<FJsonObject> Properties, TFunction<void()> SuccessBlock) {
+	TSharedPtr<FJsonObject> AllProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(AllProperties, SysProperties);
+	AllProperties->SetStringField(Key::Type, "track");
+	AllProperties->SetStringField(Key::Name, EventName);
+
+	TSharedPtr<FJsonObject> SubProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(SubProperties, CommonProperties);
+	TUHelper::JsonObjectAppend(SubProperties, CustomStaticProperties);
+	if (CustomDynamicPropertiesCaculator) {
+		TUHelper::JsonObjectAppend(SubProperties, CustomDynamicPropertiesCaculator());
+	}
+	TUHelper::JsonObjectAppend(SubProperties, Properties);
+
+	AllProperties->SetObjectField(Key::Properties, SubProperties);
+
+	TUDBNet::SendEvent(AllProperties, SuccessBlock);
+}
+
+void TUDBEvent::DeviceInitialize(TSharedPtr<FJsonObject> Properties) {
+	TSharedPtr<FJsonObject> AllProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(AllProperties, SysProperties);
+	AllProperties->RemoveField(Key::UserID);
+	AllProperties->SetStringField(Key::Type, "initialise");
+
+	TSharedPtr<FJsonObject> SubProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(SubProperties, Properties);
+
+	AllProperties->SetObjectField(Key::Properties, SubProperties);
+
+	TUDBNet::SendEvent(AllProperties);
+}
+
+void TUDBEvent::DeviceUpdate(TSharedPtr<FJsonObject> Properties) {
+	TSharedPtr<FJsonObject> AllProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(AllProperties, SysProperties);
+	AllProperties->RemoveField(Key::UserID);
+	AllProperties->SetStringField(Key::Type, "update");
+
+	TSharedPtr<FJsonObject> SubProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(SubProperties, Properties);
+
+	AllProperties->SetObjectField(Key::Properties, SubProperties);
+
+	TUDBNet::SendEvent(AllProperties);
+}
+
+void TUDBEvent::DeviceAdd(TSharedPtr<FJsonObject> Properties) {
+	TSharedPtr<FJsonObject> AllProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(AllProperties, SysProperties);
+	AllProperties->RemoveField(Key::UserID);
+	AllProperties->SetStringField(Key::Type, "add");
+
+	TSharedPtr<FJsonObject> SubProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(SubProperties, Properties);
+
+	AllProperties->SetObjectField(Key::Properties, SubProperties);
+
+	TUDBNet::SendEvent(AllProperties);
+}
+
+void TUDBEvent::UserInitialize(TSharedPtr<FJsonObject> Properties) {
+	if (UserID.IsEmpty()) {
+		TUDebuger::ErrorLog(FString::Printf(TEXT("Please Set User ID Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
+		return;
+	}
+	TSharedPtr<FJsonObject> AllProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(AllProperties, SysProperties);
+	AllProperties->RemoveField(Key::DeviceID);
+	AllProperties->SetStringField(Key::Type, "initialise");
+
+	TSharedPtr<FJsonObject> SubProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(SubProperties, Properties);
+
+	AllProperties->SetObjectField(Key::Properties, SubProperties);
+
+	TUDBNet::SendEvent(AllProperties);
+}
+
+void TUDBEvent::UserUpdate(TSharedPtr<FJsonObject> Properties) {
+	if (UserID.IsEmpty()) {
+		TUDebuger::ErrorLog(FString::Printf(TEXT("Please Set User ID Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
+		return;
+	}
+	TSharedPtr<FJsonObject> AllProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(AllProperties, SysProperties);
+	AllProperties->RemoveField(Key::DeviceID);
+	AllProperties->SetStringField(Key::Type, "update");
+
+	TSharedPtr<FJsonObject> SubProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(SubProperties, Properties);
+
+	AllProperties->SetObjectField(Key::Properties, SubProperties);
+
+	TUDBNet::SendEvent(AllProperties);
+}
+
+void TUDBEvent::UserAdd(TSharedPtr<FJsonObject> Properties) {
+	if (UserID.IsEmpty()) {
+		TUDebuger::ErrorLog(FString::Printf(TEXT("Please Set User ID Before Call %s"), ANSI_TO_TCHAR(__FUNCTION__)));
+		return;
+	}
+	TSharedPtr<FJsonObject> AllProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(AllProperties, SysProperties);
+	AllProperties->RemoveField(Key::DeviceID);
+	AllProperties->SetStringField(Key::Type, "add");
+
+	TSharedPtr<FJsonObject> SubProperties = MakeShareable(new FJsonObject);
+	TUHelper::JsonObjectAppend(SubProperties, Properties);
+
+	AllProperties->SetObjectField(Key::Properties, SubProperties);
+
+	TUDBNet::SendEvent(AllProperties);
+}
+
+void TUDBEvent::GenerateSysProperties() {
+	SysProperties = MakeShareable(new FJsonObject);
+	SysProperties->SetStringField(Key::ClientID, ClientID);
+	SysProperties->SetStringField(Key::DeviceID, DeviceID);
+	FString IPV6 = TUDeviceInfo::GetIpv6();
+	if (!IPV6.IsEmpty()) {
+		SysProperties->SetStringField(Key::IPV6, IPV6);
 	}
 }
 
-
-void TUDBEvent::GenerateKey(const FString& KeyString)
-{
-	Key = FString::Printf(TEXT("__tyrantdb__%s__%s__0__"), *KeyString, *GetEventCatogery());
-}
-
-TSharedPtr<FJsonObject> TUDBEvent::GetSystemParams()
-{
-	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
-
-	TUHelper::JsonObjectAddNotEmptyString(JsonObject, CLIENTID_KEY, ClientId);
-	TUHelper::JsonObjectAddNotEmptyString(JsonObject, GetIdentifyKey(), _Identify);
-	TUHelper::JsonObjectAddNotEmptyString(JsonObject, "ip_v6", TUDeviceInfo::GetIpv6());
-	
-	return JsonObject;
-}
-
-TSharedPtr<FJsonObject> TUDBEvent::CombinedProperties(const TSharedPtr<FJsonObject>& Properties,
-	const TSharedPtr<FJsonObject>& CustomProperties)
-{
-	TSharedPtr<FJsonObject> CustomCombinedProperties = MakeShareable(new FJsonObject);
-
-	/* 添加自定义属性*/
-	TUHelper::JsonObjectAppend(CustomCombinedProperties, CustomStaticProperties);
-	if (CustomDynamicPropertiesCaculator)
-	{
-		TUHelper::JsonObjectAppend(CustomCombinedProperties, CustomDynamicPropertiesCaculator());
+void TUDBEvent::GenerateCommonProperties() {
+	CommonProperties = MakeShareable(new FJsonObject);
+	FString OS;
+#if PLATFORM_IOS
+	OS = "iOS";
+#elif PLATFORM_ANDROID
+	OS = "Android";
+#elif PLATFORM_MAC
+	OS = "Mac";
+#elif PLATFORM_WINDOWS
+	OS = "Windows";
+#endif
+	CommonProperties->SetStringField(Key::OS, OS);
+	CommonProperties->SetNumberField(Key::Width, TUDeviceInfo::GetScreenWidth());
+	CommonProperties->SetNumberField(Key::Height, TUDeviceInfo::GetScreenHeight());
+	CommonProperties->SetStringField(Key::OSVersion, TUDeviceInfo::GetOSVersion());
+	CommonProperties->SetStringField(Key::InstallID, TUDeviceInfo::GetInstallId());
+	CommonProperties->SetStringField(Key::PersistID, DeviceID);
+	CommonProperties->SetStringField(Key::DeviceID1, DeviceID);
+	CommonProperties->SetStringField(Key::SDKVersion, TapUEDB_VERSION);
+	FString GameVersion = TUDBImpl::Get()->Config.GameVersion;
+	if (!GameVersion.IsEmpty()) {
+		CommonProperties->SetStringField(Key::AppVersion, GameVersion);
 	}
-	TUHelper::JsonObjectAppend(CustomCombinedProperties, CustomProperties);
-
-	/* 添加预置属性*/
-	TUHelper::JsonObjectAppend(CustomCombinedProperties, TUDBEventTool::GetPresetProperties());
-	TUHelper::JsonObjectAppend(CustomCombinedProperties, CommonProperties);
-	TUHelper::JsonObjectAppend(CustomCombinedProperties, Properties);
-
-	TSharedPtr<FJsonObject> CombinedProperties = MakeShareable(new FJsonObject);
-	CombinedProperties->SetObjectField(PROPERTIES_KEY, CustomCombinedProperties);
-	return CombinedProperties;
-}
-
-TUDBEventUser::TUDBEventUser(const FString& ClientID) {
-	SetClientId(ClientID);
-}
-
-FString TUDBEventUser::GetEventCatogery() {
-	return "user_id";
-}
-
-FString TUDBEventUser::GetIdentifyKey()
-{
-	return "game_user";
-}
-
-FString TUDBEventUser::GetOpenId()
-{
-	return TUHelper::InvokeFunction<FString>("TULoginReflection", "GetOpenID");
-}
-
-bool TUDBEventUser::Identify(const FString& identify, const FString& loginType,
-	const TSharedPtr<FJsonObject>& properties)
-{
-	bool newIdentify = TUDBEvent::Identify(identify, loginType, properties);
-	if (newIdentify)
-	{
-		TrackEvent("user_login", properties, nullptr, TUDBEnum::Identify);
+	FString Channel = TUDBImpl::Get()->Config.Channel;
+	if (!Channel.IsEmpty()) {
+		CommonProperties->SetStringField(Key::Channel, Channel);
 	}
-	return newIdentify;
-}
-
-void TUDBEventUser::SaveIdentify(const FString& identify)
-{
-}
-
-FString TUDBEventUser::GetSavedIdentify()
-{
-	return FString();
-}
-
-bool TUDBEventUser::HasSavedIdentify()
-{
-	return false;
-}
-
-void TUDBEventUser::ClearIdentify()
-{
-	TUDBEvent::ClearIdentify();
-	if (CommonProperties.IsValid())
-	{
-		CommonProperties->RemoveField(LOGIN_TYPE_KEY);
-	}
-}
-
-TUDBEventMobile::TUDBEventMobile(const FString& ClientID) {
-	SetClientId(ClientID);
-}
-
-FString TUDBEventMobile::GetEventCatogery()
-{
-	return "game_mobile";
-}
-
-FString TUDBEventMobile::GetIdentifyKey()
-{
-	return "device_id";
-}
-
-bool TUDBEventMobile::Identify(const FString& identify, const FString& loginType, const TSharedPtr<FJsonObject>& properties)
-{
-	bool newIdentify = TUDBEvent::Identify(identify, loginType, properties);
-	if (newIdentify)
-	{
-		TrackEvent("device_login", properties, nullptr, TUDBEnum::Identify);
-	}
-	return newIdentify;
 }

@@ -291,7 +291,7 @@ void XUNet::RequestPrivacyTxt(const FString& Url, TFunction<void(FString Txt)> c
 {
 	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = Url;
-	// request->isPure = true;
+	request->Headers.Add("Accept", "text/html");
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		callback(response->contentString);
 	});

@@ -25,14 +25,6 @@ FString TUDBRegionConfig::GetEventUrl() {
 	return GetHost() / "event";
 }
 
-FString TUDBRegionConfig::GetCustomUrl() {
-	return GetHost() / "event";
-}
-
-FString TUDBRegionConfig::GetIdentifyUrl() {
-	return GetHost() / "event";
-}
-
 TSharedPtr<TUDBRegionConfig>& TUDBRegionConfig::Get() {
 	if (!Instance.IsValid()) {
 		if (TUDBImpl::Get()->Config.RegionType == TUType::CN) {

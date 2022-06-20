@@ -137,9 +137,9 @@ void AXD_PCGameModeBase::OpenWebTopic(FString AppId) {
     TUMomentType::Config Config;
     Config.RegionType = TUType::Config::Get()->RegionType;
     if (Config.RegionType == TUType::CN) {
-        Config.AppId_CN = AppId;
+        Config.AppID = AppId;
     } else {
-        Config.AppId_IO = AppId;
+        Config.AppID = AppId;
     }
     TapUEMoment::Init(Config);
     TapUEMoment::OpenWebTopic();

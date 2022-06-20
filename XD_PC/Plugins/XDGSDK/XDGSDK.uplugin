@@ -1,10 +1,10 @@
 {
 	"FileVersion": 3,
-	"Version": 60101001,
-	"VersionName": "6.1.1",
+	"Version": 60301001,
+	"VersionName": "6.3.1",
 	"FriendlyName": "XDGSDK",
 	"Description": "",
-	"Category": "Other",
+	"Category": "XinDong",
 	"CreatedBy": "XinDong TDS",
 	"CreatedByURL": "",
 	"DocsURL": "",

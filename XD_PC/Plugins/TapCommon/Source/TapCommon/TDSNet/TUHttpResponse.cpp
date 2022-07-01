@@ -25,11 +25,16 @@ FString TUHttpResponse::GenerateDebugString()
 			DebugString += "\t" + Header.Key + ": " + Header.Value + "\n";
 		}
 	}
-	if (request->Type == TUHttpRequest::Post && request->Parameters->Values.Num() > 0)
+	if (request->Type == TUHttpRequest::Post)
 	{
-		FString body = TUJsonHelper::GetJsonString(request->Parameters);
-		DebugString += "Body:\n";
-		DebugString += body + "\n";
+		if (!request->PostBodyString.IsEmpty()) {
+			DebugString += "Body:\n";
+			DebugString += request->PostBodyString + "\n";
+		} else if (request->Parameters->Values.Num() > 0) {
+			FString body = TUJsonHelper::GetJsonString(request->Parameters);
+			DebugString += "Body:\n";
+			DebugString += body + "\n";
+		}
 	}
 
 	if (state == networkError)

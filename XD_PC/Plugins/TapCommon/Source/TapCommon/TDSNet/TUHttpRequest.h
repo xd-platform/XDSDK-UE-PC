@@ -29,8 +29,14 @@ public:
 	// 参数，get请求会把参数拼接到url后面，post请求会放在body里。
 	TSharedPtr<FJsonObject> Parameters;
 
+	// Url中Path的参数，会替换URL中{}的内容。
+	TMap<FString, FString> PathParameters;
+
 	// post请求把参数拼在url后面，明明post请求可以把参数放在body里的。。特殊改的需求
 	TSharedPtr<FJsonObject> PostUrlParameters;
+
+	// post请求自己生成Body，TSharedPtr<FJsonObject>竟然不支持[[1,2,3]]格式。。。后面得换json object
+	FString PostBodyString;
 
 	int RepeatCount = 1;
 

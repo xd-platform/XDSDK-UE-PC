@@ -8,24 +8,26 @@ class XUImpl
 {
 public:
 
-	static void GetIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FString msg)> resultBlock);
+	void GetIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FString msg)> resultBlock);
 
-	static void InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock);
+	void Init(TFunction<void(bool Result, const FString& Message)> CallBack);
+	
+	void InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock);
 
-	static void LoginByType(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FXUUser> user)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
+	void LoginByType(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FXUUser> user)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
 
-	static void GetLoginParam(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
+	void GetLoginParam(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
 
-	static void CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock, TFunction<void(const FXUError& Error)> FailBlock);
+	void CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock, TFunction<void(const FXUError& Error)> FailBlock);
 
-	static FString GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
+	FString GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
 
-	static FString GetPayUrl(const FString& ServerId, const FString& RoleId);
+	FString GetPayUrl(const FString& ServerId, const FString& RoleId);
 
-	static FString GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId, const FString& ProductId,
+	FString GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId, const FString& ProductId,
 	const FString& ProductName, float PayAmount, const FString& Ext);
-
-	static void ResetPrivacy();
+	
+	void ResetPrivacy();
 	
 	static TSharedPtr<XUImpl>& Get();
 

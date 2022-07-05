@@ -18,6 +18,10 @@
 		{
 			"Name": "TapCommon",
 			"Enabled": true
+		},
+		{
+			"Name": "WebBrowserWidget",
+			"Enabled": true
 		}
 	]
 }

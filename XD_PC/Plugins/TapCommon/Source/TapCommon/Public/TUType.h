@@ -6,7 +6,7 @@ namespace TUType {
 	// 这个影响服务的host以及TapTap授权客户端的种类（是国内还是海外）
 	enum RegionType {
 		CN,		// 国内
-		IO		// 海外
+		Global		// 海外
 	};
 
 	enum LanguageType {
@@ -49,14 +49,6 @@ namespace TUType {
 		TapDB DBConfig;
 		
 
-		// class TapMoment {
-		// public:
-		// 	bool Enable;
-		// 	FString AppID_CN;
-		// 	FString AppID_IO;
-		// };
-		//
-		// TapMoment MomentConfig;
 
 	private:
 		static TSharedPtr<Config> Instance;

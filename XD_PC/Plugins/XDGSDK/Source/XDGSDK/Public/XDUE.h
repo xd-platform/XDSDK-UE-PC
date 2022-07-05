@@ -6,6 +6,8 @@
 
 class XDGSDK_API XDUE {
 public:
+
+	static void Init(TFunction<void(bool Result, const FString& Message)> CallBack);
 	
 	static void InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack);
 

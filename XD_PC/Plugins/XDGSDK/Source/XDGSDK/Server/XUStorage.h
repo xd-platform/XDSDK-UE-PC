@@ -14,6 +14,10 @@ struct FXUStorage
 	static FString ClientId ;
 	static FString PrivacyKey;
 	static FString SessionTokenKey;
+
+	static FString XD_CACHE_CONFIG;
+	static FString AgreementKRPush;
+	
 };
 
 

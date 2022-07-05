@@ -51,6 +51,7 @@ public class XDGSDK : ModuleRules
 				// "OpenSSL",
 				"JsonUtilities",
 				"ApplicationCore",
+				"WebBrowserWidget",
 				"TapBootstrap",
 				"TapCommon",
 				"TapLogin",

@@ -9,6 +9,7 @@
 #include "TUHUD.h"
 #include "URLParser.h"
 #include "XDGSDK.h"
+#include "XULocalInitConfigModel.h"
 #include "XDGSDK/UI/XUPrivacyWidget.h"
 
 static int Success = 200;
@@ -24,6 +25,10 @@ void XUImpl::GetIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FString 
 			if (resultBlock) { resultBlock(model, "success"); }
 		}
 	});
+}
+
+void XUImpl::Init(TFunction<void(bool Result, const FString& Message)> CallBack) {
+	FXULocalInitConfig::GetLocalModel();
 }
 
 void XUImpl::InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock) {
@@ -53,7 +58,7 @@ void XUImpl::InitBootstrap(const TSharedPtr<FXUInitConfigModel>& model,
 	if (XUImpl::Get()->Config.RegionType == XUType::CN) {
 		Config.RegionType = TUType::CN;
 	} else {
-		Config.RegionType = TUType::IO;
+		Config.RegionType = TUType::Global;
 	}
 	Config.DBConfig.Enable = tapCfg.enableTapDB;
 	Config.DBConfig.Channel = tapCfg.tapDBChannel;
@@ -345,7 +350,7 @@ void XUImpl::AsyncLocalTdsUser(const FString& userId, const FString& sessionToke
 }
 
 void XUImpl::CheckPrivacyAlert(TFunction<void()> Callback) {
-	if (FXUInitConfigModel::CanShowPrivacyAlert() && XUImpl::Get()->Config.RegionType == XUType::IO) {
+	if (FXUInitConfigModel::CanShowPrivacyAlert() && XUImpl::Get()->Config.RegionType == XUType::Global) {
 		UXUPrivacyWidget::ShowPrivacy(
 			[=](bool result) {
 				if (result) {

@@ -231,7 +231,7 @@ void UXUUserCenterWidget::DeleteAccount(const FString& Tip)
 {
 	UTUHUD::ShowToast(Tip);
 	XDUE::Logout();
-	XUImpl::ResetPrivacy();
+	XUImpl::Get()->ResetPrivacy();
 	RemoveFromParent();
 }
 
@@ -270,7 +270,7 @@ void UXUUserCenterWidget::Bind(UXUUserCenterItemWidget* CurrentWidget, TSharedPt
 	};
 	if (Model->loginType == (int)XUType::TapTap)
 	{
-		XUImpl::GetLoginParam(XUType::TapTap, [=](TSharedPtr<FJsonObject> Paras)
+		XUImpl::Get()->GetLoginParam(XUType::TapTap, [=](TSharedPtr<FJsonObject> Paras)
 		{
 			BindBlock(Paras);
 		}, [=](FXUError error)

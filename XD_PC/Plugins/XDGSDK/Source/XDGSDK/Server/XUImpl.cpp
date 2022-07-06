@@ -33,7 +33,7 @@ void XUImpl::Init(TFunction<void(bool Result, const FString& Message)> CallBack)
 
 void XUImpl::InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock) {
 	TUDataStorage<FXUStorage>::SaveString(FXUStorage::ClientId, sdkClientId, false);
-	XUNet::RequestConfig([=](TSharedPtr<FXUServerConfig> model, FXUError error) {
+	XUNet::RequestConfig(false, [=](TSharedPtr<FXUServerConfig> model, FXUError error) {
 		if (model != nullptr && error.code == Success) {
 			model->SaveToLocal();
 			InitBootstrap(model, resultBlock, error.msg);

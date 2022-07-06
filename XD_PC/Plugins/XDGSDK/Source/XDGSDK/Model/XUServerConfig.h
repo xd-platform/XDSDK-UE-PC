@@ -54,6 +54,10 @@ struct FXUServerConfigAgreement {
 	
 	UPROPERTY()
 	FString agreementUrl;
+
+	UPROPERTY()
+	bool isKRPushServiceSwitchEnable = false;
+	
 };
 
 USTRUCT()

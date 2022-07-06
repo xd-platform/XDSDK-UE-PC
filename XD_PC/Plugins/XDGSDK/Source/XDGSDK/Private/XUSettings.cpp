@@ -40,9 +40,11 @@ void XUSettings::SetLanguage(XUType::LangType Locale) {
 }
 
 void XUSettings::SetTargetCountryOrRegion(const FString& TargetCountryOrRegion) {
+	XUConfigManager::SharedInstance().TargetRegion = TargetCountryOrRegion;
 }
 
 void XUSettings::SetAgreementUIEnable(bool Enable) {
+	XUConfigManager::SharedInstance().AgreementUIEnable = Enable;
 }
 
 void XUSettings::UpdateConfigFileName(const FString& FileName) {

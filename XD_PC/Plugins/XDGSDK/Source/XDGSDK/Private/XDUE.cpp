@@ -199,7 +199,11 @@ bool XDUE::IsPushServiceEnable() {
 // only test
 
 void XDUE::Test() {
-	UXUPayWebWidget::Show();
+	// UXUPayWebWidget::Show();
+	// TUDebuger::DisplayLog(FPlatformMisc::GetLocalCurrencyCode());
+	// TUDebuger::DisplayLog(FPlatformMisc::GetDefaultLocale());
+	// TUDebuger::DisplayLog(FPlatformMisc::GetDefaultLanguage());
+	// TUDebuger::DisplayLog(FPlatformMisc::GetLocalCurrencySymbol());
 }
 
 void XDUE::ResetPrivacy() {

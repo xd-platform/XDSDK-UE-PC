@@ -44,6 +44,7 @@ void XUConfigManager::ReadLocalConfig(XUConfigHandler Handler) {
 		return;
 	}
 	auto InitPtr = Ptr->GenerateXUConfig();
+	SetConfig(InitPtr);
 	if (Handler) {
 		Handler(true, InitPtr, "");
 	}
@@ -51,8 +52,18 @@ void XUConfigManager::ReadLocalConfig(XUConfigHandler Handler) {
 
 void XUConfigManager::LoadRemoteOrCachedServiceTerms(TSharedPtr<XUType::Config> Config, XUConfigHandler Handler) {
 	// 统一先用cache刷新一下
-	
-	// [self updateConfigWithDic:[self sharedInstance].localCache];
+	UpdateConfig(FXUServerConfig::GetLocalModel());
+	if (Config->RegionType == XUType::CN) {
+		if (Handler) {
+			Handler(true, Config, "");
+		}
+	} else {
+		RequestServerConfig(true, [=](bool Success) {
+			if (Handler) {
+				Handler(true, Config, "");
+			}
+		});
+	}
 }
 
 void XUConfigManager::RequestServerConfig(bool FirstRequest) {
@@ -65,6 +76,37 @@ void XUConfigManager::RequestServerConfig(bool FirstRequest) {
 }
 
 void XUConfigManager::RequestServerConfig(bool FirstRequest, TFunction<void(bool Success)> Handler) {
+	XUNet::RequestConfig(FirstRequest, [=](TSharedPtr<FXUServerConfig> Model, FXUError Error) {
+		if (Model.IsValid()) {
+			if (IsCN()) {
+				auto localAgreementDic = TUDataStorage<FXUStorage>::LoadJsonObject(GetRegionAgreementCacheName());
+				XUType::AgreementConfig agreementConfig;
+				if (localAgreementDic.IsValid() && localAgreementDic->Values.Num() > 0) {
+					agreementConfig = GenerateAgreementConfig(localAgreementDic);
+				} else {
+					agreementConfig = CurrentConfig()->Agreement;
+				}
+				if (!agreementConfig.Version.IsEmpty()) {
+					if (agreementConfig.Version == "latest") {
+						if (!Model->configs.agreement.agreementVersion.IsEmpty()) {
+							agreementConfig.Version = Model->configs.agreement.agreementVersion;
+							SaveAgreementConfig(agreementConfig, false);
+						}
+					}
+				}
+			}
+			Model->SaveToLocal();
+			UpdateConfig(Model);
+			SharedInstance().ConfigRequestSuccess = true;
+			if (Handler) {
+				Handler(true);
+			}
+		} else {
+			if (Handler) {
+				Handler(false);
+			}
+		}
+	});
 }
 
 void XUConfigManager::InitTapSDK() {
@@ -134,10 +176,10 @@ void XUConfigManager::UploadUserAgreement() {
 	if (LocalAgreementDic.IsValid() && LocalAgreementDic->Values.Num() > 0) {
 		auto localCacheAgreementConfig = GenerateAgreementConfig(LocalAgreementDic);
 		if (!localCacheAgreementConfig.Version.IsEmpty()) {
-			FString newAgreementCacheStr = localCacheAgreementConfig.Version + localCacheAgreementConfig.Region;
+			FString LocalAgreementCacheStr = localCacheAgreementConfig.Version + localCacheAgreementConfig.Region;
 			auto currentAgreement = CurrentConfig()->Agreement;
 			FString currentAgreementStr = currentAgreement.Version + currentAgreement.Region;
-			if (newAgreementCacheStr == currentAgreementStr) {
+			if (LocalAgreementCacheStr == currentAgreementStr) {
 				bool oldUpload = LocalAgreementDic->GetBoolField("upload");
 				if (oldUpload) {
 					// 接口版本和缓存版本一致且已上报过时不再上报
@@ -161,6 +203,20 @@ void XUConfigManager::UploadUserAgreement() {
 			}
 		});
 	}
+}
+
+
+void XUConfigManager::GetRegionInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> ModelPtr)> ResultBlock) {
+	XUNet::RequestIpInfo([=](TSharedPtr<FXUIpInfoModel> model, FXUError error) {
+		if (model == nullptr) {
+			TSharedPtr<FXUIpInfoModel> infoModel = FXUIpInfoModel::GetLocalModel();
+			if (ResultBlock) { ResultBlock(infoModel); }
+		}
+		else {
+			model->SaveToLocal();
+			if (ResultBlock) { ResultBlock(model); }
+		}
+	});
 }
 
 // void XUConfigManager::UpdateHttpConfig() {
@@ -265,10 +321,6 @@ bool XUConfigManager::GetKRPushSetting() {
 	return false;
 }
 
-TSharedPtr<FJsonObject> XUConfigManager::GetLocalCache() {
-	return TUDataStorage<FXUStorage>::LoadJsonObject(FXUStorage::XD_CACHE_CONFIG);
-}
-
 FString XUConfigManager::GetRegionAgreementCacheName() {
 	return FXUStorage::XD_CACHE_AGREEMENT + CurrentConfig()->Agreement.Region;
 }
@@ -302,4 +354,42 @@ void XUConfigManager::UpdateConfig(TSharedPtr<FXUServerConfig> ServerConfig) {
 	if (!ServerConfig.IsValid()) {
 		return;
 	}
+	auto config = CurrentConfig();
+	config->BindEntries.Empty();
+	for (auto BindEntry : ServerConfig->configs.bindEntriesConfig) {
+		XUType::BindEntriesConfig BindEntriesConfig;
+		BindEntriesConfig.CanBind = BindEntry.canBind;
+		BindEntriesConfig.CanUnbind = BindEntry.canUnbind;
+		BindEntriesConfig.EntryName = BindEntry.entryName;
+		config->BindEntries.Add(BindEntriesConfig);
+	}
+
+	if (!ServerConfig->configs.reportUrl.IsEmpty()) {
+		config->ReportUrl = ServerConfig->configs.reportUrl;
+	}
+
+	if (!ServerConfig->configs.logoutUrl.IsEmpty()) {
+		config->LogoutUrl = ServerConfig->configs.logoutUrl;
+	}
+
+	if (!ServerConfig->configs.appId.IsEmpty()) {
+		config->AppID = ServerConfig->configs.appId;
+	}
+
+	if (!ServerConfig->configs.agreement.agreementVersion.IsEmpty()) {
+		config->Agreement.Version = ServerConfig->configs.agreement.agreementVersion;
+		config->Agreement.Url = ServerConfig->configs.agreement.agreementUrl;
+		config->Agreement.Region = ServerConfig->configs.agreement.agreementRegion;
+		config->Agreement.IsKRPushServiceSwitchEnable = ServerConfig->configs.agreement.isKRPushServiceSwitchEnable;
+	}
+
+	if (config->Region.IsEmpty()) {
+		config->Region = ServerConfig->configs.region;
+	}
+	if (!SharedInstance().TargetRegion.IsEmpty()) {
+		config->Region = SharedInstance().TargetRegion;
+	}
+	
+	SetConfig(config);
+	
 }

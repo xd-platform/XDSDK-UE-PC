@@ -100,7 +100,7 @@ struct AgreementConfig {
 struct BindEntriesConfig {
 	bool CanBind;
 	FString EntryName;
-	bool canUnbind;
+	bool CanUnbind;
 };
 	
 class Config {

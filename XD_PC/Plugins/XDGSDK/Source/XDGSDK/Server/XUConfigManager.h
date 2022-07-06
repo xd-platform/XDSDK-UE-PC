@@ -1,4 +1,5 @@
 #pragma once
+#include "XUIpInfoModel.h"
 #include "XUServerConfig.h"
 #include "XUType.h"
 
@@ -40,7 +41,9 @@ public:
 
 	// + (XDGRegionInfo *)GetRegionInfo();
 
-	// static void GetRegionInfo:(void (^)(XDGRegionInfo *result))completeHandler;
+	void GetRegionInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> ModelPtr)> ResultBlock);
+
+	// static void GetRegionInfo();
 
 	static void SetGameInited();
 	static bool IsGameInited();
@@ -68,7 +71,6 @@ public:
 private:
 	
 	static XUConfigManager * Instance;
-	TSharedPtr<FJsonObject> GetLocalCache();
 	bool IsInited = false;
 	TSharedPtr<XUType::Config> Config;
 	bool ConfigRequestSuccess = false;
@@ -78,5 +80,5 @@ private:
 	static XUType::AgreementConfig GenerateAgreementConfig(const TSharedPtr<FJsonObject>& JsonObject);
 	static void SaveAgreementConfig(XUType::AgreementConfig& AgreementConfig, bool Upload);
 
-	void UpdateConfig(TSharedPtr<FXUServerConfig> ServerConfig);
+	static void UpdateConfig(TSharedPtr<FXUServerConfig> ServerConfig);
 };

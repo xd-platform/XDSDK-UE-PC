@@ -238,10 +238,13 @@ void XUNet::RequestIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FXUEr
 	TUHttpManager::Get().request(request);
 }
 
-void XUNet::RequestConfig(TFunction<void(TSharedPtr<FXUServerConfig> model, FXUError error)> callback)
+void XUNet::RequestConfig(bool IsFirst, TFunction<void(TSharedPtr<FXUServerConfig> model, FXUError error)> callback)
 {
 	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = XURegionConfig::Get()->InitSDKUrl();
+	if (IsFirst) {
+		request->TimeoutSecs = 5;
+	}
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
 	});

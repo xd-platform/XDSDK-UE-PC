@@ -94,7 +94,7 @@ struct AgreementConfig {
 	FString Url;
 	FString Version;
 	FString Region;
-	bool IsKRPushServiceSwitchEnable;
+	bool IsKRPushServiceSwitchEnable = false;
 };
 
 struct BindEntriesConfig {

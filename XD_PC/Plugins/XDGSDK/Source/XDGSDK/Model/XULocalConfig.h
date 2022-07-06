@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "XUStorage.h"
 #include "XUType.h"
-#include "XULocalInitConfigModel.generated.h"
+#include "XULocalConfig.generated.h"
 
 USTRUCT()
-struct FXULocalTapDBConfig
+struct FXULocalConfigTapDB
 {
 	GENERATED_BODY()
 	
@@ -23,7 +23,7 @@ struct FXULocalTapDBConfig
 };
 
 USTRUCT()
-struct FXULocalTapSDKConfig
+struct FXULocalConfigTapSDK
 {
 	GENERATED_BODY()
 
@@ -37,14 +37,14 @@ struct FXULocalTapSDKConfig
 	FString server_url;
 
 	UPROPERTY()
-	FXULocalTapDBConfig db_config;
+	FXULocalConfigTapDB db_config;
 
 	UPROPERTY()
 	TArray<FString> permissions;
 };
 
 USTRUCT()
-struct FXULocalFacebookConfig
+struct FXULocalConfigFacebook
 {
 	GENERATED_BODY()
 
@@ -59,7 +59,7 @@ struct FXULocalFacebookConfig
 };
 
 USTRUCT()
-struct FXULocalLineConfig
+struct FXULocalConfigLine
 {
 	GENERATED_BODY()
 
@@ -69,7 +69,7 @@ struct FXULocalLineConfig
 };
 
 USTRUCT()
-struct FXULocalTwitterConfig
+struct FXULocalConfigTwitter
 {
 	GENERATED_BODY()
 
@@ -82,7 +82,7 @@ struct FXULocalTwitterConfig
 };
 
 USTRUCT()
-struct FXULocalGoogleConfig
+struct FXULocalConfigGoogle
 {
 	GENERATED_BODY()
 
@@ -133,7 +133,7 @@ struct FXULocalGoogleConfig
 };
 
 USTRUCT()
-struct FXULocalAdjustEvent
+struct FXULocalConfigAdjustEvent
 {
 	GENERATED_BODY()
 
@@ -146,7 +146,7 @@ struct FXULocalAdjustEvent
 
 
 USTRUCT()
-struct FXULocalAdjustConfig
+struct FXULocalConfigAdjust
 {
 	GENERATED_BODY()
 
@@ -154,12 +154,12 @@ struct FXULocalAdjustConfig
 	FString app_token;
 
 	UPROPERTY()
-	TArray<FXULocalAdjustEvent> events;
+	TArray<FXULocalConfigAdjustEvent> events;
 	
 };
 
 USTRUCT()
-struct FXULocalAppsflyerConfig
+struct FXULocalConfigAppsflyer
 {
 	GENERATED_BODY()
 
@@ -173,7 +173,7 @@ struct FXULocalAppsflyerConfig
 
 
 USTRUCT()
-struct FXULocalInitConfig
+struct FXULocalConfig
 {
 	GENERATED_BODY()
 
@@ -205,32 +205,30 @@ struct FXULocalInitConfig
 	FString webpay_url;
 
 	UPROPERTY()
-	FXULocalTapSDKConfig tapsdk;
+	FXULocalConfigTapSDK tapsdk;
 
 	UPROPERTY()
 	TArray<FString> logos;
 
 	UPROPERTY()
-	FXULocalFacebookConfig facebook;
+	FXULocalConfigFacebook facebook;
 
 	UPROPERTY()
-	FXULocalLineConfig line;
+	FXULocalConfigLine line;
 
 	UPROPERTY()
-	FXULocalTwitterConfig twitter;
+	FXULocalConfigTwitter twitter;
 
 	UPROPERTY()
-	FXULocalGoogleConfig google;
+	FXULocalConfigGoogle google;
 
 	UPROPERTY()
-	FXULocalAdjustConfig adjust;
+	FXULocalConfigAdjust adjust;
 
 	UPROPERTY()
-	FXULocalAppsflyerConfig appsflyer;
+	FXULocalConfigAppsflyer appsflyer;
 
-	void SaveToLocal();
-
-	static TSharedPtr<FXULocalInitConfig> GetLocalModel();
+	static TSharedPtr<FXULocalConfig> GetLocalModel();
 
 	TSharedPtr<XUType::Config> GenerateXUConfig();
 	// static void SetLocalConfigJsonName(const FString& ConfigName);

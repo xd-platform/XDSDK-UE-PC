@@ -1,7 +1,7 @@
 #include "XUUserCenterItemWidget.h"
 
 #include "TUSettings.h"
-#include "XUInitConfigModel.h"
+#include "XUServerConfig.h"
 #include "XULanguageManager.h"
 
 UXUUserCenterItemWidget::UXUUserCenterItemWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -60,7 +60,7 @@ void UXUUserCenterItemWidget::OnBindBtnClick()
 }
 
 void UXUUserCenterItemWidget::ProcessShowOrNot() {
-	auto md = FXUInitConfigModel::GetLocalModel();
+	auto md = FXUServerConfig::GetLocalModel();
 	if (!BindModel.IsValid() || !md.IsValid()) {
 		return;
 	}

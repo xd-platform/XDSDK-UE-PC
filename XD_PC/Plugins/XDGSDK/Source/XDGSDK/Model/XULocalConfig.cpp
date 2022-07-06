@@ -1,4 +1,4 @@
-#include "XULocalInitConfigModel.h"
+#include "XULocalConfig.h"
 
 #include "TUDebuger.h"
 
@@ -6,15 +6,11 @@ static FString InitLocalConfigPath = FPaths::ProjectPluginsDir() / TEXT("XDGSDK/
 
 static FString ConfigJsonName = "XDConfig.json";
 
-void FXULocalInitConfig::SaveToLocal() {
-	
-}
-
-TSharedPtr<FXULocalInitConfig> FXULocalInitConfig::GetLocalModel() {
+TSharedPtr<FXULocalConfig> FXULocalConfig::GetLocalModel() {
 	FString FilePath = InitLocalConfigPath / ConfigJsonName;
 	FString JsonStr;
 	if (FFileHelper::LoadFileToString(JsonStr, *FilePath)) {
-		TSharedPtr<FXULocalInitConfig> Ptr = TUJsonHelper::GetUStruct<FXULocalInitConfig>(JsonStr);
+		TSharedPtr<FXULocalConfig> Ptr = TUJsonHelper::GetUStruct<FXULocalConfig>(JsonStr);
 		if (Ptr.IsValid()) {
 			return Ptr;
 		}
@@ -29,7 +25,7 @@ TSharedPtr<FXULocalInitConfig> FXULocalInitConfig::GetLocalModel() {
 	}
 }
 
-TSharedPtr<XUType::Config> FXULocalInitConfig::GenerateXUConfig() {
+TSharedPtr<XUType::Config> FXULocalConfig::GenerateXUConfig() {
 	TSharedPtr<XUType::Config> ConfigPtr = MakeShareable(new XUType::Config);
 	if (region_type == "global") {
 		ConfigPtr->RegionType = XUType::Global;
@@ -110,6 +106,6 @@ TSharedPtr<XUType::Config> FXULocalInitConfig::GenerateXUConfig() {
 	return ConfigPtr;
 }
 
-// void FXULocalInitConfig::SetLocalConfigJsonName(const FString& ConfigName) {
+// void FXULocalConfig::SetLocalConfigJsonName(const FString& ConfigName) {
 // 	ConfigJsonName = ConfigName;
 // }

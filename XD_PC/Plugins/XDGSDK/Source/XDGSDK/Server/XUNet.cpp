@@ -66,7 +66,7 @@ TSharedPtr<FJsonObject> XUNet::CommonParameters()
 	query->SetStringField("appVer", XUImpl::Get()->Config.GameVersion);
 	query->SetStringField("appVerCode", XUImpl::Get()->Config.GameVersion);
 	
-	auto cfgMd = FXUInitConfigModel::GetLocalModel();
+	auto cfgMd = FXUServerConfig::GetLocalModel();
 	query->SetStringField("appId", cfgMd == nullptr ? "" : cfgMd->configs.appId);
 
 	if (XUImpl::Get()->Config.RegionType == XUType::CN) {
@@ -238,7 +238,7 @@ void XUNet::RequestIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FXUEr
 	TUHttpManager::Get().request(request);
 }
 
-void XUNet::RequestConfig(TFunction<void(TSharedPtr<FXUInitConfigModel> model, FXUError error)> callback)
+void XUNet::RequestConfig(TFunction<void(TSharedPtr<FXUServerConfig> model, FXUError error)> callback)
 {
 	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = XURegionConfig::Get()->InitSDKUrl();
@@ -344,6 +344,18 @@ void XUNet::CheckPay(TFunction<void(TSharedPtr<FXUPayCheckResponseModel> Model, 
 	const TSharedPtr<XUNet> request = MakeShareable(new XUNet());
 	request->URL = XURegionConfig::Get()->PaybackListUrl();
 	request->Parameters->SetStringField("userId", FXUUser::GetLocalModel()->userId);
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
+		PerfromWrapperResponseCallBack(response, Callback);
+	});
+	TUHttpManager::Get().request(request);
+}
+
+void XUNet::UploadAgreement(const TSharedPtr<FJsonObject>& Paras,
+	TFunction<void(TSharedPtr<FXUUploadAgreementResultModel> Model, FXUError Error)> Callback) {
+	const TSharedPtr<XUNet> request = MakeShareable(new XUNet());
+	request->URL = XURegionConfig::Get()->UploadAgreementUrl();
+	request->Parameters = Paras;
+	request->Type = Post;
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, Callback);
 	});

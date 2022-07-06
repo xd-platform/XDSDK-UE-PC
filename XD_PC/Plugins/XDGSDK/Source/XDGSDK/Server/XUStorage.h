@@ -16,6 +16,7 @@ struct FXUStorage
 	static FString SessionTokenKey;
 
 	static FString XD_CACHE_CONFIG;
+	static FString XD_CACHE_AGREEMENT;
 	static FString AgreementKRPush;
 	
 };

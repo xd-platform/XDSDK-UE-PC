@@ -29,6 +29,9 @@ public:
 
 	// 查询补款订单信息
 	FString PaybackListUrl();
+
+	// 上报同意协议版本
+	FString UploadAgreementUrl();
 	
 
 	static TSharedPtr<XURegionConfig>& Get();

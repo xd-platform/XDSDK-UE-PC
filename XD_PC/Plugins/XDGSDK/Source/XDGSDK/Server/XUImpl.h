@@ -37,7 +37,7 @@ public:
 private:
 	static TSharedPtr<XUImpl> Instance;
 
-	static void InitBootstrap(const TSharedPtr<FXUInitConfigModel>& model, TFunction<void(bool successed, FString msg)> resultBlock, const FString& msg);
+	static void InitBootstrap(const TSharedPtr<FXUServerConfig>& model, TFunction<void(bool successed, FString msg)> resultBlock, const FString& msg);
 	
 	static void RequestKidToken(TSharedPtr<FJsonObject> paras, TFunction<void(TSharedPtr<FXUTokenModel> kidToken)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
 

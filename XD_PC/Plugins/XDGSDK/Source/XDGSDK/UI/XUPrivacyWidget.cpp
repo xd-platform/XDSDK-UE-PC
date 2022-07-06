@@ -3,7 +3,7 @@
 
 #include "XUPrivacyWidget.h"
 
-#include "XUInitConfigModel.h"
+#include "XUServerConfig.h"
 #include "XULanguageManager.h"
 #include "TUHelper.h"
 #include "TUSettings.h"
@@ -41,27 +41,27 @@ void UXUPrivacyWidget::NativeConstruct()
 	BtnDel.BindUFunction(this, "OnComfirmBtnClick");
 	ComfirmButton->OnClicked.Add(BtnDel);
 
-	FXUInitConfigModel::GetPrivacyTxt(FXUInitConfigModel::GetLocalModel()->configs.serviceAgreementTxt,
-	[=](FString txt)
-	{
-		if (PrivacyTextView1)
-		{
-			FormatTags(txt);
-			txt = txt.Replace(TEXT("</b>"), TEXT("</>"));
-			PrivacyTextView1->SetText(FText::FromString(txt));
-		}
-	});
-	FXUInitConfigModel::GetPrivacyTxt(FXUInitConfigModel::GetLocalModel()->configs.serviceTermsTxt,
-	[=](FString txt)
-	{
-		if (PrivacyTextView2)
-		{
-			FormatTags(txt);
-			txt = txt.Replace(TEXT("</b>"), TEXT("</>"));
-			PrivacyTextView2->SetText(FText::FromString(txt));
-		}
-		
-	});
+	// FXUServerConfig::GetPrivacyTxt(FXUServerConfig::GetLocalModel()->configs.serviceAgreementTxt,
+	// [=](FString txt)
+	// {
+	// 	if (PrivacyTextView1)
+	// 	{
+	// 		FormatTags(txt);
+	// 		txt = txt.Replace(TEXT("</b>"), TEXT("</>"));
+	// 		PrivacyTextView1->SetText(FText::FromString(txt));
+	// 	}
+	// });
+	// FXUServerConfig::GetPrivacyTxt(FXUServerConfig::GetLocalModel()->configs.serviceTermsTxt,
+	// [=](FString txt)
+	// {
+	// 	if (PrivacyTextView2)
+	// 	{
+	// 		FormatTags(txt);
+	// 		txt = txt.Replace(TEXT("</b>"), TEXT("</>"));
+	// 		PrivacyTextView2->SetText(FText::FromString(txt));
+	// 	}
+	// 	
+	// });
 	auto langModel = XULanguageManager::GetCurrentModel();
 	TitleLabel->SetText(FText::FromString(langModel->tds_terms_agreement));
 	ComfirmButtonLabel->SetText(FText::FromString(langModel->tds_confirm_agreement));
@@ -94,7 +94,7 @@ void UXUPrivacyWidget::OnCheckStateChanged(bool isChecked)
 
 void UXUPrivacyWidget::OnComfirmBtnClick()
 {
-	FXUInitConfigModel::UpdatePrivacyState();
+	// FXUServerConfig::UpdatePrivacyState();
 	if (Completed)
 	{
 		Completed(true);
@@ -183,19 +183,19 @@ void UXUPrivacyWidget::FormatTags(FString& Content) {
 }
 
 bool UXUPrivacyWidget::IsInKrAndPushEnable() {
-	if (!FXUInitConfigModel::GetLocalModel().IsValid()) {
+	if (!FXUServerConfig::GetLocalModel().IsValid()) {
 		return false;
 	}
-	FString Region = FXUInitConfigModel::GetLocalModel()->configs.region.ToLower();
-	bool CanPush = FXUInitConfigModel::GetLocalModel()->configs.isKRPushServiceSwitchEnable;
+	FString Region = FXUServerConfig::GetLocalModel()->configs.region.ToLower();
+	bool CanPush = FXUServerConfig::GetLocalModel()->configs.isKRPushServiceSwitchEnable;
 	return CanPush && Region == "kr";
 }
 
 bool UXUPrivacyWidget::IsInNorthAmerica() {
-	if (!FXUInitConfigModel::GetLocalModel().IsValid()) {
+	if (!FXUServerConfig::GetLocalModel().IsValid()) {
 		return false;
 	}
-	FString Region = FXUInitConfigModel::GetLocalModel()->configs.region.ToLower();
+	FString Region = FXUServerConfig::GetLocalModel()->configs.region.ToLower();
 	return Region == "us";
 }
 

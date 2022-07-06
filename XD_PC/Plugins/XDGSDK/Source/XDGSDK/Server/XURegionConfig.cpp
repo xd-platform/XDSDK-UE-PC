@@ -54,6 +54,10 @@ FString XURegionConfig::PaybackListUrl() {
 	return BaseHost() / "/order/v1/user/repayOrders";
 }
 
+FString XURegionConfig::UploadAgreementUrl() {
+	return BaseHost() / "/api/account/v1/agreement/confirm";
+}
+
 TSharedPtr<XURegionConfig>& XURegionConfig::Get() {
 	if (!Instance.IsValid()) {
 		if (XUImpl::Get()->Config.RegionType == XUType::CN) {

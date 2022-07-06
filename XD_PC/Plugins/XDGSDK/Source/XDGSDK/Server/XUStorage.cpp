@@ -8,4 +8,5 @@ FString FXUStorage::ClientId = "PCG_ClientIdKey";
 FString FXUStorage::PrivacyKey = "PCG_PrivacyKey";
 FString FXUStorage::SessionTokenKey = "PCG_SessionTokenKey";
 FString FXUStorage::XD_CACHE_CONFIG = "XD_CACHE_CONFIG";
+FString FXUStorage::XD_CACHE_AGREEMENT = "XD_CACHE_AGREEMENT";
 FString FXUStorage::AgreementKRPush = "AgreementKRPush";

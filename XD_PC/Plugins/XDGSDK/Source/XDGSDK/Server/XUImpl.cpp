@@ -9,7 +9,7 @@
 #include "TUHUD.h"
 #include "URLParser.h"
 #include "XDGSDK.h"
-#include "XULocalInitConfigModel.h"
+#include "XULocalConfig.h"
 #include "XDGSDK/UI/XUPrivacyWidget.h"
 
 static int Success = 200;
@@ -28,23 +28,23 @@ void XUImpl::GetIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FString 
 }
 
 void XUImpl::Init(TFunction<void(bool Result, const FString& Message)> CallBack) {
-	FXULocalInitConfig::GetLocalModel();
+	FXULocalConfig::GetLocalModel();
 }
 
 void XUImpl::InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock) {
 	TUDataStorage<FXUStorage>::SaveString(FXUStorage::ClientId, sdkClientId, false);
-	XUNet::RequestConfig([=](TSharedPtr<FXUInitConfigModel> model, FXUError error) {
+	XUNet::RequestConfig([=](TSharedPtr<FXUServerConfig> model, FXUError error) {
 		if (model != nullptr && error.code == Success) {
 			model->SaveToLocal();
 			InitBootstrap(model, resultBlock, error.msg);
 		}
 		else {
-			InitBootstrap(FXUInitConfigModel::GetLocalModel(), resultBlock, error.msg);
+			InitBootstrap(FXUServerConfig::GetLocalModel(), resultBlock, error.msg);
 		}
 	});
 }
 
-void XUImpl::InitBootstrap(const TSharedPtr<FXUInitConfigModel>& model,
+void XUImpl::InitBootstrap(const TSharedPtr<FXUServerConfig>& model,
                                  TFunction<void(bool successed, FString msg)> resultBlock, const FString& msg) {
 	if (model == nullptr) {
 		if (resultBlock) { resultBlock(false, msg); }
@@ -173,7 +173,7 @@ void XUImpl::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlo
 
 FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName) {
 	auto userMd = FXUUser::GetLocalModel();
-	auto cfgMd = FXUInitConfigModel::GetLocalModel();
+	auto cfgMd = FXUServerConfig::GetLocalModel();
 	auto tkModel = FXUTokenModel::GetLocalModel();
 	if (!userMd.IsValid() || !cfgMd.IsValid() || !tkModel.IsValid()) {
 		return "";
@@ -209,7 +209,7 @@ FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId
 
 FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
 	auto userMd = FXUUser::GetLocalModel();
-	auto cfgMd = FXUInitConfigModel::GetLocalModel();
+	auto cfgMd = FXUServerConfig::GetLocalModel();
 	if (!userMd.IsValid() || !cfgMd.IsValid()) {
 		return "";
 	}
@@ -235,7 +235,7 @@ FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
 FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId,
 	const FString& ProductId, const FString& ProductName, float PayAmount, const FString& Ext) {
 	auto userMd = FXUUser::GetLocalModel();
-	auto cfgMd = FXUInitConfigModel::GetLocalModel();
+	auto cfgMd = FXUServerConfig::GetLocalModel();
 	if (!userMd.IsValid() || !cfgMd.IsValid()) {
 		return "";
 	}
@@ -350,7 +350,7 @@ void XUImpl::AsyncLocalTdsUser(const FString& userId, const FString& sessionToke
 }
 
 void XUImpl::CheckPrivacyAlert(TFunction<void()> Callback) {
-	if (FXUInitConfigModel::CanShowPrivacyAlert() && XUImpl::Get()->Config.RegionType == XUType::Global) {
+	if (FXUServerConfig::CanShowPrivacyAlert() && XUImpl::Get()->Config.RegionType == XUType::Global) {
 		UXUPrivacyWidget::ShowPrivacy(
 			[=](bool result) {
 				if (result) {

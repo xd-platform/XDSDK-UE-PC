@@ -212,7 +212,7 @@ TArray<XULoginTypeModel> UXUUserCenterWidget::GetSupportTypes()
 {
 	TArray<XULoginTypeModel> list;
 	TArray<XULoginTypeModel> SDKList = GetSdkTypes();
-	auto md = FXUInitConfigModel::GetLocalModel();
+	auto md = FXUServerConfig::GetLocalModel();
 	for (auto Model : SDKList)
 	{
 		for (auto BindEntry : md->configs.bindEntries)

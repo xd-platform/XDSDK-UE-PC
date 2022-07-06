@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "XUStorage.h"
-#include "XUInitConfigModel.generated.h"
+#include "XUServerConfig.generated.h"
 
 USTRUCT()
-struct FXUBindEntriesConfig
+struct FXUServerConfigBindEntries
 {
 	GENERATED_BODY()
 	
@@ -22,7 +22,7 @@ struct FXUBindEntriesConfig
 };
 
 USTRUCT()
-struct FXUTapSdkConfig
+struct FXUServerConfigTapSdk
 {
 	GENERATED_BODY()
 	
@@ -43,7 +43,21 @@ struct FXUTapSdkConfig
 };
 
 USTRUCT()
-struct FXUConfigsModel
+struct FXUServerConfigAgreement {
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString agreementRegion;
+	
+	UPROPERTY()
+	FString agreementVersion;
+	
+	UPROPERTY()
+	FString agreementUrl;
+};
+
+USTRUCT()
+struct FXUServerConfigConfigs
 {
 	GENERATED_BODY()
 
@@ -51,10 +65,19 @@ struct FXUConfigsModel
 	FString webPayUrl;
 
 	UPROPERTY()
+	FXUServerConfigAgreement agreement;
+
+	UPROPERTY()
 	FString serviceAgreementUrl;
 
 	UPROPERTY()
 	FString serviceAgreementTxt;
+
+	UPROPERTY()
+	TArray<FString> gameLogos;
+
+	UPROPERTY()
+	bool isProtocolUiEnable;
 
 	UPROPERTY()
 	FString googlePlayGamesAndroidClientId;
@@ -69,7 +92,7 @@ struct FXUConfigsModel
 	FString reportUrl;
 
 	UPROPERTY()
-	TArray<FXUBindEntriesConfig> bindEntriesConfig;
+	TArray<FXUServerConfigBindEntries> bindEntriesConfig;
 
 	UPROPERTY()
 	TArray<FString> androidLoginEntries;
@@ -87,7 +110,7 @@ struct FXUConfigsModel
 	FString gameName;
 
 	UPROPERTY()
-	FXUTapSdkConfig tapSdkConfig;
+	FXUServerConfigTapSdk tapSdkConfig;
 
 	UPROPERTY()
 	TArray<FString> tapLoginPermissions;
@@ -102,15 +125,22 @@ struct FXUConfigsModel
 	FString facebookClientId;
 
 	UPROPERTY()
+	TArray<FString> fbLoginPermissions;
+
+	UPROPERTY()
 	FString region;
+
+	UPROPERTY()
+	FString logoutUrl;
 
 	UPROPERTY()
 	bool isKRPushServiceSwitchEnable;
 	
 };
 
+// 服务 配置文件的Json文件的模型
 USTRUCT()
-struct FXUInitConfigModel
+struct FXUServerConfig
 {
 	GENERATED_BODY()
 
@@ -121,22 +151,23 @@ struct FXUInitConfigModel
 	FString groupId;
 
 	UPROPERTY()
-	FXUConfigsModel configs;
+	FXUServerConfigConfigs configs;
 
 	void SaveToLocal();
 
-	static TSharedPtr<FXUInitConfigModel>& GetLocalModel();
+	static TSharedPtr<FXUServerConfig>& GetLocalModel();
 
+	// 老版判断协议是否弹出过
 	static bool CanShowPrivacyAlert();
 
-	static void UpdatePrivacyState(); //弹过之后若没变化就不再弹出
+	// static void UpdatePrivacyState(); //弹过之后若没变化就不再弹出
 	
-	static void GetPrivacyTxt(const FString& txtUrl, TFunction<void(FString txt)> callback);
+	// static void GetPrivacyTxt(const FString& txtUrl, TFunction<void(FString txt)> callback);
 
 private:
-	static TSharedPtr<FXUInitConfigModel> CurrentModel;
-	void SavePrivacyTxt();
+	static TSharedPtr<FXUServerConfig> CurrentModel;
+	// void SavePrivacyTxt();
 
-	TMap<FString, FString> Cache;
+	// TMap<FString, FString> Cache;
 };
 

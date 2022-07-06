@@ -1,4 +1,5 @@
 #pragma once
+#include "XUServerConfig.h"
 #include "XUType.h"
 
 typedef TFunction<void(bool Success, TSharedPtr<XUType::Config> Config, const FString& Msg)> XUConfigHandler;
@@ -71,5 +72,11 @@ private:
 	bool IsInited = false;
 	TSharedPtr<XUType::Config> Config;
 	bool ConfigRequestSuccess = false;
-	
+
+	static FString GetRegionAgreementCacheName();
+
+	static XUType::AgreementConfig GenerateAgreementConfig(const TSharedPtr<FJsonObject>& JsonObject);
+	static void SaveAgreementConfig(XUType::AgreementConfig& AgreementConfig, bool Upload);
+
+	void UpdateConfig(TSharedPtr<FXUServerConfig> ServerConfig);
 };

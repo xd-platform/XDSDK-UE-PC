@@ -4,7 +4,7 @@
 #include "TUSettings.h"
 #include "XUConfigManager.h"
 #include "XULanguageManager.h"
-#include "XULocalInitConfigModel.h"
+#include "XULocalConfig.h"
 
 void XUSettings::SetDebugMode(bool Debug) {
 }

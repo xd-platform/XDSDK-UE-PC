@@ -21,7 +21,7 @@ class XDGSDK_API UXUPrivacyWidget : public UUserWidget
 public:
 	 UXUPrivacyWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void ShowPrivacy(TFunction<void(bool result)> Completed);
+	static void ShowPrivacy(TFunction<void()> Completed);
 
 protected:
 
@@ -68,7 +68,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* AdditionalCheckLabel;
 	
-	TFunction<void(bool result)> Completed;
+	TFunction<void()> Completed;
 
 	void FormatTags(FString& Content);
 

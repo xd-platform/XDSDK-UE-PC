@@ -15,7 +15,7 @@ UXUPrivacyWidget::UXUPrivacyWidget(const FObjectInitializer& ObjectInitializer) 
 
 }
 
-void UXUPrivacyWidget::ShowPrivacy(TFunction<void(bool result)> Completed)
+void UXUPrivacyWidget::ShowPrivacy(TFunction<void()> Completed)
 {
 	if (UClass* MyWidgetClass = LoadClass<UXUPrivacyWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPPrivacyUI.BPPrivacyUI_C'")))
 	{
@@ -97,7 +97,7 @@ void UXUPrivacyWidget::OnComfirmBtnClick()
 	// FXUServerConfig::UpdatePrivacyState();
 	if (Completed)
 	{
-		Completed(true);
+		Completed();
 	}
 	if (IsInKrAndPushEnable()) {
 		FXUUser::SetPushServiceEnable(AdditionalCheckBox->IsChecked());

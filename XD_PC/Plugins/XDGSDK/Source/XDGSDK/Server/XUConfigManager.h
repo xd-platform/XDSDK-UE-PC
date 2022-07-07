@@ -3,7 +3,7 @@
 #include "XUServerConfig.h"
 #include "XUType.h"
 
-typedef TFunction<void(bool Success, TSharedPtr<XUType::Config> Config, const FString& Msg)> XUConfigHandler;
+typedef TFunction<void(TSharedPtr<XUType::Config> Config, const FString& Msg)> XUConfigHandler;
 
 class XUConfigManager {
 public:
@@ -41,9 +41,7 @@ public:
 
 	// + (XDGRegionInfo *)GetRegionInfo();
 
-	void GetRegionInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> ModelPtr)> ResultBlock);
-
-	// static void GetRegionInfo();
+	static void GetRegionInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> ModelPtr)> ResultBlock);
 
 	static void SetGameInited();
 	static bool IsGameInited();

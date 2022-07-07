@@ -39,14 +39,14 @@ void XUConfigManager::ReadLocalConfig(XUConfigHandler Handler) {
 	auto Ptr = FXULocalConfig::GetLocalModel();
 	if (!Ptr.IsValid()) {
 		if (Handler) {
-			Handler(false, nullptr, "Config file empty, Please check your XDConfig.json");
+			Handler(nullptr, "Config file empty, Please check your XDConfig.json");
 		}
 		return;
 	}
 	auto InitPtr = Ptr->GenerateXUConfig();
 	SetConfig(InitPtr);
 	if (Handler) {
-		Handler(true, InitPtr, "");
+		Handler(InitPtr, "");
 	}
 }
 
@@ -55,12 +55,12 @@ void XUConfigManager::LoadRemoteOrCachedServiceTerms(TSharedPtr<XUType::Config> 
 	UpdateConfig(FXUServerConfig::GetLocalModel());
 	if (Config->RegionType == XUType::CN) {
 		if (Handler) {
-			Handler(true, Config, "");
+			Handler(Config, "");
 		}
 	} else {
 		RequestServerConfig(true, [=](bool Success) {
 			if (Handler) {
-				Handler(true, Config, "");
+				Handler(Config, "");
 			}
 		});
 	}

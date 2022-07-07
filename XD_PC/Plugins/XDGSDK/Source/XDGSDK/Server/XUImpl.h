@@ -4,16 +4,16 @@
 #include "XUNet.h"
 #include "XUUser.h"
 
+typedef TFunction<void(bool Result, const FString& Message)> XUInitCallback;
+
 class XUImpl
 {
 public:
-
-	void GetIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FString msg)> resultBlock);
-
-	void Init(TFunction<void(bool Result, const FString& Message)> CallBack);
 	
-	void InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock);
-
+	void InitSDK(const FString& GameVersion, XUInitCallback CallBack);
+	
+	void InitSDK(TSharedPtr<XUType::Config> Config, XUInitCallback CallBack);
+	
 	void LoginByType(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FXUUser> user)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
 
 	void GetLoginParam(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
@@ -31,24 +31,26 @@ public:
 	
 	static TSharedPtr<XUImpl>& Get();
 
-	XUType::Config Config;
+	// XUType::Config Config;
 
 
 private:
 	static TSharedPtr<XUImpl> Instance;
-
-	static void InitBootstrap(const TSharedPtr<FXUServerConfig>& model, TFunction<void(bool successed, FString msg)> resultBlock, const FString& msg);
 	
-	static void RequestKidToken(TSharedPtr<FJsonObject> paras, TFunction<void(TSharedPtr<FXUTokenModel> kidToken)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
+	void RequestKidToken(TSharedPtr<FJsonObject> paras, TFunction<void(TSharedPtr<FXUTokenModel> kidToken)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
 
-	static void RequestUserInfo(bool saveToLocal, TFunction<void(TSharedPtr<FXUUser> model)> callback, TFunction<void(FXUError error)> ErrorBlock);
+	void RequestUserInfo(bool saveToLocal, TFunction<void(TSharedPtr<FXUUser> model)> callback, TFunction<void(FXUError error)> ErrorBlock);
 
-	static void AsyncNetworkTdsUser(const FString& userId, TFunction<void(FString SessionToken)> callback, TFunction<void(FXUError error)> ErrorBlock);
+	void AsyncNetworkTdsUser(const FString& userId, TFunction<void(FString SessionToken)> callback, TFunction<void(FXUError error)> ErrorBlock);
 
-	static void AsyncLocalTdsUser(const FString& userId, const FString& sessionToken);
+	void AsyncLocalTdsUser(const FString& userId, const FString& sessionToken);
 	
-	static void CheckPrivacyAlert(TFunction<void()> Callback);
-	
-	static void RequestTapToken(TFunction<void(FTUAccessToken AccessToken)> callback, TFunction<void(FXUError error)> ErrorBlock);
-	
+	void RequestTapToken(TFunction<void(FTUAccessToken AccessToken)> callback, TFunction<void(FXUError error)> ErrorBlock);
+
+	void CheckAgreement(TSharedPtr<XUType::Config> Config, XUInitCallback CallBack);
+
+	void InitFinish(XUInitCallback CallBack);
+
+	void RequestServerConfig();
+
 };

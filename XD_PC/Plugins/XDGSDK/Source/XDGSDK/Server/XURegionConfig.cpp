@@ -1,4 +1,6 @@
 #include "XURegionConfig.h"
+
+#include "XUConfigManager.h"
 #include "XUImpl.h"
 
 
@@ -60,7 +62,7 @@ FString XURegionConfig::UploadAgreementUrl() {
 
 TSharedPtr<XURegionConfig>& XURegionConfig::Get() {
 	if (!Instance.IsValid()) {
-		if (XUImpl::Get()->Config.RegionType == XUType::CN) {
+		if (XUConfigManager::IsCN()) {
 			Instance = MakeShareable(new XURegionConfigCN);
 		} else {
 			Instance = MakeShareable(new XURegionConfigIO);

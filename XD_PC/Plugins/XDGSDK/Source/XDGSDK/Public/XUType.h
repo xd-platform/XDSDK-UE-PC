@@ -119,7 +119,7 @@ public:
 	/// TapTap 授权权限
 	TArray<FString> TapLoginPermissions;
 
-	LangType LangType = ZH_CN;
+	// 游戏版本
 	FString GameVersion = "1.0.0";
 
 	/*

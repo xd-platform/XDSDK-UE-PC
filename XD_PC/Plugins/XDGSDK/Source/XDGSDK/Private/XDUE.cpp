@@ -3,65 +3,32 @@
 #include "XULanguageManager.h"
 #include "TapUELogin.h"
 #include "TUDebuger.h"
+#include "XUConfigManager.h"
 #include "XUImpl.h"
 #include "XUSettings.h"
 #include "XDGSDK/UI/XUUserCenterWidget.h"
 #include "XDGSDK/UI/XUPayHintAlert.h"
-#include "XDGSDK/UI/XUPayWebWidget.h"
 
-enum InitState
-{
-	InitStateUninit,
-	InitStateIniting,
-	InitStateInited,
-};
-	
-static InitState g_InitState = InitStateUninit;
 
-void XDUE::Init(TFunction<void(bool Result, const FString& Message)> CallBack) {
-	XUImpl::Get()->Init(CallBack);
-}
-
-void XDUE::InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack) {
-	if (g_InitState == InitStateIniting) {
-		return;
-	}
-	if (g_InitState == InitStateInited) {
+void XDUE::Init(const FString& GameVersion, TFunction<void(bool Result, const FString& Message)> CallBack) {
+	if (IsInitialized()) {
 		if (CallBack) {
 			CallBack(true, TEXT("已经初始化"));
 		}
 		return;
 	}
-	g_InitState = InitStateIniting;
-	XUImpl::Get()->Config = Config;
-	SetLanguage(Config.LangType);
-	XUImpl::Get()->GetIpInfo([=](TSharedPtr<FXUIpInfoModel> model, FString msg) {
-		if (model == nullptr) {
-			g_InitState = InitStateUninit;
-			TUDebuger::WarningLog("No IpInfo Model");
-			if (CallBack) {
-				CallBack(false, msg);
-			}
+	XUImpl::Get()->InitSDK(GameVersion, CallBack);
+}
+
+void XDUE::InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack) {
+	if (IsInitialized()) {
+		if (CallBack) {
+			CallBack(true, TEXT("已经初始化"));
 		}
-		else {
-			XUImpl::Get()->InitSDK(Config.ClientId, [=](bool successed, FString InitMsg) {
-				if (successed) {
-					g_InitState = InitStateInited;
-					TUDebuger::WarningLog("No IpInfo Model");
-					if (CallBack) {
-						CallBack(true, InitMsg);
-					}
-				}
-				else {
-					g_InitState = InitStateUninit;
-					TUDebuger::WarningLog("init fail");
-					if (CallBack) {
-						CallBack(false, InitMsg);
-					}
-				}
-			});
-		}
-	});
+		return;
+	}
+	TSharedPtr<XUType::Config> ConfigPtr = MakeShareable(new XUType::Config);
+	XUImpl::Get()->InitSDK(ConfigPtr, CallBack);
 }
 
 void XDUE::LoginByType(XUType::LoginType Type, TFunction<void(const FXUUser& User)> SuccessBlock,
@@ -104,8 +71,12 @@ TSharedPtr<FXUIpInfoModel> XDUE::GetIPInfo() {
 	return FXUIpInfoModel::GetLocalModel();
 }
 
+void XDUE::GetIPInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> IpInfo)> CallBack) {
+	XUConfigManager::GetRegionInfo(CallBack);
+}
+
 bool XDUE::IsInitialized() {
-	return g_InitState == InitStateInited;;
+	return XUConfigManager::IsGameInited();
 }
 
 void XDUE::SetLanguage(XUType::LangType Type) {
@@ -173,7 +144,7 @@ void XDUE::OpenWebPay(const FString& ServerId, const FString& RoleId) {
 
 void XDUE::OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& OrderId, const FString& ProductId,
 	const FString& ProductName, float PayAmount, const FString& Ext) {
-	if (XUImpl::Get()->Config.RegionType == XUType::Global) {
+	if (!XUConfigManager::IsCN()) {
 		OpenWebPay(ServerId, RoleId);
 		return;
 	}

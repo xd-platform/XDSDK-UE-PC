@@ -7,7 +7,7 @@
 class XDGSDK_API XDUE {
 public:
 
-	static void Init(TFunction<void(bool Result, const FString& Message)> CallBack);
+	static void Init(const FString& GameVersion, TFunction<void(bool Result, const FString& Message)> CallBack);
 	
 	static void InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack);
 
@@ -17,8 +17,9 @@ public:
 	static TSharedPtr<FXUUser> GetUserInfo();
 	static TSharedPtr<FXUTokenModel> GetAccessToken();
 
-	// 初始化成功后有值。
+	// 使用前判断下IsValid，如果为空，那么使用异步方法请求网络IP
 	static TSharedPtr<FXUIpInfoModel> GetIPInfo();
+	static void GetIPInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> IpInfo)> CallBack);
 
 	static bool IsInitialized();
 

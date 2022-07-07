@@ -11,6 +11,7 @@
 #include "URLParser.h"
 #include "XUResponseModel.h"
 #include "XDGSDK.h"
+#include "XUConfigManager.h"
 #include "XUImpl.h"
 #include "XURegionConfig.h"
 
@@ -35,7 +36,7 @@ TSharedPtr<FJsonObject> XUNet::CommonParameters()
 {
 	TSharedPtr<FJsonObject> query = TUHttpRequest::CommonParameters();
 	
-	query->SetStringField("clientId", TUDataStorage<FXUStorage>::LoadString(FXUStorage::ClientId));
+	query->SetStringField("clientId", XUConfigManager::CurrentConfig()->ClientId);
 
 	query->SetStringField("sdkLang", XULanguageManager::GetLanguageKey());
 	query->SetStringField("lang", XULanguageManager::GetLanguageKey());
@@ -63,13 +64,13 @@ TSharedPtr<FJsonObject> XUNet::CommonParameters()
 	
 	query->SetStringField("time", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
 	
-	query->SetStringField("appVer", XUImpl::Get()->Config.GameVersion);
-	query->SetStringField("appVerCode", XUImpl::Get()->Config.GameVersion);
+	query->SetStringField("appVer", XUConfigManager::CurrentConfig()->GameVersion);
+	query->SetStringField("appVerCode", XUConfigManager::CurrentConfig()->GameVersion);
 	
 	auto cfgMd = FXUServerConfig::GetLocalModel();
 	query->SetStringField("appId", cfgMd == nullptr ? "" : cfgMd->configs.appId);
 
-	if (XUImpl::Get()->Config.RegionType == XUType::CN) {
+	if (XUConfigManager::IsCN()) {
 		query->SetStringField("region", "CN");
 	}
 

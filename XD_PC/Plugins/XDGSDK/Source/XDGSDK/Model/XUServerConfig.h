@@ -12,13 +12,13 @@ struct FXUServerConfigBindEntries
 	GENERATED_BODY()
 	
 	UPROPERTY()
-	int canBind;
+	bool canBind;
 	
 	UPROPERTY()
 	FString entryName;
 
 	UPROPERTY()
-	int canUnbind;
+	bool canUnbind;
 };
 
 USTRUCT()

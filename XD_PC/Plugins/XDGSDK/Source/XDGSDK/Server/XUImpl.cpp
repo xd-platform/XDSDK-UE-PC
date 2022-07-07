@@ -233,7 +233,8 @@ FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId, const 
 }
 
 void XUImpl::ResetPrivacy() {
-	// TUDataStorage<FXUStorage>::Remove(FXUStorage::PrivacyKey);
+	TUDataStorage<FXUStorage>::Remove(FXUStorage::PrivacyKey);
+	TUDataStorage<FXUStorage>::Remove(XUConfigManager::GetRegionAgreementCacheName());
 }
 
 TSharedPtr<XUImpl> XUImpl::Instance = nullptr;
@@ -360,6 +361,7 @@ void XUImpl::InitFinish(XUInitCallback CallBack) {
 		CallBack(true, "");
 	}
 	RequestServerConfig();
+	XUConfigManager::UploadUserAgreement();
 }
 
 void XUImpl::RequestServerConfig() {

@@ -35,7 +35,7 @@ void UXUPayHintAlert::NativeConstruct()
 
 	if (CheckType == XUType::iOSAndAndroid)
 	{
-		ContentLabel->SetText(FText::FromString(langModel->tds_refund_all_pay_tip));
+		// ContentLabel->SetText(FText::FromString(langModel->tds_refund_all_pay_tip));
 	} else if (CheckType == XUType::iOS)
 	{
 		ContentLabel->SetText(FText::FromString(langModel->tds_refund_ios_pay_tip));

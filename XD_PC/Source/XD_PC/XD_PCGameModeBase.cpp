@@ -11,10 +11,10 @@
 
 void AXD_PCGameModeBase::InitSDK(const FString& ClientId, int RegionType)
 {
-    XUType::Config Config;
-    Config.ClientId = ClientId;
-    Config.RegionType = (XUType::RegionType)RegionType;
-    XDUE::InitSDK(Config, [](bool Result, FString Message)
+    // XUType::Config Config;
+    // Config.ClientId = ClientId;
+    // Config.RegionType = (XUType::RegionType)RegionType;
+    XDUE::InitSDK("1.2.3", [](bool Result, FString Message)
     {
         if (Result)
         {

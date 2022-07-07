@@ -167,7 +167,7 @@ FString XUConfigManager::GetAgreementUrl() {
 }
 
 void XUConfigManager::UploadUserAgreement() {
-	if (!CurrentConfig()->Agreement.Version.IsEmpty()) {
+	if (CurrentConfig()->Agreement.Version.IsEmpty()) {
 		TUDebuger::ErrorLog("Agreement Version Is Empty");
 		return;
 	}

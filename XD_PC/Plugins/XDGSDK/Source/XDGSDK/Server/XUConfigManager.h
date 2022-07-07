@@ -65,6 +65,8 @@ public:
 	static void RecordKRPushSetting(bool PushOn);
 
 	static bool GetKRPushSetting();
+
+	static FString GetRegionAgreementCacheName();
 	
 private:
 	
@@ -72,8 +74,6 @@ private:
 	bool IsInited = false;
 	TSharedPtr<XUType::Config> Config;
 	bool ConfigRequestSuccess = false;
-
-	static FString GetRegionAgreementCacheName();
 
 	static XUType::AgreementConfig GenerateAgreementConfig(const TSharedPtr<FJsonObject>& JsonObject);
 	static void SaveAgreementConfig(XUType::AgreementConfig& AgreementConfig, bool Upload);

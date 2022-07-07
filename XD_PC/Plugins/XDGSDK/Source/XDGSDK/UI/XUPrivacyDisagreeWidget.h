@@ -9,42 +9,37 @@
 #include "Components/CheckBox.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "XUPrivacyWidget.generated.h"
+#include "XUPrivacyDisagreeWidget.generated.h"
 
 /**
  *  
  */
 UCLASS()
-class XDGSDK_API UXUPrivacyWidget : public UUserWidget
+class XDGSDK_API UXUPrivacyDisagreeWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-	 UXUPrivacyWidget(const FObjectInitializer& ObjectInitializer);
+	 UXUPrivacyDisagreeWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void ShowPrivacy(TFunction<void()> Completed);
+	static void Show();
 
 protected:
 
 	virtual void NativeConstruct() override;
-
-	UFUNCTION()
-	void OnCheckStateChanged(bool isChecked);
+	
 
 	UFUNCTION()
 	void OnComfirmBtnClick();
 
 	UFUNCTION()
 	void OnDeclineBtnClick();
-	
-	UFUNCTION()
-	void OnUrlChanged(const FText& Text);
 
 	
 private:
 
 	UPROPERTY(meta = (BindWidget))
-	UWebBrowser* PrivacyWebBrowser;
+	UTextBlock* ContentLabel;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* ComfirmButton;
@@ -53,27 +48,9 @@ private:
 	UTextBlock* ComfirmButtonLabel;
 
 	UPROPERTY(meta = (BindWidget))
-	UImage* ComfirmButtonImage;
-
-	UPROPERTY(meta = (BindWidget))
 	UButton* DeclineButton;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* DeclineButtonLabel;
-
-	UPROPERTY(meta = (BindWidget))
-	UCheckBox* AdditionalCheckBox;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* AdditionalCheckLabel;
 	
-	TFunction<void()> Completed;
-
-	bool IsInKrAndPushEnable();
-
-	bool IsInNorthAmerica();
-
-	void UpdateComfirmBtnState();
-
-	FString OriginURL;
 };

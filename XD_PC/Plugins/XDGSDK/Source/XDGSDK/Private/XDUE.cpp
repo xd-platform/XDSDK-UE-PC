@@ -8,9 +8,10 @@
 #include "XUSettings.h"
 #include "XDGSDK/UI/XUUserCenterWidget.h"
 #include "XDGSDK/UI/XUPayHintAlert.h"
+#include "XDGSDK/UI/XUPrivacyWidget.h"
 
 
-void XDUE::Init(const FString& GameVersion, TFunction<void(bool Result, const FString& Message)> CallBack) {
+void XDUE::InitSDK(const FString& GameVersion, TFunction<void(bool Result, const FString& Message)> CallBack) {
 	if (IsInitialized()) {
 		if (CallBack) {
 			CallBack(true, TEXT("已经初始化"));
@@ -170,11 +171,8 @@ bool XDUE::IsPushServiceEnable() {
 // only test
 
 void XDUE::Test() {
-	// UXUPayWebWidget::Show();
-	// TUDebuger::DisplayLog(FPlatformMisc::GetLocalCurrencyCode());
-	// TUDebuger::DisplayLog(FPlatformMisc::GetDefaultLocale());
-	// TUDebuger::DisplayLog(FPlatformMisc::GetDefaultLanguage());
-	// TUDebuger::DisplayLog(FPlatformMisc::GetLocalCurrencySymbol());
+	UXUPrivacyWidget::ShowPrivacy([]() {
+	});
 }
 
 void XDUE::ResetPrivacy() {

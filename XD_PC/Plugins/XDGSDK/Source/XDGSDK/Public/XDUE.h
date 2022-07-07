@@ -7,7 +7,7 @@
 class XDGSDK_API XDUE {
 public:
 
-	static void Init(const FString& GameVersion, TFunction<void(bool Result, const FString& Message)> CallBack);
+	static void InitSDK(const FString& GameVersion, TFunction<void(bool Result, const FString& Message)> CallBack);
 	
 	static void InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack);
 

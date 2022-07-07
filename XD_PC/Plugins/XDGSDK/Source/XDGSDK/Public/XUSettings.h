@@ -1,7 +1,7 @@
 #pragma once
 #include "XUType.h"
 
-class XUSettings {
+class XDGSDK_API XUSettings {
 public:
 	/// 设置调试模式，debug 会输出SDK日志
 	/// @param Debug 是否 debug 模式。默认 NO

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "XUType.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "WebBrowserWidget/Public/WebBrowser.h"
@@ -15,7 +16,7 @@ class XDGSDK_API UXUPayWebWidget : public UUserWidget
 public:
 	UXUPayWebWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void Show();
+	static void Show(const FString& PayUrl, TFunction<void(XUType::PayResult Result)> CallBack);
 
 protected:
 	
@@ -35,6 +36,12 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* CloseButton;
+
+	TFunction<void(XUType::PayResult Result)> CallBack;
+
+	FString PayUrl;
+
+	void CloseWithResult(XUType::PayResult Result);
 	
 };
 

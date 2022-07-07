@@ -1,13 +1,12 @@
 #include "XULocalConfig.h"
 
 #include "TUDebuger.h"
+#include "XUConfigManager.h"
 
 static FString InitLocalConfigPath = FPaths::ProjectPluginsDir() / TEXT("XDGSDK/Content/XDGAssets");
 
-static FString ConfigJsonName = "XDConfig.json";
-
 TSharedPtr<FXULocalConfig> FXULocalConfig::GetLocalModel() {
-	FString FilePath = InitLocalConfigPath / ConfigJsonName;
+	FString FilePath = InitLocalConfigPath / XUConfigManager::SharedInstance().ConfigFileName;
 	FString JsonStr;
 	if (FFileHelper::LoadFileToString(JsonStr, *FilePath)) {
 		TSharedPtr<FXULocalConfig> Ptr = TUJsonHelper::GetUStruct<FXULocalConfig>(JsonStr);
@@ -49,6 +48,7 @@ TSharedPtr<XUType::Config> FXULocalConfig::GenerateXUConfig() {
 	// tap sdk
 	ConfigPtr->LogoutUrl = logout_url;
 	ConfigPtr->ReportUrl = report_url;
+	ConfigPtr->WebPayUrl = webpay_url;
 	ConfigPtr->TapConfig.ClientID = tapsdk.client_id;
 	ConfigPtr->TapConfig.ClientToken = tapsdk.client_token;
 	ConfigPtr->TapConfig.ServerURL = tapsdk.server_url;

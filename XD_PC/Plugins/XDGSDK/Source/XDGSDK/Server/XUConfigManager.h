@@ -58,10 +58,7 @@ public:
 	static bool NeedReportService();
 	static bool IsGameInKoreaAndPushServiceEnable();
 	static bool IsGameInNA();
-
-
-	static void UpdateConfig(TSharedPtr<XUType::Config> Config);
-
+	
 	static void RecordKRPushSetting(bool PushOn);
 
 	static bool GetKRPushSetting();

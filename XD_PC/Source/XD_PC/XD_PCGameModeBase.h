@@ -48,7 +48,8 @@ class XD_PC_API AXD_PCGameModeBase : public AGameModeBase
     static void OpenCustomerCenter();
 
     UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "OpenWebPay"))
-	static void OpenWebPay(FString ServerId, FString RoleId, FString OrderId, FString ProductId, FString ProductName, float PayAmount, FString Ext);
+	static void OpenWebPay(FString ServerId, FString RoleId, FString ProductSkuCode,
+	FString ProductName, float PayAmount, FString Ext);
 
     UFUNCTION(BlueprintCallable, Category = "XDGameMode", meta = (DisplayName = "IsPushServiceEnable"))
     static void IsPushServiceEnable();

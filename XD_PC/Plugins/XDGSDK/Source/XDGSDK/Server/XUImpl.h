@@ -24,6 +24,10 @@ public:
 
 	FString GetPayUrl(const FString& ServerId, const FString& RoleId);
 
+	void OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductSkuCode,
+	const FString& ProductName, float PayAmount, TFunction<void(XUType::PayResult Result)> CallBack,
+	const FString& Ext);
+	
 	FString GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId, const FString& ProductId,
 	const FString& ProductName, float PayAmount, const FString& Ext);
 	

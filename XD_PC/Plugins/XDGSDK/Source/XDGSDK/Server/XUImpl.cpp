@@ -10,6 +10,7 @@
 #include "URLParser.h"
 #include "XDGSDK.h"
 #include "XUConfigManager.h"
+#include "XDGSDK/UI/XUPayWebWidget.h"
 #include "XDGSDK/UI/XUPrivacyWidget.h"
 
 static int Success = 200;
@@ -201,36 +202,41 @@ FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
 	return UrlStr;
 }
 
-FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId,
-	const FString& ProductId, const FString& ProductName, float PayAmount, const FString& Ext) {
-	auto userMd = FXUUser::GetLocalModel();
-	auto cfgMd = FXUServerConfig::GetLocalModel();
-	if (!userMd.IsValid() || !cfgMd.IsValid()) {
-		return "";
-	}
+void XUImpl::OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductSkuCode,
+	const FString& ProductName, float PayAmount, TFunction<void(XUType::PayResult Result)> CallBack,
+	const FString& Ext) {
 	
 	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
 
 	query->SetStringField("serverId", ServerId);
 	query->SetStringField("roleId", RoleId);
-	query->SetStringField("orderId", OrderId);
-	query->SetStringField("productName", ProductName);
-	query->SetStringField("payAmount", FString::Printf(TEXT("%f"), PayAmount));
-	query->SetStringField("productSkuCode", ProductId);
-	query->SetStringField("extras", Ext);
-	query->SetStringField("region", cfgMd->configs.region);
-	query->SetStringField("appId", cfgMd->configs.appId);
+	query->SetStringField("productSkuCode", ProductSkuCode);
+	query->SetStringField("region", XUConfigManager::CurrentConfig()->Region);
+	query->SetStringField("appId", XUConfigManager::CurrentConfig()->AppID);
 	query->SetStringField("lang", XULanguageManager::GetLanguageKey());
-	
+	query->SetStringField("platform", "pc");
+
+	if (!ProductName.IsEmpty()) {
+		query->SetStringField("productName", ProductName);
+	}
+	if (PayAmount > 0) {
+		query->SetStringField("payAmount", FString::Printf(TEXT("%f"), PayAmount));
+	}
+	if (!Ext.IsEmpty()) {
+		query->SetStringField("extras", Ext);
+	}
+	// PayWebBrowser->LoadURL("https://sdkpay-test.xd.cn/qr-pay/?productSkuCode=com.xd.sdkdemo1.stone30&payAmount=30.0&orderId=&roleId=323499800362549248&appId=1010&product_id%7Ccom.xd.sdkdemo1.stone30&region=CN&lang=zh_CN&serverId=demo_server_id&productName=com.xd.sdkdemo1.stone30");
 
 	FString QueryStr = TUHelper::CombinParameters(query);
-	FString UrlStr = cfgMd->configs.webPayUrl;
+	FString UrlStr = XUConfigManager::CurrentConfig()->WebPayUrl;
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
 	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
 	UrlStr = UrlStr + "?" + QueryStr;
-	return UrlStr;
+
+	UXUPayWebWidget::Show(UrlStr, CallBack);
 }
+
 
 void XUImpl::ResetPrivacy() {
 	TUDataStorage<FXUStorage>::Remove(FXUStorage::PrivacyKey);

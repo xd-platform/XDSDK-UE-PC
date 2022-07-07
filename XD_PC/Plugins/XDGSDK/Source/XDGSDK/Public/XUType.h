@@ -8,6 +8,12 @@ namespace XUType {
 		Global		// 海外
 	};
 
+	enum PayResult {
+		PaySuccess,		
+		PayFail,	
+		PayCancel		
+	};
+
 	enum LangType {
 		ZH_CN = 0,	// 中文
 		ZH_TW = 1,	// 繁体中文
@@ -153,6 +159,8 @@ public:
 	FString ReportUrl;
 	/// 注销账户链接，默认
 	FString LogoutUrl;
+	/// 注销账户链接，默认
+	FString WebPayUrl;
 	/// 协议内容
 	AgreementConfig Agreement;
 };

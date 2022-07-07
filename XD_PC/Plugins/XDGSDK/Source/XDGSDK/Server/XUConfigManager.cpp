@@ -306,10 +306,6 @@ bool XUConfigManager::IsGameInNA() {
 	return CurrentConfig()->Agreement.Region == "us";
 }
 
-void XUConfigManager::UpdateConfig(TSharedPtr<XUType::Config> Config) {
-	SetConfig(Config);
-}
-
 void XUConfigManager::RecordKRPushSetting(bool PushOn) {
 	TUDataStorage<FXUStorage>::SaveBool(FXUStorage::AgreementKRPush, PushOn);
 }
@@ -370,6 +366,10 @@ void XUConfigManager::UpdateConfig(TSharedPtr<FXUServerConfig> ServerConfig) {
 
 	if (!ServerConfig->configs.logoutUrl.IsEmpty()) {
 		config->LogoutUrl = ServerConfig->configs.logoutUrl;
+	}
+
+	if (!ServerConfig->configs.webPayUrl.IsEmpty()) {
+		config->WebPayUrl = ServerConfig->configs.webPayUrl;
 	}
 
 	if (!ServerConfig->configs.appId.IsEmpty()) {

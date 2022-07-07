@@ -8,12 +8,16 @@
 #include "TUDebuger.h"
 #include "TUMomentType.h"
 #include "XDUE.h"
+#include "XUSettings.h"
 
 void AXD_PCGameModeBase::InitSDK(const FString& ClientId, int RegionType)
 {
     // XUType::Config Config;
     // Config.ClientId = ClientId;
     // Config.RegionType = (XUType::RegionType)RegionType;
+    if (RegionType == XUType::CN) {
+        XUSettings::UpdateConfigFileName("XDConfig-cn.json");
+    }
     XDUE::InitSDK("1.2.3", [](bool Result, FString Message)
     {
         if (Result)
@@ -119,9 +123,21 @@ void AXD_PCGameModeBase::OpenCustomerCenter() {
     XDUE::OpenCustomerCenter("serverId", "roleId", "roleName");
 }
 
-void AXD_PCGameModeBase::OpenWebPay(FString ServerId, FString RoleId, FString OrderId, FString ProductId,
+void AXD_PCGameModeBase::OpenWebPay(FString ServerId, FString RoleId, FString ProductSkuCode,
     FString ProductName, float PayAmount, FString Ext) {
-    XDUE::OpenWebPay(ServerId, RoleId, OrderId, ProductId, ProductName, PayAmount, Ext);
+    XDUE::OpenWebPay(ServerId, RoleId, ProductSkuCode, [](XUType::PayResult Result) {
+        switch (Result) {
+        case XUType::PaySuccess:
+            TUDebuger::DisplayShow("Pay Success");
+            break;
+        case XUType::PayFail:
+            TUDebuger::DisplayShow("Pay Fail");
+            break;
+        case XUType::PayCancel:
+            TUDebuger::DisplayShow("Pay Cancel");
+            break;
+        }
+    }, ProductName, PayAmount, Ext);
 }
 
 void AXD_PCGameModeBase::IsPushServiceEnable() {

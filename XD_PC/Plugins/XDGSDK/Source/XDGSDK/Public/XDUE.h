@@ -38,8 +38,7 @@ public:
 	static void OpenWebPay(const FString& ServerId, const FString& RoleId); 
 
 	// 国内支付，海外调用该方法，自动会调用海外支付。
-	static void OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& OrderId,
-		const FString& ProductId, const FString& ProductName, float PayAmount, const FString& Ext);
+	static void OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductSkuCode, TFunction<void(XUType::PayResult Result)> CallBack, const FString& ProductName = "", float PayAmount = 0, const FString& Ext = "");
 
 	static void SetPushServiceEnable(bool enable);
 

@@ -267,12 +267,15 @@ void XUNet::RequestKidToken(const TSharedPtr<FJsonObject>& paras, TFunction<void
 	TUHttpManager::Get().request(request);
 }
 
-void XUNet::RequestUserInfo(TFunction<void(TSharedPtr<FXUUser> model, FXUError error)> callback)
+void XUNet::RequestUserInfo(TFunction<void(TSharedPtr<FXUUser> model, FXUError error)> callback, TFunction<void()> ClearInfoBlock)
 {
 	const TSharedPtr<TUHttpRequest> request = MakeShareable(new XUNet());
 	request->URL = XURegionConfig::Get()->UserProfileUrl();
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, callback);
+		if (response->httpCode == 401 && ClearInfoBlock) {
+			ClearInfoBlock();
+		}
 	});
 	TUHttpManager::Get().request(request);
 }

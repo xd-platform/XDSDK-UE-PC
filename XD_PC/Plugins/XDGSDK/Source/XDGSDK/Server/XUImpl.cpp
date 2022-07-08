@@ -49,10 +49,9 @@ void XUImpl::LoginByType(XUType::LoginType LoginType,
 	if (LoginType == XUType::Default) {
 		auto localUser = FXUUser::GetLocalModel();
 		if (localUser.IsValid()) {
-			RequestUserInfo(true, [=](TSharedPtr<FXUUser> user) {
-				AsyncLocalTdsUser(user->userId, FXUSyncTokenModel::GetLocalModel()->sessionToken);
-				resultBlock(user);
-			}, ErrorBlock);
+			RequestUserInfo(true, [](TSharedPtr<FXUUser> user) {}, [](FXUError Error) {});
+			AsyncLocalTdsUser(localUser->userId, FXUSyncTokenModel::GetLocalModel()->sessionToken);
+			resultBlock(localUser);
 		}
 		else {
 			ErrorBlock(FXUError(lmd->tds_login_failed));
@@ -291,6 +290,10 @@ void XUImpl::RequestUserInfo(bool saveToLocal,
 				else {
 					callback(localUser);
 				}
+			}
+		}, [=]() {
+			if (saveToLocal) {
+				FXUUser::ClearUserData();
 			}
 		});
 

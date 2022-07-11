@@ -3,6 +3,10 @@
 class TAPCOMMON_API TUDebuger
 {
 public:
+
+	static bool IsTest;
+	static TMap<FString, FString> ReplaceHosts;
+	
 	static void DisplayLog(const FString& Info);
 	static void WarningLog(const FString& Info);
 	static void ErrorLog(const FString& Info);

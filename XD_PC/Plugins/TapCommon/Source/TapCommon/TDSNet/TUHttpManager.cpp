@@ -43,6 +43,14 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TUHttpR
 		Request->SetHeader(header.Key, header.Value);
 	}
 
+	if (TUDebuger::IsTest) {
+		for (auto ReplaceHost : TUDebuger::ReplaceHosts) {
+			if (tdsReq->URL.Contains(ReplaceHost.Key)) {
+				tdsReq->URL.ReplaceInline(*ReplaceHost.Key, *ReplaceHost.Value);
+				break;
+			}
+		}
+	}
 	FString URL = tdsReq->URL;
 	for (auto PathParameter : tdsReq->PathParameters) {
 		FString PathValue = FGenericPlatformHttp::UrlEncode(PathParameter.Value);

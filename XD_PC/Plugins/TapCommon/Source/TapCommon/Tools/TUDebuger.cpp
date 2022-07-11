@@ -2,6 +2,9 @@
 
 DEFINE_LOG_CATEGORY_STATIC(TapLog, Log, All);
 
+bool TUDebuger::IsTest = false;
+TMap<FString, FString> TUDebuger::ReplaceHosts;
+
 void TUDebuger::DisplayLog(const FString& Info)
 {
 	UE_LOG(TapLog, Display, TEXT("%s"), *Info);

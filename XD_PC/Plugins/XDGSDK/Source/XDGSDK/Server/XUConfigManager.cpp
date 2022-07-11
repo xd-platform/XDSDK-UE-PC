@@ -15,7 +15,7 @@ XUConfigManager * XUConfigManager::Instance = nullptr;
 XUConfigManager& XUConfigManager::SharedInstance() {
 	if (Instance == nullptr) {
 		Instance = new XUConfigManager();
-		Instance->ConfigFileName = "XDConfig";
+		Instance->ConfigFileName = "XDConfig.json";
 		Instance->Config = MakeShareable(new XUType::Config);
 		Instance->AgreementUIEnable = true;
 	}

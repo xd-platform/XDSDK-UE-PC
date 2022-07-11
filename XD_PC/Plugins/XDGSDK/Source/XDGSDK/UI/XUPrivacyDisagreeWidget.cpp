@@ -48,7 +48,11 @@ void UXUPrivacyDisagreeWidget::OnComfirmBtnClick() {
 }
 
 void UXUPrivacyDisagreeWidget::OnDeclineBtnClick() {
-	FPlatformMisc::RequestExit(false);
+#if WITH_EDITOR
+	GEngine->Exec(nullptr, TEXT("QUIT_EDITOR"), *GLog);
+#else
+	FGenericPlatformMisc::RequestExit(false);
+#endif
 }
 
 

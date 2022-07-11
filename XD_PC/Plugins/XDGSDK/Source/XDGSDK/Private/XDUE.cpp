@@ -174,7 +174,7 @@ void XDUE::ResetPrivacy() {
 }
 
 void XDUE::OpenPayHintAlert() {
-	UXUPayHintAlert::Show(XUType::iOSAndAndroid);
+	UXUPayHintAlert::Show(XUType::iOS);
 }
 
 #endif

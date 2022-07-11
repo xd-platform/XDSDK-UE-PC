@@ -211,6 +211,9 @@ struct FXULocalConfig
 	TArray<FString> logos;
 
 	UPROPERTY()
+	TArray<FString> login_entries;
+
+	UPROPERTY()
 	FXULocalConfigFacebook facebook;
 
 	UPROPERTY()

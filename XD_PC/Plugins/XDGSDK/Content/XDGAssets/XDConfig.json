@@ -25,6 +25,7 @@
     "logos":["https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
              "https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
              "https://res.xdcdn.net/TDS/Global/res/xd_logo.png"],
+    "login_entries":["TapTap"],
     "facebook":{
         "app_id":"333676195299012",
         "client_token":"52372eb46fd7343e588160c51ca0955d",

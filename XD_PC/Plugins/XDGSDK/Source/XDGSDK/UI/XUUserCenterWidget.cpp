@@ -8,6 +8,7 @@
 #include "XUUser.h"
 #include "XUUserCenterTipWidget.h"
 #include "XDUE.h"
+#include "XUConfigManager.h"
 #include "HAL/PlatformApplicationMisc.h"
 
 UXUUserCenterWidget::UXUUserCenterWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -212,10 +213,10 @@ TArray<XULoginTypeModel> UXUUserCenterWidget::GetSupportTypes()
 {
 	TArray<XULoginTypeModel> list;
 	TArray<XULoginTypeModel> SDKList = GetSdkTypes();
-	auto md = FXUServerConfig::GetLocalModel();
+	auto md = XUConfigManager::CurrentConfig();
 	for (auto Model : SDKList)
 	{
-		for (auto BindEntry : md->configs.bindEntries)
+		for (auto BindEntry : md->LoginEntries)
 		{
 			if (Model.typeName.ToLower() == BindEntry.ToLower())
 			{

@@ -1,6 +1,7 @@
 #include "XUUserCenterItemWidget.h"
 
 #include "TUSettings.h"
+#include "XUConfigManager.h"
 #include "XUServerConfig.h"
 #include "XULanguageManager.h"
 
@@ -60,16 +61,16 @@ void UXUUserCenterItemWidget::OnBindBtnClick()
 }
 
 void UXUUserCenterItemWidget::ProcessShowOrNot() {
-	auto md = FXUServerConfig::GetLocalModel();
+	auto md = XUConfigManager::CurrentConfig();
 	if (!BindModel.IsValid() || !md.IsValid()) {
 		return;
 	}
-	for (auto BindEntry : md->configs.bindEntriesConfig) {
-		if (BindModel->loginName.ToLower() == BindEntry.entryName.ToLower()) {
+	for (auto BindEntry : md->BindEntries) {
+		if (BindModel->loginName.ToLower() == BindEntry.EntryName.ToLower()) {
 			if (BindModel->status == FXDGBindType::Bind) {
-				ShowBindBt(BindEntry.canBind);
+				ShowBindBt(BindEntry.CanBind);
 			} else {
-				ShowBindBt(BindEntry.canUnbind);
+				ShowBindBt(BindEntry.CanUnbind);
 			}
 			break;
 		}

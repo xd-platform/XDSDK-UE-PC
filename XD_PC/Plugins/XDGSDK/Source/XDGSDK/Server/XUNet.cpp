@@ -67,8 +67,8 @@ TSharedPtr<FJsonObject> XUNet::CommonParameters()
 	query->SetStringField("appVer", XUConfigManager::CurrentConfig()->GameVersion);
 	query->SetStringField("appVerCode", XUConfigManager::CurrentConfig()->GameVersion);
 	
-	auto cfgMd = FXUServerConfig::GetLocalModel();
-	query->SetStringField("appId", cfgMd == nullptr ? "" : cfgMd->configs.appId);
+	auto cfgMd = XUConfigManager::CurrentConfig();
+	query->SetStringField("appId", cfgMd == nullptr ? "" : cfgMd->AppID);
 
 	if (XUConfigManager::IsCN()) {
 		query->SetStringField("region", "CN");

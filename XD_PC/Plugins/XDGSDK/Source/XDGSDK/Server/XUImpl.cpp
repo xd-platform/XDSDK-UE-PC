@@ -142,7 +142,7 @@ void XUImpl::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlo
 
 FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName) {
 	auto userMd = FXUUser::GetLocalModel();
-	auto cfgMd = FXUServerConfig::GetLocalModel();
+	auto cfgMd = XUConfigManager::CurrentConfig();
 	auto tkModel = FXUTokenModel::GetLocalModel();
 	if (!userMd.IsValid() || !cfgMd.IsValid() || !tkModel.IsValid()) {
 		return "";
@@ -155,7 +155,7 @@ FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId
 	query->SetStringField("server_id", ServerId);
 	query->SetStringField("role_id", RoleId);
 	query->SetStringField("role_name", RoleName);
-	query->SetStringField("region", cfgMd->configs.region);
+	query->SetStringField("region", cfgMd->Region);
 	query->SetStringField("sdk_ver", XDUESDK_VERSION);
 	query->SetStringField("sdk_lang", XULanguageManager::GetCustomerCenterLang());
 	query->SetStringField("app_ver", XUConfigManager::CurrentConfig()->GameVersion);
@@ -168,7 +168,7 @@ FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId
 	query->SetStringField("game_name", TUDeviceInfo::GetProjectName());
 
 	FString QueryStr = TUHelper::CombinParameters(query);
-	FString UrlStr = cfgMd->configs.reportUrl;
+	FString UrlStr = cfgMd->ReportUrl;
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
 	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
@@ -178,7 +178,7 @@ FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId
 
 FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
 	auto userMd = FXUUser::GetLocalModel();
-	auto cfgMd = FXUServerConfig::GetLocalModel();
+	auto cfgMd = XUConfigManager::CurrentConfig();
 	if (!userMd.IsValid() || !cfgMd.IsValid()) {
 		return "";
 	}
@@ -187,13 +187,13 @@ FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
 
 	query->SetStringField("serverId", ServerId);
 	query->SetStringField("roleId", RoleId);
-	query->SetStringField("region", cfgMd->configs.region);
-	query->SetStringField("appId", cfgMd->configs.appId);
+	query->SetStringField("region", cfgMd->Region);
+	query->SetStringField("appId", cfgMd->AppID);
 	query->SetStringField("lang", XULanguageManager::GetLanguageKey());
 	
 
 	FString QueryStr = TUHelper::CombinParameters(query);
-	FString UrlStr = cfgMd->configs.webPayUrl;
+	FString UrlStr = cfgMd->WebPayUrl;
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
 	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();

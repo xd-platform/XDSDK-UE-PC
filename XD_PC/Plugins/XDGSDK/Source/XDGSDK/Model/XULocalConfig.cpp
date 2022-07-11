@@ -45,6 +45,12 @@ TSharedPtr<XUType::Config> FXULocalConfig::GenerateXUConfig() {
 	} else {
 		ConfigPtr->Logos = logos;
 	}
+	if (login_entries.Num() == 0) {
+		ConfigPtr->LoginEntries = {
+			"TapTap"};
+	} else {
+		ConfigPtr->LoginEntries = login_entries;
+	}
 	// tap sdk
 	ConfigPtr->LogoutUrl = logout_url;
 	ConfigPtr->ReportUrl = report_url;

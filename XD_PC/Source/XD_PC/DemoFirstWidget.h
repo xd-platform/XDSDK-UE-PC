@@ -10,7 +10,7 @@
 
 
 UCLASS()
-class XDGSDK_API UDemoFirstWidget : public UUserWidget
+class UDemoFirstWidget : public UUserWidget
 {
 	GENERATED_BODY()
 

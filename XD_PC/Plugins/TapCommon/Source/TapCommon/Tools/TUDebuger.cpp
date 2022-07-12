@@ -4,6 +4,7 @@ DEFINE_LOG_CATEGORY_STATIC(TapLog, Log, All);
 
 bool TUDebuger::IsTest = false;
 TMap<FString, FString> TUDebuger::ReplaceHosts;
+TMap<FString, FString> TUDebuger::ReplaceOtherContents;
 
 void TUDebuger::DisplayLog(const FString& Info)
 {

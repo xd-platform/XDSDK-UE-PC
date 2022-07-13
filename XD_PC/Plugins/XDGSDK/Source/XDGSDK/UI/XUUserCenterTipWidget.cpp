@@ -3,7 +3,6 @@
 #include "TUSettings.h"
 #include "XULanguageManager.h"
 #include "XULoginTypeModel.h"
-#include "Kismet/KismetMathLibrary.h"
 
 UXUUserCenterTipWidget::UXUUserCenterTipWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

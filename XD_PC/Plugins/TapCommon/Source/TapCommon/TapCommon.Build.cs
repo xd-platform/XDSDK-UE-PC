@@ -33,7 +33,8 @@ public class TapCommon : ModuleRules
             new string[]
             {
                 "Core",
-                "ApplicationCore"
+                "ApplicationCore",
+                "HTTPServer",
 				// ... add other public dependencies that you statically link with here ...
 			}
             );

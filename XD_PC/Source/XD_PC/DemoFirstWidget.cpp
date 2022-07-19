@@ -29,6 +29,7 @@ void UDemoFirstWidget::NativeConstruct()
 	PushEnableBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnPushEnableBtnClick);
 	MomentBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnMomentBtnClick);
 	WebPayBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnWebPayBtnClick);
+	TestButton->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnTestButtonClick);
 
 	EnvironmentBox->OnSelectionChanged.AddUniqueDynamic(this, &UDemoFirstWidget::OnEnvironmentBoxSelectionChanged);
 	RegionBox->OnSelectionChanged.AddUniqueDynamic(this, &UDemoFirstWidget::OnRegionBoxSelectionChanged);
@@ -248,5 +249,9 @@ void UDemoFirstWidget::OnLangBoxSelectionChanged(FString SelectedItem, ESelectIn
 	} else if (SelectedItem == TEXT("俄罗斯语")) {
 		XDUE::SetLanguage(XUType::RU);
 	} 
+}
+
+void UDemoFirstWidget::OnTestButtonClick() {
+	XDUE::Test();
 }
 

@@ -10,6 +10,7 @@
 #include "URLParser.h"
 #include "XDGSDK.h"
 #include "XUConfigManager.h"
+#include "XULoginHelper.h"
 #include "XDGSDK/UI/XUPayWebWidget.h"
 #include "XDGSDK/UI/XUPrivacyWidget.h"
 
@@ -89,7 +90,7 @@ void XUImpl::GetLoginParam(XUType::LoginType LoginType,
 		resultBlock(JsonObject);
 	}
 	else if (LoginType == XUType::TapTap) {
-		RequestTapToken(
+		XULoginHelper::TapTapLogin(
 			[=](FTUAccessToken AccessToken) {
 				TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 				JsonObject->SetNumberField("type", (int)LoginType);
@@ -326,31 +327,6 @@ void XUImpl::AsyncLocalTdsUser(const FString& userId, const FString& sessionToke
 	// LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, userId) as LCUser;
 	// lcUser.SessionToken = token;
 	// await lcUser.SaveToLocal();
-}
-
-void XUImpl::RequestTapToken(TFunction<void(FTUAccessToken AccessToken)> callback,
-                                   TFunction<void(FXUError error)> ErrorBlock) {
-	TapUELogin::Login(
-		[=](TUAuthResult Result) {
-			if (Result.GetType() == TUAuthResult::Success) {
-				callback(*Result.GetToken().Get());
-			}
-			else if (Result.GetType() == TUAuthResult::Cancel) {
-				FXUError Error;
-				Error.msg = "Login Cancel";
-				Error.code = FTUError::ERROR_CODE_LOGIN_CANCEL;
-				ErrorBlock(Error);
-			}
-			else if (Result.GetType() == TUAuthResult::Fail) {
-				FXUError Error;
-				Error.msg = Result.GetError()->error_description;
-				Error.code = Result.GetError()->code;
-				ErrorBlock(Error);
-			}
-			else {
-				ErrorBlock(FXUError("Login Fail"));
-			}
-		});
 }
 
 void XUImpl::CheckAgreement(TSharedPtr<XUType::Config> Config, XUInitCallback CallBack) {

@@ -70,6 +70,9 @@ protected:
 	UFUNCTION()
 	void OnLangBoxSelectionChanged(FString SelectedItem, ESelectInfo::Type SelectionType);
 
+	UFUNCTION()
+	void OnTestButtonClick();
+
 private:
 	
 	UPROPERTY(meta = (BindWidget))
@@ -137,6 +140,9 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	UButton* WebPayBtn;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* TestButton;
 	
 };
 

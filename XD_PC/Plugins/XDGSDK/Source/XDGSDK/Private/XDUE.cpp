@@ -165,8 +165,15 @@ bool XDUE::IsPushServiceEnable() {
 // only test
 
 void XDUE::Test() {
-	UXUPrivacyWidget::ShowPrivacy([]() {
-	});
+	TMap<FString, int> Maps;
+	Maps.Add("HaHa", 3);
+	if (Maps.Find("HaHa")) {
+		TUDebuger::DisplayLog("exit HaHa");
+	}
+	if (Maps.Find("HeHe")) {
+		TUDebuger::DisplayLog("exit HeHe");
+	}
+	TUDebuger::DisplayLog("Test");
 }
 
 void XDUE::ResetPrivacy() {

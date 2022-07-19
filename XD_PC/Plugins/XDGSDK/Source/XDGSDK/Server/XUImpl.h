@@ -28,14 +28,9 @@ public:
 	const FString& ProductName, float PayAmount, TFunction<void(XUType::PayResult Result)> CallBack,
 	const FString& Ext);
 	
-	FString GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId, const FString& ProductId,
-	const FString& ProductName, float PayAmount, const FString& Ext);
-	
 	void ResetPrivacy();
 	
 	static TSharedPtr<XUImpl>& Get();
-
-	// XUType::Config Config;
 
 
 private:
@@ -49,8 +44,6 @@ private:
 
 	void AsyncLocalTdsUser(const FString& userId, const FString& sessionToken);
 	
-	void RequestTapToken(TFunction<void(FTUAccessToken AccessToken)> callback, TFunction<void(FXUError error)> ErrorBlock);
-
 	void CheckAgreement(TSharedPtr<XUType::Config> Config, XUInitCallback CallBack);
 
 	void InitFinish(XUInitCallback CallBack);

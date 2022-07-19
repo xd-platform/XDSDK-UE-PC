@@ -261,7 +261,7 @@ void UTAULoginWidget::GetTokenFromWebCode(const FString& WebCode) {
 	Paras->SetStringField("grant_type", "authorization_code");
 	Paras->SetStringField("secret_type", "hmac-sha-1");
 	Paras->SetStringField("code", WebCode);
-	Paras->SetStringField("redirect_uri", WebAuthHelper->GetRedirectUri());
+	Paras->SetStringField("redirect_uri", WebAuthHelper->RedirectUri);
 	Paras->SetStringField("code_verifier", WebAuthHelper->GetCodeVerifier());
 
 	ShowTip(TAULoginLanguage::GetCurrentLang()->WebNoticeLogin(),"");

@@ -19,13 +19,11 @@ private:
 	TArray<FString> Permissions;
 
 	FString CodeVerifier;
-	
-	bool GetHttpRouter();
+
 public:
-	FString GetRedirectUri();
 	FString GetCodeVerifier() const;
+	FString RedirectUri;
 private:
-	bool SetAuthHandle();
 
 	TFunction<void(FString WebCode)> CallBackBlock;
 	

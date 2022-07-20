@@ -116,13 +116,13 @@ void UXUUserCenterTipWidget::FirstStepUpdate()
 		break;
 	case DeleteThird:
 		TitleLabel->SetText(FText::FromString(langModel->tds_delete_account_title));
-		DetailLabel->SetText(FText::FromString(langModel->tds_unbind_delete_content.Replace(TEXT("%s"), *XULoginTypeModel(LoginType).typeName)));
+		DetailLabel->SetText(FText::FromString(langModel->tds_unbind_delete_content.Replace(TEXT("%s"), *XULoginTypeModel(LoginType).TypeName)));
 		GreenButtonLabel->SetText(FText::FromString(langModel->tds_cancel));
 		WhiteButtonLabel->SetText(FText::FromString(langModel->tds_delete_account_sure));
 		break;
 	case UnbindThird:
 		TitleLabel->SetText(FText::FromString(langModel->tds_unbind_account_title));
-		DetailLabel->SetText(FText::FromString(langModel->tds_unbind_content.Replace(TEXT("%s"), *XULoginTypeModel(LoginType).typeName)));
+		DetailLabel->SetText(FText::FromString(langModel->tds_unbind_content.Replace(TEXT("%s"), *XULoginTypeModel(LoginType).TypeName)));
 		GreenButtonLabel->SetText(FText::FromString(langModel->tds_cancel));
 		WhiteButtonLabel->SetText(FText::FromString(langModel->tds_unbind_account));
 		break;

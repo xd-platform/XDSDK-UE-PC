@@ -90,9 +90,7 @@ private:
 	void ResetListBox();
 
 	void ShouldShowErrorButton(bool Should);
-
-	TArray<XULoginTypeModel> GetSdkTypes();
-
+	
 	TArray<XULoginTypeModel> GetSupportTypes();
 
 	TArray<TSharedPtr<FXUBindModel>> BindModels;

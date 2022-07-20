@@ -25,7 +25,7 @@
     "logos":["https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
              "https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
              "https://res.xdcdn.net/TDS/Global/res/xd_logo.png"],
-    "login_entries":["TapTap"],
+    "login_entries":["TapTap", "Google"],
     "google":{
         "CLIENT_ID":"420233941847-ubfufs16oujar8tido2e7ra7g0o4b73c.apps.googleusercontent.com",
         "CLIENT_SECRET":"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"

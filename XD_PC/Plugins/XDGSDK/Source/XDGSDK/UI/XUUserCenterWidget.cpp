@@ -84,11 +84,11 @@ void UXUUserCenterWidget::RequestList() {
 			auto SupportList = GetSupportTypes();
 			for (auto st : SupportList) {
 				TSharedPtr<FXUBindModel> md = MakeShareable(new FXUBindModel);
-				md->loginType = st.typeValue;
-				md->loginName = st.typeName;
+				md->loginType = st.TypeValue;
+				md->loginName = st.TypeName;
 				md->status = (int)FXDGBindType::UnBind;
 				for (auto netMd : Model->data) {
-					if (st.typeValue == netMd.loginType && netMd.status == (int)FXDGBindType::Bind) {
+					if (st.TypeValue == netMd.loginType && netMd.status == (int)FXDGBindType::Bind) {
 						md->status = netMd.status; //1未绑定
 						md->bindDate = netMd.bindDate;
 						break;
@@ -140,19 +140,13 @@ void UXUUserCenterWidget::ShouldShowErrorButton(bool Should) {
 	}
 }
 
-TArray<XULoginTypeModel> UXUUserCenterWidget::GetSdkTypes() {
-	TArray<XULoginTypeModel> list;
-	list.Add(XULoginTypeModel(XUType::TapTap));
-	return list;
-}
-
 TArray<XULoginTypeModel> UXUUserCenterWidget::GetSupportTypes() {
 	TArray<XULoginTypeModel> list;
-	TArray<XULoginTypeModel> SDKList = GetSdkTypes();
+	TArray<XULoginTypeModel> SDKList = XULoginTypeModel::GetSDKSupportTypes();
 	auto md = XUConfigManager::CurrentConfig();
 	for (auto Model : SDKList) {
 		for (auto BindEntry : md->LoginEntries) {
-			if (Model.typeName.ToLower() == BindEntry.ToLower()) {
+			if (Model.TypeName.ToLower() == BindEntry.ToLower()) {
 				list.Add(Model);
 				break;
 			}

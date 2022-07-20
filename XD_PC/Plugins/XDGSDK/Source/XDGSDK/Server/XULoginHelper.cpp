@@ -94,9 +94,10 @@ void XULoginHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)>
 				}
 			}
 		});
+		TUHttpManager::Get().request(TokenRequest);
+		
 		ResponsePtr->Body.Append(TUCrypto::UTF8Encode(FString("OK")));
 		OnComplete(MoveTemp(ResponsePtr));
-		TUHttpManager::Get().request(TokenRequest);
 		return true;
 	});
 	if (RedirectUri.IsEmpty()) {

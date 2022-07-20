@@ -99,6 +99,17 @@ void XUImpl::GetLoginParam(XUType::LoginType LoginType,
 				resultBlock(JsonObject);
 			}, ErrorBlock);
 	}
+	else if (LoginType == XUType::Google) {
+		TUDebuger::DisplayLog("Google Login");
+		XULoginHelper::GoogleLogin(
+			[=](FXUGoogleTokenModel AccessToken) {
+				TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
+				JsonObject->SetNumberField("type", (int)LoginType);
+				JsonObject->SetStringField("token", AccessToken.id_token);
+				JsonObject->SetStringField("secret", XUConfigManager::CurrentConfig()->GoogleInfo.ClientID);
+				resultBlock(JsonObject);
+			}, ErrorBlock);
+	}
 	else {
 		ErrorBlock(FXUError("No Login Param"));
 	}

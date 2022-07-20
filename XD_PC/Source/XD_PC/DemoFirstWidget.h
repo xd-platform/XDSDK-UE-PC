@@ -73,6 +73,9 @@ protected:
 	UFUNCTION()
 	void OnTestButtonClick();
 
+	UFUNCTION()
+	void OnGoogleLoginBtnClick();
+
 private:
 	
 	UPROPERTY(meta = (BindWidget))
@@ -143,6 +146,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* TestButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* GoogleLoginBtn;
 	
 };
 

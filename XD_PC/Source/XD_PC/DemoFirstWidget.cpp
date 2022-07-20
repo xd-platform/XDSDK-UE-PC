@@ -30,6 +30,7 @@ void UDemoFirstWidget::NativeConstruct()
 	MomentBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnMomentBtnClick);
 	WebPayBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnWebPayBtnClick);
 	TestButton->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnTestButtonClick);
+	GoogleLoginBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnGoogleLoginBtnClick);
 
 	EnvironmentBox->OnSelectionChanged.AddUniqueDynamic(this, &UDemoFirstWidget::OnEnvironmentBoxSelectionChanged);
 	RegionBox->OnSelectionChanged.AddUniqueDynamic(this, &UDemoFirstWidget::OnRegionBoxSelectionChanged);
@@ -67,34 +68,26 @@ void UDemoFirstWidget::OnInitButtonClick() {
 	});
 }
 
-void UDemoFirstWidget::OnAnonymousLoginBtnClick() {
-	XDUE::LoginByType(XUType::Guest, [](FXUUser User)
+void Login(XUType::LoginType LoginType) {
+	XDUE::LoginByType(LoginType, [](FXUUser User)
 	{
 		TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
 	}, [](FXUError Error)
 	{
 		TUDebuger::WarningShow(TEXT("登录失败：") + Error.msg);
 	});
+}
+
+void UDemoFirstWidget::OnAnonymousLoginBtnClick() {
+	Login(XUType::Guest);
 }
 
 void UDemoFirstWidget::OnTapTapLoginBtnClick() {
-	XDUE::LoginByType(XUType::TapTap, [](FXUUser User)
-	{
-		TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
-	}, [](FXUError Error)
-	{
-		TUDebuger::WarningShow(TEXT("登录失败：") + Error.msg);
-	});
+	Login(XUType::TapTap);
 }
 
 void UDemoFirstWidget::OnAutoLoginBtnClick() {
-	XDUE::LoginByType(XUType::Default, [](FXUUser User)
-	{
-		TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
-	}, [](FXUError Error)
-	{
-		TUDebuger::WarningShow(TEXT("登录失败：") + Error.msg);
-	});
+	Login(XUType::Default);
 }
 
 void UDemoFirstWidget::OnLogoutBtnClick() {
@@ -253,5 +246,9 @@ void UDemoFirstWidget::OnLangBoxSelectionChanged(FString SelectedItem, ESelectIn
 
 void UDemoFirstWidget::OnTestButtonClick() {
 	XDUE::Test();
+}
+
+void UDemoFirstWidget::OnGoogleLoginBtnClick() {
+	Login(XUType::Google);
 }
 

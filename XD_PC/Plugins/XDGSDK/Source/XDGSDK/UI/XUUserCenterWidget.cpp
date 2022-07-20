@@ -44,12 +44,10 @@ void UXUUserCenterWidget::NativeConstruct()
 	IDTitleLabel->SetText(FText::FromString(Content));
 	ErrorButtonLabel->SetText(FText::FromString(langModel->tds_network_error_retry));
 	BindInfoTitleLabel->SetText(FText::FromString(langModel->tds_account_bind_info));
-	DeleteButtonLabel->SetText(FText::FromString(langModel->tds_delete_account));
 	
 	CloseButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterWidget::OnCloseBtnClick);
 	CopyButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterWidget::OnCopyBtnClick);
 	ErrorButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterWidget::OnErrorBtnClick);
-	DeleteButton->OnClicked.AddUniqueDynamic(this, &UXUUserCenterWidget::OnDeleteBtnClick);
 
 	ShouldShowErrorButton(false);
 
@@ -70,36 +68,6 @@ void UXUUserCenterWidget::OnCopyBtnClick()
 void UXUUserCenterWidget::OnErrorBtnClick()
 {
 	RequestList();
-}
-
-void UXUUserCenterWidget::OnDeleteBtnClick()
-{
-	if (userMd->loginType != (int)XUType::Guest)
-	{
-		return;
-	}
-	UXUUserCenterTipWidget::Show(UXUUserCenterTipWidget::DeleteGuest, XUType::Guest, [=]()
-	{
-		UTUHUD::ShowWait();
-		XUNet::Unbind((int)XUType::Guest, [=](TSharedPtr<FXUResponseModel> Model, FXUError Error)
-		{
-			UTUHUD::Dismiss();
-			if (Model.IsValid())
-			{
-				DeleteAccount(langModel->tds_unbind_guest_return);
-			} else
-			{
-				if (Error.code > 200)
-				{
-					UTUHUD::ShowToast(Error.msg);
-				} else
-				{
-					UTUHUD::ShowToast(langModel->tds_unbind_guest_return);
-				}
-				
-			}
-		});
-	}, nullptr);
 }
 
 FString UXUUserCenterWidget::GetLoginTypeName()
@@ -140,7 +108,7 @@ void UXUUserCenterWidget::RequestList()
 				}
 				BindModels.Add(md);
 			}
-			ResetListBoxAndDeleteButton();
+			ResetListBox();
 		} else
 		{
 			ShouldShowErrorButton(true);
@@ -149,7 +117,7 @@ void UXUUserCenterWidget::RequestList()
 	});
 }
 
-void UXUUserCenterWidget::ResetListBoxAndDeleteButton()
+void UXUUserCenterWidget::ResetListBox()
 {
 	ListBox->ClearChildren();
 	for (auto FxdgBindModel : BindModels)
@@ -172,16 +140,6 @@ void UXUUserCenterWidget::ResetListBoxAndDeleteButton()
 			}
 		};
 	}
-
-	if (userMd->loginType == (int)XUType::LoginType::Guest)
-	{
-		EmptyBox1->SetVisibility(ESlateVisibility::Visible);
-		DeleteButton->SetVisibility(ESlateVisibility::Visible);
-	} else
-	{
-		EmptyBox1->SetVisibility(ESlateVisibility::Collapsed);
-		DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
-	}
 }
 
 void UXUUserCenterWidget::ShouldShowErrorButton(bool Should)
@@ -197,9 +155,6 @@ void UXUUserCenterWidget::ShouldShowErrorButton(bool Should)
 		EmptyBox2->SetVisibility(ESlateVisibility::Visible);
 		ErrorButton->SetVisibility(ESlateVisibility::Collapsed);
 	}
-
-	EmptyBox1->SetVisibility(ESlateVisibility::Collapsed);
-	DeleteButton->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 TArray<XULoginTypeModel> UXUUserCenterWidget::GetSdkTypes()

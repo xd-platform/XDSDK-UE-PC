@@ -38,9 +38,6 @@ protected:
 	UFUNCTION()
 	void OnErrorBtnClick();
 
-	UFUNCTION()
-	void OnDeleteBtnClick();
-
 private:
 	
 	UPROPERTY(meta = (BindWidget))
@@ -62,19 +59,10 @@ private:
 	UButton* CopyButton;
 
 	UPROPERTY(meta = (BindWidget))
-	UButton* DeleteButton;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* DeleteButtonLabel;
-
-	UPROPERTY(meta = (BindWidget))
 	UButton* CloseButton;
 
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* ListBox;
-
-	UPROPERTY(meta = (BindWidget))
-	USizeBox* EmptyBox1;
 
 	UPROPERTY(meta = (BindWidget))
 	USizeBox* EmptyBox2;
@@ -99,7 +87,7 @@ private:
 
 	void RequestList();
 
-	void ResetListBoxAndDeleteButton();
+	void ResetListBox();
 
 	void ShouldShowErrorButton(bool Should);
 

@@ -241,6 +241,8 @@ void UDemoFirstWidget::OnLangBoxSelectionChanged(FString SelectedItem, ESelectIn
 		XDUE::SetLanguage(XUType::TR);
 	} else if (SelectedItem == TEXT("俄罗斯语")) {
 		XDUE::SetLanguage(XUType::RU);
+	} else if (SelectedItem == TEXT("越南语")) {
+		XDUE::SetLanguage(XUType::VI);
 	} 
 }
 

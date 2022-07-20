@@ -61,6 +61,8 @@ FString XULanguageManager::GetLanguageKey()
 		return "tr_TR";
 	} else if (anguageType == XUType::RU){
 		return "ru_RU";
+	} else if (anguageType == XUType::VI){
+		return "vi_VN";
 	}
 	return "en_US";
 }
@@ -93,6 +95,8 @@ FString XULanguageManager::GetCustomerCenterLang()
 		return "tr";
 	} else if (anguageType == XUType::RU){
 		return "ru";
+	} else if (anguageType == XUType::VI){
+		return "vi";
 	}
 	return "us";
 }

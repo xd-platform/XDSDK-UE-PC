@@ -28,6 +28,7 @@ namespace XUType {
 		ES = 10,	// 西班牙语
 		TR = 11,	// 土耳其语
 		RU = 12,	// 俄罗斯语
+		VI = 13,	// 越南语
 	};
 
 	enum LoginType {

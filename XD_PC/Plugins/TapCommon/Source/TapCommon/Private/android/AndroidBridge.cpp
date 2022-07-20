@@ -90,7 +90,7 @@ extern "C"
 {
 #endif
 
-    void Java_com_tds_common_bridge_Bridge_nativeOnResult(JNIEnv *jenv, jclass thiz, jstring msg)
+    __attribute__((visibility("default"))) void Java_com_tds_common_bridge_Bridge_nativeOnResult(JNIEnv *jenv, jclass thiz, jstring msg)
     {
         const char *cMsg = jenv->GetStringUTFChars(msg, 0);
         FString fMsg = UTF8_TO_TCHAR(cMsg);

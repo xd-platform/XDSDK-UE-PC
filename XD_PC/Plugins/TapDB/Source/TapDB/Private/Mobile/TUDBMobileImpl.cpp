@@ -247,7 +247,7 @@ extern "C"
 {
 #endif
 
-	jstring Java_com_tds_tapdb_wrapper_TapDBServiceImpl_GetDynamicProperties(JNIEnv *env,jclass thiz){
+	__attribute__((visibility("default"))) jstring Java_com_tds_tapdb_wrapper_TapDBServiceImpl_GetDynamicProperties(JNIEnv *env,jclass thiz){
 		FString dynamicProperties = "";
 		if (_PropertiesBlock) {
 			TSharedPtr<FJsonObject> Properties = _PropertiesBlock();

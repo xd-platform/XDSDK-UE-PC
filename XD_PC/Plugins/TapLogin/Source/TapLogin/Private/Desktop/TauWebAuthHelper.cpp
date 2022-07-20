@@ -52,9 +52,6 @@ FString TauWebAuthHelper::GetCodeVerifier() const {
 }
 
 void TauWebAuthHelper::ProcessWebAuthRequest(const FHttpServerRequest& Request, const FHttpResultCallback& OnComplete) {
-	for (auto QueryParam : Request.QueryParams) {
-		TUDebuger::DisplayLog(QueryParam.Key + ": " + QueryParam.Value);
-	}
 	FString WebState = Request.QueryParams.FindRef("state");
 	FString WebCode = Request.QueryParams.FindRef("code");
 	FString WebMode = Request.QueryParams.FindRef("mode");

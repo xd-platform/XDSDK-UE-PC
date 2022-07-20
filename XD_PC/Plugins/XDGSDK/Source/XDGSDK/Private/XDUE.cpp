@@ -3,8 +3,10 @@
 #include "XULanguageManager.h"
 #include "TapUELogin.h"
 #include "TUDebuger.h"
+#include "TUHelper.h"
 #include "XUConfigManager.h"
 #include "XUImpl.h"
+#include "XULoginHelper.h"
 #include "XUSettings.h"
 #include "XDGSDK/UI/XUUserCenterWidget.h"
 #include "XDGSDK/UI/XUPayHintAlert.h"
@@ -165,15 +167,7 @@ bool XDUE::IsPushServiceEnable() {
 // only test
 
 void XDUE::Test() {
-	TMap<FString, int> Maps;
-	Maps.Add("HaHa", 3);
-	if (Maps.Find("HaHa")) {
-		TUDebuger::DisplayLog("exit HaHa");
-	}
-	if (Maps.Find("HeHe")) {
-		TUDebuger::DisplayLog("exit HeHe");
-	}
-	TUDebuger::DisplayLog("Test");
+	XULoginHelper::GoogleLogin(nullptr, nullptr);
 }
 
 void XDUE::ResetPrivacy() {

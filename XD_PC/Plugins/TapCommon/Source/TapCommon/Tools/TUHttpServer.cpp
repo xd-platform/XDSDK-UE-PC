@@ -1,8 +1,36 @@
 #include "TUHttpServer.h"
 
 #include "HttpServerModule.h"
+#include "TUCrypto.h"
 #include "TUDebuger.h"
+#include "TUHelper.h"
 TSharedPtr<TUHttpServer> TUHttpServer::InstancePtr = nullptr;
+
+void PrintServerRequest(const FHttpServerRequest& Request) {
+	FString Content = "RelativePath: ";
+	Content += Request.RelativePath.GetPath() + "\n";
+
+	if (Request.Verb == EHttpServerRequestVerbs::VERB_GET) {
+		Content += "Type: Get\n";
+	} else if (Request.Verb == EHttpServerRequestVerbs::VERB_POST) {
+		Content += "Type: Post\n";
+	}
+	
+	Content += "Headers:\n";
+	for (auto Header : Request.Headers) {
+		Content += FString::Printf(TEXT("%s: %s\n"), *Header.Key, *FString::Join(Header.Value, TEXT(",")));
+	}
+	Content += "PathParams:\n";
+	for (auto PathParam : Request.PathParams) {
+		Content += FString::Printf(TEXT("%s: %s\n"), *PathParam.Key, *PathParam.Value);
+	}
+	Content += "QueryParams:\n";
+	for (auto QueryParam : Request.QueryParams) {
+		Content += FString::Printf(TEXT("%s: %s\n"), *QueryParam.Key, *QueryParam.Value);
+	}
+	Content += "Body:\n" + TUCrypto::UTF8Encode(Request.Body);
+	TUDebuger::WarningLog(Content);
+}
 
 const TSharedPtr<TUHttpServer> TUHttpServer::Get() {
 	if (InstancePtr == nullptr) {
@@ -30,6 +58,7 @@ FString TUHttpServer::RegisterNewRoute(const FString& Path,
 	auto Handle = Server->HttpRouter->BindRoute(FHttpPath("/" + Path), EHttpServerRequestVerbs::VERB_GET | EHttpServerRequestVerbs::VERB_POST,
 		[=](const FHttpServerRequest& Request, const FHttpResultCallback& OnComplete)
 	{
+		PrintServerRequest(Request);
 		return CallBack(Request, OnComplete);
 	});
 	if (!Handle.IsValid()) {

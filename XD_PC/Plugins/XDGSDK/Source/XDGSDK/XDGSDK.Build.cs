@@ -55,6 +55,7 @@ public class XDGSDK : ModuleRules
 				"TapBootstrap",
 				"TapCommon",
 				"TapLogin",
+				"HTTPServer",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

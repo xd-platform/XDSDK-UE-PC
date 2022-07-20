@@ -43,43 +43,41 @@ struct FXULocalConfigTapSDK
 	TArray<FString> permissions;
 };
 
-USTRUCT()
-struct FXULocalConfigFacebook
-{
-	GENERATED_BODY()
+// USTRUCT()
+// struct FXULocalConfigFacebook
+// {
+// 	GENERATED_BODY()
+//
+// 	UPROPERTY()
+// 	FString app_id;
+//
+// 	UPROPERTY()
+// 	FString client_token;
+//
+// 	UPROPERTY()
+// 	TArray<FString> permissions;
+// };
 
-	UPROPERTY()
-	FString app_id;
+// USTRUCT()
+// struct FXULocalConfigLine
+// {
+// 	GENERATED_BODY()
+//
+// 	UPROPERTY()
+// 	FString channel_id;
+// };
 
-	UPROPERTY()
-	FString client_token;
-
-	UPROPERTY()
-	TArray<FString> permissions;
-};
-
-USTRUCT()
-struct FXULocalConfigLine
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	FString channel_id;
-
-};
-
-USTRUCT()
-struct FXULocalConfigTwitter
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	FString consumer_key;
-
-	UPROPERTY()
-	FString consumer_secret;
-	
-};
+// USTRUCT()
+// struct FXULocalConfigTwitter
+// {
+// 	GENERATED_BODY()
+//
+// 	UPROPERTY()
+// 	FString consumer_key;
+//
+// 	UPROPERTY()
+// 	FString consumer_secret;
+// };
 
 USTRUCT()
 struct FXULocalConfigGoogle
@@ -90,86 +88,89 @@ struct FXULocalConfigGoogle
 	FString CLIENT_ID;
 
 	UPROPERTY()
-	FString REVERSED_CLIENT_ID;
+	FString CLIENT_SECRET;
 
-	UPROPERTY()
-	FString API_KEY;
-
-	UPROPERTY()
-	FString GCM_SENDER_ID;
-
-	UPROPERTY()
-	int PLIST_VERSION;
-
-	UPROPERTY()
-	FString BUNDLE_ID;
-
-	UPROPERTY()
-	FString PROJECT_ID;
-
-	UPROPERTY()
-	FString STORAGE_BUCKET;
-
-	UPROPERTY()
-	bool IS_ADS_ENABLED;
-
-	UPROPERTY()
-	bool IS_ANALYTICS_ENABLED;
-
-	UPROPERTY()
-	bool IS_APPINVITE_ENABLED;
-
-	UPROPERTY()
-	bool IS_GCM_ENABLED;
-
-	UPROPERTY()
-	bool IS_SIGNIN_ENABLED;
-
-	UPROPERTY()
-	FString GOOGLE_APP_ID;
-
-	UPROPERTY()
-	FString DATABASE_URL;
+	// UPROPERTY()
+	// FString REVERSED_CLIENT_ID;
+	//
+	// UPROPERTY()
+	// FString API_KEY;
+	//
+	// UPROPERTY()
+	// FString GCM_SENDER_ID;
+	//
+	// UPROPERTY()
+	// int PLIST_VERSION;
+	//
+	// UPROPERTY()
+	// FString BUNDLE_ID;
+	//
+	// UPROPERTY()
+	// FString PROJECT_ID;
+	//
+	// UPROPERTY()
+	// FString STORAGE_BUCKET;
+	//
+	// UPROPERTY()
+	// bool IS_ADS_ENABLED;
+	//
+	// UPROPERTY()
+	// bool IS_ANALYTICS_ENABLED;
+	//
+	// UPROPERTY()
+	// bool IS_APPINVITE_ENABLED;
+	//
+	// UPROPERTY()
+	// bool IS_GCM_ENABLED;
+	//
+	// UPROPERTY()
+	// bool IS_SIGNIN_ENABLED;
+	//
+	// UPROPERTY()
+	// FString GOOGLE_APP_ID;
+	//
+	// UPROPERTY()
+	// FString DATABASE_URL;
 };
 
-USTRUCT()
-struct FXULocalConfigAdjustEvent
-{
-	GENERATED_BODY()
+// USTRUCT()
+// struct FXULocalConfigAdjustEvent
+// {
+// 	GENERATED_BODY()
+//
+// 	UPROPERTY()
+// 	FString event_name;
+//
+// 	UPROPERTY()
+// 	FString token;
+// };
 
-	UPROPERTY()
-	FString event_name;
 
-	UPROPERTY()
-	FString token;
-};
+// USTRUCT()
+// struct FXULocalConfigAdjust
+// {
+// 	GENERATED_BODY()
+//
+// 	UPROPERTY()
+// 	FString app_token;
+//
+// 	UPROPERTY()
+// 	TArray<FXULocalConfigAdjustEvent> events;
+// 	
+// };
 
-
-USTRUCT()
-struct FXULocalConfigAdjust
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	FString app_token;
-
-	UPROPERTY()
-	TArray<FXULocalConfigAdjustEvent> events;
-	
-};
-
-USTRUCT()
-struct FXULocalConfigAppsflyer
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	FString app_id;
-
-	UPROPERTY()
-	FString dev_key;
-	
-};
+// USTRUCT()
+// struct FXULocalConfigAppsflyer
+// {
+// 	GENERATED_BODY()
+//
+// 	UPROPERTY()
+// 	FString app_id;
+//
+// 	UPROPERTY()
+// 	FString dev_key;
+// 	
+// };
 
 
 USTRUCT()
@@ -213,23 +214,23 @@ struct FXULocalConfig
 	UPROPERTY()
 	TArray<FString> login_entries;
 
-	UPROPERTY()
-	FXULocalConfigFacebook facebook;
-
-	UPROPERTY()
-	FXULocalConfigLine line;
-
-	UPROPERTY()
-	FXULocalConfigTwitter twitter;
+	// UPROPERTY()
+	// FXULocalConfigFacebook facebook;
+	//
+	// UPROPERTY()
+	// FXULocalConfigLine line;
+	//
+	// UPROPERTY()
+	// FXULocalConfigTwitter twitter;
 
 	UPROPERTY()
 	FXULocalConfigGoogle google;
 
-	UPROPERTY()
-	FXULocalConfigAdjust adjust;
-
-	UPROPERTY()
-	FXULocalConfigAppsflyer appsflyer;
+	// UPROPERTY()
+	// FXULocalConfigAdjust adjust;
+	//
+	// UPROPERTY()
+	// FXULocalConfigAppsflyer appsflyer;
 
 	static TSharedPtr<FXULocalConfig> GetLocalModel();
 

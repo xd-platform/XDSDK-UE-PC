@@ -237,12 +237,12 @@ bool XUConfigManager::GoogleEnable() {
 	return false;
 }
 
-bool XUConfigManager::FacebookEnable() {
-	if (!CurrentConfig()->FacebookInfo.AppID.IsEmpty()) {
-		return true;
-	}
-	return false;
-}
+// bool XUConfigManager::FacebookEnable() {
+// 	if (!CurrentConfig()->FacebookInfo.AppID.IsEmpty()) {
+// 		return true;
+// 	}
+// 	return false;
+// }
 
 bool XUConfigManager::TapTapEnable() {
 	if (!CurrentConfig()->TapConfig.ClientID.IsEmpty()) {
@@ -258,33 +258,33 @@ bool XUConfigManager::TapDBEnable() {
 	return false;
 }
 
-bool XUConfigManager::AdjustEnable() {
-	if (!CurrentConfig()->AdjustInfo.AppToken.IsEmpty()) {
-		return true;
-	}
-	return false;
-}
+// bool XUConfigManager::AdjustEnable() {
+// 	if (!CurrentConfig()->AdjustInfo.AppToken.IsEmpty()) {
+// 		return true;
+// 	}
+// 	return false;
+// }
 
-bool XUConfigManager::AppsflyersEnable() {
-	if (!CurrentConfig()->AppsflyerInfo.AppID.IsEmpty()) {
-		return true;
-	}
-	return false;
-}
+// bool XUConfigManager::AppsflyersEnable() {
+// 	if (!CurrentConfig()->AppsflyerInfo.AppID.IsEmpty()) {
+// 		return true;
+// 	}
+// 	return false;
+// }
 
-bool XUConfigManager::LineEnable() {
-	if (!CurrentConfig()->LineInfo.ChannelID.IsEmpty()) {
-		return true;
-	}
-	return false;
-}
+// bool XUConfigManager::LineEnable() {
+// 	if (!CurrentConfig()->LineInfo.ChannelID.IsEmpty()) {
+// 		return true;
+// 	}
+// 	return false;
+// }
 
-bool XUConfigManager::TwitterEnable() {
-	if (!CurrentConfig()->TwitterInfo.ConsumerKey.IsEmpty() && !CurrentConfig()->TwitterInfo.ConsumerSecret.IsEmpty()) {
-		return true;
-	}
-	return false;
-}
+// bool XUConfigManager::TwitterEnable() {
+// 	if (!CurrentConfig()->TwitterInfo.ConsumerKey.IsEmpty() && !CurrentConfig()->TwitterInfo.ConsumerSecret.IsEmpty()) {
+// 		return true;
+// 	}
+// 	return false;
+// }
 
 bool XUConfigManager::NeedReportService() {
 	if (!CurrentConfig()->ReportUrl.IsEmpty()) {

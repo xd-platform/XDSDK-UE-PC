@@ -66,41 +66,42 @@ TSharedPtr<XUType::Config> FXULocalConfig::GenerateXUConfig() {
 	ConfigPtr->TapConfig.DBConfig.GameVersion = tapsdk.db_config.game_version;
 	ConfigPtr->TapConfig.DBConfig.AdvertiserIDCollectionEnabled = idfa_enabled;
 	
-	ConfigPtr->FacebookInfo.AppID = facebook.app_id;
-	ConfigPtr->FacebookInfo.ClientToken = facebook.client_token;
-	ConfigPtr->FacebookLoginPersmissions = facebook.permissions;
-
-	ConfigPtr->LineInfo.ChannelID = line.channel_id;
-
-	ConfigPtr->TwitterInfo.ConsumerKey = twitter.consumer_key;
-	ConfigPtr->TwitterInfo.ConsumerSecret = twitter.consumer_secret;
+	// ConfigPtr->FacebookInfo.AppID = facebook.app_id;
+	// ConfigPtr->FacebookInfo.ClientToken = facebook.client_token;
+	// ConfigPtr->FacebookLoginPersmissions = facebook.permissions;
+	//
+	// ConfigPtr->LineInfo.ChannelID = line.channel_id;
+	//
+	// ConfigPtr->TwitterInfo.ConsumerKey = twitter.consumer_key;
+	// ConfigPtr->TwitterInfo.ConsumerSecret = twitter.consumer_secret;
 
 	ConfigPtr->GoogleInfo.ClientID = google.CLIENT_ID;
-	ConfigPtr->GoogleInfo.ApiKey = google.API_KEY;
-	ConfigPtr->GoogleInfo.IsSigninEnabled = google.IS_SIGNIN_ENABLED;
-	ConfigPtr->GoogleInfo.GoogleAppID = google.GOOGLE_APP_ID;
-	ConfigPtr->GoogleInfo.IsGCMEnabled = google.IS_GCM_ENABLED;
-	ConfigPtr->GoogleInfo.ReversedClientID = google.REVERSED_CLIENT_ID;
-	ConfigPtr->GoogleInfo.GCMSenderID = google.GCM_SENDER_ID;
-	ConfigPtr->GoogleInfo.BundleID = google.BUNDLE_ID;
-	ConfigPtr->GoogleInfo.IsAppInviteEnabled = google.IS_APPINVITE_ENABLED;
-	ConfigPtr->GoogleInfo.DatabaseURL = google.DATABASE_URL;
-	ConfigPtr->GoogleInfo.IsAnalyticsEnabled = google.IS_ANALYTICS_ENABLED;
-	ConfigPtr->GoogleInfo.ProjectID = google.PROJECT_ID;
-	ConfigPtr->GoogleInfo.IsAdsEnabled = google.IS_ADS_ENABLED;
-	ConfigPtr->GoogleInfo.PlistVersion = google.PLIST_VERSION;
-	ConfigPtr->GoogleInfo.StorageBucket = google.STORAGE_BUCKET;
+	ConfigPtr->GoogleInfo.ClientSecret = google.CLIENT_SECRET;
+	// ConfigPtr->GoogleInfo.ApiKey = google.API_KEY;
+	// ConfigPtr->GoogleInfo.IsSigninEnabled = google.IS_SIGNIN_ENABLED;
+	// ConfigPtr->GoogleInfo.GoogleAppID = google.GOOGLE_APP_ID;
+	// ConfigPtr->GoogleInfo.IsGCMEnabled = google.IS_GCM_ENABLED;
+	// ConfigPtr->GoogleInfo.ReversedClientID = google.REVERSED_CLIENT_ID;
+	// ConfigPtr->GoogleInfo.GCMSenderID = google.GCM_SENDER_ID;
+	// ConfigPtr->GoogleInfo.BundleID = google.BUNDLE_ID;
+	// ConfigPtr->GoogleInfo.IsAppInviteEnabled = google.IS_APPINVITE_ENABLED;
+	// ConfigPtr->GoogleInfo.DatabaseURL = google.DATABASE_URL;
+	// ConfigPtr->GoogleInfo.IsAnalyticsEnabled = google.IS_ANALYTICS_ENABLED;
+	// ConfigPtr->GoogleInfo.ProjectID = google.PROJECT_ID;
+	// ConfigPtr->GoogleInfo.IsAdsEnabled = google.IS_ADS_ENABLED;
+	// ConfigPtr->GoogleInfo.PlistVersion = google.PLIST_VERSION;
+	// ConfigPtr->GoogleInfo.StorageBucket = google.STORAGE_BUCKET;
 
-	for (auto Event : adjust.events) {
-		XUType::AdjustEvent Temp;
-		Temp.Token = Event.token;
-		Temp.EventName = Event.event_name;
-		ConfigPtr->AdjustInfo.Events.Add(Temp);
-	}
-	ConfigPtr->AdjustInfo.AppToken = adjust.app_token;
-
-	ConfigPtr->AppsflyerInfo.DevKey = appsflyer.dev_key;
-	ConfigPtr->AppsflyerInfo.AppID = appsflyer.app_id;
+	// for (auto Event : adjust.events) {
+	// 	XUType::AdjustEvent Temp;
+	// 	Temp.Token = Event.token;
+	// 	Temp.EventName = Event.event_name;
+	// 	ConfigPtr->AdjustInfo.Events.Add(Temp);
+	// }
+	// ConfigPtr->AdjustInfo.AppToken = adjust.app_token;
+	//
+	// ConfigPtr->AppsflyerInfo.DevKey = appsflyer.dev_key;
+	// ConfigPtr->AppsflyerInfo.AppID = appsflyer.app_id;
 
 	if (ConfigPtr->RegionType == XUType::CN) {
 		ConfigPtr->Agreement.Url = "https://protocol.xd.cn/sdk/merger.html";

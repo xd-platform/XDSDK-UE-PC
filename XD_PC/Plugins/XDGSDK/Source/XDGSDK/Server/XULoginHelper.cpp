@@ -9,6 +9,7 @@
 #include "TUHttpServer.h"
 #include "TUJsonHelper.h"
 #include "TUOpenSSL.h"
+#include "XUConfigManager.h"
 #include "XUGoogleTokenModel.h"
 
 
@@ -41,8 +42,8 @@ void XULoginHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)>
 	TFunction<void(FXUError Error)> ErrorBlock) {
 	FString State = FGuid::NewGuid().ToString();
 	FString CodeVerifier = TUHelper::GetRandomStr(16);
-	FString ClientID = "420233941847-ubfufs16oujar8tido2e7ra7g0o4b73c.apps.googleusercontent.com";
-	FString ClientSecret = "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";
+	FString ClientID = XUConfigManager::CurrentConfig()->GoogleInfo.ClientID;
+	FString ClientSecret = XUConfigManager::CurrentConfig()->GoogleInfo.ClientSecret;
 	static FString RedirectUri = "";
 	RedirectUri = TUHttpServer::RegisterNewRoute("google_auth", [=](const FHttpServerRequest& Request, const FHttpResultCallback& OnComplete) {
 		

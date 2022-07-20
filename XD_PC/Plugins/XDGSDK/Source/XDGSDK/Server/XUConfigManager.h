@@ -47,13 +47,13 @@ public:
 	static bool IsGameInited();
 
 	static bool GoogleEnable();
-	static bool FacebookEnable();
+	// static bool FacebookEnable();
 	static bool TapTapEnable();
 	static bool TapDBEnable();
-	static bool AdjustEnable();
-	static bool AppsflyersEnable();
-	static bool LineEnable();
-	static bool TwitterEnable();
+	// static bool AdjustEnable();
+	// static bool AppsflyersEnable();
+	// static bool LineEnable();
+	// static bool TwitterEnable();
 
 	static bool NeedReportService();
 	static bool IsGameInKoreaAndPushServiceEnable();

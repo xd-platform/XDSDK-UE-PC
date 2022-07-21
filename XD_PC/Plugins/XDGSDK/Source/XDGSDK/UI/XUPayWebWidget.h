@@ -4,7 +4,7 @@
 #include "XUType.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
-#include "WebBrowserWidget/Public/WebBrowser.h"
+#include "TUWebBrowser.h"
 #include "XUPayWebWidget.generated.h"
 
 
@@ -32,7 +32,7 @@ protected:
 private:
 	
 	UPROPERTY(meta = (BindWidget))
-	UWebBrowser* PayWebBrowser;
+	UTUWebBrowser* PayWebBrowser;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* CloseButton;

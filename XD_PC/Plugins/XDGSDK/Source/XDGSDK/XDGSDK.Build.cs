@@ -51,9 +51,9 @@ public class XDGSDK : ModuleRules
 				// "OpenSSL",
 				"JsonUtilities",
 				"ApplicationCore",
-				"WebBrowserWidget",
 				"TapBootstrap",
 				"TapCommon",
+				"TapWebBrowser",
 				"TapLogin",
 				"HTTPServer",
 				// ... add private dependencies that you statically link with here ...	

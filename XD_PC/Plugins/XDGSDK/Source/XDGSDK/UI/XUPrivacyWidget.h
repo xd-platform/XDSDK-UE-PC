@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "WebBrowser.h"
+#include "TUWebBrowser.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/CheckBox.h"
@@ -44,7 +44,7 @@ protected:
 private:
 
 	UPROPERTY(meta = (BindWidget))
-	UWebBrowser* PrivacyWebBrowser;
+	UTUWebBrowser* PrivacyWebBrowser;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* ComfirmButton;

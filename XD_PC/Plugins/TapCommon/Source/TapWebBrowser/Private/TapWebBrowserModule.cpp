@@ -8,7 +8,6 @@
 #include "Materials/Material.h"
 
 //////////////////////////////////////////////////////////////////////////
-// FWebBrowserWidgetModule
 
 class FTapWebBrowserModule : public ITapWebBrowserModule
 {

@@ -37,9 +37,9 @@ void UXUPrivacyDisagreeWidget::NativeConstruct()
 	
 	
 	auto langModel = XULanguageManager::GetCurrentModel();
-	ComfirmButtonLabel->SetText(FText::FromString(langModel->tds_service_deny_dialog_agree));
-	DeclineButtonLabel->SetText(FText::FromString(langModel->tds_service_deny_dialog_deny));
-	ContentLabel->SetText(FText::FromString(langModel->tds_service_deny_dialog_content));
+	ComfirmButtonLabel->SetText(FText::FromString(langModel->xd_agreement_disagree_confirm_back));
+	DeclineButtonLabel->SetText(FText::FromString(langModel->xd_agreement_disagree_confirm_exit));
+	ContentLabel->SetText(FText::FromString(langModel->xd_agreement_disagree_confirm_content));
 	
 }
 

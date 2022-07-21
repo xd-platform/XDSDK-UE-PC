@@ -45,8 +45,8 @@ void UXUPrivacyWidget::NativeConstruct()
 	PrivacyWebBrowser->LoadURL(OriginURL);
 	
 	auto langModel = XULanguageManager::GetCurrentModel();
-	ComfirmButtonLabel->SetText(FText::FromString(langModel->tds_confirm_agreement));
-	DeclineButtonLabel->SetText(FText::FromString(langModel->tds_decline_agreement));
+	ComfirmButtonLabel->SetText(FText::FromString(langModel->xd_agreement_agree));
+	DeclineButtonLabel->SetText(FText::FromString(langModel->xd_agreement_disagree));
 
 	if (IsInKrAndPushEnable()) {
 		AdditionalCheckLabel->SetText(FText::FromString(langModel->tds_push_agreement));
@@ -72,7 +72,7 @@ void UXUPrivacyWidget::OnCheckStateChanged(bool isChecked)
 void UXUPrivacyWidget::OnComfirmBtnClick()
 {
 	if (IsInNorthAmerica() && !AdditionalCheckBox->IsChecked()) {
-		UTUHUD::ShowToast(XULanguageManager::GetCurrentModel()->tds_service_na_toast);
+		UTUHUD::ShowToast(XULanguageManager::GetCurrentModel()->xd_agreement_age_tips);
 		return;
 	} 
 
@@ -91,14 +91,29 @@ void UXUPrivacyWidget::OnDeclineBtnClick() {
 
 void UXUPrivacyWidget::OnWebLoadStarted() {
 	TUDebuger::DisplayLog("Privacy Web Load Started");
+	if (PrivacyWebBrowser->GetUrl() == OriginURL) {
+		TUDebuger::DisplayLog("is OriginURL");
+	} else {
+		TUDebuger::DisplayLog("is not OriginURL");
+	}
 }
 
 void UXUPrivacyWidget::OnWebLoadCompleted() {
 	TUDebuger::DisplayLog("Privacy Web Load Completed");
+	if (PrivacyWebBrowser->GetUrl() == OriginURL) {
+		TUDebuger::DisplayLog("is OriginURL");
+	} else {
+		TUDebuger::DisplayLog("is not OriginURL");
+	}
 }
 
 void UXUPrivacyWidget::OnWebLoadError() {
 	TUDebuger::DisplayLog("Privacy Web Load Error");
+	if (PrivacyWebBrowser->GetUrl() == OriginURL) {
+		TUDebuger::DisplayLog("is OriginURL");
+	} else {
+		TUDebuger::DisplayLog("is not OriginURL");
+	}
 }
 
 bool UXUPrivacyWidget::OnWebBeforeNavigation(const FString& Url, const FWebNavigationRequest& Request) {

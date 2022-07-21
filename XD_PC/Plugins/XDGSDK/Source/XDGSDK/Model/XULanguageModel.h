@@ -41,9 +41,6 @@ struct FXULanguageModel
 	FString tds_unbind_account;
 
 	UPROPERTY()
-	FString xdg_account_cancellation;
-
-	UPROPERTY()
 	FString tds_unbind_account_button;
 
 	UPROPERTY()
@@ -128,9 +125,6 @@ struct FXULanguageModel
 	FString tds_network_error_retry;
 
 	UPROPERTY()
-	FString tds_protocol_error_retry;
-
-	UPROPERTY()
 	FString tds_login_success;
 
 	UPROPERTY()
@@ -209,6 +203,9 @@ struct FXULanguageModel
 	FString tds_refund_android_pay_tip;
 
 	UPROPERTY()
+	FString tds_refund_all_pay_tip;
+
+	UPROPERTY()
 	FString tds_pay_net_fail;
 
 	UPROPERTY()
@@ -228,9 +225,6 @@ struct FXULanguageModel
 
 	UPROPERTY()
 	FString tds_confirm_agreement;
-
-	UPROPERTY()
-	FString tds_decline_agreement;
 
 	UPROPERTY()
 	FString tds_is_adult_agreement;
@@ -254,16 +248,34 @@ struct FXULanguageModel
 	FString tds_ios_restricted_payment_description;
 
 	UPROPERTY()
-	FString tds_service_deny_dialog_content;
+	FString xd_agreement_agree;
 
 	UPROPERTY()
-	FString tds_service_deny_dialog_deny;
+	FString xd_agreement_disagree;
 
 	UPROPERTY()
-	FString tds_service_deny_dialog_agree;
+	FString xd_agreement_disagree_confirm_content;
 
 	UPROPERTY()
-	FString tds_service_na_toast;
+	FString xd_agreement_disagree_confirm_exit;
+
+	UPROPERTY()
+	FString xd_agreement_disagree_confirm_back;
+
+	UPROPERTY()
+	FString xd_agreement_age_tips;
+
+	UPROPERTY()
+	FString xd_agreement_load_failed;
+
+	UPROPERTY()
+	FString tds_retry;
+
+	UPROPERTY()
+	FString tds_net_error;
+
+	UPROPERTY()
+	FString tds_load_error;
 
 };
 

@@ -2,8 +2,8 @@
 
 #pragma once
 
+#include "IWebBrowserWindow.h"
 #include "Components/Widget.h"
-
 #include "TUWebBrowser.generated.h"
 
 
@@ -16,8 +16,15 @@ class TAPWEBBROWSER_API UTUWebBrowser : public UWidget
 	GENERATED_UCLASS_BODY()
 
 public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUrlChanged, const FText&, Text);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBeforePopup, FString, URL, FString, Frame);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTUOnTextChanged, const FText&, Text);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTUOnBeforePopup, FString, URL, FString, Frame);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTUSimpleDelegate);
+	
+	// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTextChanged, const FText&, Text);
+	// DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBeforePopupDelegate, FString, URL, FString, Frame);
+	// DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCreateWindowDelegate, const TWeakPtr<IWebBrowserWindow>&, Window, const TWeakPtr<IWebBrowserPopupFeatures>&, PopupFeatures);
+	// DECLARE_DYNAMIC_MULTICAST_de
+	// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTUSimpleDelegate);
 
 	/**
 	 * Load the specified URL
@@ -60,11 +67,39 @@ public:
 
 	/** Called when the Url changes. */
 	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
-	FOnUrlChanged OnUrlChanged;
+	FTUOnTextChanged OnUrlChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
+	FTUOnTextChanged OnTitleChanged;
 
 	/** Called when a popup is about to spawn. */
 	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
-	FOnBeforePopup OnBeforePopup;
+	FTUOnBeforePopup OnBeforePopup;
+
+	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
+	FTUSimpleDelegate OnLoadCompleted;
+
+	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
+	FTUSimpleDelegate OnLoadError;
+
+	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
+	FTUSimpleDelegate OnLoadStarted;
+	
+	FOnCreateWindowDelegate OnCreateWindow;
+
+	FOnCloseWindowDelegate OnCloseWindow;
+
+	SWebBrowser::FOnBeforeBrowse OnBeforeNavigation;
+
+	SWebBrowser::FOnLoadUrl OnLoadUrl;
+
+	SWebBrowser::FOnShowDialog OnShowDialog;
+
+	FSimpleDelegate OnDismissAllDialogs;
+
+	FOnSuppressContextMenu OnSuppressContextMenu;
+
+	SWebBrowser::FOnDragWindow OnDragWindow;
 
 public:
 
@@ -96,5 +131,11 @@ protected:
 	// End of UWidget interface
 
 	void HandleOnUrlChanged(const FText& Text);
+	void HandleOnTitleChanged(const FText& Text);
 	bool HandleOnBeforePopup(FString URL, FString Frame);
+	void HandleOnLoadCompleted();
+	void HandleOnLoadError();
+	void HandleOnLoadStarted();
+
+	
 };

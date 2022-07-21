@@ -92,13 +92,24 @@ TSharedRef<SWidget> UTUWebBrowser::RebuildWidget()
 				.Text(LOCTEXT("Web Browser", "Web Browser"))
 			];
 	}
-	else
-	{
+	else {
 		WebBrowserWidget = SNew(SWebBrowser)
 			.InitialURL(InitialURL)
 			.ShowControls(false)
 			.SupportsTransparency(bSupportsTransparency)
 			.OnUrlChanged(BIND_UOBJECT_DELEGATE(FOnTextChanged, HandleOnUrlChanged))
+			.OnTitleChanged(BIND_UOBJECT_DELEGATE(FOnTextChanged, HandleOnTitleChanged))
+			.OnLoadCompleted(BIND_UOBJECT_DELEGATE(FSimpleDelegate, HandleOnLoadCompleted))
+			.OnLoadError(BIND_UOBJECT_DELEGATE(FSimpleDelegate, HandleOnLoadError))
+			.OnLoadStarted(BIND_UOBJECT_DELEGATE(FSimpleDelegate, HandleOnLoadStarted))
+			.OnCreateWindow(OnCreateWindow)
+			.OnCloseWindow(OnCloseWindow)
+			.OnBeforeNavigation(OnBeforeNavigation)
+			.OnLoadUrl(OnLoadUrl)
+			.OnShowDialog(OnShowDialog)
+			.OnDismissAllDialogs(OnDismissAllDialogs)
+			.OnSuppressContextMenu(OnSuppressContextMenu)
+			.OnDragWindow(OnDragWindow)
 			.OnBeforePopup(BIND_UOBJECT_DELEGATE(FOnBeforePopupDelegate, HandleOnBeforePopup));
 
 		return WebBrowserWidget.ToSharedRef();
@@ -118,6 +129,10 @@ void UTUWebBrowser::SynchronizeProperties()
 void UTUWebBrowser::HandleOnUrlChanged(const FText& InText)
 {
 	OnUrlChanged.Broadcast(InText);
+}
+
+void UTUWebBrowser::HandleOnTitleChanged(const FText& Text) {
+	OnTitleChanged.Broadcast(Text);
 }
 
 bool UTUWebBrowser::HandleOnBeforePopup(FString URL, FString Frame)
@@ -146,6 +161,20 @@ bool UTUWebBrowser::HandleOnBeforePopup(FString URL, FString Frame)
 
 	return false;
 }
+
+void UTUWebBrowser::HandleOnLoadCompleted() {
+	OnLoadCompleted.Broadcast();
+}
+
+void UTUWebBrowser::HandleOnLoadError() {
+	OnLoadError.Broadcast();
+}
+
+void UTUWebBrowser::HandleOnLoadStarted() {
+	OnLoadStarted.Broadcast();
+}
+
+
 
 #if WITH_EDITOR
 

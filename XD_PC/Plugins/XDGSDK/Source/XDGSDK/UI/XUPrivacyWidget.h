@@ -36,10 +36,17 @@ protected:
 
 	UFUNCTION()
 	void OnDeclineBtnClick();
-	
-	UFUNCTION()
-	void OnUrlChanged(const FText& Text);
 
+	UFUNCTION()
+	void OnWebLoadStarted();
+
+	UFUNCTION()
+	void OnWebLoadCompleted();
+
+	UFUNCTION()
+	void OnWebLoadError();
+	
+	bool OnWebBeforeNavigation(const FString& Url, const FWebNavigationRequest& Request);
 	
 private:
 

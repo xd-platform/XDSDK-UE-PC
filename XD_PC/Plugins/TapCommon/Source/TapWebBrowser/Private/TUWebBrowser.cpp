@@ -1,6 +1,9 @@
 ﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "TUWebBrowser.h"
+
+#include <iostream>
+
 #include "SWebBrowser.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"
@@ -102,14 +105,14 @@ TSharedRef<SWidget> UTUWebBrowser::RebuildWidget()
 			.OnLoadCompleted(BIND_UOBJECT_DELEGATE(FSimpleDelegate, HandleOnLoadCompleted))
 			.OnLoadError(BIND_UOBJECT_DELEGATE(FSimpleDelegate, HandleOnLoadError))
 			.OnLoadStarted(BIND_UOBJECT_DELEGATE(FSimpleDelegate, HandleOnLoadStarted))
-			.OnCreateWindow(OnCreateWindow)
-			.OnCloseWindow(OnCloseWindow)
-			.OnBeforeNavigation(OnBeforeNavigation)
-			.OnLoadUrl(OnLoadUrl)
-			.OnShowDialog(OnShowDialog)
-			.OnDismissAllDialogs(OnDismissAllDialogs)
-			.OnSuppressContextMenu(OnSuppressContextMenu)
-			.OnDragWindow(OnDragWindow)
+			// .OnCreateWindow(OnCreateWindow) 这种写法不对，还是模仿上面的写法
+			// .OnCloseWindow(OnCloseWindow)
+			.OnBeforeNavigation(BIND_UOBJECT_DELEGATE(SWebBrowser::FOnBeforeBrowse, HandleOnBeforeNavigation))
+			// .OnLoadUrl(OnLoadUrl)
+			// .OnShowDialog(OnShowDialog)
+			// .OnDismissAllDialogs(OnDismissAllDialogs)
+			// .OnSuppressContextMenu(OnSuppressContextMenu)
+			// .OnDragWindow(OnDragWindow)
 			.OnBeforePopup(BIND_UOBJECT_DELEGATE(FOnBeforePopupDelegate, HandleOnBeforePopup));
 
 		return WebBrowserWidget.ToSharedRef();
@@ -174,6 +177,12 @@ void UTUWebBrowser::HandleOnLoadStarted() {
 	OnLoadStarted.Broadcast();
 }
 
+bool UTUWebBrowser::HandleOnBeforeNavigation(const FString& Url, const FWebNavigationRequest& Request) {
+	if (OnBeforeNavigation.IsBound()) {
+		return OnBeforeNavigation.Execute(Url, Request);
+	}
+	return false;
+}
 
 
 #if WITH_EDITOR

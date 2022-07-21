@@ -19,12 +19,6 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTUOnTextChanged, const FText&, Text);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTUOnBeforePopup, FString, URL, FString, Frame);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTUSimpleDelegate);
-	
-	// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTextChanged, const FText&, Text);
-	// DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBeforePopupDelegate, FString, URL, FString, Frame);
-	// DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCreateWindowDelegate, const TWeakPtr<IWebBrowserWindow>&, Window, const TWeakPtr<IWebBrowserPopupFeatures>&, PopupFeatures);
-	// DECLARE_DYNAMIC_MULTICAST_de
-	// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTUSimpleDelegate);
 
 	/**
 	 * Load the specified URL
@@ -69,6 +63,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
 	FTUOnTextChanged OnUrlChanged;
 
+	/** Called when document title changed. */
 	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
 	FTUOnTextChanged OnTitleChanged;
 
@@ -76,30 +71,40 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
 	FTUOnBeforePopup OnBeforePopup;
 
+	/** Called when document loading completed. */
 	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
 	FTUSimpleDelegate OnLoadCompleted;
 
+	/** Called when document loading failed. */
 	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
 	FTUSimpleDelegate OnLoadError;
 
+	/** Called when document loading started. */
 	UPROPERTY(BlueprintAssignable, Category = "Web Browser|Event")
 	FTUSimpleDelegate OnLoadStarted;
-	
-	FOnCreateWindowDelegate OnCreateWindow;
 
-	FOnCloseWindowDelegate OnCloseWindow;
+	// /** Called when the browser requests the creation of a new window */
+	// FOnCreateWindowDelegate OnCreateWindow;
+	//
+	// /** Called when a browser window close event is detected */
+	// FOnCloseWindowDelegate OnCloseWindow;
 
+	/** Called before browser navigation. return true 可以拦截跳转 */ 
 	SWebBrowser::FOnBeforeBrowse OnBeforeNavigation;
 
-	SWebBrowser::FOnLoadUrl OnLoadUrl;
-
-	SWebBrowser::FOnShowDialog OnShowDialog;
-
-	FSimpleDelegate OnDismissAllDialogs;
-
-	FOnSuppressContextMenu OnSuppressContextMenu;
-
-	SWebBrowser::FOnDragWindow OnDragWindow;
+	// /** Called to allow bypassing page content on load. */
+	// SWebBrowser::FOnLoadUrl OnLoadUrl;
+	//
+	// /** Called when the browser needs to show a dialog to the user. */
+	// SWebBrowser::FOnShowDialog OnShowDialog;
+	//
+	// /** Called to dismiss any dialogs shown via OnShowDialog. */
+	// FSimpleDelegate OnDismissAllDialogs;
+	//
+	// FOnSuppressContextMenu OnSuppressContextMenu;
+	//
+	// /** Called when drag is detected in a web page area tagged as a drag region. */
+	// SWebBrowser::FOnDragWindow OnDragWindow;
 
 public:
 
@@ -136,6 +141,7 @@ protected:
 	void HandleOnLoadCompleted();
 	void HandleOnLoadError();
 	void HandleOnLoadStarted();
+	bool HandleOnBeforeNavigation(const FString& Url, const FWebNavigationRequest& Request);
 
 	
 };

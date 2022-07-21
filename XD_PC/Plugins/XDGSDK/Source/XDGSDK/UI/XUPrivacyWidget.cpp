@@ -56,7 +56,11 @@ void UXUPrivacyWidget::NativeConstruct()
 		AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
-	PrivacyWebBrowser->OnUrlChanged.AddUniqueDynamic(this, &UXUPrivacyWidget::OnUrlChanged);
+	PrivacyWebBrowser->OnLoadCompleted.AddUniqueDynamic(this, &UXUPrivacyWidget::OnWebLoadCompleted);
+	PrivacyWebBrowser->OnLoadError.AddUniqueDynamic(this, &UXUPrivacyWidget::OnWebLoadError);
+	PrivacyWebBrowser->OnLoadStarted.AddUniqueDynamic(this, &UXUPrivacyWidget::OnWebLoadStarted);
+	PrivacyWebBrowser->OnBeforeNavigation.BindUObject(this, &UXUPrivacyWidget::OnWebBeforeNavigation);
+
 	UpdateComfirmBtnState();
 }
 
@@ -85,15 +89,27 @@ void UXUPrivacyWidget::OnDeclineBtnClick() {
 	UXUPrivacyDisagreeWidget::Show();
 }
 
-void UXUPrivacyWidget::OnUrlChanged(const FText& Text) {
-	TUDebuger::DisplayLog(FString::Printf(TEXT("OnUrlChanged: %s"), *Text.ToString()));
-	if (OriginURL == Text.ToString()) {
-		return;
-	}
-	FPlatformProcess::LaunchURL(*Text.ToString(), nullptr, nullptr);
-	PrivacyWebBrowser->LoadURL(OriginURL);
+void UXUPrivacyWidget::OnWebLoadStarted() {
+	TUDebuger::DisplayLog("Privacy Web Load Started");
 }
 
+void UXUPrivacyWidget::OnWebLoadCompleted() {
+	TUDebuger::DisplayLog("Privacy Web Load Completed");
+}
+
+void UXUPrivacyWidget::OnWebLoadError() {
+	TUDebuger::DisplayLog("Privacy Web Load Error");
+}
+
+bool UXUPrivacyWidget::OnWebBeforeNavigation(const FString& Url, const FWebNavigationRequest& Request) {
+	TUDebuger::DisplayLog("OnWebBeforeNavigation");
+	if (OriginURL == Url) {
+		return false;
+	}  else {
+		FPlatformProcess::LaunchURL(*Url, nullptr, nullptr);
+		return true;
+	}
+}
 
 bool UXUPrivacyWidget::IsInKrAndPushEnable() {
 	return XUConfigManager::IsGameInKoreaAndPushServiceEnable();

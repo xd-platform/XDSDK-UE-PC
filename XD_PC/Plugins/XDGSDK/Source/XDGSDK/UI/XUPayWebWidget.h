@@ -5,6 +5,9 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "TUWebBrowser.h"
+#include "Components/Image.h"
+#include "Components/TextBlock.h"
+#include "Components/VerticalBox.h"
 #include "XUPayWebWidget.generated.h"
 
 
@@ -24,9 +27,16 @@ protected:
 
 	UFUNCTION()
 	void OnCloseClick();
+	
+	UFUNCTION()
+	void OnRetryBtnClick();
 
 	UFUNCTION()
 	void OnUrlChanged(const FText& Text);
+
+	UFUNCTION()
+	void OnWebLoadError();
+
 	
 
 private:
@@ -37,11 +47,30 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UButton* CloseButton;
 
+	UPROPERTY(meta = (BindWidget))
+	UButton* RetryBtn;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* RetryBtnLabel;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ErrorTipLabel;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* ErrorTipImage;
+	
+	UPROPERTY(meta = (BindWidget))
+	UVerticalBox* ErrorBox;
+
 	TFunction<void(XUType::PayResult Result)> CallBack;
 
 	FString PayUrl;
 
 	void CloseWithResult(XUType::PayResult Result);
+
+	void UpdateErrorTipView(bool IsNerworkError);
+
+	void ShowErrorTipView(bool IsShow);
 	
 };
 

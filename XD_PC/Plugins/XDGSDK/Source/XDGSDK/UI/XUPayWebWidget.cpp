@@ -30,11 +30,31 @@ void UXUPayWebWidget::NativeConstruct()
 
 	PayWebBrowser->LoadURL(PayUrl);
 	CloseButton->OnClicked.AddUniqueDynamic(this, &UXUPayWebWidget::OnCloseClick);
+	RetryBtn->OnClicked.AddUniqueDynamic(this, &UXUPayWebWidget::OnRetryBtnClick);
 	PayWebBrowser->OnUrlChanged.AddUniqueDynamic(this, &UXUPayWebWidget::OnUrlChanged);
+	PayWebBrowser->OnLoadError.AddUniqueDynamic(this, &UXUPayWebWidget::OnWebLoadError);
+	RetryBtnLabel->SetText(FText::FromString(XULanguageManager::GetCurrentModel()->tds_retry));
+
+	if (FPlatformMisc::GetNetworkConnectionType() == ENetworkConnectionType::None) {
+		ShowErrorTipView(true);
+		UpdateErrorTipView(true);
+	} else {
+		ShowErrorTipView(false);
+	}
 }
 
 void UXUPayWebWidget::OnCloseClick() {
 	CloseWithResult(XUType::PayCancel);
+}
+
+void UXUPayWebWidget::OnRetryBtnClick() {
+	if (FPlatformMisc::GetNetworkConnectionType() == ENetworkConnectionType::None) {
+		ShowErrorTipView(true);
+		UpdateErrorTipView(true);
+	} else {
+		ShowErrorTipView(false);
+		PayWebBrowser->LoadURL(PayUrl);
+	}
 }
 
 void UXUPayWebWidget::OnUrlChanged(const FText& Text) {
@@ -51,10 +71,37 @@ void UXUPayWebWidget::OnUrlChanged(const FText& Text) {
 	}
 }
 
+void UXUPayWebWidget::OnWebLoadError() {
+	ShowErrorTipView(true);
+	UpdateErrorTipView(false);
+}
+
 void UXUPayWebWidget::CloseWithResult(XUType::PayResult Result) {
 	if (CallBack) {
 		CallBack(Result);
 	}
 	RemoveFromParent();
 }
+void UXUPayWebWidget::UpdateErrorTipView(bool IsNerworkError) {
+	auto langModel = XULanguageManager::GetCurrentModel();
+	if (IsNerworkError) {
+		ErrorTipImage->SetBrushFromTexture(LoadObject<UTexture2D>(nullptr, TEXT("Texture2D'/XDGSDK/Images/LoadErrorRetry.LoadErrorRetry'")));
+		ErrorTipLabel->SetText(FText::FromString(langModel->tds_net_error));
+	} else {
+		ErrorTipImage->SetBrushFromTexture(LoadObject<UTexture2D>(nullptr, TEXT("Texture2D'/XDGSDK/Images/LoadFailRetry.LoadFailRetry'")));
+		ErrorTipLabel->SetText(FText::FromString(langModel->tds_load_error));
+	}
+}
+
+void UXUPayWebWidget::ShowErrorTipView(bool IsShow) {
+	if (IsShow) {
+		ErrorBox->SetVisibility(ESlateVisibility::Visible);
+		PayWebBrowser->SetVisibility(ESlateVisibility::Hidden);
+	} else {
+		ErrorBox->SetVisibility(ESlateVisibility::Hidden);
+		PayWebBrowser->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+
 

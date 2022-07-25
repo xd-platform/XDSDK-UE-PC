@@ -167,7 +167,21 @@ bool XDUE::IsPushServiceEnable() {
 // only test
 
 void XDUE::Test() {
-	XULoginHelper::GoogleLogin(nullptr, nullptr);
+	// enum class ENetworkConnectionType : uint8
+	// {
+	// 	/**
+	// 	 * Enumerates the network connection types
+	// 	 */
+	// 	Unknown,
+	// 	None,
+	// 	AirplaneMode,
+	// 	Cell,
+	// 	WiFi,
+	// 	WiMAX,
+	// 	Bluetooth,
+	// 	Ethernet,
+	// };
+	TUDebuger::DisplayShow(FString::Printf(TEXT("GetNetworkConnectionType: %d"), FPlatformMisc::GetNetworkConnectionType()));
 }
 
 void XDUE::ResetPrivacy() {

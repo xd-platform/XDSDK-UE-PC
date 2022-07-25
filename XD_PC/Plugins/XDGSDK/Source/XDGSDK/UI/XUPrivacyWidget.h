@@ -35,10 +35,10 @@ protected:
 	void OnComfirmBtnClick();
 
 	UFUNCTION()
-	void OnDeclineBtnClick();
+	void OnLoadErrorBtnClick();
 
 	UFUNCTION()
-	void OnWebLoadStarted();
+	void OnDeclineBtnClick();
 
 	UFUNCTION()
 	void OnWebLoadCompleted();
@@ -58,6 +58,12 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ComfirmButtonLabel;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* LoadErrorBtn;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* LoadErrorLabel;
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* ComfirmButtonImage;
@@ -83,4 +89,14 @@ private:
 	void UpdateComfirmBtnState();
 
 	FString OriginURL;
+
+	enum LoadState {
+		Loading,
+		LoadError,
+		LoadSuccess,
+	};
+
+	void UpdateUI(LoadState State);
+
+	FString NavigationUrl;
 };

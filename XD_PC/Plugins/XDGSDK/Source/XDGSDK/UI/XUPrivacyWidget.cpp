@@ -2,15 +2,12 @@
 
 
 #include "XUPrivacyWidget.h"
-
-#include "XUServerConfig.h"
 #include "XULanguageManager.h"
 #include "TUHelper.h"
 #include "TUHUD.h"
 #include "TUSettings.h"
 #include "XUConfigManager.h"
 #include "XUPrivacyDisagreeWidget.h"
-#include "XUUser.h"
 
 
 UXUPrivacyWidget::UXUPrivacyWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -40,6 +37,7 @@ void UXUPrivacyWidget::NativeConstruct()
 	BtnDel.BindUFunction(this, "OnComfirmBtnClick");
 	ComfirmButton->OnClicked.Add(BtnDel);
 	DeclineButton->OnClicked.AddUniqueDynamic(this, &UXUPrivacyWidget::OnDeclineBtnClick);
+	LoadErrorBtn->OnClicked.AddUniqueDynamic(this, &UXUPrivacyWidget::OnLoadErrorBtnClick);
 
 	OriginURL =  XUConfigManager::GetAgreementUrl();
 	PrivacyWebBrowser->LoadURL(OriginURL);
@@ -47,20 +45,19 @@ void UXUPrivacyWidget::NativeConstruct()
 	auto langModel = XULanguageManager::GetCurrentModel();
 	ComfirmButtonLabel->SetText(FText::FromString(langModel->xd_agreement_agree));
 	DeclineButtonLabel->SetText(FText::FromString(langModel->xd_agreement_disagree));
+	LoadErrorLabel->SetText(FText::FromString(langModel->xd_agreement_load_failed));
 
 	if (IsInKrAndPushEnable()) {
 		AdditionalCheckLabel->SetText(FText::FromString(langModel->tds_push_agreement));
 	} else if (IsInNorthAmerica()) {
 		AdditionalCheckLabel->SetText(FText::FromString(langModel->tds_is_adult_agreement));
-	} else {
-		AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	} 
 
 	PrivacyWebBrowser->OnLoadCompleted.AddUniqueDynamic(this, &UXUPrivacyWidget::OnWebLoadCompleted);
 	PrivacyWebBrowser->OnLoadError.AddUniqueDynamic(this, &UXUPrivacyWidget::OnWebLoadError);
-	PrivacyWebBrowser->OnLoadStarted.AddUniqueDynamic(this, &UXUPrivacyWidget::OnWebLoadStarted);
 	PrivacyWebBrowser->OnBeforeNavigation.BindUObject(this, &UXUPrivacyWidget::OnWebBeforeNavigation);
 
+	UpdateUI(Loading);
 	UpdateComfirmBtnState();
 }
 
@@ -85,39 +82,34 @@ void UXUPrivacyWidget::OnComfirmBtnClick()
 	RemoveFromParent();
 }
 
+void UXUPrivacyWidget::OnLoadErrorBtnClick() {
+	PrivacyWebBrowser->LoadURL(OriginURL);
+	UpdateUI(Loading);
+}
+
 void UXUPrivacyWidget::OnDeclineBtnClick() {
 	UXUPrivacyDisagreeWidget::Show();
 }
 
-void UXUPrivacyWidget::OnWebLoadStarted() {
-	TUDebuger::DisplayLog("Privacy Web Load Started");
-	if (PrivacyWebBrowser->GetUrl() == OriginURL) {
-		TUDebuger::DisplayLog("is OriginURL");
-	} else {
-		TUDebuger::DisplayLog("is not OriginURL");
-	}
-}
-
 void UXUPrivacyWidget::OnWebLoadCompleted() {
+	TUDebuger::DisplayLog(NavigationUrl);
 	TUDebuger::DisplayLog("Privacy Web Load Completed");
-	if (PrivacyWebBrowser->GetUrl() == OriginURL) {
-		TUDebuger::DisplayLog("is OriginURL");
-	} else {
-		TUDebuger::DisplayLog("is not OriginURL");
+	if (NavigationUrl == OriginURL) {
+		UpdateUI(LoadSuccess);
 	}
 }
 
 void UXUPrivacyWidget::OnWebLoadError() {
+	TUDebuger::DisplayLog(NavigationUrl);
 	TUDebuger::DisplayLog("Privacy Web Load Error");
-	if (PrivacyWebBrowser->GetUrl() == OriginURL) {
-		TUDebuger::DisplayLog("is OriginURL");
-	} else {
-		TUDebuger::DisplayLog("is not OriginURL");
+	if (NavigationUrl == OriginURL) {
+		UpdateUI(LoadError);
 	}
 }
 
 bool UXUPrivacyWidget::OnWebBeforeNavigation(const FString& Url, const FWebNavigationRequest& Request) {
 	TUDebuger::DisplayLog("OnWebBeforeNavigation");
+	NavigationUrl = Url;
 	if (OriginURL == Url) {
 		return false;
 	}  else {
@@ -139,6 +131,37 @@ void UXUPrivacyWidget::UpdateComfirmBtnState() {
 		ComfirmButtonImage->SetBrushFromTexture(LoadObject<UTexture2D>(nullptr, TEXT("Texture2D'/TapLogin/Image/taptap-router-gray.taptap-router-gray'")));
 	} else {
 		ComfirmButtonImage->SetBrushFromTexture(LoadObject<UTexture2D>(nullptr, TEXT("Texture2D'/TapLogin/Image/taptap-router.taptap-router'")));
+	}
+}
+
+void UXUPrivacyWidget::UpdateUI(LoadState State) {
+	switch (State) {
+	case Loading:
+		PrivacyWebBrowser->SetVisibility(ESlateVisibility::Visible);
+		ComfirmButton->SetVisibility(ESlateVisibility::Collapsed);
+		LoadErrorBtn->SetVisibility(ESlateVisibility::Collapsed);
+		DeclineButton->SetVisibility(ESlateVisibility::Collapsed);
+		AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
+		break;
+	case LoadError:
+		PrivacyWebBrowser->SetVisibility(ESlateVisibility::Collapsed);
+		ComfirmButton->SetVisibility(ESlateVisibility::Collapsed);
+		LoadErrorBtn->SetVisibility(ESlateVisibility::Visible);
+		DeclineButton->SetVisibility(ESlateVisibility::Collapsed);
+		AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
+		break;
+	case LoadSuccess:
+		PrivacyWebBrowser->SetVisibility(ESlateVisibility::Visible);
+		ComfirmButton->SetVisibility(ESlateVisibility::Visible);
+		LoadErrorBtn->SetVisibility(ESlateVisibility::Collapsed);
+		DeclineButton->SetVisibility(ESlateVisibility::Visible);
+		if (IsInKrAndPushEnable() || IsInNorthAmerica()) {
+			AdditionalCheckBox->SetVisibility(ESlateVisibility::Visible);
+		} else {
+			AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
+		}
+		break;
+	default: ;
 	}
 }
 

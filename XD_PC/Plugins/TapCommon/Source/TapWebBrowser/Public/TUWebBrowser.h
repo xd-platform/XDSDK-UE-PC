@@ -106,6 +106,18 @@ public:
 	// /** Called when drag is detected in a web page area tagged as a drag region. */
 	// SWebBrowser::FOnDragWindow OnDragWindow;
 
+	/** Returns true if the browser can navigate backwards. */
+	bool CanGoBack() const;
+
+	/** Navigate backwards. */
+	void GoBack();
+
+	/** Returns true if the browser can navigate forwards. */
+	bool CanGoForward() const;
+
+	/** Navigate forwards. */
+	void GoForward();
+
 public:
 
 	//~ Begin UWidget interface

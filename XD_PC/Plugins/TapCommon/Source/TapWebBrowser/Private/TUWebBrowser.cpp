@@ -119,6 +119,32 @@ TSharedRef<SWidget> UTUWebBrowser::RebuildWidget()
 	}
 }
 
+bool UTUWebBrowser::CanGoBack() const {
+	if (WebBrowserWidget.IsValid()) {
+		return WebBrowserWidget->CanGoBack();
+	}
+	return false;
+}
+
+void UTUWebBrowser::GoBack() {
+	if (WebBrowserWidget.IsValid()) {
+		WebBrowserWidget->GoBack();
+	}
+}
+
+bool UTUWebBrowser::CanGoForward() const {
+	if (WebBrowserWidget.IsValid()) {
+		return WebBrowserWidget->CanGoForward();
+	}
+	return false;
+}
+
+void UTUWebBrowser::GoForward() {
+	if (WebBrowserWidget.IsValid()) {
+		WebBrowserWidget->GoForward();
+	}
+}
+
 void UTUWebBrowser::SynchronizeProperties()
 {
 	Super::SynchronizeProperties();

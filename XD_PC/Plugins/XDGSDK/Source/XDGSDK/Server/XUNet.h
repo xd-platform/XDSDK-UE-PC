@@ -29,7 +29,7 @@ public:
 	static void UploadAgreement(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FXUUploadAgreementResultModel> Model, FXUError Error)> Callback);
 
 
-	static FXUError GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& response);
+	static FXUError GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& Response);
 private:
 	virtual TMap<FString, FString> CommonHeaders() override;
 	virtual TSharedPtr<FJsonObject> CommonParameters() override;

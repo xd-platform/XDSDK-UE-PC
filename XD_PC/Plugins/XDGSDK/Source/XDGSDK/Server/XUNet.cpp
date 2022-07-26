@@ -93,24 +93,21 @@ bool XUNet::ResetHeadersBeforeRequest()
 }
 
 
-
-FXUError XUNet::GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& response)
-{
-	FXUError error;
-	if (response->state == TUHttpResponse::clientError)
-	{
-		error.code = TUHttpResponse::clientError;
-		error.msg = "request fail";
-	} else if (response->state == TUHttpResponse::serverError)
-	{
-		error.code = TUHttpResponse::serverError;
-		error.msg = "server error";
-	} else if (response->state == TUHttpResponse::networkError)
-	{
-		error.code = TUHttpResponse::networkError;
-		error.msg = "network connection error";
+FXUError XUNet::GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& Response) {
+	FXUError Error;
+	if (Response->state == TUHttpResponse::clientError) {
+		Error.code = TUHttpResponse::clientError;
+		Error.msg = "Request Fail";
 	}
-	return error;
+	else if (Response->state == TUHttpResponse::serverError) {
+		Error.code = TUHttpResponse::serverError;
+		Error.msg = "Server Error";
+	}
+	else if (Response->state == TUHttpResponse::networkError) {
+		Error.code = TUHttpResponse::networkError;
+		Error.msg = "Network Connection Error";
+	}
+	return Error;
 }
 
 template <typename StructType>
@@ -124,16 +121,13 @@ TSharedPtr<StructType> GenerateStructPtr(const TSharedPtr<TUHttpResponse>& respo
 }
 
 template <typename StructType>
-void PerfromCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXUError error)> callback)
-{
-	if (callback == nullptr)
-	{
+void PerfromCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXUError error)> callback) {
+	if (callback == nullptr) {
 		return;
 	}
 	TSharedPtr<StructType> model = GenerateStructPtr<StructType>(response);
 	FXUError error = XUNet::GenerateErrorInfo(response);
-	if (model == nullptr && error.code == 0)
-	{
+	if (model == nullptr && error.code == 0) {
 		error.code = TUHttpResponse::clientError;
 		error.msg = "json parse error";
 	}
@@ -141,31 +135,37 @@ void PerfromCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(
 }
 
 template <typename StructType>
-void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& response, TFunction<void(TSharedPtr<StructType> model, FXUError error)> callback)
-{
-	if (callback == nullptr)
-	{
+void PerfromWrapperResponseCallBack(const TSharedPtr<TUHttpResponse>& Response, TFunction<void(TSharedPtr<StructType> Model, FXUError Error)> Callback) {
+	if (Callback == nullptr) {
 		return;
 	}
-	TSharedPtr<FXUResponseModel> Wrapper;
-	TSharedPtr<StructType> model;
-	FXUResponseModel::ParseJson(response->contentString, Wrapper, model);
-	FXUError error;
-	if (Wrapper == nullptr)
-	{
-		error = XUNet::GenerateErrorInfo(response);
-	} else
-	{
-		error.code = Wrapper->code;
-		error.msg = Wrapper->msg;
-		error.detail = Wrapper->detail;
+	FXUError Error = XUNet::GenerateErrorInfo(Response);
+	auto JsonObject = TUJsonHelper::GetJsonObject(Response->contentString);
+	if (!JsonObject.IsValid()) {
+		Callback(nullptr, Error);
+		return;
 	}
-	if (response->state == TUHttpResponse::success)
-	{
-		callback(model, error);
-	} else
-	{
-		callback(nullptr, error);
+	
+	TSharedPtr<FXUResponseModel> Wrapper = TUJsonHelper::GetUStruct<FXUResponseModel>(JsonObject);
+	if (!Wrapper.IsValid()) {
+		Callback(nullptr, Error);
+		return;
+	}
+	Error.code = Wrapper->code;
+	Error.msg = Wrapper->msg;
+	Error.detail = Wrapper->detail;
+
+	const TSharedPtr<FJsonObject>* DataJsonObject;
+	if (!JsonObject->TryGetObjectField("data", DataJsonObject)) {
+		Callback(nullptr, Error);
+		return;
+	}
+
+	if (Response->state == TUHttpResponse::success) {
+		Callback(TUJsonHelper::GetUStruct<StructType>(*DataJsonObject), Error);
+	} else {
+		Error.ExtraData = *DataJsonObject;
+		Callback(nullptr, Error);
 	}
 }
 

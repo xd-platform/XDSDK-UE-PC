@@ -18,6 +18,9 @@ struct FXUError
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FString detail;
+	
+	TSharedPtr<FJsonObject> ExtraData;
+	
 
 	FXUError() = default;
 	FXUError(const FString& message) :code(-1), msg(message) {};

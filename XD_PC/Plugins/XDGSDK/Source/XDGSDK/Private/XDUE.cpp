@@ -1,17 +1,15 @@
 #include "XDUE.h"
 
-#include "XULanguageManager.h"
 #include "TapUELogin.h"
 #include "TUDebuger.h"
-#include "TUHelper.h"
 #include "XUConfigManager.h"
 #include "XUImpl.h"
 #include "XULoginHelper.h"
 #include "XUSettings.h"
 #include "XDGSDK/UI/XUUserCenterWidget.h"
 #include "XDGSDK/UI/XUPayHintAlert.h"
-#include "XDGSDK/UI/XUPrivacyWidget.h"
 
+XDUE::XUSimpleDelegate XDUE::OnLogout;
 
 void XDUE::InitSDK(const FString& GameVersion, TFunction<void(bool Result, const FString& Message)> CallBack) {
 	if (IsInitialized()) {
@@ -92,8 +90,16 @@ void XDUE::Logout() {
 	FXUUser::ClearUserData();
 }
 
+void XDUE::AccountCancellation() {
+	if (!FXUUser::GetLocalModel().IsValid()) {
+		TUDebuger::WarningLog("Please Login First");
+		return;
+	}
+	XUImpl::Get()->AccountCancellation();
+}
+
 void XDUE::OpenUserCenter(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack,
-	TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack) {
+                          TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack) {
 	if (!FXUUser::GetLocalModel().IsValid()) {
 		TUDebuger::WarningLog("Please Login First");
 		return;

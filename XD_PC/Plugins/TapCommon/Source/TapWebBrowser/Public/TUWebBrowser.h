@@ -16,7 +16,7 @@ class TAPWEBBROWSER_API UTUWebBrowser : public UWidget
 	GENERATED_UCLASS_BODY()
 
 public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTUOnTextChanged, const FText&, Text);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTUOnTextChanged, const FString&, Text);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTUOnBeforePopup, FString, URL, FString, Frame);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTUSimpleDelegate);
 

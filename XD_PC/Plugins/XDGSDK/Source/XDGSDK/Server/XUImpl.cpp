@@ -9,8 +9,11 @@
 #include "TUHUD.h"
 #include "URLParser.h"
 #include "XDGSDK.h"
+#include "XDUE.h"
 #include "XUConfigManager.h"
+#include "XULocalConfig.h"
 #include "XULoginHelper.h"
+#include "XDGSDK/UI/XUAccountCancellationWidget.h"
 #include "XDGSDK/UI/XUPayWebWidget.h"
 #include "XDGSDK/UI/XUPrivacyWidget.h"
 
@@ -254,11 +257,41 @@ void XUImpl::ResetPrivacy() {
 	TUDataStorage<FXUStorage>::Remove(XUConfigManager::GetRegionAgreementCacheName());
 }
 
+void XUImpl::AccountCancellation() {
+	TSharedPtr<FJsonObject> Query = MakeShareable(new FJsonObject);
+	auto AccessToken = FXUTokenModel::GetLocalModel();
+	Query->SetStringField("kid", AccessToken->kid);
+	Query->SetStringField("mac_key", AccessToken->macKey);
+	Query->SetStringField("source", "game");
+	Query->SetStringField("cn", XUConfigManager::IsCN() ? "1" : "0");
+	Query->SetStringField("sdk_lang", XULanguageManager::GetLanguageKey());
+	Query->SetStringField("version", XDUESDK_VERSION);
+	Query->SetStringField("client_id", XUConfigManager::CurrentConfig()->ClientId);
+
+	auto Local = FXUIpInfoModel::GetLocalModel();
+	if (Local.IsValid()) {
+		Query->SetStringField("country_code", Local->country_code);
+	}
+	Query->SetStringField("time", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
+
+	FString QueryStr = TUHelper::CombinParameters(Query);
+	FString UrlStr = XUConfigManager::CurrentConfig()->LogoutUrl;
+	auto Parse = TUCommon::FURL_RFC3986();
+	Parse.Parse(UrlStr);
+	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
+	UrlStr = UrlStr + "?" + QueryStr;
+
+	UXUAccountCancellationWidget::Show(UrlStr);
+}
+
 TSharedPtr<XUImpl> XUImpl::Instance = nullptr;
 
 TSharedPtr<XUImpl>& XUImpl::Get() {
 	if (!Instance.IsValid()) {
 		Instance = MakeShareable(new XUImpl);
+		XDUE::OnLogout.AddLambda([]() {
+			XDUE::Logout();
+		});
 	}
 	return Instance;
 }

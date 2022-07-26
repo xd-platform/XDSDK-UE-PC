@@ -76,6 +76,9 @@ protected:
 	UFUNCTION()
 	void OnGoogleLoginBtnClick();
 
+	UFUNCTION()
+	void OnAccountCancelBtnClick();
+
 private:
 	
 	UPROPERTY(meta = (BindWidget))
@@ -149,6 +152,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* GoogleLoginBtn;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* AccountCancelBtn;
 	
 };
 

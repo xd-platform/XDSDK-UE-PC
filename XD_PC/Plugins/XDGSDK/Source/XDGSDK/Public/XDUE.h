@@ -7,6 +7,10 @@
 class XDGSDK_API XDUE {
 public:
 
+	DECLARE_MULTICAST_DELEGATE(XUSimpleDelegate)
+	
+	static XUSimpleDelegate OnLogout;
+
 	static void InitSDK(const FString& GameVersion, TFunction<void(bool Result, const FString& Message)> CallBack);
 	
 	static void InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack);
@@ -26,6 +30,8 @@ public:
 	static void SetLanguage(XUType::LangType Type);
 	
 	static void Logout();
+
+	static void AccountCancellation();
 	
 	static void OpenUserCenter(TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> BindCallBack,
 	TFunction<void(XUType::LoginType Type, TSharedPtr<FXUError>)> UnbindCallBack);

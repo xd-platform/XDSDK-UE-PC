@@ -57,10 +57,10 @@ void UXUPayWebWidget::OnRetryBtnClick() {
 	}
 }
 
-void UXUPayWebWidget::OnUrlChanged(const FText& Text) {
-	TUDebuger::DisplayLog(Text.ToString());
+void UXUPayWebWidget::OnUrlChanged(const FString& Text) {
+	TUDebuger::DisplayLog(Text);
 	auto Parse = TUCommon::FURL_RFC3986();
-	Parse.Parse(Text.ToString());
+	Parse.Parse(Text);
 	FString Result = Parse.GetFragment();
 	if (Result == "success") {
 		CloseWithResult(XUType::PaySuccess);

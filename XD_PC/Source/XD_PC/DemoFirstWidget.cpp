@@ -31,6 +31,7 @@ void UDemoFirstWidget::NativeConstruct()
 	WebPayBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnWebPayBtnClick);
 	TestButton->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnTestButtonClick);
 	GoogleLoginBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnGoogleLoginBtnClick);
+	AccountCancelBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnAccountCancelBtnClick);
 
 	EnvironmentBox->OnSelectionChanged.AddUniqueDynamic(this, &UDemoFirstWidget::OnEnvironmentBoxSelectionChanged);
 	RegionBox->OnSelectionChanged.AddUniqueDynamic(this, &UDemoFirstWidget::OnRegionBoxSelectionChanged);
@@ -52,7 +53,9 @@ void UDemoFirstWidget::NativeConstruct()
 	TUDebuger::ReplaceHosts.Add("https://event-tracking-cn.cn-beijing.log.aliyuncs.com/logstores/sdk6-prod/track", "https://event-tracking-cn.cn-beijing.log.aliyuncs.com/logstores/sdk6-test/track");
 	TUDebuger::ReplaceHosts.Add("https://event-tracking-global.ap-southeast-1.log.aliyuncs.com/logstores/sdk6-prod/track", "https://event-tracking-global.ap-southeast-1.log.aliyuncs.com/logstores/sdk6-test/track");
 
-	// PayWebBrowser->LoadURL("https://sdkpay-test.xd.cn/qr-pay/?productSkuCode=com.xd.sdkdemo1.stone30&payAmount=30.0&orderId=&roleId=323499800362549248&appId=1010&product_id%7Ccom.xd.sdkdemo1.stone30&region=CN&lang=zh_CN&serverId=demo_server_id&productName=com.xd.sdkdemo1.stone30");
+	XDUE::OnLogout.AddLambda([]() {
+		TUDebuger::DisplayShow(TEXT("游戏账号应登出"));
+	});
 }
 
 void UDemoFirstWidget::OnInitButtonClick() {
@@ -252,5 +255,9 @@ void UDemoFirstWidget::OnTestButtonClick() {
 
 void UDemoFirstWidget::OnGoogleLoginBtnClick() {
 	Login(XUType::Google);
+}
+
+void UDemoFirstWidget::OnAccountCancelBtnClick() {
+	XDUE::AccountCancellation();
 }
 

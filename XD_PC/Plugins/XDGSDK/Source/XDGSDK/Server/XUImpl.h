@@ -29,6 +29,8 @@ public:
 	const FString& Ext);
 	
 	void ResetPrivacy();
+
+	void AccountCancellation();
 	
 	static TSharedPtr<XUImpl>& Get();
 

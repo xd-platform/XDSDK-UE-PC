@@ -157,11 +157,11 @@ void UTUWebBrowser::SynchronizeProperties()
 
 void UTUWebBrowser::HandleOnUrlChanged(const FText& InText)
 {
-	OnUrlChanged.Broadcast(InText);
+	OnUrlChanged.Broadcast(InText.ToString());
 }
 
 void UTUWebBrowser::HandleOnTitleChanged(const FText& Text) {
-	OnTitleChanged.Broadcast(Text);
+	OnTitleChanged.Broadcast(Text.ToString());
 }
 
 bool UTUWebBrowser::HandleOnBeforePopup(FString URL, FString Frame)

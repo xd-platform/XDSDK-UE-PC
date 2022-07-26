@@ -8,18 +8,18 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
-#include "XUPayWebWidget.generated.h"
+#include "XUAccountCancellationWidget.generated.h"
 
 
 UCLASS()
-class XDGSDK_API UXUPayWebWidget : public UUserWidget
+class XDGSDK_API UXUAccountCancellationWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-	UXUPayWebWidget(const FObjectInitializer& ObjectInitializer);
+	UXUAccountCancellationWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void Show(const FString& PayUrl, TFunction<void(XUType::PayResult Result)> CallBack);
+	static void Show(const FString& Url);
 
 protected:
 	
@@ -27,6 +27,9 @@ protected:
 
 	UFUNCTION()
 	void OnCloseClick();
+
+	UFUNCTION()
+	void OnBackClick();
 	
 	UFUNCTION()
 	void OnRetryBtnClick();
@@ -35,17 +38,24 @@ protected:
 	void OnUrlChanged(const FString& Text);
 
 	UFUNCTION()
-	void OnWebLoadError();
+	void OnTitleChanged(const FString& Text);
 
-	
+	UFUNCTION()
+	void OnWebLoadError();
 
 private:
 	
 	UPROPERTY(meta = (BindWidget))
-	UTUWebBrowser* PayWebBrowser;
+	UTUWebBrowser* WebBrowser;
 
 	UPROPERTY(meta = (BindWidget))
-	UButton* CloseButton;
+	UButton* CloseBtn;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* BackBtn;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TitleLabel;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* RetryBtn;
@@ -61,13 +71,11 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* ErrorBox;
+	
+	FString Url;
 
-	TFunction<void(XUType::PayResult Result)> CallBack;
-
-	FString PayUrl;
-
-	void CloseWithResult(XUType::PayResult Result);
-
+	bool HasCancelAccount = false;
+	
 	void UpdateErrorTipView(bool IsNerworkError);
 
 	void ShowErrorTipView(bool IsShow);

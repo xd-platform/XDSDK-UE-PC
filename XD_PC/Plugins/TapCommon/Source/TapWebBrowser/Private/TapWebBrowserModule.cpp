@@ -38,4 +38,4 @@ private:
 
 //////////////////////////////////////////////////////////////////////////
 
-IMPLEMENT_MODULE(FTapWebBrowserModule, TapWebBrowserModule);
+IMPLEMENT_MODULE(FTapWebBrowserModule, TapWebBrowser);

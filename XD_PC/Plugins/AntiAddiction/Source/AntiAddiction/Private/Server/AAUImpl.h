@@ -1,5 +1,4 @@
 #pragma once
-#include "AAUDelegate.h"
 #include "AAUServerDelegate.h"
 #include "AAUType.h"
 #include "TUError.h"
@@ -18,9 +17,7 @@ public:
 	void Init(const AAUType::Config& _Config);
 	
 	void StartUp(const FString& UserID, TFunction<void(AAUType::StartUpResult Result)> CallBack);
-
-	void RegisterDelegate(AAUDelegate* _Delegate);
-
+	
 	// MARK: - 实名认证部分
 	void ManualVerify(const FString& UserID, const FString& Name, const FString& CardID,
 		TFunction<void(TSharedPtr<FAAURealNameResultModel> ModelPtr, const FTUError& Error)> CallBack);
@@ -72,9 +69,7 @@ private:
 	TSharedPtr<AAUServer> Server;
 
 	virtual void KickOut(AAUTimeBoundary Boundary, const FString& Title, const FString& Content) override;
-
-	AAUDelegate* Delegate = nullptr;
-
+	
 	void Login(const FString& AccessToken, int AgeLimit, bool IsFirst = false);
 
 	void ShowRealNameUI(UAAUManualRealNameWidget *Widget, AAURealNameWordType Type);

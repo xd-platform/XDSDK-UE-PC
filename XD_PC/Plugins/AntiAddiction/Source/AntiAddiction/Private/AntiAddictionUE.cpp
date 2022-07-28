@@ -5,6 +5,9 @@
 #include "Server/AAUStorage.h"
 #include "UI/AAUHealthTipWidget.h"
 
+AntiAddictionUE::SimpleDelegate AntiAddictionUE::OnExit;
+
+AntiAddictionUE::SimpleDelegate AntiAddictionUE::OnSwitchAccount;
 
 void AntiAddictionUE::Init(const AAUType::Config& Config) {
 	AAUImpl::Get()->Init(Config);
@@ -16,11 +19,6 @@ void AntiAddictionUE::StartUp(const FString& UserID, TFunction<void(AAUType::Sta
 		return;
 	}
 	AAUImpl::Get()->StartUp(UserID, CallBack);
-
-}
-
-void AntiAddictionUE::RegisterDelegate(AAUDelegate* Delegate) {
-	AAUImpl::Get()->RegisterDelegate(Delegate);
 }
 
 void AntiAddictionUE::EnterGame() {

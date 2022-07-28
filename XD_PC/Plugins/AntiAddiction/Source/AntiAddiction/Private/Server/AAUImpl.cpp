@@ -4,6 +4,7 @@
 #include "AAUNet.h"
 #include "AAUServer.h"
 #include "AAUStorage.h"
+#include "AntiAddictionUE.h"
 #include "TUDebuger.h"
 #include "TUHUD.h"
 #include "Model/AAUUser.h"
@@ -91,10 +92,6 @@ void AAUImpl::StartUp(const FString& UserID, TFunction<void(AAUType::StartUpResu
 		}
 	}
 	CheckRealNameState(UserID, ResultBlock);
-}
-
-void AAUImpl::RegisterDelegate(AAUDelegate* _Delegate) {
-	Delegate = _Delegate;
 }
 
 void AAUImpl::ManualVerify(const FString& UserID, const FString& Name, const FString& CardID,
@@ -355,14 +352,10 @@ void AAUImpl::ShowHealthTipUI(const FString& Title, const FString& Content, int 
 	if (Type == AAUHealthTipTypeTimeout || Type == AAUHealthTipTypeInCurfew) {
 		auto Widget = UAAUHealthTipWidget::ShowUI(Title, Content, TEXT("退出游戏"));
 		Widget->SwitchAccountBlock = [=]() {
-			if (Delegate) {
-				Delegate->OnSwitchAccount();
-			}
+			AntiAddictionUE::OnSwitchAccount.Broadcast();
 		};
 		Widget->ComformBlock = [=]() {
-			if (Delegate) {
-				Delegate->OnExit();
-			}
+			AntiAddictionUE::OnExit.Broadcast();
 #if WITH_EDITOR
 			GEngine->Exec(nullptr, TEXT("QUIT_EDITOR"), *GLog);
 #else

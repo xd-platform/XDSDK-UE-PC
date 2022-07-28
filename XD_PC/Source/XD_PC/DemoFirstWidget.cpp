@@ -59,24 +59,20 @@ void UDemoFirstWidget::NativeConstruct()
 }
 
 void UDemoFirstWidget::OnInitButtonClick() {
-	XDUE::InitSDK("1.2.3", [](bool Result, FString Message)
-	{
-		if (Result)
-		{
+	XDUE::InitSDK("1.2.3", [](bool Result, FString Message) {
+		if (Result) {
 			TUDebuger::DisplayShow(Message);
-		} else
-		{
+		}
+		else {
 			TUDebuger::WarningShow(Message);
 		}
 	});
 }
 
 void Login(XUType::LoginType LoginType) {
-	XDUE::LoginByType(LoginType, [](FXUUser User)
-	{
+	XDUE::LoginByType(LoginType, [](FXUUser User){
 		TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
-	}, [](FXUError Error)
-	{
+	}, [](FXUError Error){
 		TUDebuger::WarningShow(TEXT("登录失败：") + Error.msg + "\n" + TUJsonHelper::GetJsonString(Error.ExtraData));
 	});
 }

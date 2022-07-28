@@ -28,7 +28,7 @@ public:
 	static void SetUILevel(int32 Level);
 
 	/// 设置当前游戏的GameInstance。
-	/// @param GameInstance Widget层级
+	/// @param GameInstance 游戏当前GameInstance
 	static void SetGameInstance(TWeakObjectPtr<UGameInstance> GameInstance);
 	
 };

@@ -1,13 +1,29 @@
 # XDGSDK-UEPC-6.0
 
-目前支持海外
+## XD PC SDK 所包含的插件
+* AntiAddiction：国内实名&&防沉迷库
+* TapBootstrap：TapSDK辅助启动的库
+* TapCommon：基础库，工具库
+* TapDB：TapDB库
+* TapLogin：TapTap登录的库
+* TapMoment：内嵌动态库
+* XDGSDK：心动游戏的库
 
 ## 项目依赖库文件
 
-将插件SDK拷贝到项目Plugins文件夹，然后设置依赖库
+将所需要的插件SDK拷贝到项目Plugins文件夹，然后设置依赖库
 
+* 依赖的系统库：
 ```c#
-PrivateDependencyModuleNames.AddRange(new string[] { "XDGSDK", "Json", "JsonUtilities" });
+PrivateDependencyModuleNames.AddRange(new string[] { "Json", "JsonUtilities" });
+```
+* 依赖XD SDK：
+```c#
+PrivateDependencyModuleNames.AddRange(new string[] { "XDGSDK"});
+```
+* 依赖其余SDK（TapDB，防沉迷等）：
+```c#
+PrivateDependencyModuleNames.AddRange(new string[] { "TapDB", "AntiAddiction"});
 ```
 
 ## API介绍
@@ -18,45 +34,96 @@ PrivateDependencyModuleNames.AddRange(new string[] { "XDGSDK", "Json", "JsonUtil
 ```
 
 ### 初始化
+受政策影响，心动首次初始化时（或者协议更新时），将会弹起协议弹窗，只有用户同意协议后，才能初始化成功，否则将会强制退出游戏。
 
-调用`XDUE::InitSDK`方法，`Result`表示结果，后续API的使用，请基于`Result`成功的时候在调用（后续版本会不在强依赖Init成功）
+目前有两种初始化方式
 ```c++
-    XUType::Config Config;
-    Config.ClientId = ClientId;
-    Config.RegionType = (XUType::RegionType)RegionType;
-    XDUE::InitSDK(Config, [](bool Result, FString Message)
-    {
-        if (Result)
-        {
-            TUDebuger::DisplayShow(Message);
-        } else
-        {
-            TUDebuger::WarningShow(Message);
-        }
-    });
+   // 配置文件初始化
+	static void InitSDK(const FString& GameVersion, TFunction<void(bool Result, const FString& Message)> CallBack);
+	// 手动初始化
+	static void InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack);
 ```
+配置文件的默认路径是`/Plugins/XDGSDK/Content/XDGAssets/XDConfig.json`，如果需要配置不同的配置文件，可以在`XDGAssets/`的同级目录下，放入新建的`json`文件，然后在初始化前调用`XUSettings::UpdateConfigFileName`方法来切换需要的初始化配置文件
+```c++
+	if (SelectedItem == TEXT("国内")) {
+		XUSettings::UpdateConfigFileName("XDConfig-cn.json");
+	} else if (SelectedItem == TEXT("海外")) {
+		XUSettings::UpdateConfigFileName("XDConfig.json");
+	}
+```
+
+初始化代码
+```c++
+	XDUE::InitSDK("1.2.3", [](bool Result, FString Message) {
+		if (Result) {
+			TUDebuger::DisplayShow(Message);
+		}
+		else {
+			TUDebuger::WarningShow(Message);
+		}
+	});
+```
+
+如果是手动初始化，那么只需要配置`XUType::Config`值就行了。
 
 ### 登录接口
 
-`LoginType`是`Default`类型，代表了自动登录，如果已经登录的状态，会重新更新用户状态，如果没有登录，那么会提示登录失败。
+登录接口的类型：
+* Default：自动登录
+* Guest：游客登录
+* Apple：Apple登录（将会支持）
+* Google：Google登录
+* TapTap：TapTap登录
+
+登录接口调用：
 ```c++
-    XDUE::LoginByType((XUType::LoginType)LoginType, [](FXUUser User)
-    {
-        TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
-    }, [](FXUError Error)
-    {
-        TUDebuger::WarningShow(TEXT("登录失败：") + Error.msg);
-    });
+	XDUE::LoginByType(LoginType, [](FXUUser User){
+		TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
+	}, [](FXUError Error){
+		TUDebuger::WarningShow(TEXT("登录失败：") + Error.msg + "\n" + TUJsonHelper::GetJsonString(Error.ExtraData));
+	});
+```
+
+需要注意的是，对于已登录的用户，每次进游戏需要使用Default方式来更新用户，如果返回的是失败，那么说明心动的登录状态已经失效，需要用户重新登录，游戏方应该退出到登录界面。
+
+### 获取用户信息及Token
+```c++
+	static TSharedPtr<FXUUser> GetUserInfo();
+	static TSharedPtr<FXUTokenModel> GetAccessToken();
+```
+如果是未登录状态，那么指针为空，可以用来判断用户是否已经登录。
+
+### 获取用户地域
+
+可以调用下方API获取用户所在地域：
+```c++
+	static TSharedPtr<FXUIpInfoModel> GetIPInfo();
+```
+因为需要用户同意协议之后，才能去获取用户所在地域，所以首次登录游戏可能不能很及时获取TSharedPtr<FXUIpInfoModel>，使用前判断下是否为空，如果为空，可以使用接口再次尝试获取：
+```c++
+	static void GetIPInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> IpInfo)> CallBack);
 ```
 
 ### 退出登录
-XDSDK支持13种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类超出了TapSDK的支持，那么在TapSDK中显示的是英语（目前TapSDK仅涉及登录模块）
+游戏用户在退出账户的时候，应该调用
 ```c++
     XDUE::Logout();
 ```
 
+### 注销账户
+注销账户时，可以调用
+```c++
+	static void AccountCancellation();
+```
+如果用户注销成功，那么会发出用户被登出的回调：
+```c++
+	static XUSimpleDelegate OnLogout;
+```
+此时，游戏应该做登出的操作。
+
+
 ### 多语言
-XDSDK支持13种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类超出了TapSDK的支持，那么在TapSDK中显示的是英语（目前TapSDK仅涉及登录模块）
+XDSDK支持14种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类超出了TapSDK的支持，那么在TapSDK中显示的是英语（目前TapSDK仅涉及登录模块）
 ```c++
     XDUE::SetLanguage(LangType);
 ```
@@ -116,9 +183,13 @@ XDSDK支持13种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类�
 ```
 
 ### 打开网页支付
-
+国外：
 ```c++
-    XDUE::OpenWebPay(ServerId, RoleId);
+	static void OpenWebPay(const FString& ServerId, const FString& RoleId); 
+```
+国内：
+```c++
+	static void OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductSkuCode, TFunction<void(XUType::PayResult Result)> CallBack, const FString& ProductName = "", float PayAmount = 0, const FString& Ext = "");
 ```
 
 ### 是否允许推送服务
@@ -130,5 +201,6 @@ XDSDK支持13种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类�
         TUDebuger::DisplayShow("Push Service Disable");
     }
 ```
+
 
 

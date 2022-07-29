@@ -11,6 +11,7 @@
 #include "TUOpenSSL.h"
 #include "XUConfigManager.h"
 #include "XUGoogleTokenModel.h"
+#include "XULanguageManager.h"
 
 
 void XULoginHelper::TapTapLogin(TFunction<void(FTUAccessToken AccessToken)> Callback,
@@ -50,6 +51,7 @@ void XULoginHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)>
 		FString WebState = Request.QueryParams.FindRef("state");
 		FString WebCode = Request.QueryParams.FindRef("code");
 		if (WebState != State) {
+			// todo: 加一个错误响应
 			return false;
 		}
 		// TUDebuger::ErrorLog("HAHA, wolaile");
@@ -109,10 +111,8 @@ void XULoginHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)>
 		TSharedPtr<FJsonObject> Paras = MakeShareable(new FJsonObject);
 		Paras->SetStringField("client_id", ClientID);
 		Paras->SetStringField("redirect_uri", RedirectUri);
-		// Paras->SetStringField("response_type", "code");
-		// Paras->SetStringField("scope", "openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email");
-		// Paras->SetStringField("code_challenge", TUCrypto::UrlBase64Encode(TUOpenSSL::Sha256(TUCrypto::UTF8Encode(CodeVerifier))));
-		// Paras->SetStringField("code_challenge_method", "S256");
+		Paras->SetStringField("game_name", XUConfigManager::CurrentConfig()->GameName);
+		Paras->SetStringField("lang", XULanguageManager::GetLanguageKey());
 		Paras->SetStringField("state", State);
 		
 		FString ParaStr = TUHelper::CombinParameters(Paras);

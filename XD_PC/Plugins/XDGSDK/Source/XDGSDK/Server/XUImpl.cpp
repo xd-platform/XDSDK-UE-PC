@@ -62,7 +62,21 @@ void XUImpl::LoginByType(XUType::LoginType LoginType,
 		}
 	}
 	else {
+		// 如果已经是登录状态了，那么不再重复登录
+		auto HasLoginedBlock = [=]() {
+			if (FXUTokenModel::GetLocalModel().IsValid() && ErrorBlock) {
+				ErrorBlock(FXUError("The user is logged in"));
+				return true;
+			}
+			return false;
+		};
+		if (HasLoginedBlock()) {
+			return;
+		}
 		GetLoginParam(LoginType, [=](TSharedPtr<FJsonObject> paras) {
+			if (HasLoginedBlock()) {
+				return;
+			}
 			UTUHUD::ShowWait();
 			TFunction<void(FXUError error)> ErrorCallBack = [=](FXUError error) {
 				UTUHUD::Dismiss();

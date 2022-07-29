@@ -34,17 +34,17 @@ TSharedPtr<XUType::Config> FXULocalConfig::GenerateXUConfig() {
 
 	ConfigPtr->ClientId = client_id;
 	ConfigPtr->AppID = app_id;
-	ConfigPtr->IdfaEnabled = idfa_enabled;
+	// ConfigPtr->IdfaEnabled = idfa_enabled;
 	ConfigPtr->GameName = game_name;
 	
-	if (logos.Num() == 0) {
-		ConfigPtr->Logos = {
-			"https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
-			"https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
-			"https://res.xdcdn.net/TDS/Global/res/xd_logo.png"};
-	} else {
-		ConfigPtr->Logos = logos;
-	}
+	// if (logos.Num() == 0) {
+	// 	ConfigPtr->Logos = {
+	// 		"https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
+	// 		"https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
+	// 		"https://res.xdcdn.net/TDS/Global/res/xd_logo.png"};
+	// } else {
+	// 	ConfigPtr->Logos = logos;
+	// }
 	if (login_entries.Num() == 0) {
 		ConfigPtr->LoginEntries = {
 			"TapTap"};
@@ -64,7 +64,7 @@ TSharedPtr<XUType::Config> FXULocalConfig::GenerateXUConfig() {
 	ConfigPtr->TapConfig.DBConfig.Enable = tapsdk.db_config.enable;
 	ConfigPtr->TapConfig.DBConfig.Channel = tapsdk.db_config.channel;
 	ConfigPtr->TapConfig.DBConfig.GameVersion = tapsdk.db_config.game_version;
-	ConfigPtr->TapConfig.DBConfig.AdvertiserIDCollectionEnabled = idfa_enabled;
+	// ConfigPtr->TapConfig.DBConfig.AdvertiserIDCollectionEnabled = idfa_enabled;
 	
 	// ConfigPtr->FacebookInfo.AppID = facebook.app_id;
 	// ConfigPtr->FacebookInfo.ClientToken = facebook.client_token;
@@ -76,7 +76,6 @@ TSharedPtr<XUType::Config> FXULocalConfig::GenerateXUConfig() {
 	// ConfigPtr->TwitterInfo.ConsumerSecret = twitter.consumer_secret;
 
 	ConfigPtr->GoogleInfo.ClientID = google.CLIENT_ID;
-	ConfigPtr->GoogleInfo.ClientSecret = google.CLIENT_SECRET;
 	// ConfigPtr->GoogleInfo.ApiKey = google.API_KEY;
 	// ConfigPtr->GoogleInfo.IsSigninEnabled = google.IS_SIGNIN_ENABLED;
 	// ConfigPtr->GoogleInfo.GoogleAppID = google.GOOGLE_APP_ID;

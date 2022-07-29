@@ -3,7 +3,6 @@
     "bundle_id":"com.xd.sdkdemo1",
     "client_id":"d4bjgwom9zk84wk",
     "app_id":"1010",
-    "idfa_enabled":true,
     "game_name":"XD-CN Demo",
     "report_url":"https://www.xd.com/service",
     "logout_url":"https://logout-xdsdk.xd.cn/",
@@ -22,8 +21,5 @@
             "user_friends"
         ]
     },
-    "login_entries":["TapTap"],
-    "logos":["https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
-             "https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
-             "https://res.xdcdn.net/TDS/Global/res/xd_logo.png"]
+    "login_entries":["TapTap"]
 }

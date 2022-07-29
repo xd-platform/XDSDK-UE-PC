@@ -3,7 +3,6 @@
     "bundle_id":"com.xd.sdkdemo1",
     "client_id":"hn5RcJei2JxCYlS0",
     "app_id":"1111",
-    "idfa_enabled":true,
     "game_name":"XD-Intl Demo",
     "report_url":"https://tds.d1ds4p8wk7q4rf.amplifyapp.com?client_id={{client_id}}&access_token={{access_token}}&user_id={{user_id}}&role_id={{role_id}}&role_name={{role_name}}&region={{region}}_{{pt}}&server_id={{server_id}}&sdk_ver={{sdk_ver}}&sdk_lang={{sdk_lang}}&app_ver={{app_ver}}&app_ver_code={{app_ver_code}}&res={{res}}&cpu={{cpu}}&mem={{mem}}&pt={{pt}}&os={{os}}&brand={{brand}}&mod={{mod}}&game_name={{game_name}}",
     "logout_url":" https://logout-xdsdk.xd.com",
@@ -22,12 +21,8 @@
             "user_friends"
         ]
     },
-    "logos":["https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
-             "https://res.xdcdn.net/TDS/Global/res/xd_logo.png",
-             "https://res.xdcdn.net/TDS/Global/res/xd_logo.png"],
     "login_entries":["TapTap", "Google"],
     "google":{
-        "CLIENT_ID":"420233941847-ubfufs16oujar8tido2e7ra7g0o4b73c.apps.googleusercontent.com",
-        "CLIENT_SECRET":"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"
+        "CLIENT_ID":"420233941847-ubfufs16oujar8tido2e7ra7g0o4b73c.apps.googleusercontent.com"
     }
 }

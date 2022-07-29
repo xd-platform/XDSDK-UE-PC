@@ -50,56 +50,10 @@ namespace XUType {
 		None,				// 没有要补款
 	};
 	
-
-// struct FacebookConfig {
-// 	FString AppID;
-// 	FString ClientToken;
-// };
-//
-// struct LineConfig {
-// 	FString ChannelID;
-// };
-//
-// struct TwitterConfig {
-// 	FString ConsumerKey;
-// 	FString ConsumerSecret;
-// };
-	
 struct GoogleConfig {
 	FString ClientID;
-	FString ClientSecret;
-	// FString ReversedClientID;
-	// FString ApiKey;
-	// FString GCMSenderID;
-	// int PlistVersion;
-	// FString BundleID;
-	// FString ProjectID;
-	// FString StorageBucket;
-	// bool IsAdsEnabled;
-	// bool IsAnalyticsEnabled;
-	// bool IsAppInviteEnabled;
-	// bool IsGCMEnabled;
-	// bool IsSigninEnabled;
-	// FString GoogleAppID;
-	// FString DatabaseURL;
 };
-
-
-// struct AdjustEvent {
-// 	FString EventName;
-// 	FString Token;
-// };
-// 	
-// struct AdjustConfig {
-// 	FString AppToken;
-// 	TArray<AdjustEvent> Events;
-// };
-//
-// struct AppsflyerConfig {
-// 	FString AppID;
-// 	FString DevKey;
-// };
-
+	
 struct AgreementConfig {
 	FString Url;
 	FString Version;
@@ -115,17 +69,19 @@ struct BindEntriesConfig {
 	
 class Config {
 public:
+	
 	/// 区域选择，可选 CN、Global
 	RegionType RegionType = CN;
+	
 	/// XDGSDK client id
 	FString ClientId;
-	/// 是否开启 IDFA
-	bool IdfaEnabled;
 
 	/// TapSDK 配置
 	TUType::Config TapConfig;
+	
 	/// 游戏对外名称 显示在 Facebook 登录和客服页面中
 	FString GameName;
+	
 	/// TapTap 授权权限
 	TArray<FString> TapLoginPermissions;
 
@@ -135,36 +91,31 @@ public:
 	/*
 	 * 以下内容按需配置
 	 */
-	/// Facebook 配置信息
-	// FacebookConfig FacebookInfo;
-	/// Facebook  授权权限，如果使用 Facebook 登录，必须配置
-	// TArray<FString> FacebookLoginPersmissions;
-	/// Line 配置信息
-	// LineConfig LineInfo;
-	/// Twitter 配置信息
-	// TwitterConfig TwitterInfo;
+
 	/// Google 配置信息
 	GoogleConfig GoogleInfo;
-	/// Adjust 配置信息
-	// AdjustConfig AdjustInfo;
-	/// AppsFlyer 配置信息
-	// AppsflyerConfig AppsflyerInfo;
-	/// 统一登录窗口中的品牌向 logo 素材 URL 数组，需要3个，不配置的话默认https://res.xdcdn.net/TDS/Global/res/xd_logo.png
-	TArray<FString> Logos;
+
 	/// 统一登录窗口中的登录入口选项
 	TArray<FString> LoginEntries;
+	
 	/// XDGSDK app id
 	FString AppID;
+	
 	/// 用户中心窗口中绑定入口选项
 	TArray<BindEntriesConfig> BindEntries;
+	
 	/// 发行区域
 	FString Region;
+	
 	/// 客服链接，默认
 	FString ReportUrl;
+	
 	/// 注销账户链接，默认
 	FString LogoutUrl;
+	
 	/// 注销账户链接，默认
 	FString WebPayUrl;
+	
 	/// 协议内容
 	AgreementConfig Agreement;
 };

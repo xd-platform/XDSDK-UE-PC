@@ -41,9 +41,9 @@ void XULoginHelper::TapTapLogin(TFunction<void(FTUAccessToken AccessToken)> Call
 void XULoginHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)> Callback,
 	TFunction<void(FXUError Error)> ErrorBlock) {
 	FString State = FGuid::NewGuid().ToString();
-	FString CodeVerifier = TUHelper::GetRandomStr(16);
+	// FString CodeVerifier = TUHelper::GetRandomStr(16);
 	FString ClientID = XUConfigManager::CurrentConfig()->GoogleInfo.ClientID;
-	FString ClientSecret = XUConfigManager::CurrentConfig()->GoogleInfo.ClientSecret;
+	// FString ClientSecret = XUConfigManager::CurrentConfig()->GoogleInfo.ClientSecret;
 	static FString RedirectUri = "";
 	RedirectUri = TUHttpServer::RegisterNewRoute("google_auth", [=](const FHttpServerRequest& Request, const FHttpResultCallback& OnComplete) {
 		
@@ -65,36 +65,36 @@ void XULoginHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)>
 			OnComplete(MoveTemp(ResponsePtr));
 			return true;
 		}
-		TSharedPtr<TUHttpRequest> TokenRequest = MakeShareable(new TUHttpRequest());
-		TokenRequest->URL = "https://oauth2.googleapis.com/token";
-		TokenRequest->Type = TUHttpRequest::Post;
-		TokenRequest->Parameters->SetStringField("client_id", ClientID);
-		TokenRequest->Parameters->SetStringField("client_secret", ClientSecret);
-		TokenRequest->Parameters->SetStringField("code", WebCode);
-		TokenRequest->Parameters->SetStringField("code_verifier", CodeVerifier);
-		TokenRequest->Parameters->SetStringField("grant_type", "authorization_code");
-		TokenRequest->Parameters->SetStringField("redirect_uri", RedirectUri);
-		TokenRequest->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
-			if (response->state == TUHttpResponse::success) {
-				auto ModelPtr = TUJsonHelper::GetUStruct<FXUGoogleTokenModel>(response->contentString);
-				if (ModelPtr.IsValid()) {
-					if (Callback) {
-						Callback(*ModelPtr.Get());
-					}
-				}
-				else {
-					if (ErrorBlock) {
-						ErrorBlock(FXUError("Parse Google Token Error"));
-					}
-				}
-			}
-			else {
-				if (ErrorBlock) {
-					ErrorBlock(FXUError(response->contentString));
-				}
-			}
-		});
-		TUHttpManager::Get().request(TokenRequest);
+		// TSharedPtr<TUHttpRequest> TokenRequest = MakeShareable(new TUHttpRequest());
+		// TokenRequest->URL = "https://oauth2.googleapis.com/token";
+		// TokenRequest->Type = TUHttpRequest::Post;
+		// TokenRequest->Parameters->SetStringField("client_id", ClientID);
+		// TokenRequest->Parameters->SetStringField("client_secret", ClientSecret);
+		// TokenRequest->Parameters->SetStringField("code", WebCode);
+		// TokenRequest->Parameters->SetStringField("code_verifier", CodeVerifier);
+		// TokenRequest->Parameters->SetStringField("grant_type", "authorization_code");
+		// TokenRequest->Parameters->SetStringField("redirect_uri", RedirectUri);
+		// TokenRequest->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
+		// 	if (response->state == TUHttpResponse::success) {
+		// 		auto ModelPtr = TUJsonHelper::GetUStruct<FXUGoogleTokenModel>(response->contentString);
+		// 		if (ModelPtr.IsValid()) {
+		// 			if (Callback) {
+		// 				Callback(*ModelPtr.Get());
+		// 			}
+		// 		}
+		// 		else {
+		// 			if (ErrorBlock) {
+		// 				ErrorBlock(FXUError("Parse Google Token Error"));
+		// 			}
+		// 		}
+		// 	}
+		// 	else {
+		// 		if (ErrorBlock) {
+		// 			ErrorBlock(FXUError(response->contentString));
+		// 		}
+		// 	}
+		// });
+		// TUHttpManager::Get().request(TokenRequest);
 		
 		ResponsePtr->Body.Append(TUCrypto::UTF8Encode(FString("OK")));
 		OnComplete(MoveTemp(ResponsePtr));
@@ -109,14 +109,14 @@ void XULoginHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)>
 		TSharedPtr<FJsonObject> Paras = MakeShareable(new FJsonObject);
 		Paras->SetStringField("client_id", ClientID);
 		Paras->SetStringField("redirect_uri", RedirectUri);
-		Paras->SetStringField("response_type", "code");
-		Paras->SetStringField("scope", "openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email");
-		Paras->SetStringField("code_challenge", TUCrypto::UrlBase64Encode(TUOpenSSL::Sha256(TUCrypto::UTF8Encode(CodeVerifier))));
-		Paras->SetStringField("code_challenge_method", "S256");
+		// Paras->SetStringField("response_type", "code");
+		// Paras->SetStringField("scope", "openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email");
+		// Paras->SetStringField("code_challenge", TUCrypto::UrlBase64Encode(TUOpenSSL::Sha256(TUCrypto::UTF8Encode(CodeVerifier))));
+		// Paras->SetStringField("code_challenge_method", "S256");
 		Paras->SetStringField("state", State);
 		
 		FString ParaStr = TUHelper::CombinParameters(Paras);
-		FString URL = "https://accounts.google.com/o/oauth2/v2/auth?" + ParaStr;
+		FString URL = "https://xd-website.oss-cn-beijing.aliyuncs.com/xd-order-sgp/v1.0-dev/test/index.html?" + ParaStr;
 		FPlatformProcess::LaunchURL(*URL, nullptr, nullptr);
 	}
 	

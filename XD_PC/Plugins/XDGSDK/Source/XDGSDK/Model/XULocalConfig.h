@@ -87,9 +87,6 @@ struct FXULocalConfigGoogle
 	UPROPERTY()
 	FString CLIENT_ID;
 
-	UPROPERTY()
-	FString CLIENT_SECRET;
-
 	// UPROPERTY()
 	// FString REVERSED_CLIENT_ID;
 	//
@@ -190,8 +187,8 @@ struct FXULocalConfig
 	UPROPERTY()
 	FString app_id;
 
-	UPROPERTY()
-	bool idfa_enabled;
+	// UPROPERTY()
+	// bool idfa_enabled;
 
 	UPROPERTY()
 	FString game_name;
@@ -208,8 +205,8 @@ struct FXULocalConfig
 	UPROPERTY()
 	FXULocalConfigTapSDK tapsdk;
 
-	UPROPERTY()
-	TArray<FString> logos;
+	// UPROPERTY()
+	// TArray<FString> logos;
 
 	UPROPERTY()
 	TArray<FString> login_entries;

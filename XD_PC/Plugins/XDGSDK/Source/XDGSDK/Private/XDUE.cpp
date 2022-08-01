@@ -194,10 +194,6 @@ void XDUE::ResetPrivacy() {
 	XUImpl::Get()->ResetPrivacy();
 }
 
-void XDUE::OpenPayHintAlert() {
-	UXUPayHintAlert::Show(XUType::iOS);
-}
-
 #endif
 
 

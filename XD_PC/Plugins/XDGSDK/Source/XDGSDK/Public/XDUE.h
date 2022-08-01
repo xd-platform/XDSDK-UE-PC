@@ -68,8 +68,6 @@ public:
 	static void Test();
 
 	static void ResetPrivacy();
-
-	static void OpenPayHintAlert();
 #endif
 	
 };

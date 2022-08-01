@@ -23,7 +23,6 @@ void UDemoFirstWidget::NativeConstruct()
 	LogoutBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnLogoutBtnClick);
 	ResetPrivacyBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnResetPrivacyBtnClick);
 	UserCenterBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnUserCenterBtnClick);
-	FillingUIBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnFillingUIBtnClick);
 	CheckFillingBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnCheckFillingBtnClick);
 	CustomerCenterBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnCustomerCenterBtnClick);
 	PushEnableBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnPushEnableBtnClick);
@@ -118,10 +117,6 @@ void UDemoFirstWidget::OnUserCenterBtnClick() {
 			}
 		}
 	);
-}
-
-void UDemoFirstWidget::OnFillingUIBtnClick() {
-	XDUE::OpenPayHintAlert();
 }
 
 void UDemoFirstWidget::OnCheckFillingBtnClick() {

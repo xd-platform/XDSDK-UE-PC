@@ -33,18 +33,20 @@ PrivateDependencyModuleNames.AddRange(new string[] { "TapDB", "AntiAddiction"});
 #include "XDUE.h"
 ```
 
+## PC
+
 ### 初始化
 受政策影响，心动首次初始化时（或者协议更新时），将会弹起协议弹窗，只有用户同意协议后，才能初始化成功，否则将会强制退出游戏。
 
 目前有两种初始化方式
-```c++
-   // 配置文件初始化
+```cpp
+    // 配置文件初始化
 	static void InitSDK(const FString& GameVersion, TFunction<void(bool Result, const FString& Message)> CallBack);
 	// 手动初始化
 	static void InitSDK(const XUType::Config& Config, TFunction<void(bool Result, const FString& Message)> CallBack);
 ```
 配置文件的默认路径是`/Plugins/XDGSDK/Content/XDGAssets/XDConfig.json`，如果需要配置不同的配置文件，可以在`XDGAssets/`的同级目录下，放入新建的`json`文件，然后在初始化前调用`XUSettings::UpdateConfigFileName`方法来切换需要的初始化配置文件
-```c++
+```cpp
 	if (SelectedItem == TEXT("国内")) {
 		XUSettings::UpdateConfigFileName("XDConfig-cn.json");
 	} else if (SelectedItem == TEXT("海外")) {
@@ -53,7 +55,7 @@ PrivateDependencyModuleNames.AddRange(new string[] { "TapDB", "AntiAddiction"});
 ```
 
 初始化代码
-```c++
+```cpp
 	XDUE::InitSDK("1.2.3", [](bool Result, FString Message) {
 		if (Result) {
 			TUDebuger::DisplayShow(Message);
@@ -76,7 +78,7 @@ PrivateDependencyModuleNames.AddRange(new string[] { "TapDB", "AntiAddiction"});
 * TapTap：TapTap登录
 
 登录接口调用：
-```c++
+```cpp
 	XDUE::LoginByType(LoginType, [](FXUUser User){
 		TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
 	}, [](FXUError Error){
@@ -86,37 +88,40 @@ PrivateDependencyModuleNames.AddRange(new string[] { "TapDB", "AntiAddiction"});
 
 需要注意的是，对于已登录的用户，每次进游戏需要使用Default方式来更新用户，如果返回的是失败，那么说明心动的登录状态已经失效，需要用户重新登录，游戏方应该退出到登录界面。
 
+登录的某些错误码，会需要游戏方展示弹窗用来引导用户，具体可以咨询相关开发者。
+
 ### 获取用户信息及Token
-```c++
+```cpp
 	static TSharedPtr<FXUUser> GetUserInfo();
 	static TSharedPtr<FXUTokenModel> GetAccessToken();
 ```
 如果是未登录状态，那么指针为空，可以用来判断用户是否已经登录。
+使用前判断下指针是否为空，如果登录状态过期，那么也会得到空指针，请及时重新登录。
 
 ### 获取用户地域
 
 可以调用下方API获取用户所在地域：
-```c++
+```cpp
 	static TSharedPtr<FXUIpInfoModel> GetIPInfo();
 ```
-因为需要用户同意协议之后，才能去获取用户所在地域，所以首次登录游戏可能不能很及时获取TSharedPtr<FXUIpInfoModel>，使用前判断下是否为空，如果为空，可以使用接口再次尝试获取：
-```c++
+因为需要用户同意协议之后，才能去获取用户所在地域，所以首次登录游戏可能不能很及时获取`TSharedPtr<FXUIpInfoModel>`，使用前判断下是否为空，如果为空，可以使用接口再次尝试获取：
+```cpp
 	static void GetIPInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> IpInfo)> CallBack);
 ```
 
 ### 退出登录
 游戏用户在退出账户的时候，应该调用
-```c++
+```cpp
     XDUE::Logout();
 ```
 
 ### 注销账户
 注销账户时，可以调用
-```c++
+```cpp
 	static void AccountCancellation();
 ```
 如果用户注销成功，那么会发出用户被登出的回调：
-```c++
+```cpp
 	static XUSimpleDelegate OnLogout;
 ```
 此时，游戏应该做登出的操作。
@@ -124,13 +129,13 @@ PrivateDependencyModuleNames.AddRange(new string[] { "TapDB", "AntiAddiction"});
 
 ### 多语言
 XDSDK支持14种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类超出了TapSDK的支持，那么在TapSDK中显示的是英语（目前TapSDK仅涉及登录模块）
-```c++
+```cpp
     XDUE::SetLanguage(LangType);
 ```
 
 ### 打开用户中心
 目前提供了绑定和解绑的回调。
-```c++
+```cpp
     XDUE::OpenUserCenter(
         [](XUType::LoginType Type, TSharedPtr<FXUError> Error) {
             if (Error.IsValid()) {
@@ -152,7 +157,7 @@ XDSDK支持14种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类�
 ```
 
 ### 检查补款
-```c++
+```cpp
     XDUE::CheckPay([](XUType::CheckPayType CheckType)
     {
         switch (CheckType)
@@ -178,23 +183,23 @@ XDSDK支持14种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类�
 
 ### 打开客服中心
 
-```c++
+```cpp
     XDUE::OpenCustomerCenter("serverId", "roleId", "roleName");
 ```
 
 ### 打开网页支付
 国外：
-```c++
+```cpp
 	static void OpenWebPay(const FString& ServerId, const FString& RoleId); 
 ```
 国内：
-```c++
+```cpp
 	static void OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductSkuCode, TFunction<void(XUType::PayResult Result)> CallBack, const FString& ProductName = "", float PayAmount = 0, const FString& Ext = "");
 ```
 
 ### 是否允许推送服务
 韩国同意协议的时候有个是否统一推送的勾选项，韩国用户登录完后，可以用这个接口获取是否能推送。
-```c++
+```cpp
     if (XDUE::IsPushServiceEnable()) {
         TUDebuger::DisplayShow("Push Service Enable");
     } else {

@@ -44,9 +44,6 @@ protected:
 	void OnUserCenterBtnClick();
 	
 	UFUNCTION()
-	void OnFillingUIBtnClick();
-	
-	UFUNCTION()
 	void OnCheckFillingBtnClick();
 	
 	UFUNCTION()
@@ -110,9 +107,6 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	UButton* UserCenterBtn;
-	
-	UPROPERTY(meta = (BindWidget))
-	UButton* FillingUIBtn;
 	
 	UPROPERTY(meta = (BindWidget))
 	UButton* CheckFillingBtn;

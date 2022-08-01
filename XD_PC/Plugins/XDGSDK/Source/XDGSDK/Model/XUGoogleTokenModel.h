@@ -11,24 +11,26 @@ struct FXUGoogleTokenModel
 {
 	GENERATED_BODY()
 	
-	UPROPERTY()
-	FString access_token;
+	// UPROPERTY()
+	// FString access_token;
+	//
+	// UPROPERTY()
+	// int expires_in;
+	//
+	// UPROPERTY()
+	// FString refresh_token;
+	//
+	// UPROPERTY()
+	// int64 scope;
+	//
+	// UPROPERTY()
+	// FString token_type;
+	//
+	// UPROPERTY()
+	// FString id_token;
 
 	UPROPERTY()
-	int expires_in;
-
-	UPROPERTY()
-	FString refresh_token;
-
-	UPROPERTY()
-	int64 scope;
-
-	UPROPERTY()
-	FString token_type;
-
-	UPROPERTY()
-	FString id_token;
-	
+	FString code;
 };
 
 

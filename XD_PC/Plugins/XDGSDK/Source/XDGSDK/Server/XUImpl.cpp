@@ -63,18 +63,15 @@ void XUImpl::LoginByType(XUType::LoginType LoginType,
 	}
 	else {
 		// 如果已经是登录状态了，那么不再重复登录
-		auto HasLoginedBlock = [=]() {
-			if (FXUTokenModel::GetLocalModel().IsValid() && ErrorBlock) {
+		if (FXUTokenModel::GetLocalModel().IsValid()) {
+			if (ErrorBlock) {
 				ErrorBlock(FXUError("The user is logged in"));
-				return true;
 			}
-			return false;
-		};
-		if (HasLoginedBlock()) {
 			return;
 		}
 		GetLoginParam(LoginType, [=](TSharedPtr<FJsonObject> paras) {
-			if (HasLoginedBlock()) {
+			if (FXUTokenModel::GetLocalModel().IsValid()) {
+				TUDebuger::WarningLog("The user is logged in");
 				return;
 			}
 			UTUHUD::ShowWait();
@@ -122,8 +119,9 @@ void XUImpl::GetLoginParam(XUType::LoginType LoginType,
 			[=](FXUGoogleTokenModel AccessToken) {
 				TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 				JsonObject->SetNumberField("type", (int)LoginType);
-				JsonObject->SetStringField("token", AccessToken.id_token);
+				JsonObject->SetStringField("token", AccessToken.code);
 				JsonObject->SetStringField("secret", XUConfigManager::CurrentConfig()->GoogleInfo.ClientID);
+				JsonObject->SetStringField("grantType", "authorization_code");
 				resultBlock(JsonObject);
 			}, ErrorBlock);
 	}

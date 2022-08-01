@@ -27,7 +27,7 @@ bool TauWebAuthHelper::ProcessWebAuth(const TArray<FString>& NeedPermissions,
 	this->CallBackBlock = CallBack;
 	TWeakPtr<TauWebAuthHelper> WeakThisPtr(AsShared());
 	FString TempRedirectUri = TUHttpServer::RegisterNewRoute(WebAuthPath, [=](const FHttpServerRequest& Request, const FHttpResultCallback& OnComplete) {
-		TUDebuger::DisplayLog("web call back success");
+		TUDebuger::DisplayLog("taptap web call back success");
 		auto SharedThis = WeakThisPtr.Pin();
 		if (!SharedThis.IsValid()) { return false; }
 		SharedThis->ProcessWebAuthRequest(Request, OnComplete);

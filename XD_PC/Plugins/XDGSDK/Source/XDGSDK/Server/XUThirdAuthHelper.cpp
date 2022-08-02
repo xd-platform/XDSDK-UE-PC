@@ -60,6 +60,9 @@ void XUThirdAuthHelper::WebAuth(WebAuthType AuthType, TFunction<void(TSharedPtr<
 		}
 
 		if (Callback) {
+#if PLATFORM_MAC || PLATFORM_WINDOWS
+	TUHelper::ActivateItself();
+#endif
 			TSharedPtr<FJsonObject> AuthParas = MakeShareable(new FJsonObject);
 			for (auto QueryParam : Request.QueryParams) {
 				if (QueryParam.Key != "state") {

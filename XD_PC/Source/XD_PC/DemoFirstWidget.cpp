@@ -4,6 +4,7 @@
 #include "TUDebuger.h"
 #include "TUJsonHelper.h"
 #include "TUMomentType.h"
+#include "XDGSDK.h"
 #include "XDUE.h"
 #include "XUSettings.h"
 

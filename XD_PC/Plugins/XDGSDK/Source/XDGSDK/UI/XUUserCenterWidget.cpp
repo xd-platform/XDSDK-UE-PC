@@ -197,7 +197,7 @@ void UXUUserCenterWidget::Bind(UXUUserCenterItemWidget* CurrentWidget, TSharedPt
 		});
 	};
 
-	XUImpl::Get()->GetLoginParam((XUType::LoginType)Model->loginType, [=](TSharedPtr<FJsonObject> Paras) {
+	XUImpl::Get()->GetAuthParam((XUType::LoginType)Model->loginType, [=](TSharedPtr<FJsonObject> Paras) {
 		                             BindBlock(Paras);
 	                             }, [=](FXUError error) {
 		                             if (error.code == 80081) {

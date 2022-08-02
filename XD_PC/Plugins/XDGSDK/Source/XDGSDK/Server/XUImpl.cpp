@@ -11,7 +11,6 @@
 #include "XDGSDK.h"
 #include "XDUE.h"
 #include "XUConfigManager.h"
-#include "XULocalConfig.h"
 #include "XUThirdAuthHelper.h"
 #include "XDGSDK/UI/XUAccountCancellationWidget.h"
 #include "XDGSDK/UI/XUPayWebWidget.h"
@@ -69,7 +68,7 @@ void XUImpl::LoginByType(XUType::LoginType LoginType,
 			}
 			return;
 		}
-		GetLoginParam(LoginType, [=](TSharedPtr<FJsonObject> paras) {
+		GetAuthParam(LoginType, [=](TSharedPtr<FJsonObject> paras) {
 			if (FXUTokenModel::GetLocalModel().IsValid()) {
 				TUDebuger::WarningLog("The user is logged in");
 				return;
@@ -94,17 +93,18 @@ void XUImpl::LoginByType(XUType::LoginType LoginType,
 	}
 }
 
-void XUImpl::GetLoginParam(XUType::LoginType LoginType,
+void XUImpl::GetAuthParam(XUType::LoginType LoginType,
                                  TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock,
                                  TFunction<void(FXUError error)> ErrorBlock) {
 	if (LoginType == XUType::Guest) {
+		XUThirdAuthHelper::CancelAllPreAuths();
 		TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 		JsonObject->SetNumberField("type", (int)LoginType);
 		JsonObject->SetStringField("token", TUDeviceInfo::GetLoginId());
 		resultBlock(JsonObject);
 	}
 	else if (LoginType == XUType::TapTap) {
-		XUThirdAuthHelper::TapTapLogin(
+		XUThirdAuthHelper::TapTapAuth(
 			[=](FTUAccessToken AccessToken) {
 				TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 				JsonObject->SetNumberField("type", (int)LoginType);
@@ -115,14 +115,10 @@ void XUImpl::GetLoginParam(XUType::LoginType LoginType,
 	}
 	else if (LoginType == XUType::Google) {
 		TUDebuger::DisplayLog("Google Login");
-		XUThirdAuthHelper::GoogleLogin(
-			[=](FXUGoogleTokenModel AccessToken) {
-				TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
-				JsonObject->SetNumberField("type", (int)LoginType);
-				JsonObject->SetStringField("token", AccessToken.code);
-				JsonObject->SetStringField("secret", XUConfigManager::CurrentConfig()->GoogleInfo.ClientID);
-				JsonObject->SetStringField("grantType", "authorization_code");
-				resultBlock(JsonObject);
+		XUThirdAuthHelper::WebAuth(XUThirdAuthHelper::GoogleAuth,
+			[=](TSharedPtr<FJsonObject> AuthParas) {
+				AuthParas->SetNumberField("type", (int)LoginType);
+				resultBlock(AuthParas);
 			}, ErrorBlock);
 	}
 	else {

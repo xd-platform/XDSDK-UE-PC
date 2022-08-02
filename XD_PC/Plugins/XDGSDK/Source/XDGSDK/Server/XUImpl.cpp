@@ -12,7 +12,7 @@
 #include "XDUE.h"
 #include "XUConfigManager.h"
 #include "XULocalConfig.h"
-#include "XULoginHelper.h"
+#include "XUThirdAuthHelper.h"
 #include "XDGSDK/UI/XUAccountCancellationWidget.h"
 #include "XDGSDK/UI/XUPayWebWidget.h"
 #include "XDGSDK/UI/XUPrivacyWidget.h"
@@ -104,7 +104,7 @@ void XUImpl::GetLoginParam(XUType::LoginType LoginType,
 		resultBlock(JsonObject);
 	}
 	else if (LoginType == XUType::TapTap) {
-		XULoginHelper::TapTapLogin(
+		XUThirdAuthHelper::TapTapLogin(
 			[=](FTUAccessToken AccessToken) {
 				TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 				JsonObject->SetNumberField("type", (int)LoginType);
@@ -115,7 +115,7 @@ void XUImpl::GetLoginParam(XUType::LoginType LoginType,
 	}
 	else if (LoginType == XUType::Google) {
 		TUDebuger::DisplayLog("Google Login");
-		XULoginHelper::GoogleLogin(
+		XUThirdAuthHelper::GoogleLogin(
 			[=](FXUGoogleTokenModel AccessToken) {
 				TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 				JsonObject->SetNumberField("type", (int)LoginType);

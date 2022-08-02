@@ -4,7 +4,7 @@
 #include "TUDebuger.h"
 #include "XUConfigManager.h"
 #include "XUImpl.h"
-#include "XULoginHelper.h"
+#include "XUThirdAuthHelper.h"
 #include "XUSettings.h"
 #include "XDGSDK/UI/XUUserCenterWidget.h"
 #include "XDGSDK/UI/XUPayHintAlert.h"

@@ -29,6 +29,8 @@ protected:
 	
 	virtual void NativeConstruct() override;
 
+	virtual void NativeDestruct() override;
+
 	UFUNCTION()
 	void OnCloseBtnClick();
 

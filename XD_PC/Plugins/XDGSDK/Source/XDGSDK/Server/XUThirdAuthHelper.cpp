@@ -1,8 +1,9 @@
-#include "XULoginHelper.h"
+#include "XUThirdAuthHelper.h"
 
 #include "HttpServerResponse.h"
 #include "TapUELogin.h"
 #include "TUCrypto.h"
+#include "TUDeviceInfo.h"
 #include "TUHelper.h"
 #include "TUHttpServer.h"
 #include "XUConfigManager.h"
@@ -12,18 +13,16 @@
 
 // 用于判断是否属于同一次授权，授权前生成一个State，回调时候判断一下State和当前state是否相等，如果相等，表示的是处理当前回调，然后将HelperState置为空，否则不处理当前回调。
 // 须知：三方授权的web登录（除taptap），state缓存在系统浏览器中是同一个字段，所以每次web回调，给的都是最后一次传给web的state
-FString XULoginHelper::HelperState = "";
+TArray<FString> XUThirdAuthHelper::CacheStates;
 
-void XULoginHelper::TapTapLogin(TFunction<void(FTUAccessToken AccessToken)> Callback,
+void XUThirdAuthHelper::TapTapLogin(TFunction<void(FTUAccessToken AccessToken)> Callback,
                                 TFunction<void(FXUError Error)> ErrorBlock) {
-	HelperState = FGuid::NewGuid().ToString();
-	FString CurrentState = HelperState;
+	FString CurrentState = GenerateState();
 	TapUELogin::Login(
 		[=](TUAuthResult Result) {
-			if (CurrentState != HelperState) {
+			if (!JudgeContainStateAndClearAllAuths(CurrentState)) {
 				return;
 			}
-			HelperState = "";
 			if (Result.GetType() == TUAuthResult::Success) {
 				Callback(*Result.GetToken().Get());
 			}
@@ -45,15 +44,14 @@ void XULoginHelper::TapTapLogin(TFunction<void(FTUAccessToken AccessToken)> Call
 		});
 }
 
-void XULoginHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)> Callback,
+void XUThirdAuthHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)> Callback,
 	TFunction<void(FXUError Error)> ErrorBlock) {
 	static FString RedirectUri = "";
 	RedirectUri = TUHttpServer::RegisterNewRoute("google_auth", [=](const FHttpServerRequest& Request, const FHttpResultCallback& OnComplete) {
 		FString WebState = Request.QueryParams.FindRef("state");
-		if (WebState != HelperState) {
+		if (!JudgeContainStateAndClearAllAuths(WebState)) {
 			return false;
 		}
-		HelperState = "";
 		
 		TUniquePtr<FHttpServerResponse> ResponsePtr = MakeUnique<FHttpServerResponse>();
 		ResponsePtr->Code = EHttpServerResponseCodes::Ok;
@@ -84,7 +82,7 @@ void XULoginHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)>
 			ErrorBlock(FXUError("Login Server Create Error"));
 		}
 	} else {
-		HelperState = FGuid::NewGuid().ToString();
+		FString State = GenerateState();
 		FString ClientID = XUConfigManager::CurrentConfig()->GoogleInfo.ClientID;
 		
 		TSharedPtr<FJsonObject> Paras = MakeShareable(new FJsonObject);
@@ -92,11 +90,31 @@ void XULoginHelper::GoogleLogin(TFunction<void(FXUGoogleTokenModel AccessToken)>
 		Paras->SetStringField("redirect_uri", RedirectUri);
 		Paras->SetStringField("game_name", XUConfigManager::CurrentConfig()->GameName);
 		Paras->SetStringField("lang", XULanguageManager::GetLanguageKey());
-		Paras->SetStringField("state", HelperState);
+		Paras->SetStringField("state", State);
+		Paras->SetStringField("from", "UE_" + TUDeviceInfo::GetPlatform());
+		Paras->SetStringField("auth_type", "google");
 		
 		FString ParaStr = TUHelper::CombinParameters(Paras);
 		FString URL = "https://xd-website.oss-cn-beijing.aliyuncs.com/xd-order-sgp/v1.0-dev/test/index.html?" + ParaStr;
 		FPlatformProcess::LaunchURL(*URL, nullptr, nullptr);
 	}
 	
+}
+
+void XUThirdAuthHelper::CancelAllPreAuths() {
+	CacheStates.Empty();
+}
+
+FString XUThirdAuthHelper::GenerateState() {
+	FString State = FGuid::NewGuid().ToString();
+	CacheStates.Add(State);
+	return State;
+}
+
+bool XUThirdAuthHelper::JudgeContainStateAndClearAllAuths(FString State) {
+	if (CacheStates.Contains(State)) {
+		CancelAllPreAuths();
+		return true;
+	}
+	return false;
 }

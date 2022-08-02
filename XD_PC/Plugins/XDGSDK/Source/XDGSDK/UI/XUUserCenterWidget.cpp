@@ -9,6 +9,7 @@
 #include "XUUserCenterTipWidget.h"
 #include "XDUE.h"
 #include "XUConfigManager.h"
+#include "XUThirdAuthHelper.h"
 #include "HAL/PlatformApplicationMisc.h"
 
 UXUUserCenterWidget::UXUUserCenterWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
@@ -50,6 +51,11 @@ void UXUUserCenterWidget::NativeConstruct() {
 	ShouldShowErrorButton(false);
 
 	RequestList();
+}
+
+void UXUUserCenterWidget::NativeDestruct() {
+	Super::NativeDestruct();
+	XUThirdAuthHelper::CancelAllPreAuths();
 }
 
 void UXUUserCenterWidget::OnCloseBtnClick() {

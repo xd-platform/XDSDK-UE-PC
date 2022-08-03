@@ -40,6 +40,11 @@ void UXUPrivacyWidget::NativeConstruct()
 	LoadErrorBtn->OnClicked.AddUniqueDynamic(this, &UXUPrivacyWidget::OnLoadErrorBtnClick);
 
 	OriginURL =  XUConfigManager::GetAgreementUrl();
+	if (OriginURL.Contains("?")) { // 加个时间戳，用于浏览器清除缓存
+		OriginURL += FString::Printf(TEXT("&timestamp=%lld"), FDateTime::UtcNow().ToUnixTimestamp());
+	} else {
+		OriginURL += FString::Printf(TEXT("?timestamp=%lld"), FDateTime::UtcNow().ToUnixTimestamp());
+	}
 	PrivacyWebBrowser->LoadURL(OriginURL);
 	
 	auto langModel = XULanguageManager::GetCurrentModel();

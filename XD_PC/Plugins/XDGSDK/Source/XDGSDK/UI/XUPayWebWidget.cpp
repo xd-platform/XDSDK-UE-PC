@@ -15,7 +15,11 @@ void UXUPayWebWidget::Show(const FString& PayUrl, TFunction<void(XUType::PayResu
 	{
 		if (TUSettings::GetGameInstance().IsValid()) {
 			auto Widget = CreateWidget<UXUPayWebWidget>(TUSettings::GetGameInstance().Get(), MyWidgetClass);
-			Widget->PayUrl = PayUrl;
+			if (PayUrl.Contains("?")) { // 加个时间戳，用于浏览器清除缓存
+				Widget->PayUrl = PayUrl + FString::Printf(TEXT("&timestamp=%lld"), FDateTime::UtcNow().ToUnixTimestamp());
+			} else {
+				Widget->PayUrl = PayUrl + FString::Printf(TEXT("?timestamp=%lld"), FDateTime::UtcNow().ToUnixTimestamp());
+			}
 			Widget->CallBack = CallBack;
 			Widget->AddToViewport(TUSettings::GetUILevel());
 		}

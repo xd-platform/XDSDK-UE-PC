@@ -37,7 +37,7 @@ void AAUImpl::Init(const AAUType::Config& _Config) {
 	});
 }
 
-void AAUImpl::StartUp(const FString& UserID, TFunction<void(AAUType::StartUpResult Result)> CallBack) {
+void AAUImpl::Login(const FString& UserID, TFunction<void(bool Result, const FString& Msg)> CallBack) {
 	CurrentUserID = UserID;
 	CurrentStartUpCallBack = CallBack;
 	TSharedPtr<FAAUUser> LoginUser = TUDataStorage<FAAUStorage>::LoadStruct<FAAUUser>(FAAUStorage::HasLoginedUser + UserID);
@@ -209,12 +209,10 @@ int AAUImpl::GetCurrentUserRemainTime() {
 	return Server->GetRemainTime();
 }
 
-void AAUImpl::CheckPayLimit(int Amount,
-	TFunction<void(bool Status, const FString& Title, const FString& Description)> CallBack,
-	TFunction<void(const FString& Msg)> FailureHandler) {
+void AAUImpl::CheckPayLimit(int Amount, TFunction<void(bool Status)> CallBack, TFunction<void(const FString& Msg)> FailureHandler) {
 	Server->CheckPayLimit(Amount, [=](bool Status, const FString& Title, const FString& Description) {
 		if (CallBack) {
-			CallBack(Status, Title, Description);
+			CallBack(Status);
 		}
 		if (Status == false) {
 			auto Widget = UAAUHealthTipWidget::ShowUI(Title, Description, TEXT("返回游戏"));
@@ -228,11 +226,11 @@ void AAUImpl::SubmitPayResult(int Amount, TFunction<void(bool Success)> CallBack
 	Server->SubmitPayResult(Amount, CallBack, FailureHandler);
 }
 
-void AAUImpl::PerformStartUpCallBack(AAUType::StartUpResult Result) {
+void AAUImpl::PerformStartUpCallBack(bool Result, const FString& Msg) {
 	if (CurrentStartUpCallBack == nullptr) {
 		return;
 	}
-	CurrentStartUpCallBack(Result);
+	CurrentStartUpCallBack(Result, Msg);
 	CurrentStartUpCallBack = nullptr;
 }
 
@@ -256,7 +254,7 @@ void AAUImpl::Login(const FString& AccessToken, int AgeLimit, bool IsFirst) {
 			UTUHUD::Dismiss();
 			if (Result.LoginState == AAULoginResult::SuccessWithLimit || Result.LoginState ==
 				AAULoginResult::SuccessWithNoLimit) {
-				PerformStartUpCallBack(AAUType::StartUpSuccess);
+				PerformStartUpCallBack(true, "Success");
 				if (Result.LoginState == AAULoginResult::SuccessWithLimit) {
 					ShowHealthTipUI(Result.Title, Result.Description, Result.RemainTime, AAUHealthTipTypeFirstLogin);
 				}
@@ -271,7 +269,7 @@ void AAUImpl::Login(const FString& AccessToken, int AgeLimit, bool IsFirst) {
 				else {
 					UTUHUD::ShowToast(TEXT("防沉迷进入失败"));
 				}
-				PerformStartUpCallBack(AAUType::TimeLimit);
+				PerformStartUpCallBack(false, "Time Limit");
 			}
 		});
 	};
@@ -290,11 +288,11 @@ void AAUImpl::ShowRealNameUI(UAAUManualRealNameWidget *Widget, AAURealNameWordTy
 		Widget->ChangeType(Type);
 	}
 	Widget->CloseBlock = [=]() {
-		PerformStartUpCallBack(AAUType::StartUpCancel);
+		PerformStartUpCallBack(false, "Cancel");
 	};
 	if (Type == AAURealNameWordTypeVerifying) {
 		Widget->SubmitBlock = [=](const FString& Name, const FString& CardID) {
-			PerformStartUpCallBack(AAUType::RealNameVerifying);
+			PerformStartUpCallBack(false, "RealName Verifying");
 			Widget->Dismiss();
 		};
 	} else if(Type == AAURealNameWordTypeVerify || Type == AAURealNameWordTypeVerifyFail) {
@@ -344,7 +342,7 @@ void AAUImpl::TryAgainStartUp(const FString& ErrMsg) {
 		Msg = ErrMsg;
 	}
 	UAAUTipWidget::ShowTip(Msg, TEXT("重试"), [=]() {
-		StartUp(CurrentUserID, CurrentStartUpCallBack);
+		Login(CurrentUserID, CurrentStartUpCallBack);
 	});
 }
 

@@ -13,12 +13,12 @@ void AntiAddictionUE::Init(const AAUType::Config& Config) {
 	AAUImpl::Get()->Init(Config);
 }
 
-void AntiAddictionUE::StartUp(const FString& UserID, TFunction<void(AAUType::StartUpResult Result)> CallBack) {
+void AntiAddictionUE::Login(const FString& UserID, TFunction<void(bool Result, const FString& Msg)> CallBack) {
 	if (UserID.IsEmpty()) {
 		TUDebuger::ErrorLog("AntiAddiction UserID is Empty");
 		return;
 	}
-	AAUImpl::Get()->StartUp(UserID, CallBack);
+	AAUImpl::Get()->Login(UserID, CallBack);
 }
 
 void AntiAddictionUE::EnterGame() {
@@ -41,9 +41,7 @@ int AntiAddictionUE::GetCurrentUserRemainTime() {
 	return AAUImpl::Get()->GetCurrentUserRemainTime();
 }
 
-void AntiAddictionUE::CheckPayLimit(int Amount,
-	TFunction<void(bool Status, const FString& Title, const FString& Description)> CallBack,
-	TFunction<void(const FString& Msg)> FailureHandler) {
+void AntiAddictionUE::CheckPayLimit(int Amount,TFunction<void(bool Status)> CallBack,TFunction<void(const FString& Msg)> FailureHandler) {
 	AAUImpl::Get()->CheckPayLimit(Amount, CallBack, FailureHandler);
 }
 

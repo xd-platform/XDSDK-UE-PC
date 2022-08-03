@@ -15,8 +15,8 @@ public:
 	static FString LocalTokenString;
 
 	void Init(const AAUType::Config& _Config);
-	
-	void StartUp(const FString& UserID, TFunction<void(AAUType::StartUpResult Result)> CallBack);
+
+	void Login(const FString& UserID, TFunction<void(bool Result, const FString& Msg)> CallBack);
 	
 	// MARK: - 实名认证部分
 	void ManualVerify(const FString& UserID, const FString& Name, const FString& CardID,
@@ -37,17 +37,8 @@ public:
 
 	/// 获取用户剩余时长
 	int GetCurrentUserRemainTime();
-	
 
-	/// 查询能否支付
-	/// - Parameter amount: 支付金额，单位分
-	/// - Parameter status: true:可以付费 false:限制消费
-	/// - Parameter title: 限制消费时提示标题
-	/// - Parameter description: 限制消费提示国家法规内容
-
-	void CheckPayLimit(int Amount,
-		TFunction<void(bool Status, const FString& Title, const FString& Description)> CallBack,
-		TFunction<void(const FString& Msg)> FailureHandler);
+	void CheckPayLimit(int Amount,TFunction<void(bool Status)> CallBack,TFunction<void(const FString& Msg)> FailureHandler);
 
 	/// 上报消费结果 
 	/// - Parameter amount: 支付金额，单位分
@@ -60,9 +51,9 @@ private:
 
 	FString CurrentUserID;
 
-	TFunction<void(AAUType::StartUpResult Result)> CurrentStartUpCallBack;
+	TFunction<void(bool Result, const FString& Msg)> CurrentStartUpCallBack;
 
-	void PerformStartUpCallBack(AAUType::StartUpResult Result);
+	void PerformStartUpCallBack(bool Result, const FString& Msg);
 
 	TSharedPtr<bool> StandAloneEnable;
 	

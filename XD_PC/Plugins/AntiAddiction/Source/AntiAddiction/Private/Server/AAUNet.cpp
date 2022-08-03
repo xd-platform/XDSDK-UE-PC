@@ -122,7 +122,7 @@ void AAUNet::GetServerTime(TFunction<void(TSharedPtr<FAAUServerTimeModel> ModelP
 void AAUNet::GetSDKConfig(TFunction<void(TSharedPtr<FAAUConfigModel> ModelPtr, const FTUError& Error)> CallBack) {
 	const TSharedPtr<AAUNet> request = MakeShareable(new AAUNet());
 	request->URL = TDSBaseUrl / AntiAddictionPath / "clients/{clients}/configuration" ;
-	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.GameID);
+	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.ClientID);
 	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
 		PerfromWrapperResponseCallBack(response, CallBack);
 	});
@@ -133,7 +133,7 @@ void AAUNet::SetPayment(int Amount,
 	TFunction<void(TSharedPtr<FAAUPaymentModel> ModelPtr, const FTUError& Error)> CallBack) {
 	const TSharedPtr<AAUNet> request = MakeShareable(new AAUNet());
 	request->URL = TDSBaseUrl / AntiAddictionPath / "clients/{clients}/users/{users}/payments";
-	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.GameID);
+	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.ClientID);
 	request->PathParameters.Add("{users}", FAAUUser::GetCurrentUser()->UserID);
 	request->Type = Post;
 	request->Headers.Add("Authorization", FAAUUser::GetCurrentUser()->AccessToken);
@@ -148,7 +148,7 @@ void AAUNet::CheckPayment(int Amount,
 	TFunction<void(TSharedPtr<FAAUPayableModel> ModelPtr, const FTUError& Error)> CallBack) {
 	const TSharedPtr<AAUNet> request = MakeShareable(new AAUNet());
 	request->URL = TDSBaseUrl / AntiAddictionPath / "clients/{clients}/users/{users}/payable";
-	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.GameID);
+	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.ClientID);
 	request->PathParameters.Add("{users}", FAAUUser::GetCurrentUser()->UserID);
 	request->Type = Post;
 	request->Headers.Add("Authorization", FAAUUser::GetCurrentUser()->AccessToken);
@@ -164,7 +164,7 @@ void AAUNet::CheckPlayable(const FString& UserID, const FString& Token, TArray<T
                            TFunction<void(TSharedPtr<FAAUPlayableModel> ModelPtr, const FTUError& Error)> CallBack, bool IsLogin) {
 	const TSharedPtr<AAUNet> request = MakeShareable(new AAUNet());
 	request->URL = TDSBaseUrl / AntiAddictionPath / "clients/{clients}/users/{users}/playable";
-	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.GameID);
+	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.ClientID);
 	request->PathParameters.Add("{users}", UserID);
 	request->Type = Post;
 	request->RepeatCount = 3;
@@ -173,7 +173,7 @@ void AAUNet::CheckPlayable(const FString& UserID, const FString& Token, TArray<T
 	FString JsonStr;
 	TSharedRef <TJsonWriter<TCHAR>> JsonWriter = TJsonWriterFactory<>::Create(&JsonStr);
 	JsonWriter->WriteObjectStart();
-	JsonWriter->WriteValue("game", AAUImpl::Get()->Config.GameID);
+	JsonWriter->WriteValue("game", AAUImpl::Get()->Config.ClientID);
 	const FString Version = AntiAddictionUE_VERSION;
 	JsonWriter->WriteValue("sdkVersion", Version);
 	JsonWriter->WriteObjectStart("play_logs");
@@ -220,7 +220,7 @@ void AAUNet::ManualVerify(const FString& UserID, const FString& Name, const FStr
                           TFunction<void(TSharedPtr<FAAURealNameResultModel> ModelPtr, const FTUError& Error)> CallBack) {
 	const TSharedPtr<AAUNet> request = MakeShareable(new AAUNet());
 	request->URL = TDSBaseUrl / RealNameAuthenticationPath / "clients/{clients}/users/{users}/manual" ;
-	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.GameID);
+	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.ClientID);
 	request->PathParameters.Add("{users}", UserID);
 	request->Type = Post;
 	request->RepeatCount = 3;
@@ -258,7 +258,7 @@ void AAUNet::CheckRealNameState(const FString& UserID,
 	TFunction<void(TSharedPtr<FAAURealNameResultModel> ModelPtr, const FTUError& Error)> CallBack) {
 	const TSharedPtr<AAUNet> request = MakeShareable(new AAUNet());
 	request->URL = TDSBaseUrl / RealNameAuthenticationPath / "clients/{clients}/users/{users}";
-	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.GameID);
+	request->PathParameters.Add("{clients}", AAUImpl::Get()->Config.ClientID);
 	request->PathParameters.Add("{users}", UserID);
 	request->Type = Get;
 	request->RepeatCount = 3;
@@ -298,7 +298,7 @@ TMap<FString, FString> AAUNet::CommonHeaders() {
 
 TSharedPtr<FJsonObject> AAUNet::CommonParameters() {
 	auto _Parameters = TUHttpRequest::CommonParameters();
-	_Parameters->SetStringField("game", AAUImpl::Get()->Config.GameID);
+	_Parameters->SetStringField("game", AAUImpl::Get()->Config.ClientID);
 	_Parameters->SetStringField("sdkVersion", AntiAddictionUE_VERSION);
 	return _Parameters;
 }

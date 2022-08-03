@@ -16,16 +16,16 @@ public:
 	static void Init(const AAUType::Config& Config);
 
 	// 启动防沉迷
-	static void StartUp(const FString& UserID, TFunction<void(AAUType::StartUpResult Result)> CallBack);
-
-	// 进入游戏
-	static void EnterGame();
-
-	// 离开游戏
-	static void LeaveGame();
+	static void Login(const FString& UserID, TFunction<void(bool Result, const FString& Msg)> CallBack);
 
 	// 防沉迷退出
 	static void Logout();
+
+	// 进入游戏，游戏从后台激活时调用该API
+	static void EnterGame();
+
+	// 离开游戏，游戏进入后台时调用
+	static void LeaveGame();
 
 	// 并不是返回用户准确年龄，只是返回一个年龄区间，比如大于18岁，只会返回18；
 	static int GetCurrentUserAgeLimite();
@@ -37,10 +37,8 @@ public:
 	/// 查询能否支付
 	/// - Parameter amount: 支付金额，单位分
 	/// - Parameter status: true:可以付费 false:限制消费
-	/// - Parameter title: 限制消费时提示标题
-	/// - Parameter description: 限制消费提示国家法规内容
 	static void CheckPayLimit(int Amount,
-		TFunction<void(bool Status, const FString& Title, const FString& Description)> CallBack,
+		TFunction<void(bool Status)> CallBack,
 		TFunction<void(const FString& Msg)> FailureHandler);
 
 	/// 上报消费结果 

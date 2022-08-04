@@ -75,7 +75,12 @@ FString UXUUserCenterWidget::GetLoginTypeName() {
 	FString result = langModel->tds_guest;
 	if (userMd->GetLoginType() == XUType::TapTap) {
 		result = "TapTap";
+	} else if (userMd->GetLoginType() == XUType::Google) {
+		result = "Google";
 	}
+	// else if (userMd->GetLoginType() == XUType::Apple) {
+	// 	result = "Apple";
+	// }
 	FString unitStr = langModel->tds_account_format;
 	return unitStr.Replace(TEXT("%s"), *result);
 }
@@ -122,7 +127,7 @@ void UXUUserCenterWidget::ResetListBox() {
 				enum UXUUserCenterTipWidget::AlertType AlertType = GetBindCount() <= 1
 					                                                   ? UXUUserCenterTipWidget::DeleteThird
 					                                                   : UXUUserCenterTipWidget::UnbindThird;
-				UXUUserCenterTipWidget::Show(AlertType, XUType::TapTap, [=]() {
+				UXUUserCenterTipWidget::Show(AlertType, (XUType::LoginType)Model->loginType, [=]() {
 					UnBind(CurrentWidget, Model);
 				}, nullptr);
 			}

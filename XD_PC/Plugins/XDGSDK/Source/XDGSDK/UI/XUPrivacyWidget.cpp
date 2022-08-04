@@ -46,6 +46,7 @@ void UXUPrivacyWidget::NativeConstruct()
 		OriginURL += FString::Printf(TEXT("?timestamp=%lld"), FDateTime::UtcNow().ToUnixTimestamp());
 	}
 	PrivacyWebBrowser->LoadURL(OriginURL);
+	PrivacyWebBrowser->LoadURL(OriginURL);// 国内协议加载过快，会有布局问题，所以这里连续调用两遍临时解决下
 	
 	auto langModel = XULanguageManager::GetCurrentModel();
 	ComfirmButtonLabel->SetText(FText::FromString(langModel->xd_agreement_agree));
@@ -143,16 +144,16 @@ void UXUPrivacyWidget::UpdateUI(LoadState State) {
 	switch (State) {
 	case Loading:
 		PrivacyWebBrowser->SetVisibility(ESlateVisibility::Visible);
-		ComfirmButton->SetVisibility(ESlateVisibility::Collapsed);
+		ComfirmButton->SetVisibility(ESlateVisibility::Hidden);
 		LoadErrorBtn->SetVisibility(ESlateVisibility::Collapsed);
-		DeclineButton->SetVisibility(ESlateVisibility::Collapsed);
+		DeclineButton->SetVisibility(ESlateVisibility::Hidden);
 		AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
 		break;
 	case LoadError:
 		PrivacyWebBrowser->SetVisibility(ESlateVisibility::Collapsed);
-		ComfirmButton->SetVisibility(ESlateVisibility::Collapsed);
+		ComfirmButton->SetVisibility(ESlateVisibility::Hidden);
 		LoadErrorBtn->SetVisibility(ESlateVisibility::Visible);
-		DeclineButton->SetVisibility(ESlateVisibility::Collapsed);
+		DeclineButton->SetVisibility(ESlateVisibility::Hidden);
 		AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
 		break;
 	case LoadSuccess:

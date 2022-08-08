@@ -283,11 +283,7 @@ void XUImpl::AccountCancellation() {
 	Query->SetStringField("time", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
 
 	FString QueryStr = TUHelper::CombinParameters(Query);
-	FString UrlStr = XUConfigManager::CurrentConfig()->LogoutUrl;
-	auto Parse = TUCommon::FURL_RFC3986();
-	Parse.Parse(UrlStr);
-	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
-	UrlStr = UrlStr + "?" + QueryStr;
+	FString UrlStr = XUConfigManager::CurrentConfig()->LogoutUrl + "?" + QueryStr;
 
 	UXUAccountCancellationWidget::Show(UrlStr);
 }

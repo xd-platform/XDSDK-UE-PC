@@ -1283,8 +1283,8 @@
     "xd_agreement_disagree_confirm_back": "Quay về",
     "xd_agreement_age_tips": "Vui lòng xác nhận độ tuổi trước",
     "xd_agreement_load_failed": "Không tải được nội dung thỏa thuận, vui lòng kiểm tra mạng và nhấp vào màn hình để thử lại",
-    "tds_retry": "重试",
-    "tds_net_error": "网络异常，请点击重试",
-    "tds_load_error": "加载失败，请点击重试"
+    "tds_retry": "Thử lại",
+    "tds_net_error": "Mạng có bất thường, vui lòng nhấp để thử lại",
+    "tds_load_error": "Tải thất bại, vui lòng nhấp để thử lại"
   }
 }

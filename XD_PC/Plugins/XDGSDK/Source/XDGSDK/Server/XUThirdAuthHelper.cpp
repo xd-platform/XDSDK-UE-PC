@@ -8,6 +8,7 @@
 #include "TUHttpServer.h"
 #include "XUConfigManager.h"
 #include "XULanguageManager.h"
+#include "XURegionConfig.h"
 
 
 // 同一批Auth放在CacheStates，一旦有一个授权成功了，那么清空CacheStates，也可以手动清空（比如在用户中心关闭弹窗的时候）
@@ -102,7 +103,16 @@ void XUThirdAuthHelper::WebAuth(WebAuthType AuthType, TFunction<void(TSharedPtr<
 		}
 		
 		FString ParaStr = TUHelper::CombinParameters(Paras);
-		FString URL = "https://xd-website.oss-cn-beijing.aliyuncs.com/xd-order-sgp/v1.0-dev/test/index.html?" + ParaStr;
+		FString URL = XURegionConfig::Get()->LoginWebHost() + "?" + ParaStr;
+		if (TUDebuger::IsTest) {
+			for (auto Replace : TUDebuger::ReplaceHosts) {
+				if (URL.Contains(Replace.Key)) {
+					URL.ReplaceInline(*Replace.Key, *Replace.Value);
+					break;
+				}
+			}
+		}
+		// FString URL = "https://xd-website.oss-cn-beijing.aliyuncs.com/xd-order-sgp/v1.0-dev/test/index.html?" + ParaStr;
 		FPlatformProcess::LaunchURL(*URL, nullptr, nullptr);
 	}
 }

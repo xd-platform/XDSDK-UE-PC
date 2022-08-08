@@ -9,7 +9,10 @@ class XURegionConfigCN: public XURegionConfig
 public:
 	virtual FString BaseHost() {
 		return "https://xdsdk-6.xd.cn";
-		// @"https://tds-dev.xindong.com";
+	}
+
+	virtual FString LoginWebHost() {
+		return "https://login-xdsdk.xd.cn";
 	}
 };
 
@@ -18,7 +21,10 @@ class XURegionConfigIO: public XURegionConfig
 public:
 	virtual FString BaseHost() {
 		return "https://xdsdk-intnl-6.xd.com";
-		// "https://test-xdsdk-intnl-6.xd.com"; //测试
+	}
+
+	virtual FString LoginWebHost() {
+		return "https://login-xdsdk.xd.com";
 	}
 };
 

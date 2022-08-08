@@ -5,6 +5,7 @@ public:
 
 	virtual ~XURegionConfig() = default;
 	virtual FString BaseHost() = 0;
+	virtual FString LoginWebHost() = 0;
 
 	//获取配置
 	FString InitSDKUrl();

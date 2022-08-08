@@ -53,6 +53,9 @@ void UDemoFirstWidget::NativeConstruct()
 	TUDebuger::ReplaceHosts.Add("https://event-tracking-cn.cn-beijing.log.aliyuncs.com/logstores/sdk6-prod/track", "https://event-tracking-cn.cn-beijing.log.aliyuncs.com/logstores/sdk6-test/track");
 	TUDebuger::ReplaceHosts.Add("https://event-tracking-global.ap-southeast-1.log.aliyuncs.com/logstores/sdk6-prod/track", "https://event-tracking-global.ap-southeast-1.log.aliyuncs.com/logstores/sdk6-test/track");
 
+	TUDebuger::ReplaceHosts.Add("https://login-xdsdk.xd.cn", "https://xd-website.oss-cn-beijing.aliyuncs.com/xd-order-sgp/v1.0-dev/test/index.html");
+	TUDebuger::ReplaceHosts.Add("https://login-xdsdk.xd.com", "https://xd-website.oss-cn-beijing.aliyuncs.com/xd-order-sgp/v1.0-dev/test/index.html");
+
 	XDUE::OnLogout.AddLambda([]() {
 		TUDebuger::DisplayShow(TEXT("游戏账号应登出"));
 	});

@@ -17,7 +17,11 @@ TArray<FString> XUThirdAuthHelper::CacheStates;
 void XUThirdAuthHelper::TapTapAuth(TFunction<void(FTUAccessToken AccessToken)> Callback,
                                 TFunction<void(FXUError Error)> ErrorBlock) {
 	FString CurrentState = GenerateState();
-	TapUELogin::Login(
+	auto Permissons = XUConfigManager::CurrentConfig()->TapLoginPermissions;
+	if (!Permissons.Contains("email")) {
+		Permissons.Add("email");
+	}
+	TapUELogin::Login(Permissons, 
 		[=](TUAuthResult Result) {
 			if (!JudgeContainStateAndClearAllAuths(CurrentState)) {
 				return;

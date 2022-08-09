@@ -18,7 +18,8 @@
         },
         "permissions":[
             "public_profile",
-            "user_friends"
+            "user_friends",
+            "email"
         ]
     },
     "login_entries":["TapTap"]

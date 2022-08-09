@@ -76,7 +76,7 @@ void Login(XUType::LoginType LoginType) {
 	XDUE::LoginByType(LoginType, [](FXUUser User){
 		TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
 	}, [](FXUError Error){
-		TUDebuger::WarningShow(TEXT("登录失败：") + Error.msg + "\n" + TUJsonHelper::GetJsonString(Error.ExtraData));
+		TUDebuger::WarningShow(TEXT("登录失败：") + TUJsonHelper::GetJsonString(Error) + "\n" + TUJsonHelper::GetJsonString(Error.ExtraData));
 	});
 }
 

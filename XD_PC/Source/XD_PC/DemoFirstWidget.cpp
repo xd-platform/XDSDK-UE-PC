@@ -75,8 +75,27 @@ void UDemoFirstWidget::OnInitButtonClick() {
 void Login(XUType::LoginType LoginType) {
 	XDUE::LoginByType(LoginType, [](FXUUser User){
 		TUDebuger::DisplayShow(TEXT("登录成功：") + TUJsonHelper::GetJsonString(User));
-	}, [](FXUError Error){
-		TUDebuger::WarningShow(TEXT("登录失败：") + TUJsonHelper::GetJsonString(Error) + "\n" + TUJsonHelper::GetJsonString(Error.ExtraData));
+	}, [](FXUError Error)
+	{
+		if (Error.code == 40021 && Error.ExtraData.IsValid()) {
+			FString Platform = Error.ExtraData->GetStringField("loginType");
+			FString Email = Error.ExtraData->GetStringField("email");
+			TUDebuger::WarningShow(FString::Printf(TEXT("当前 %s 账号所关联的邮箱 %s 未被验证，请前往 %s 验证邮箱后重新登录游戏"), *Platform, *Email, *Platform));
+		} else if (Error.code == 40902 && Error.ExtraData.IsValid()) {
+			FString Platform = Error.ExtraData->GetStringField("loginType");
+			FString Email = Error.ExtraData->GetStringField("email");
+			auto Conflicts = Error.ExtraData->GetArrayField("conflicts");
+			FString Content = FString::Printf(TEXT("当前 %s 账号所关联的邮箱 %s 对应的游戏账号已绑定"), *Platform, *Email);
+			TArray<FString> Accounts;
+			for (auto JsonValue : Conflicts) {
+				Accounts.Add(JsonValue->AsObject()->GetStringField("loginType"));
+			}
+			Content += FString::Join(Accounts, TEXT("、"));
+			Content += TEXT("，请使用该邮箱所关联的其他平台游戏账号登录后进入「账号安全中心」手动进行账号绑定、解绑操作。");
+			TUDebuger::WarningShow(Content);
+		} else {
+			TUDebuger::WarningShow(TEXT("登录失败：") + TUJsonHelper::GetJsonString(Error) + "\n" + TUJsonHelper::GetJsonString(Error.ExtraData));
+		}
 	});
 }
 

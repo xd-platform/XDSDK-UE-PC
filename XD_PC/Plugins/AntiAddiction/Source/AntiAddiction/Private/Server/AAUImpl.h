@@ -33,7 +33,7 @@ public:
 	void Logout();
 
 	// 并不是返回用户准确年龄，只是返回一个年龄区间，比如大于18岁，只会返回18；
-	int GetCurrentUserAgeLimite();
+	int GetCurrentUserAgeLimit();
 
 	/// 获取用户剩余时长
 	int GetCurrentUserRemainTime();

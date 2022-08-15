@@ -201,7 +201,7 @@ void AAUImpl::Logout() {
 	Server->Logout();
 }
 
-int AAUImpl::GetCurrentUserAgeLimite() {
+int AAUImpl::GetCurrentUserAgeLimit() {
 	return Server->GetAgeLimit();
 }
 

@@ -33,8 +33,8 @@ void AntiAddictionUE::Logout() {
 	AAUImpl::Get()->Logout();
 }
 
-int AntiAddictionUE::GetCurrentUserAgeLimite() {
-	return AAUImpl::Get()->GetCurrentUserAgeLimite();
+int AntiAddictionUE::GetCurrentUserAgeLimit() {
+	return AAUImpl::Get()->GetCurrentUserAgeLimit();
 }
 
 int AntiAddictionUE::GetCurrentUserRemainTime() {

@@ -1,7 +1,6 @@
 #include "AAUConfigModel.h"
 
 #include "TUDebuger.h"
-#if PLATFORM_MAC || PLATFORM_WINDOWS
 
 #include "Server/AAUStorage.h"
 
@@ -52,6 +51,3 @@ TSharedPtr<FAAUConfigModel> FAAUConfigModel::GetLocalModel() {
 	CurrentModel = ModelPtr;
 	return ModelPtr;
 }
-
-
-#endif

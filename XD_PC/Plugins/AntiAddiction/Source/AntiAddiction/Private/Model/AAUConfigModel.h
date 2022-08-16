@@ -203,13 +203,10 @@ struct FAAUConfigModel
 	FAAUHealthReminderWordTip GetNonageHealthTip(AAUHealthTipType Type);
 
 	
-#if PLATFORM_MAC || PLATFORM_WINDOWS
-
 	static void SaveToLocal(TSharedPtr<FAAUConfigModel> Model);
 	// 理论上一定是有值的，可以不用判空。
 	static TSharedPtr<FAAUConfigModel> GetLocalModel();
 
 private:
 	static TSharedPtr<FAAUConfigModel> CurrentModel;
-#endif
 };

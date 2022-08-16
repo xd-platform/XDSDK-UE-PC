@@ -10,7 +10,7 @@ public class XD_PC : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "UMG", "SlateCore", "InputCore"});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "XDGSDK", "TapCommon", "TapDB", "TapMoment" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "XDGSDK", "TapCommon", "TapDB", "TapMoment", "TapLogin" });
 		
 		PrivateDependencyModuleNames.AddRange(new string[] { "Json", "JsonUtilities" });
 

@@ -76,6 +76,11 @@ protected:
 	UFUNCTION()
 	void OnAccountCancelBtnClick();
 
+	UFUNCTION()
+	void OnTestQualificationBtnClick();
+
+	
+
 private:
 	
 	UPROPERTY(meta = (BindWidget))
@@ -149,6 +154,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* AccountCancelBtn;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* TestQualificationBtn;
 	
 };
 

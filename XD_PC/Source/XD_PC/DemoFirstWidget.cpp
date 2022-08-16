@@ -7,6 +7,7 @@
 #include "XDGSDK.h"
 #include "XDUE.h"
 #include "XUSettings.h"
+#include "../../Plugins/TapLogin/Source/TapLogin/Public/TapUELogin.h"
 
 
 UDemoFirstWidget::UDemoFirstWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -32,6 +33,7 @@ void UDemoFirstWidget::NativeConstruct()
 	TestButton->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnTestButtonClick);
 	GoogleLoginBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnGoogleLoginBtnClick);
 	AccountCancelBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnAccountCancelBtnClick);
+	TestQualificationBtn->OnClicked.AddUniqueDynamic(this, &UDemoFirstWidget::OnTestQualificationBtnClick);
 
 	EnvironmentBox->OnSelectionChanged.AddUniqueDynamic(this, &UDemoFirstWidget::OnEnvironmentBoxSelectionChanged);
 	RegionBox->OnSelectionChanged.AddUniqueDynamic(this, &UDemoFirstWidget::OnRegionBoxSelectionChanged);
@@ -59,6 +61,8 @@ void UDemoFirstWidget::NativeConstruct()
 	XDUE::OnLogout.AddLambda([]() {
 		TUDebuger::DisplayShow(TEXT("游戏账号应登出"));
 	});
+
+	
 }
 
 void UDemoFirstWidget::OnInitButtonClick() {
@@ -288,5 +292,16 @@ void UDemoFirstWidget::OnGoogleLoginBtnClick() {
 
 void UDemoFirstWidget::OnAccountCancelBtnClick() {
 	XDUE::AccountCancellation();
+}
+
+void UDemoFirstWidget::OnTestQualificationBtnClick() {
+	TapUELogin::GetTestQualification([](bool IsQualified, const FTUError& Error) {
+		if (IsQualified) {
+			TUDebuger::DisplayShow(TEXT("有测试资格"));
+		} else {
+			TUDebuger::DisplayShow(Error.error_description);
+			TUDebuger::DisplayShow(TEXT("没有测试资格"));
+		}
+	});
 }
 

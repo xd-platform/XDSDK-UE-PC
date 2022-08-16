@@ -28,17 +28,17 @@ void TUBootStrapImpl::Init(const TUType::Config& Config) {
 void TUBootStrapImpl::Login(TArray<FString> Permissions, TFunction<void(const FTapUser& User)> SuccessBlock,
 	TFunction<void(const FTUError& Error)> FailBlock) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
-	if (FailBlock) {
-		FailBlock(FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
-	}
+	// if (FailBlock) {
+	// 	FailBlock(FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
+	// }
 }
 
 void TUBootStrapImpl::AnonymouslyLogin(TFunction<void(const FTapUser& User)> SuccessBlock,
 	TFunction<void(const FTUError& Error)> FailBlock) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
-	if (FailBlock) {
-		FailBlock(FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
-	}
+	// if (FailBlock) {
+	// 	FailBlock(FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
+	// }
 }
 
 void TUBootStrapImpl::Logout() {

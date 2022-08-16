@@ -27,6 +27,7 @@ void TUDebuger::DisplayShow(const FString& Info, float Duration)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Green, Info, true, FVector2D(2, 2));
 	}
+	DisplayLog(Info);
 }
 
 void TUDebuger::WarningShow(const FString& Info, float Duration)
@@ -35,6 +36,7 @@ void TUDebuger::WarningShow(const FString& Info, float Duration)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Yellow, Info, true, FVector2D(2, 2));
 	}
+	WarningLog(Info);
 }
 
 void TUDebuger::ErrorShow(const FString& Info, float Duration)
@@ -43,6 +45,7 @@ void TUDebuger::ErrorShow(const FString& Info, float Duration)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, Duration, FColor::Red, Info, true, FVector2D(2, 2));
 	}
+	ErrorLog(Info);
 }
 
 

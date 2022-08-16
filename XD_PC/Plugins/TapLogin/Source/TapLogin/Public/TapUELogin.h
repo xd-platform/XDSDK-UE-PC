@@ -31,7 +31,8 @@ public:
 
 	// 仅支持移动端
 	static void GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack);
-	
+
+	// 仅支持移动端
 	static void QueryMutualList(FString Cursor, int Size, TFunction<void(TSharedPtr<FTULoginFriendResult> ModelPtr, const FTUError& Error)> CallBack);
 
 

@@ -37,7 +37,7 @@ namespace TUType {
 
 		class TapDB {
 		public:
-			bool Enable;
+			bool Enable; // 如果该值为true，将会自动把TapDB模块一起初始化，不用手动去初始化TapDB
 	
 			FString Channel;
 
@@ -57,7 +57,7 @@ namespace TUType {
 
 	class TAPCOMMON_API PermissionScope {
 	public:
-		static FString Profile;
-		static FString Friend;
+		static FString Profile;  // 获得用户信息的权限
+		static FString Friend;	 // 获得好友的权限
 	};
 }

@@ -123,11 +123,17 @@ private:
 	static TSharedPtr<FJsonObject> JsonObject;
 
 	static FString DataStoragePath() {
-		return FPaths::SandboxesDir() + TEXT("/DataStorage/") + StructName::StaticStruct()->GetName();
+		if (StructName::StaticStruct()) {
+			return FPaths::SandboxesDir() + TEXT("/DataStorage/") + StructName::StaticStruct()->GetName();
+		}
+		return FPaths::SandboxesDir() + TEXT("/DataStorage/StorageError");
 	};
 
 	static FString DataStorageKey() {
-		return StructName::StaticStruct()->GetName() + TEXT("Key");
+		if (StructName::StaticStruct()) {
+			return StructName::StaticStruct()->GetName() + TEXT("Key");
+		}
+		return TEXT("Key");
 	}
 };
 

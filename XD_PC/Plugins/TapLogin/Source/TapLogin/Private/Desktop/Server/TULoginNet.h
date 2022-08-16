@@ -4,6 +4,7 @@
 #include "TULoginProfileModel.h"
 #include "Desktop/TUQrCodeModel.h"
 #include "TUHttpRequest.h"
+#include "TUTestQualificationModel.h"
 
 
 class TULoginNet: public TUHttpRequest
@@ -17,7 +18,7 @@ public:
 	static void RequestAccessToken(const FString& DeviceCode, TFunction<void(TSharedPtr<FTUAccessToken> Model, FTULoginError Error)> callback);
 	static void RequestProfile(const FTUAccessToken& AccessToken, TFunction<void(TSharedPtr<FTULoginProfileModel> Model, FTULoginError Error)> callback);
 	static void RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras, TFunction<void(TSharedPtr<FTUAccessToken> Model, FTULoginError Error)> callback);
-
+	static void RequestTestQualification(TFunction<void(TSharedPtr<FTUTestQualificationModel> Model, FTULoginError Error)> Callback);
 
 	static FTULoginError GenerateErrorInfo(const TSharedPtr<TUHttpResponse>& Response);
 private:

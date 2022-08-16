@@ -29,7 +29,7 @@ public:
 	// 仅支持PC端
 	static void ChangeLanguage(TUType::LanguageType LanguageType);
 
-	// 仅支持移动端
+	// 获取测试资格
 	static void GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack);
 
 	// 仅支持移动端

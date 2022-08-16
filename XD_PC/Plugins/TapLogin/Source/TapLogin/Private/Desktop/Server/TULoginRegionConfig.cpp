@@ -57,6 +57,11 @@ FString TULoginRegionConfig::AccountUrl()
 	return AccountHost() + "/authorize";
 }
 
+FString TULoginRegionConfig::TestQualificationUrl()
+{
+	return ApiHost() + "/test/user-status/v1";
+}
+
 TSharedPtr<TULoginRegionConfig>& TULoginRegionConfig::Get() {
 	if (!Instance.IsValid()) {
 		if (TULoginImpl::Get()->Config.RegionType == TUType::CN) {

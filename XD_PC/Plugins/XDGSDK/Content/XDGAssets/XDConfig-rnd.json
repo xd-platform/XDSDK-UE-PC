@@ -8,9 +8,9 @@
     "logout_url":"https://logout-xdsdk.xd.com",
     "webpay_url":"可选",
     "tapsdk":{
-        "client_id":"KFV9Pm9ojdmWkkRJeb",
-        "client_token":"7mpVJdXIOLQxvQdqjEEpiz7eLf82cMwYkdgoAZqF",
-        "server_url":"https://kfv9pm9o.cloud.ap-sg.tapapis.com",
+        "client_id":"jfqhF3x9mat70ez52i",
+        "client_token":"C91pZh9OJNt7oDPx3lku4H01HelnYjSBS1jaZJed",
+        "server_url":"https://jfqhf3x9.cloud.ap-sg.tapapis.com",
         "db_config":{
             "enable":true,
             "channel":"test_channel",

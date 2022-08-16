@@ -62,6 +62,21 @@ void UDemoFirstWidget::NativeConstruct()
 }
 
 void UDemoFirstWidget::OnInitButtonClick() {
+
+	if (EnvironmentBox->GetSelectedOption() == TEXT("RND环境")) {
+		if (RegionBox->GetSelectedOption() == TEXT("国内")) {
+			XUSettings::UpdateConfigFileName("XDConfig-cn-rnd.json");
+		} else if (RegionBox->GetSelectedOption() == TEXT("海外")) {
+			XUSettings::UpdateConfigFileName("XDConfig-rnd.json");
+		}
+	} else if (EnvironmentBox->GetSelectedOption() == TEXT("正式环境")) {
+		if (RegionBox->GetSelectedOption() == TEXT("国内")) {
+			XUSettings::UpdateConfigFileName("XDConfig-cn.json");
+		} else if (RegionBox->GetSelectedOption() == TEXT("海外")) {
+			XUSettings::UpdateConfigFileName("XDConfig.json");
+		}
+	}
+	
 	XDUE::InitSDK("1.2.3", [](bool Result, FString Message) {
 		if (Result) {
 			TUDebuger::DisplayShow(Message);
@@ -223,11 +238,11 @@ void UDemoFirstWidget::OnEnvironmentBoxSelectionChanged(FString SelectedItem, ES
 
 void UDemoFirstWidget::OnRegionBoxSelectionChanged(FString SelectedItem, ESelectInfo::Type SelectionType) {
 	TUDebuger::DisplayLog(SelectedItem);
-	if (SelectedItem == TEXT("国内")) {
-		XUSettings::UpdateConfigFileName("XDConfig-cn.json");
-	} else if (SelectedItem == TEXT("海外")) {
-		XUSettings::UpdateConfigFileName("XDConfig.json");
-	}
+	// if (SelectedItem == TEXT("国内")) {
+	// 	XUSettings::UpdateConfigFileName("XDConfig-cn.json");
+	// } else if (SelectedItem == TEXT("海外")) {
+	// 	XUSettings::UpdateConfigFileName("XDConfig.json");
+	// }
 }
 
 void UDemoFirstWidget::OnLangBoxSelectionChanged(FString SelectedItem, ESelectInfo::Type SelectionType) {

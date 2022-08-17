@@ -12,6 +12,7 @@ public:
 	FString TokenUrl();
 	FString ProfileUrl();
 	FString AccountUrl();
+	FString TestQualificationUrl();
 
 	static FString TapTapSDKVersion;
 

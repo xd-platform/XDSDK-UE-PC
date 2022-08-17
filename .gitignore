@@ -5,6 +5,7 @@ Intermediate
 Saved
 TapSDK_UE2.code-workspace
 Android_*
+Build/
 
 .idea
 
@@ -30,9 +31,7 @@ DerivedData
 
 # Bundler
 .bundle
-XD_PC/Build/MacNoEditor/FileOpenOrder/CookerOpenOrder.log
-XD_PC/Build/MacNoEditor/FileOpenOrder/EditorOpenOrder.log
-XD_PC/Build/WindowsNoEditor/FileOpenOrder/CookerOpenOrder.log
-XD_PC/Build/WindowsNoEditor/FileOpenOrder/EditorOpenOrder.log
+XD_PC/Build/
+
 XD_PC/XD_PC.xcworkspace/contents.xcworkspacedata
 XD_PC/XD_PC.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings

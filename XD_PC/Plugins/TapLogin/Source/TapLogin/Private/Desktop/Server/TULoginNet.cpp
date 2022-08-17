@@ -129,6 +129,19 @@ void TULoginNet::RequestAccessTokenFromWeb(const TSharedPtr<FJsonObject>& Paras,
 	TUHttpManager::Get().request(request);
 }
 
+void TULoginNet::RequestTestQualification(
+	TFunction<void(TSharedPtr<FTUTestQualificationModel> Model, FTULoginError Error)> Callback) {
+	const TSharedPtr<TULoginNet> request = MakeShareable(new TULoginNet());
+	request->Type = Get;
+	request->URL = TULoginRegionConfig::Get()->TestQualificationUrl();
+	request->Parameters->SetStringField("client_id", TULoginImpl::Get()->Config.ClientID);
+	request->AccessToken = FTUAccessToken::GetLocalModel();
+	request->onCompleted.BindLambda([=](TSharedPtr<TUHttpResponse> response) {
+		PerfromWrapperResponseCallBack(response, Callback);
+	});
+	TUHttpManager::Get().request(request);
+}
+
 TMap<FString, FString> TULoginNet::CommonHeaders()
 {
 	return TUHttpRequest::CommonHeaders();

@@ -21,26 +21,5 @@ struct FXUResponseModel
 	UPROPERTY()
 	FString detail;
 
-	template <class UStructType>
-	static void ParseJson(const FString& json, TSharedPtr<FXUResponseModel>& model, TSharedPtr<UStructType>& data)
-	{
-		auto JsonObject = TUJsonHelper::GetJsonObject(json);
-		if (!JsonObject.IsValid()) {
-			model = nullptr;
-			data = nullptr;
-			return;
-		}
-		model = TUJsonHelper::GetUStruct<FXUResponseModel>(JsonObject);
-		const TSharedPtr<FJsonObject>* dataJsonObject;
-		if (JsonObject->TryGetObjectField("data", dataJsonObject))
-		{
-			data = TUJsonHelper::GetUStruct<UStructType>(*dataJsonObject);
-		} else
-		{
-			data = nullptr;
-		}
-	}
-
-
 };
 

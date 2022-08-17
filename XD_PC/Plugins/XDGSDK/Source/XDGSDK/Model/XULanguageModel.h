@@ -247,6 +247,36 @@ struct FXULanguageModel
 	UPROPERTY()
 	FString tds_ios_restricted_payment_description;
 
+	UPROPERTY()
+	FString xd_agreement_agree;
+
+	UPROPERTY()
+	FString xd_agreement_disagree;
+
+	UPROPERTY()
+	FString xd_agreement_disagree_confirm_content;
+
+	UPROPERTY()
+	FString xd_agreement_disagree_confirm_exit;
+
+	UPROPERTY()
+	FString xd_agreement_disagree_confirm_back;
+
+	UPROPERTY()
+	FString xd_agreement_age_tips;
+
+	UPROPERTY()
+	FString xd_agreement_load_failed;
+
+	UPROPERTY()
+	FString tds_retry;
+
+	UPROPERTY()
+	FString tds_net_error;
+
+	UPROPERTY()
+	FString tds_load_error;
+
 };
 
 		

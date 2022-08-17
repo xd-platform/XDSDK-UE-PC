@@ -9,79 +9,70 @@
 #include "TUHUD.h"
 #include "URLParser.h"
 #include "XDGSDK.h"
+#include "XDUE.h"
+#include "XUConfigManager.h"
+#include "XUThirdAuthHelper.h"
+#include "XDGSDK/UI/XUAccountCancellationWidget.h"
+#include "XDGSDK/UI/XUPayWebWidget.h"
 #include "XDGSDK/UI/XUPrivacyWidget.h"
 
 static int Success = 200;
 
-void XUImpl::GetIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FString msg)> resultBlock) {
-	XUNet::RequestIpInfo([=](TSharedPtr<FXUIpInfoModel> model, FXUError error) {
-		if (model == nullptr) {
-			TSharedPtr<FXUIpInfoModel> infoModel = FXUIpInfoModel::GetLocalModel();
-			if (resultBlock) { resultBlock(infoModel, error.msg); }
-		}
-		else {
-			model->SaveToLocal();
-			if (resultBlock) { resultBlock(model, "success"); }
-		}
-	});
-}
-
-void XUImpl::InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock) {
-	TUDataStorage<FXUStorage>::SaveString(FXUStorage::ClientId, sdkClientId, false);
-	XUNet::RequestConfig([=](TSharedPtr<FXUInitConfigModel> model, FXUError error) {
-		if (model != nullptr && error.code == Success) {
-			model->SaveToLocal();
-			InitBootstrap(model, resultBlock, error.msg);
-		}
-		else {
-			InitBootstrap(FXUInitConfigModel::GetLocalModel(), resultBlock, error.msg);
+void XUImpl::InitSDK(const FString& GameVersion, XUInitCallback CallBack) {
+	XUConfigManager::ReadLocalConfig([=](TSharedPtr<XUType::Config> Config, const FString& Msg) {
+		if (Config.IsValid()) {
+			Config->GameVersion = GameVersion;
+			Config->TapConfig.DBConfig.GameVersion = GameVersion;
+			InitSDK(Config, CallBack);
+		} else {
+			if (CallBack) {
+				CallBack(false, Msg);
+			}
 		}
 	});
 }
 
-void XUImpl::InitBootstrap(const TSharedPtr<FXUInitConfigModel>& model,
-                                 TFunction<void(bool successed, FString msg)> resultBlock, const FString& msg) {
-	if (model == nullptr) {
-		if (resultBlock) { resultBlock(false, msg); }
-		return;
-	}
-	auto tapCfg = model->configs.tapSdkConfig;
-	TUType::Config Config;
-	Config.ClientID = tapCfg.clientId;
-	Config.ClientToken = tapCfg.clientToken;
-	Config.ServerURL = tapCfg.serverUrl;
-	if (XUImpl::Get()->Config.RegionType == XUType::CN) {
-		Config.RegionType = TUType::CN;
-	} else {
-		Config.RegionType = TUType::IO;
-	}
-	Config.DBConfig.Enable = tapCfg.enableTapDB;
-	Config.DBConfig.Channel = tapCfg.tapDBChannel;
-	Config.DBConfig.GameVersion = XUImpl::Get()->Config.GameVersion;
-	TapUEBootstrap::Init(Config);
-
-	if (resultBlock) { resultBlock(true, msg); }
+void XUImpl::InitSDK(TSharedPtr<XUType::Config> Config, XUInitCallback CallBack) {
+	XUConfigManager::LoadRemoteOrCachedServiceTerms(Config, [=](TSharedPtr<XUType::Config> ConfigTerms, const FString& Msg) {
+		if (ConfigTerms.IsValid()) {
+			XUConfigManager::SetConfig(ConfigTerms);
+			CheckAgreement(ConfigTerms, CallBack);
+		} else {
+			if (CallBack) {
+				CallBack(false, Msg);
+			}
+		}
+	});
 }
-
 
 void XUImpl::LoginByType(XUType::LoginType LoginType,
-                               TFunction<void(TSharedPtr<FXUUser> user)> resultBlock,
-                               TFunction<void(FXUError error)> ErrorBlock) {
+                         TFunction<void(TSharedPtr<FXUUser> user)> resultBlock,
+                         TFunction<void(FXUError error)> ErrorBlock) {
 	auto lmd = XULanguageManager::GetCurrentModel();
 	if (LoginType == XUType::Default) {
-		auto localUser = FXUUser::GetLocalModel();
+		auto localUser = XDUE::GetUserInfo();
 		if (localUser.IsValid()) {
-			RequestUserInfo(true, [=](TSharedPtr<FXUUser> user) {
-				AsyncLocalTdsUser(user->userId, FXUSyncTokenModel::GetLocalModel()->sessionToken);
-				resultBlock(user);
-			}, ErrorBlock);
+			RequestUserInfo(true, [](TSharedPtr<FXUUser> user) {}, [](FXUError Error) {});
+			AsyncLocalTdsUser(localUser->userId, FXUSyncTokenModel::GetLocalModel()->sessionToken);
+			resultBlock(localUser);
 		}
 		else {
 			ErrorBlock(FXUError(lmd->tds_login_failed));
 		}
 	}
 	else {
-		GetLoginParam(LoginType, [=](TSharedPtr<FJsonObject> paras) {
+		// 如果已经是登录状态了，那么不再重复登录
+		if (XDUE::GetUserInfo().IsValid()) {
+			if (ErrorBlock) {
+				ErrorBlock(FXUError("The user is logged in"));
+			}
+			return;
+		}
+		GetAuthParam(LoginType, [=](TSharedPtr<FJsonObject> paras) {
+			if (FXUTokenModel::GetLocalModel().IsValid()) {
+				TUDebuger::WarningLog("Login Token Has Exist");
+				return;
+			}
 			UTUHUD::ShowWait();
 			TFunction<void(FXUError error)> ErrorCallBack = [=](FXUError error) {
 				UTUHUD::Dismiss();
@@ -93,10 +84,8 @@ void XUImpl::LoginByType(XUType::LoginType LoginType,
 				RequestUserInfo(false, [=](TSharedPtr<FXUUser> user) {
 					AsyncNetworkTdsUser(user->userId, [=](FString SessionToken) {
 						UTUHUD::Dismiss();
-						CheckPrivacyAlert([=]() {
-							user->SaveToLocal();
-							resultBlock(user);
-						});
+						user->SaveToLocal();
+						resultBlock(user);
 					}, ErrorCallBack);
 				}, ErrorCallBack);
 			}, ErrorCallBack);
@@ -104,23 +93,32 @@ void XUImpl::LoginByType(XUType::LoginType LoginType,
 	}
 }
 
-void XUImpl::GetLoginParam(XUType::LoginType LoginType,
+void XUImpl::GetAuthParam(XUType::LoginType LoginType,
                                  TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock,
                                  TFunction<void(FXUError error)> ErrorBlock) {
 	if (LoginType == XUType::Guest) {
+		XUThirdAuthHelper::CancelAllPreAuths();
 		TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 		JsonObject->SetNumberField("type", (int)LoginType);
 		JsonObject->SetStringField("token", TUDeviceInfo::GetLoginId());
 		resultBlock(JsonObject);
 	}
 	else if (LoginType == XUType::TapTap) {
-		RequestTapToken(
+		XUThirdAuthHelper::TapTapAuth(
 			[=](FTUAccessToken AccessToken) {
 				TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 				JsonObject->SetNumberField("type", (int)LoginType);
 				JsonObject->SetStringField("token", AccessToken.kid);
 				JsonObject->SetStringField("secret", AccessToken.mac_key);
 				resultBlock(JsonObject);
+			}, ErrorBlock);
+	}
+	else if (LoginType == XUType::Google) {
+		TUDebuger::DisplayLog("Google Login");
+		XUThirdAuthHelper::WebAuth(XUThirdAuthHelper::GoogleAuth,
+			[=](TSharedPtr<FJsonObject> AuthParas) {
+				AuthParas->SetNumberField("type", (int)LoginType);
+				resultBlock(AuthParas);
 			}, ErrorBlock);
 	}
 	else {
@@ -156,7 +154,6 @@ void XUImpl::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlo
 					SuccessBlock(XUType::None);
 				}
 			}
-
 		}
 		else {
 			if (FailBlock) {
@@ -168,24 +165,24 @@ void XUImpl::CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlo
 
 FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName) {
 	auto userMd = FXUUser::GetLocalModel();
-	auto cfgMd = FXUInitConfigModel::GetLocalModel();
+	auto cfgMd = XUConfigManager::CurrentConfig();
 	auto tkModel = FXUTokenModel::GetLocalModel();
 	if (!userMd.IsValid() || !cfgMd.IsValid() || !tkModel.IsValid()) {
 		return "";
 	}
 	
 	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
-	query->SetStringField("client_id", TUDataStorage<FXUStorage>::LoadString(FXUStorage::ClientId));
+	query->SetStringField("client_id", XUConfigManager::CurrentConfig()->ClientId);
 	query->SetStringField("access_token", tkModel->kid);
 	query->SetStringField("user_id", userMd->userId);
 	query->SetStringField("server_id", ServerId);
 	query->SetStringField("role_id", RoleId);
 	query->SetStringField("role_name", RoleName);
-	query->SetStringField("region", cfgMd->configs.region);
+	query->SetStringField("region", cfgMd->Region);
 	query->SetStringField("sdk_ver", XDUESDK_VERSION);
 	query->SetStringField("sdk_lang", XULanguageManager::GetCustomerCenterLang());
-	query->SetStringField("app_ver", XUImpl::Get()->Config.GameVersion);
-	query->SetStringField("app_ver_code", XUImpl::Get()->Config.GameVersion);
+	query->SetStringField("app_ver", XUConfigManager::CurrentConfig()->GameVersion);
+	query->SetStringField("app_ver_code", XUConfigManager::CurrentConfig()->GameVersion);
 	query->SetStringField("res", FString::Printf(TEXT("%d_%d"), TUDeviceInfo::GetScreenWidth(), TUDeviceInfo::GetScreenHeight()));
 	query->SetStringField("cpu", TUDeviceInfo::GetCPU());
 	query->SetStringField("pt", TUDeviceInfo::GetPlatform());
@@ -194,7 +191,7 @@ FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId
 	query->SetStringField("game_name", TUDeviceInfo::GetProjectName());
 
 	FString QueryStr = TUHelper::CombinParameters(query);
-	FString UrlStr = cfgMd->configs.reportUrl;
+	FString UrlStr = cfgMd->ReportUrl;
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
 	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
@@ -204,7 +201,7 @@ FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId
 
 FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
 	auto userMd = FXUUser::GetLocalModel();
-	auto cfgMd = FXUInitConfigModel::GetLocalModel();
+	auto cfgMd = XUConfigManager::CurrentConfig();
 	if (!userMd.IsValid() || !cfgMd.IsValid()) {
 		return "";
 	}
@@ -213,13 +210,13 @@ FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
 
 	query->SetStringField("serverId", ServerId);
 	query->SetStringField("roleId", RoleId);
-	query->SetStringField("region", cfgMd->configs.region);
-	query->SetStringField("appId", cfgMd->configs.appId);
+	query->SetStringField("region", cfgMd->Region);
+	query->SetStringField("appId", cfgMd->AppID);
 	query->SetStringField("lang", XULanguageManager::GetLanguageKey());
 	
 
 	FString QueryStr = TUHelper::CombinParameters(query);
-	FString UrlStr = cfgMd->configs.webPayUrl;
+	FString UrlStr = cfgMd->WebPayUrl;
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
 	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
@@ -227,39 +224,68 @@ FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
 	return UrlStr;
 }
 
-FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId,
-	const FString& ProductId, const FString& ProductName, float PayAmount, const FString& Ext) {
-	auto userMd = FXUUser::GetLocalModel();
-	auto cfgMd = FXUInitConfigModel::GetLocalModel();
-	if (!userMd.IsValid() || !cfgMd.IsValid()) {
-		return "";
-	}
+void XUImpl::OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductSkuCode,
+	const FString& ProductName, float PayAmount, TFunction<void(XUType::PayResult Result)> CallBack,
+	const FString& Ext) {
 	
 	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
 
 	query->SetStringField("serverId", ServerId);
 	query->SetStringField("roleId", RoleId);
-	query->SetStringField("orderId", OrderId);
-	query->SetStringField("productName", ProductName);
-	query->SetStringField("payAmount", FString::Printf(TEXT("%f"), PayAmount));
-	query->SetStringField("productSkuCode", ProductId);
-	query->SetStringField("extras", Ext);
-	query->SetStringField("region", cfgMd->configs.region);
-	query->SetStringField("appId", cfgMd->configs.appId);
+	query->SetStringField("productSkuCode", ProductSkuCode);
+	query->SetStringField("region", XUConfigManager::CurrentConfig()->Region);
+	query->SetStringField("appId", XUConfigManager::CurrentConfig()->AppID);
 	query->SetStringField("lang", XULanguageManager::GetLanguageKey());
-	
+	query->SetStringField("platform", "pc");
+
+	if (!ProductName.IsEmpty()) {
+		query->SetStringField("productName", ProductName);
+	}
+	if (PayAmount > 0) {
+		query->SetStringField("payAmount", FString::Printf(TEXT("%f"), PayAmount));
+	}
+	if (!Ext.IsEmpty()) {
+		query->SetStringField("extras", Ext);
+	}
+	// PayWebBrowser->LoadURL("https://sdkpay-test.xd.cn/qr-pay/?productSkuCode=com.xd.sdkdemo1.stone30&payAmount=30.0&orderId=&roleId=323499800362549248&appId=1010&product_id%7Ccom.xd.sdkdemo1.stone30&region=CN&lang=zh_CN&serverId=demo_server_id&productName=com.xd.sdkdemo1.stone30");
 
 	FString QueryStr = TUHelper::CombinParameters(query);
-	FString UrlStr = cfgMd->configs.webPayUrl;
+	FString UrlStr = XUConfigManager::CurrentConfig()->WebPayUrl;
 	auto Parse = TUCommon::FURL_RFC3986();
 	Parse.Parse(UrlStr);
 	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
 	UrlStr = UrlStr + "?" + QueryStr;
-	return UrlStr;
+
+	UXUPayWebWidget::Show(UrlStr, CallBack);
 }
+
 
 void XUImpl::ResetPrivacy() {
 	TUDataStorage<FXUStorage>::Remove(FXUStorage::PrivacyKey);
+	TUDataStorage<FXUStorage>::Remove(XUConfigManager::GetRegionAgreementCacheName());
+}
+
+void XUImpl::AccountCancellation() {
+	TSharedPtr<FJsonObject> Query = MakeShareable(new FJsonObject);
+	auto AccessToken = FXUTokenModel::GetLocalModel();
+	Query->SetStringField("kid", AccessToken->kid);
+	Query->SetStringField("mac_key", AccessToken->macKey);
+	Query->SetStringField("source", "game");
+	Query->SetStringField("cn", XUConfigManager::IsCN() ? "1" : "0");
+	Query->SetStringField("sdk_lang", XULanguageManager::GetLanguageKey());
+	Query->SetStringField("version", XDUESDK_VERSION);
+	Query->SetStringField("client_id", XUConfigManager::CurrentConfig()->ClientId);
+
+	auto Local = FXUIpInfoModel::GetLocalModel();
+	if (Local.IsValid()) {
+		Query->SetStringField("country_code", Local->country_code);
+	}
+	Query->SetStringField("time", FString::Printf(TEXT("%lld"), FDateTime::UtcNow().ToUnixTimestamp()));
+
+	FString QueryStr = TUHelper::CombinParameters(Query);
+	FString UrlStr = XUConfigManager::CurrentConfig()->LogoutUrl + "?" + QueryStr;
+
+	UXUAccountCancellationWidget::Show(UrlStr);
 }
 
 TSharedPtr<XUImpl> XUImpl::Instance = nullptr;
@@ -267,6 +293,9 @@ TSharedPtr<XUImpl> XUImpl::Instance = nullptr;
 TSharedPtr<XUImpl>& XUImpl::Get() {
 	if (!Instance.IsValid()) {
 		Instance = MakeShareable(new XUImpl);
+		XDUE::OnLogout.AddLambda([]() {
+			XDUE::Logout();
+		});
 	}
 	return Instance;
 }
@@ -311,6 +340,10 @@ void XUImpl::RequestUserInfo(bool saveToLocal,
 					callback(localUser);
 				}
 			}
+		}, [=]() {
+			if (saveToLocal) {
+				FXUUser::ClearUserData();
+			}
 		});
 
 }
@@ -344,41 +377,29 @@ void XUImpl::AsyncLocalTdsUser(const FString& userId, const FString& sessionToke
 	// await lcUser.SaveToLocal();
 }
 
-void XUImpl::CheckPrivacyAlert(TFunction<void()> Callback) {
-	if (FXUInitConfigModel::CanShowPrivacyAlert() && XUImpl::Get()->Config.RegionType == XUType::IO) {
-		UXUPrivacyWidget::ShowPrivacy(
-			[=](bool result) {
-				if (result) {
-					Callback();
-				}
-			});
+void XUImpl::CheckAgreement(TSharedPtr<XUType::Config> Config, XUInitCallback CallBack) {
+	if (!XUConfigManager::NeedShowAgreement()) {
+		InitFinish(CallBack);
+		return;
 	}
-	else {
-		Callback();
-	}
+	UXUPrivacyWidget::ShowPrivacy([=]() {
+		InitFinish(CallBack);
+	});
 }
 
-void XUImpl::RequestTapToken(TFunction<void(FTUAccessToken AccessToken)> callback,
-                                   TFunction<void(FXUError error)> ErrorBlock) {
-	TapUELogin::Login(
-		[=](TUAuthResult Result) {
-			if (Result.GetType() == TUAuthResult::Success) {
-				callback(*Result.GetToken().Get());
-			}
-			else if (Result.GetType() == TUAuthResult::Cancel) {
-				FXUError Error;
-				Error.msg = "Login Cancel";
-				Error.code = FTUError::ERROR_CODE_LOGIN_CANCEL;
-				ErrorBlock(Error);
-			}
-			else if (Result.GetType() == TUAuthResult::Fail) {
-				FXUError Error;
-				Error.msg = Result.GetError()->error_description;
-				Error.code = Result.GetError()->code;
-				ErrorBlock(Error);
-			}
-			else {
-				ErrorBlock(FXUError("Login Fail"));
-			}
-		});
+void XUImpl::InitFinish(XUInitCallback CallBack) {
+	XUConfigManager::InitTapSDK();
+	XUConfigManager::SetGameInited();
+	if (CallBack) {
+		CallBack(true, "");
+	}
+	RequestServerConfig();
+	XUConfigManager::UploadUserAgreement();
+}
+
+void XUImpl::RequestServerConfig() {
+	XUConfigManager::RequestServerConfig(false);
+	XUConfigManager::GetRegionInfo([](TSharedPtr<FXUIpInfoModel> ModelPtr) {
+		
+	});
 }

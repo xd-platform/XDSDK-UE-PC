@@ -1,4 +1,6 @@
 #include "XURegionConfig.h"
+
+#include "XUConfigManager.h"
 #include "XUImpl.h"
 
 
@@ -7,7 +9,10 @@ class XURegionConfigCN: public XURegionConfig
 public:
 	virtual FString BaseHost() {
 		return "https://xdsdk-6.xd.cn";
-		// @"https://tds-dev.xindong.com";
+	}
+
+	virtual FString LoginWebHost() {
+		return "https://login-xdsdk.xd.cn";
 	}
 };
 
@@ -16,7 +21,10 @@ class XURegionConfigIO: public XURegionConfig
 public:
 	virtual FString BaseHost() {
 		return "https://xdsdk-intnl-6.xd.com";
-		// "https://test-xdsdk-intnl-6.xd.com"; //测试
+	}
+
+	virtual FString LoginWebHost() {
+		return "https://login-xdsdk.xd.com";
 	}
 };
 
@@ -54,9 +62,13 @@ FString XURegionConfig::PaybackListUrl() {
 	return BaseHost() / "/order/v1/user/repayOrders";
 }
 
+FString XURegionConfig::UploadAgreementUrl() {
+	return BaseHost() / "/api/account/v1/agreement/confirm";
+}
+
 TSharedPtr<XURegionConfig>& XURegionConfig::Get() {
 	if (!Instance.IsValid()) {
-		if (XUImpl::Get()->Config.RegionType == XUType::CN) {
+		if (XUConfigManager::IsCN()) {
 			Instance = MakeShareable(new XURegionConfigCN);
 		} else {
 			Instance = MakeShareable(new XURegionConfigIO);

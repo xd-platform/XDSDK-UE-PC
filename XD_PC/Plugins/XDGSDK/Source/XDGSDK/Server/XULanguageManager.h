@@ -18,8 +18,11 @@ public:
 
 private:
 
-	static XUType::LangType anguageType;
-	static TSharedPtr<FXULanguageModel> currentModel;
+	static XUType::LangType AnguageType;
+	static TSharedPtr<FXULanguageModel> CurrentModel;
+
+	// 用于判断加载模型是否成功过
+	static bool LoadModelSuccess; 
 
 	static void UpdateLanguageModel();
 };

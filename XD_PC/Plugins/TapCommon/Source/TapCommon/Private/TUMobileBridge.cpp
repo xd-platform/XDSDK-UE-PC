@@ -38,7 +38,7 @@ FString TUMobileBridge::Perform(const FString& ServiceName, const FString& Metho
 
 void TUMobileBridge::AsyncPerform(const FString& ServiceName, const FString& Method, const FString& Args,
 	TFunction<void(const FString& ResultJsonStr)> CallBack, bool OnceTime) {
-	check(IsInGameThread());
+	// check(IsInGameThread());
 	FString JsonOutString;
 	TSharedRef<TJsonWriter<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>> Writer = TJsonWriterFactory<
 		TCHAR, TCondensedJsonPrintPolicy<TCHAR>>::Create(&JsonOutString);

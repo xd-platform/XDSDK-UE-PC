@@ -64,6 +64,9 @@ TArray<uint8> TUCrypto::HmacSHA1(const TArray<uint8>& content, const TArray<uint
 
 TArray<uint8> TUCrypto::AesEncode(const TArray<uint8>& content, const TArray<uint8>& key, bool isPadding)
 {
+	if (content.Num() == 0) {
+		return content;
+	}
 	FAES::FAESKey AesKey;
 	FMemory::Memcpy(AesKey.Key, key.GetData(), FMath::Min(FAES::FAESKey::KeySize, key.Num()));
 	
@@ -91,6 +94,9 @@ TArray<uint8> TUCrypto::AesEncode(const TArray<uint8>& content, const TArray<uin
 
 TArray<uint8> TUCrypto::AesDecode(const TArray<uint8>& content, const TArray<uint8>& key, bool isPadding)
 {
+	if (content.Num() == 0) {
+		return content;
+	}
 	FAES::FAESKey AesKey;
 	FMemory::Memcpy(AesKey.Key, key.GetData(), FMath::Min(FAES::FAESKey::KeySize, key.Num()));
 	
@@ -100,11 +106,16 @@ TArray<uint8> TUCrypto::AesDecode(const TArray<uint8>& content, const TArray<uin
 	ContentData.SetNum(content.Num() - dirtyCount);
 
 	FAES::DecryptData(ContentData.GetData(), ContentData.Num(), AesKey);
+	if (ContentData.Num() == 0) {
+		return ContentData;
+	}
 
 	if (isPadding)
 	{
-		uint32 Padding = ContentData.Last();
-		ContentData.SetNum(ContentData.Num() - Padding);
+		auto Padding = ContentData.Last();
+		if (ContentData.Num() >= Padding) {
+			ContentData.SetNum(ContentData.Num() - Padding);
+		}
 	}
 	return ContentData;
 	

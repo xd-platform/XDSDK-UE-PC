@@ -2,12 +2,12 @@
 
 
 #include "XUPrivacyWidget.h"
-
-#include "XUInitConfigModel.h"
 #include "XULanguageManager.h"
 #include "TUHelper.h"
+#include "TUHUD.h"
 #include "TUSettings.h"
-#include "XUUser.h"
+#include "XUConfigManager.h"
+#include "XUPrivacyDisagreeWidget.h"
 
 
 UXUPrivacyWidget::UXUPrivacyWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -15,7 +15,7 @@ UXUPrivacyWidget::UXUPrivacyWidget(const FObjectInitializer& ObjectInitializer) 
 
 }
 
-void UXUPrivacyWidget::ShowPrivacy(TFunction<void(bool result)> Completed)
+void UXUPrivacyWidget::ShowPrivacy(TFunction<void()> Completed)
 {
 	if (UClass* MyWidgetClass = LoadClass<UXUPrivacyWidget>(nullptr, TEXT("WidgetBlueprint'/XDGSDK/BPPrivacyUI.BPPrivacyUI_C'")))
 	{
@@ -30,173 +30,145 @@ void UXUPrivacyWidget::ShowPrivacy(TFunction<void(bool result)> Completed)
 void UXUPrivacyWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	ComfirmButton->SetIsEnabled(false);
 	
-	AgreeCheckBox1->OnCheckStateChanged.AddUniqueDynamic(this, &UXUPrivacyWidget::OnCheckStateChanged);
-	AgreeCheckBox2->OnCheckStateChanged.AddUniqueDynamic(this, &UXUPrivacyWidget::OnCheckStateChanged);
 	AdditionalCheckBox->OnCheckStateChanged.AddUniqueDynamic(this, &UXUPrivacyWidget::OnCheckStateChanged);
 
 	FScriptDelegate BtnDel;
 	BtnDel.BindUFunction(this, "OnComfirmBtnClick");
 	ComfirmButton->OnClicked.Add(BtnDel);
+	DeclineButton->OnClicked.AddUniqueDynamic(this, &UXUPrivacyWidget::OnDeclineBtnClick);
+	LoadErrorBtn->OnClicked.AddUniqueDynamic(this, &UXUPrivacyWidget::OnLoadErrorBtnClick);
 
-	FXUInitConfigModel::GetPrivacyTxt(FXUInitConfigModel::GetLocalModel()->configs.serviceAgreementTxt,
-	[=](FString txt)
-	{
-		if (PrivacyTextView1)
-		{
-			FormatTags(txt);
-			txt = txt.Replace(TEXT("</b>"), TEXT("</>"));
-			PrivacyTextView1->SetText(FText::FromString(txt));
-		}
-	});
-	FXUInitConfigModel::GetPrivacyTxt(FXUInitConfigModel::GetLocalModel()->configs.serviceTermsTxt,
-	[=](FString txt)
-	{
-		if (PrivacyTextView2)
-		{
-			FormatTags(txt);
-			txt = txt.Replace(TEXT("</b>"), TEXT("</>"));
-			PrivacyTextView2->SetText(FText::FromString(txt));
-		}
-		
-	});
+	OriginURL =  XUConfigManager::GetAgreementUrl();
+	if (OriginURL.Contains("?")) { // 加个时间戳，用于浏览器清除缓存
+		OriginURL += FString::Printf(TEXT("&timestamp=%lld"), FDateTime::UtcNow().ToUnixTimestamp());
+	} else {
+		OriginURL += FString::Printf(TEXT("?timestamp=%lld"), FDateTime::UtcNow().ToUnixTimestamp());
+	}
+	PrivacyWebBrowser->LoadURL(OriginURL);
+	PrivacyWebBrowser->LoadURL(OriginURL);// 国内协议加载过快，会有布局问题，所以这里连续调用两遍临时解决下
+	
 	auto langModel = XULanguageManager::GetCurrentModel();
-	TitleLabel->SetText(FText::FromString(langModel->tds_terms_agreement));
-	ComfirmButtonLabel->SetText(FText::FromString(langModel->tds_confirm_agreement));
-	AgreeCheckLabel1->SetText(FText::FromString(langModel->tds_service_terms_agreement));
-	AgreeCheckLabel2->SetText(FText::FromString(langModel->tds_service_terms_agreement));
+	ComfirmButtonLabel->SetText(FText::FromString(langModel->xd_agreement_agree));
+	DeclineButtonLabel->SetText(FText::FromString(langModel->xd_agreement_disagree));
+	LoadErrorLabel->SetText(FText::FromString(langModel->xd_agreement_load_failed));
 
 	if (IsInKrAndPushEnable()) {
 		AdditionalCheckLabel->SetText(FText::FromString(langModel->tds_push_agreement));
 	} else if (IsInNorthAmerica()) {
 		AdditionalCheckLabel->SetText(FText::FromString(langModel->tds_is_adult_agreement));
-	} else {
-		AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	} 
+
+	PrivacyWebBrowser->OnLoadCompleted.AddUniqueDynamic(this, &UXUPrivacyWidget::OnWebLoadCompleted);
+	PrivacyWebBrowser->OnLoadError.AddUniqueDynamic(this, &UXUPrivacyWidget::OnWebLoadError);
+	PrivacyWebBrowser->OnBeforeNavigation.BindUObject(this, &UXUPrivacyWidget::OnWebBeforeNavigation);
+
+	UpdateUI(Loading);
+	UpdateComfirmBtnState();
 }
 
 void UXUPrivacyWidget::OnCheckStateChanged(bool isChecked)
 {
-	if (AgreeCheckBox1->IsChecked() && AgreeCheckBox2->IsChecked())
-	{
-		if (IsInNorthAmerica() && !AdditionalCheckBox->IsChecked()) {
-			ComfirmButton->SetIsEnabled(false);
-		} else {
-			ComfirmButton->SetIsEnabled(true);
-		}
-	} else
-	{
-		ComfirmButton->SetIsEnabled(false);
-	}
+	UpdateComfirmBtnState();
 }
 
 void UXUPrivacyWidget::OnComfirmBtnClick()
 {
-	FXUInitConfigModel::UpdatePrivacyState();
-	if (Completed)
-	{
-		Completed(true);
-	}
+	if (IsInNorthAmerica() && !AdditionalCheckBox->IsChecked()) {
+		UTUHUD::ShowToast(XULanguageManager::GetCurrentModel()->xd_agreement_age_tips);
+		return;
+	} 
+
 	if (IsInKrAndPushEnable()) {
-		FXUUser::SetPushServiceEnable(AdditionalCheckBox->IsChecked());
+		XUConfigManager::RecordKRPushSetting(AdditionalCheckBox->IsChecked());
+	}
+	if (Completed) {
+		Completed();
 	}
 	RemoveFromParent();
 }
 
-void UXUPrivacyWidget::FormatTags(FString& Content) {
-	int index = 0;
-	TArray<int> HeadTags;
-	while (true) {
-		index = Content.Find(TEXT("<b>"), ESearchCase::CaseSensitive, ESearchDir::FromStart, index);
-		if (index == INDEX_NONE) {
-			break;
-		}
-		HeadTags.Add(index);
-		index += 3;
+void UXUPrivacyWidget::OnLoadErrorBtnClick() {
+	PrivacyWebBrowser->LoadURL(OriginURL);
+	UpdateUI(Loading);
+}
+
+void UXUPrivacyWidget::OnDeclineBtnClick() {
+	UXUPrivacyDisagreeWidget::Show();
+}
+
+void UXUPrivacyWidget::OnWebLoadCompleted() {
+	TUDebuger::DisplayLog(NavigationUrl);
+	TUDebuger::DisplayLog("Privacy Web Load Completed");
+	if (NavigationUrl == OriginURL) {
+		UpdateUI(LoadSuccess);
 	}
-	index = 0;
-	TArray<int> TailTags;
-	while (true) {
-		index = Content.Find(TEXT("</b>"), ESearchCase::CaseSensitive, ESearchDir::FromStart, index);
-		if (index == INDEX_NONE) {
-			break;
-		}
-		TailTags.Add(index);
-		index += 4;
+}
+
+void UXUPrivacyWidget::OnWebLoadError() {
+	TUDebuger::DisplayLog(NavigationUrl);
+	TUDebuger::DisplayLog("Privacy Web Load Error");
+	if (NavigationUrl == OriginURL) {
+		UpdateUI(LoadError);
 	}
-	int HeadIndex = 0;
-	int TailIndex = 0;
-	TArray<TArray<int>> Duis;
-	TArray<TArray<int>> DuiStack;
-	TMap<int, int> NeedDelete;
-	while (!(HeadIndex == HeadTags.Num() && TailIndex == TailTags.Num())) {
-		bool DealHead = false;
-		if (HeadIndex == HeadTags.Num()) {
-			DealHead = false;
-		} else if (TailIndex == TailTags.Num()) {
-			DealHead = true;
-		} else {
-			if (HeadTags[HeadIndex] < TailTags[TailIndex]) {
-				DealHead = true;
-			} else {
-				DealHead = false;
-			}
-		}
-		if (DealHead) {
-			TArray<int> Dui;
-			Dui.Add(HeadTags[HeadIndex]);
-			DuiStack.Add(Dui);
-			HeadIndex++;
-		} else {
-			if (DuiStack.Num() == 0) {
-				NeedDelete.Add(TailTags[TailIndex], 4);
-			} else {
-				TArray<int> Dui = DuiStack.Last();
-				Dui.Add(TailTags[TailIndex]);
-				Duis.Add(Dui);
-				DuiStack.RemoveAt(DuiStack.Num()-1);
-			}
-			TailIndex++;
-		}
-	}
-	for (auto Stack : DuiStack) {
-		for (auto TempIndex : Stack) {
-			NeedDelete.Add(TempIndex, 3);
-		}
-	}
-	for (int i = 0; i < Duis.Num() - 1; i++) {
-		TArray<int> FirstDui = Duis[i];
-		TArray<int> SecondDui = Duis[i+1];
-		if (FirstDui[0] > SecondDui[0]) {
-			NeedDelete.Add(FirstDui[0], 3);
-			NeedDelete.Add(FirstDui[1], 4);
-		}
-	}
-	NeedDelete.KeySort([](int First, int Second) {
-		return First > Second;
-	});
-	for (auto Delete : NeedDelete) {
-		Content.RemoveAt(Delete.Key, Delete.Value, false);
+}
+
+bool UXUPrivacyWidget::OnWebBeforeNavigation(const FString& Url, const FWebNavigationRequest& Request) {
+	TUDebuger::DisplayLog("OnWebBeforeNavigation");
+	NavigationUrl = Url;
+	if (OriginURL == Url) {
+		return false;
+	}  else {
+		FPlatformProcess::LaunchURL(*Url, nullptr, nullptr);
+		return true;
 	}
 }
 
 bool UXUPrivacyWidget::IsInKrAndPushEnable() {
-	if (!FXUInitConfigModel::GetLocalModel().IsValid()) {
-		return false;
-	}
-	FString Region = FXUInitConfigModel::GetLocalModel()->configs.region.ToLower();
-	bool CanPush = FXUInitConfigModel::GetLocalModel()->configs.isKRPushServiceSwitchEnable;
-	return CanPush && Region == "kr";
+	return XUConfigManager::IsGameInKoreaAndPushServiceEnable();
 }
 
 bool UXUPrivacyWidget::IsInNorthAmerica() {
-	if (!FXUInitConfigModel::GetLocalModel().IsValid()) {
-		return false;
+	return XUConfigManager::IsGameInNA();
+}
+
+void UXUPrivacyWidget::UpdateComfirmBtnState() {
+	if (IsInNorthAmerica() && !AdditionalCheckBox->IsChecked()) {
+		ComfirmButtonImage->SetBrushFromTexture(LoadObject<UTexture2D>(nullptr, TEXT("Texture2D'/TapLogin/Image/taptap-router-gray.taptap-router-gray'")));
+	} else {
+		ComfirmButtonImage->SetBrushFromTexture(LoadObject<UTexture2D>(nullptr, TEXT("Texture2D'/TapLogin/Image/taptap-router.taptap-router'")));
 	}
-	FString Region = FXUInitConfigModel::GetLocalModel()->configs.region.ToLower();
-	return Region == "us";
+}
+
+void UXUPrivacyWidget::UpdateUI(LoadState State) {
+	switch (State) {
+	case Loading:
+		PrivacyWebBrowser->SetVisibility(ESlateVisibility::Visible);
+		ComfirmButton->SetVisibility(ESlateVisibility::Hidden);
+		LoadErrorBtn->SetVisibility(ESlateVisibility::Collapsed);
+		DeclineButton->SetVisibility(ESlateVisibility::Hidden);
+		AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
+		break;
+	case LoadError:
+		PrivacyWebBrowser->SetVisibility(ESlateVisibility::Collapsed);
+		ComfirmButton->SetVisibility(ESlateVisibility::Hidden);
+		LoadErrorBtn->SetVisibility(ESlateVisibility::Visible);
+		DeclineButton->SetVisibility(ESlateVisibility::Hidden);
+		AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
+		break;
+	case LoadSuccess:
+		PrivacyWebBrowser->SetVisibility(ESlateVisibility::Visible);
+		ComfirmButton->SetVisibility(ESlateVisibility::Visible);
+		LoadErrorBtn->SetVisibility(ESlateVisibility::Collapsed);
+		DeclineButton->SetVisibility(ESlateVisibility::Visible);
+		if (IsInKrAndPushEnable() || IsInNorthAmerica()) {
+			AdditionalCheckBox->SetVisibility(ESlateVisibility::Visible);
+		} else {
+			AdditionalCheckBox->SetVisibility(ESlateVisibility::Collapsed);
+		}
+		break;
+	default: ;
+	}
 }
 
 

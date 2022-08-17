@@ -32,9 +32,9 @@ TSharedPtr<FTULoginProfileModel> TULoginImpl::GetProfile() {
 
 void TULoginImpl::FetchProfile(TFunction<void(TSharedPtr<FTULoginProfileModel> ModelPtr, const FTUError& Error)> CallBack) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
-	if (CallBack) {
-		CallBack(nullptr, FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
-	}
+	// if (CallBack) {
+	// 	CallBack(nullptr, FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
+	// }
 }
 
 TSharedPtr<FTUAccessToken> TULoginImpl::GetAccessToken() {
@@ -44,10 +44,10 @@ TSharedPtr<FTUAccessToken> TULoginImpl::GetAccessToken() {
 
 void TULoginImpl::Login(TArray<FString> Permissions, TFunction<void(const TUAuthResult& Result)> CallBack) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
-	if (CallBack) {
-		TUAuthResult Result = TUAuthResult::FailInit(FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
-		CallBack(Result);
-	}
+	// if (CallBack) {
+	// 	TUAuthResult Result = TUAuthResult::FailInit(FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
+	// 	CallBack(Result);
+	// }
 }
 
 void TULoginImpl::Logout() {
@@ -60,15 +60,15 @@ void TULoginImpl::ChangeLanguage(TUType::LanguageType LanguageType) {
 
 void TULoginImpl::GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
-	if (CallBack) {
-		CallBack(false, FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
-	}
+	// if (CallBack) {
+	// 	CallBack(false, FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
+	// }
 }
 
 void TULoginImpl::QueryMutualList(FString Cursor, int Size,
 	TFunction<void(TSharedPtr<FTULoginFriendResult> ModelPtr, const FTUError& Error)> CallBack) {
 	TUDebuger::ErrorLog("Unsupported Platforms");
-	if (CallBack) {
-		CallBack(nullptr, FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
-	}
+	// if (CallBack) {
+	// 	CallBack(nullptr, FTUError(FTUError::ERROR_CODE_LOGIN_Platforms_Unsupported, "Unsupported Platforms"));
+	// }
 }

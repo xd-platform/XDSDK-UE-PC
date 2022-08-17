@@ -1,10 +1,17 @@
 #pragma once
+#include "TUType.h"
 
 
 namespace XUType {
 	enum RegionType {
 		CN,		// 国内
-		IO		// 海外
+		Global		// 海外
+	};
+
+	enum PayResult {
+		PaySuccess,		
+		PayFail,	
+		PayCancel		
 	};
 
 	enum LangType {
@@ -21,12 +28,19 @@ namespace XUType {
 		ES = 10,	// 西班牙语
 		TR = 11,	// 土耳其语
 		RU = 12,	// 俄罗斯语
+		VI = 13,	// 越南语
 	};
 
 	enum LoginType {
 		Default	= -1,	// 自动登录
 		Guest = 0,		// 游客登录
+		// WeChat = 1,		
+		// Apple = 2,		
+		Google = 3,		
+		// Facebook = 4,		
 		TapTap = 5,		// TapTap登录
+		// Line = 6,
+		// Twitter = 7,
 	};
 
 	enum CheckPayType{
@@ -36,11 +50,73 @@ namespace XUType {
 		None,				// 没有要补款
 	};
 	
-	class Config {
-	public:
-		FString ClientId;
-		RegionType RegionType = CN;
-		LangType LangType = ZH_CN;
-		FString GameVersion = "1.0.0";
-	};
+struct GoogleConfig {
+	FString ClientID;
+};
+	
+struct AgreementConfig {
+	FString Url;
+	FString Version;
+	FString Region;
+	bool IsKRPushServiceSwitchEnable = false;
+};
+
+struct BindEntriesConfig {
+	bool CanBind;
+	FString EntryName;
+	bool CanUnbind;
+};
+	
+class Config {
+public:
+	
+	/// 区域选择，可选 CN、Global
+	RegionType RegionType = CN;
+	
+	/// XDGSDK client id
+	FString ClientId;
+
+	/// TapSDK 配置
+	TUType::Config TapConfig;
+	
+	/// 游戏对外名称 显示在 Facebook 登录和客服页面中
+	FString GameName;
+	
+	/// TapTap 授权权限
+	TArray<FString> TapLoginPermissions;
+
+	// 游戏版本
+	FString GameVersion = "1.0.0";
+
+	/*
+	 * 以下内容按需配置
+	 */
+
+	/// Google 配置信息
+	GoogleConfig GoogleInfo;
+
+	/// 统一登录窗口中的登录入口选项
+	TArray<FString> LoginEntries;
+	
+	/// XDGSDK app id
+	FString AppID;
+	
+	/// 用户中心窗口中绑定入口选项
+	TArray<BindEntriesConfig> BindEntries;
+	
+	/// 发行区域
+	FString Region;
+	
+	/// 客服链接，默认
+	FString ReportUrl;
+	
+	/// 注销账户链接，默认
+	FString LogoutUrl;
+	
+	/// 注销账户链接，默认
+	FString WebPayUrl;
+	
+	/// 协议内容
+	AgreementConfig Agreement;
+};
 }

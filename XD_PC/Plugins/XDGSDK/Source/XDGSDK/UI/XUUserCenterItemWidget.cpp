@@ -1,7 +1,8 @@
 #include "XUUserCenterItemWidget.h"
 
 #include "TUSettings.h"
-#include "XUInitConfigModel.h"
+#include "XUConfigManager.h"
+#include "XUServerConfig.h"
 #include "XULanguageManager.h"
 
 UXUUserCenterItemWidget::UXUUserCenterItemWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -26,10 +27,15 @@ void UXUUserCenterItemWidget::SetBindModel(const TSharedPtr<FXUBindModel>& Model
 	auto langModel = XULanguageManager::GetCurrentModel();
 	FString Content = langModel->tds_account_format.Replace(TEXT("%s"), *Model->loginName);
 	TitleLabel->SetText(FText::FromString(Content));
-	
-	if (Model->loginType == (int)XUType::TapTap)
-	{
-		UTexture2D *TapTexture = LoadObject<UTexture2D>(nullptr, TEXT("Texture2D'/XDGSDK/Images/type_icon_tap.type_icon_tap'"));
+
+	if (Model->loginType == (int)XUType::TapTap) {
+		UTexture2D* TapTexture = LoadObject<UTexture2D>(
+			nullptr, TEXT("Texture2D'/XDGSDK/Images/type_icon_tap.type_icon_tap'"));
+		TitleImage->SetBrushFromTexture(TapTexture);
+	}
+	else if (Model->loginType == (int)XUType::Google) {
+		UTexture2D* TapTexture = LoadObject<UTexture2D>(
+			nullptr, TEXT("Texture2D'/XDGSDK/Images/type_icon_google.type_icon_google'"));
 		TitleImage->SetBrushFromTexture(TapTexture);
 	}
 	if (Model->status == FXDGBindType::Bind)
@@ -60,16 +66,16 @@ void UXUUserCenterItemWidget::OnBindBtnClick()
 }
 
 void UXUUserCenterItemWidget::ProcessShowOrNot() {
-	auto md = FXUInitConfigModel::GetLocalModel();
+	auto md = XUConfigManager::CurrentConfig();
 	if (!BindModel.IsValid() || !md.IsValid()) {
 		return;
 	}
-	for (auto BindEntry : md->configs.bindEntriesConfig) {
-		if (BindModel->loginName.ToLower() == BindEntry.entryName.ToLower()) {
+	for (auto BindEntry : md->BindEntries) {
+		if (BindModel->loginName.ToLower() == BindEntry.EntryName.ToLower()) {
 			if (BindModel->status == FXDGBindType::Bind) {
-				ShowBindBt(BindEntry.canBind);
+				ShowBindBt(BindEntry.CanBind);
 			} else {
-				ShowBindBt(BindEntry.canUnbind);
+				ShowBindBt(BindEntry.CanUnbind);
 			}
 			break;
 		}

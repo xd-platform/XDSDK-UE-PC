@@ -83,7 +83,7 @@ void TUHelper::ActivateItself() {
 	}
 	Path.LeftInline(index + 4);
 	
-	TUDebuger::DisplayShow(Path);
+	TUDebuger::DisplayLog(Path);
 	FMacPlatformProcess::LaunchFileInDefaultExternalApplication(*Path);
 }
 #endif

@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TUWebBrowser.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/CheckBox.h"
-#include "Components/RichTextBlock.h"
+#include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "XUPrivacyWidget.generated.h"
 
@@ -21,7 +22,7 @@ class XDGSDK_API UXUPrivacyWidget : public UUserWidget
 public:
 	 UXUPrivacyWidget(const FObjectInitializer& ObjectInitializer);
 
-	static void ShowPrivacy(TFunction<void(bool result)> Completed);
+	static void ShowPrivacy(TFunction<void()> Completed);
 
 protected:
 
@@ -33,10 +34,24 @@ protected:
 	UFUNCTION()
 	void OnComfirmBtnClick();
 
+	UFUNCTION()
+	void OnLoadErrorBtnClick();
 
+	UFUNCTION()
+	void OnDeclineBtnClick();
+
+	UFUNCTION()
+	void OnWebLoadCompleted();
+
+	UFUNCTION()
+	void OnWebLoadError();
+	
+	bool OnWebBeforeNavigation(const FString& Url, const FWebNavigationRequest& Request);
+	
 private:
+
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* TitleLabel;
+	UTUWebBrowser* PrivacyWebBrowser;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* ComfirmButton;
@@ -45,22 +60,19 @@ private:
 	UTextBlock* ComfirmButtonLabel;
 
 	UPROPERTY(meta = (BindWidget))
-	URichTextBlock* PrivacyTextView1;
+	UButton* LoadErrorBtn;
 
 	UPROPERTY(meta = (BindWidget))
-	URichTextBlock* PrivacyTextView2;
+	UTextBlock* LoadErrorLabel;
 
 	UPROPERTY(meta = (BindWidget))
-	UCheckBox* AgreeCheckBox1;
+	UImage* ComfirmButtonImage;
 
 	UPROPERTY(meta = (BindWidget))
-	UCheckBox* AgreeCheckBox2;
+	UButton* DeclineButton;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* AgreeCheckLabel1;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* AgreeCheckLabel2;
+	UTextBlock* DeclineButtonLabel;
 
 	UPROPERTY(meta = (BindWidget))
 	UCheckBox* AdditionalCheckBox;
@@ -68,13 +80,23 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* AdditionalCheckLabel;
 	
-	TFunction<void(bool result)> Completed;
-
-	void FormatTags(FString& Content);
-
+	TFunction<void()> Completed;
 
 	bool IsInKrAndPushEnable();
 
 	bool IsInNorthAmerica();
-	
+
+	void UpdateComfirmBtnState();
+
+	FString OriginURL;
+
+	enum LoadState {
+		Loading,
+		LoadError,
+		LoadSuccess,
+	};
+
+	void UpdateUI(LoadState State);
+
+	FString NavigationUrl;
 };

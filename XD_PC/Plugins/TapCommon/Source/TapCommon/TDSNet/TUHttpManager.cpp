@@ -42,6 +42,20 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TUHttpR
 	{
 		Request->SetHeader(header.Key, header.Value);
 	}
+
+	if (TUDebuger::IsTest) {
+		for (auto ReplaceHost : TUDebuger::ReplaceHosts) {
+			if (tdsReq->URL.Contains(ReplaceHost.Key)) {
+				tdsReq->URL.ReplaceInline(*ReplaceHost.Key, *ReplaceHost.Value);
+				break;
+			}
+		}
+	}
+	FString URL = tdsReq->URL;
+	for (auto PathParameter : tdsReq->PathParameters) {
+		FString PathValue = FGenericPlatformHttp::UrlEncode(PathParameter.Value);
+		URL.ReplaceInline(*PathParameter.Key, *PathValue, ESearchCase::CaseSensitive);
+	}
 	
 	switch (tdsReq->Type)
 	{
@@ -49,34 +63,35 @@ TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GenerateRequest(TSharedPtr<TUHttpR
 		{
 			Request->SetVerb("GET");
 			FString queryString = TUHelper::CombinParameters(tdsReq->Parameters);
-			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
-				url = url + "?" + queryString;
+				URL = URL + "?" + queryString;
 			}
-			Request->SetURL(url);
+			Request->SetURL(URL);
 		}
 		break;
 	case TUHttpRequest::Type::Post:
 		{
 			Request->SetVerb("POST");
 			FString queryString = TUHelper::CombinParameters(tdsReq->PostUrlParameters);
-			FString url = tdsReq->URL;
 			if (queryString.Len() > 0)
 			{
-				url = url + "?" + queryString;
+				URL = URL + "?" + queryString;
 			}
-			Request->SetURL(url);
-			if (tdsReq->Form == TUHttpRequest::Form::Default)
-			{
-				FString body = TUHelper::CombinParameters(tdsReq->Parameters);
-				Request->SetContentAsString(body);
-			} else if (tdsReq->Form == TUHttpRequest::Form::Json)
-			{
-				FString body = TUJsonHelper::GetJsonString(tdsReq->Parameters);
-				Request->SetContentAsString(body);
+			Request->SetURL(URL);
+			if (tdsReq->PostBodyString.IsEmpty()) {
+				if (tdsReq->Form == TUHttpRequest::Form::Default)
+				{
+					FString body = TUHelper::CombinParameters(tdsReq->Parameters);
+					Request->SetContentAsString(body);
+				} else if (tdsReq->Form == TUHttpRequest::Form::Json)
+				{
+					FString body = TUJsonHelper::GetJsonString(tdsReq->Parameters);
+					Request->SetContentAsString(body);
+				}
+			} else {
+				Request->SetContentAsString(tdsReq->PostBodyString);
 			}
-			
 		}
 		break;
 	}
@@ -98,7 +113,7 @@ void TUHttpManager::request(TSharedPtr<TUHttpRequest> tdsReq)
 		[=](FHttpRequestPtr HttpRequest, FHttpResponsePtr Response, bool bWasSuccessful)
 		{
 			tdsReq->tryCount++;
-			if (bWasSuccessful == false || !EHttpResponseCodes::IsOk(Response->GetResponseCode()))
+			if (bWasSuccessful == false || Response->GetResponseCode() >= 500)
 			{
 				if (tdsReq->tryCount < tdsReq->RepeatCount)
 				{

@@ -37,27 +37,18 @@ FString TUDeviceInfo::GetOSVersion()
 	return FPlatformMisc::GetOSVersion();
 }
 
-int TUDeviceInfo::GetScreenWidth()
-{
-	if (GEngine)
-	{
+int TUDeviceInfo::GetScreenWidth() {
+	if (GEngine && GEngine->GameViewport && GEngine->GameViewport->Viewport) {
 		return GEngine->GameViewport->Viewport->GetSizeXY().X;
-	} else
-	{
-		return 0;
 	}
-	
+	return 0;
 }
 
-int TUDeviceInfo::GetScreenHeight()
-{
-	if (GEngine)
-	{
+int TUDeviceInfo::GetScreenHeight() {
+	if (GEngine && GEngine->GameViewport && GEngine->GameViewport->Viewport) {
 		return GEngine->GameViewport->Viewport->GetSizeXY().Y;
-	} else
-	{
-		return 0;
 	}
+	return 0;
 }
 
 FString TUDeviceInfo::GetLoginId()

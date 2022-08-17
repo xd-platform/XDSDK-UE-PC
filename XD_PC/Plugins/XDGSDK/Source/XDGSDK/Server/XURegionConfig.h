@@ -5,6 +5,7 @@ public:
 
 	virtual ~XURegionConfig() = default;
 	virtual FString BaseHost() = 0;
+	virtual FString LoginWebHost() = 0;
 
 	//获取配置
 	FString InitSDKUrl();
@@ -29,6 +30,9 @@ public:
 
 	// 查询补款订单信息
 	FString PaybackListUrl();
+
+	// 上报同意协议版本
+	FString UploadAgreementUrl();
 	
 
 	static TSharedPtr<XURegionConfig>& Get();

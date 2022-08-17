@@ -47,6 +47,19 @@ struct FTUError {
 	UPROPERTY()
 	FString error_description = TEXT("");
 
+	UPROPERTY()
+	FString msg = TEXT("");
+
+	FString GetErrorReason() const {
+		if (!error_description.IsEmpty()) {
+			return error_description;
+		}
+		if (!msg.IsEmpty()) {
+			return msg;
+		}
+		return "No Reason";
+	}
+
 	FTUError() = default;
 
 	FTUError(int Code, FString ErrorDescription) : code(Code), error_description(ErrorDescription) {

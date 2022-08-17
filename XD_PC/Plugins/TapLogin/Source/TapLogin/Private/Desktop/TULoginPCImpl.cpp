@@ -74,3 +74,22 @@ void TULoginPCImpl::Logout() {
 	FTULoginProfileModel::ClearLocalModel();
 	FTUAccessToken::ClearLocalModel();
 }
+
+void TULoginPCImpl::GetTestQualification(TFunction<void(bool IsQualified, const FTUError& Error)> CallBack) {
+	if (!FTUAccessToken::GetLocalModel().IsValid()) {
+		if (CallBack) {
+			CallBack(false, FTUError(-400, "AccessToken is nil."));
+		}
+		return;
+	}
+	TULoginNet::RequestTestQualification([=](TSharedPtr<FTUTestQualificationModel> Model, FTULoginError Error) {
+		if (!CallBack) {
+			return;
+		}
+		if (Model.IsValid()) {
+			CallBack(Model->in_test, FTUError(Error.code, Error.msg));
+		} else {
+			CallBack(false, FTUError(Error.code, Error.msg));
+		}
+	});
+}

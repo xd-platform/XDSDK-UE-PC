@@ -4,49 +4,52 @@
 #include "XUNet.h"
 #include "XUUser.h"
 
+typedef TFunction<void(bool Result, const FString& Message)> XUInitCallback;
+
 class XUImpl
 {
 public:
+	
+	void InitSDK(const FString& GameVersion, XUInitCallback CallBack);
+	
+	void InitSDK(TSharedPtr<XUType::Config> Config, XUInitCallback CallBack);
+	
+	void LoginByType(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FXUUser> user)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
 
-	static void GetIpInfo(TFunction<void(TSharedPtr<FXUIpInfoModel> model, FString msg)> resultBlock);
+	void GetAuthParam(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
 
-	static void InitSDK(FString sdkClientId, TFunction<void(bool successed, FString msg)> resultBlock);
+	void CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock, TFunction<void(const FXUError& Error)> FailBlock);
 
-	static void LoginByType(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FXUUser> user)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
+	FString GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
 
-	static void GetLoginParam(XUType::LoginType LoginType, TFunction<void(TSharedPtr<FJsonObject> paras)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
+	FString GetPayUrl(const FString& ServerId, const FString& RoleId);
 
-	static void CheckPay(TFunction<void(XUType::CheckPayType CheckType)> SuccessBlock, TFunction<void(const FXUError& Error)> FailBlock);
+	void OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductSkuCode,
+	const FString& ProductName, float PayAmount, TFunction<void(XUType::PayResult Result)> CallBack,
+	const FString& Ext);
+	
+	void ResetPrivacy();
 
-	static FString GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
-
-	static FString GetPayUrl(const FString& ServerId, const FString& RoleId);
-
-	static FString GetPayUrl(const FString& ServerId, const FString& RoleId, const FString& OrderId, const FString& ProductId,
-	const FString& ProductName, float PayAmount, const FString& Ext);
-
-	static void ResetPrivacy();
+	void AccountCancellation();
 	
 	static TSharedPtr<XUImpl>& Get();
-
-	XUType::Config Config;
 
 
 private:
 	static TSharedPtr<XUImpl> Instance;
-
-	static void InitBootstrap(const TSharedPtr<FXUInitConfigModel>& model, TFunction<void(bool successed, FString msg)> resultBlock, const FString& msg);
 	
-	static void RequestKidToken(TSharedPtr<FJsonObject> paras, TFunction<void(TSharedPtr<FXUTokenModel> kidToken)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
+	void RequestKidToken(TSharedPtr<FJsonObject> paras, TFunction<void(TSharedPtr<FXUTokenModel> kidToken)> resultBlock, TFunction<void(FXUError error)> ErrorBlock);
 
-	static void RequestUserInfo(bool saveToLocal, TFunction<void(TSharedPtr<FXUUser> model)> callback, TFunction<void(FXUError error)> ErrorBlock);
+	void RequestUserInfo(bool saveToLocal, TFunction<void(TSharedPtr<FXUUser> model)> callback, TFunction<void(FXUError error)> ErrorBlock);
 
-	static void AsyncNetworkTdsUser(const FString& userId, TFunction<void(FString SessionToken)> callback, TFunction<void(FXUError error)> ErrorBlock);
+	void AsyncNetworkTdsUser(const FString& userId, TFunction<void(FString SessionToken)> callback, TFunction<void(FXUError error)> ErrorBlock);
 
-	static void AsyncLocalTdsUser(const FString& userId, const FString& sessionToken);
+	void AsyncLocalTdsUser(const FString& userId, const FString& sessionToken);
 	
-	static void CheckPrivacyAlert(TFunction<void()> Callback);
-	
-	static void RequestTapToken(TFunction<void(FTUAccessToken AccessToken)> callback, TFunction<void(FXUError error)> ErrorBlock);
-	
+	void CheckAgreement(TSharedPtr<XUType::Config> Config, XUInitCallback CallBack);
+
+	void InitFinish(XUInitCallback CallBack);
+
+	void RequestServerConfig();
+
 };

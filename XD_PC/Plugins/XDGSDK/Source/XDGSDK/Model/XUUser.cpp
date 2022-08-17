@@ -34,14 +34,8 @@ TSharedPtr<FXUTokenModel> FXUUser::Token()
 	return  FXUTokenModel::GetLocalModel();
 }
 
-XUType::LoginType FXUUser::GetLoginType()
-{
-	if (loginType == 0){
-		return XUType::Guest;
-	} else if (loginType == 5){
-		return XUType::TapTap;
-	}
-	return XUType::Guest;
+XUType::LoginType FXUUser::GetLoginType() {
+	return (XUType::LoginType)loginType;
 }
 
 void FXUUser::ClearUserData()

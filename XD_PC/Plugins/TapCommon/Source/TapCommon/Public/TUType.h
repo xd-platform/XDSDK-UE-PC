@@ -6,7 +6,7 @@ namespace TUType {
 	// 这个影响服务的host以及TapTap授权客户端的种类（是国内还是海外）
 	enum RegionType {
 		CN,		// 国内
-		IO		// 海外
+		Global		// 海外
 	};
 
 	enum LanguageType {
@@ -37,7 +37,7 @@ namespace TUType {
 
 		class TapDB {
 		public:
-			bool Enable;
+			bool Enable; // 如果该值为true，将会自动把TapDB模块一起初始化，不用手动去初始化TapDB
 	
 			FString Channel;
 
@@ -49,14 +49,6 @@ namespace TUType {
 		TapDB DBConfig;
 		
 
-		// class TapMoment {
-		// public:
-		// 	bool Enable;
-		// 	FString AppID_CN;
-		// 	FString AppID_IO;
-		// };
-		//
-		// TapMoment MomentConfig;
 
 	private:
 		static TSharedPtr<Config> Instance;
@@ -65,7 +57,7 @@ namespace TUType {
 
 	class TAPCOMMON_API PermissionScope {
 	public:
-		static FString Profile;
-		static FString Friend;
+		static FString Profile;  // 获得用户信息的权限
+		static FString Friend;	 // 获得好友的权限
 	};
 }

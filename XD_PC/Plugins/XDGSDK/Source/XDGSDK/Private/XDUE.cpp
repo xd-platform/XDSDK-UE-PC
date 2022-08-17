@@ -61,7 +61,15 @@ void XDUE::LoginByType(XUType::LoginType Type, TFunction<void(const FXUUser& Use
 }
 
 TSharedPtr<FXUUser> XDUE::GetUserInfo() {
-	return FXUUser::GetLocalModel();
+	auto UserPtr = FXUUser::GetLocalModel();
+	// 判断状态是否一致，如果不一致，那么退出登录，重新登录
+	if (UserPtr.IsValid() == FXUTokenModel::GetLocalModel().IsValid()) {
+		return UserPtr;
+	}
+	else {
+		Logout();
+		return nullptr;
+	}
 }
 
 TSharedPtr<FXUTokenModel> XDUE::GetAccessToken() {

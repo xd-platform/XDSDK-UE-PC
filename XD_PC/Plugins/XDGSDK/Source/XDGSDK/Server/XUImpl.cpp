@@ -50,7 +50,7 @@ void XUImpl::LoginByType(XUType::LoginType LoginType,
                          TFunction<void(FXUError error)> ErrorBlock) {
 	auto lmd = XULanguageManager::GetCurrentModel();
 	if (LoginType == XUType::Default) {
-		auto localUser = FXUUser::GetLocalModel();
+		auto localUser = XDUE::GetUserInfo();
 		if (localUser.IsValid()) {
 			RequestUserInfo(true, [](TSharedPtr<FXUUser> user) {}, [](FXUError Error) {});
 			AsyncLocalTdsUser(localUser->userId, FXUSyncTokenModel::GetLocalModel()->sessionToken);
@@ -62,7 +62,7 @@ void XUImpl::LoginByType(XUType::LoginType LoginType,
 	}
 	else {
 		// 如果已经是登录状态了，那么不再重复登录
-		if (FXUTokenModel::GetLocalModel().IsValid()) {
+		if (XDUE::GetUserInfo().IsValid()) {
 			if (ErrorBlock) {
 				ErrorBlock(FXUError("The user is logged in"));
 			}
@@ -70,7 +70,7 @@ void XUImpl::LoginByType(XUType::LoginType LoginType,
 		}
 		GetAuthParam(LoginType, [=](TSharedPtr<FJsonObject> paras) {
 			if (FXUTokenModel::GetLocalModel().IsValid()) {
-				TUDebuger::WarningLog("The user is logged in");
+				TUDebuger::WarningLog("Login Token Has Exist");
 				return;
 			}
 			UTUHUD::ShowWait();

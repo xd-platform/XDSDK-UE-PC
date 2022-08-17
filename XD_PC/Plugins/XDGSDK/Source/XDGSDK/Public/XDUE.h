@@ -18,8 +18,9 @@ public:
 	// 登录接口
 	static void LoginByType(XUType::LoginType Type, TFunction<void(const FXUUser& User)> SuccessBlock, TFunction<void(const FXUError& Error)> FailBlock);
 
-	// 使用前判断下IsValid，登录成功后才有值
+	// 使用前判断下IsValid，登录成功后才有值，也可以判断用户是否是已登录的状态。
 	static TSharedPtr<FXUUser> GetUserInfo();
+	
 	static TSharedPtr<FXUTokenModel> GetAccessToken();
 
 	// 使用前判断下IsValid，如果为空，那么使用异步方法请求网络IP

@@ -85,7 +85,7 @@ struct FXULocalConfigGoogle
 	GENERATED_BODY()
 
 	UPROPERTY()
-	FString CLIENT_ID;
+	FString CLIENT_ID_FOR_PC;
 
 	// UPROPERTY()
 	// FString REVERSED_CLIENT_ID;

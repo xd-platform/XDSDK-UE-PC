@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TUJsonHelper.h"
 #include "XUError.generated.h"
 
 USTRUCT(BlueprintType)
@@ -20,6 +21,10 @@ struct FXUError
 	FString detail;
 	
 	TSharedPtr<FJsonObject> ExtraData;
+
+	FString GetExtraString() {
+		return TUJsonHelper::GetJsonString(ExtraData);
+	}
 	
 
 	FXUError() = default;

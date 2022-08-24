@@ -75,7 +75,7 @@ TSharedPtr<XUType::Config> FXULocalConfig::GenerateXUConfig() {
 	// ConfigPtr->TwitterInfo.ConsumerKey = twitter.consumer_key;
 	// ConfigPtr->TwitterInfo.ConsumerSecret = twitter.consumer_secret;
 
-	ConfigPtr->GoogleInfo.ClientID = google.CLIENT_ID;
+	ConfigPtr->GoogleInfo.ClientID = google.CLIENT_ID_FOR_PC;
 	// ConfigPtr->GoogleInfo.ApiKey = google.API_KEY;
 	// ConfigPtr->GoogleInfo.IsSigninEnabled = google.IS_SIGNIN_ENABLED;
 	// ConfigPtr->GoogleInfo.GoogleAppID = google.GOOGLE_APP_ID;

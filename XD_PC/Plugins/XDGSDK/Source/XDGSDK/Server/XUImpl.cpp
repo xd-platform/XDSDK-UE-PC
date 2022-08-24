@@ -199,64 +199,52 @@ FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId
 	return UrlStr;
 }
 
-FString XUImpl::GetPayUrl(const FString& ServerId, const FString& RoleId) {
-	auto userMd = FXUUser::GetLocalModel();
-	auto cfgMd = XUConfigManager::CurrentConfig();
-	if (!userMd.IsValid() || !cfgMd.IsValid()) {
-		return "";
+void XUImpl::OpenWebPay(const FString& OrderId, const FString& ProductId, const FString& RoleId,
+	const FString& ServerId, TFunction<void(XUType::PayResult Result)> CallBack, const FString& ProductSkuCode,
+	const FString& SubChannelCode, const FString& ProductName, float PayAmount, const FString& Ext) {
+
+	TSharedPtr<FJsonObject> Query = MakeShareable(new FJsonObject);
+
+	if (!OrderId.IsEmpty()) {
+		Query->SetStringField("orderId", OrderId);
 	}
-	
-	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
-
-	query->SetStringField("serverId", ServerId);
-	query->SetStringField("roleId", RoleId);
-	query->SetStringField("region", cfgMd->Region);
-	query->SetStringField("appId", cfgMd->AppID);
-	query->SetStringField("lang", XULanguageManager::GetLanguageKey());
-	
-
-	FString QueryStr = TUHelper::CombinParameters(query);
-	FString UrlStr = cfgMd->WebPayUrl;
-	auto Parse = TUCommon::FURL_RFC3986();
-	Parse.Parse(UrlStr);
-	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
-	UrlStr = UrlStr + "?" + QueryStr;
-	return UrlStr;
-}
-
-void XUImpl::OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductSkuCode,
-	const FString& ProductName, float PayAmount, TFunction<void(XUType::PayResult Result)> CallBack,
-	const FString& Ext) {
-	
-	TSharedPtr<FJsonObject> query = MakeShareable(new FJsonObject);
-
-	query->SetStringField("serverId", ServerId);
-	query->SetStringField("roleId", RoleId);
-	query->SetStringField("productSkuCode", ProductSkuCode);
-	query->SetStringField("region", XUConfigManager::CurrentConfig()->Region);
-	query->SetStringField("appId", XUConfigManager::CurrentConfig()->AppID);
-	query->SetStringField("lang", XULanguageManager::GetLanguageKey());
-	query->SetStringField("platform", "pc");
-
+	if (!ProductId.IsEmpty()) {
+		Query->SetStringField("productId", ProductId);
+	}
+	if (!RoleId.IsEmpty()) {
+		Query->SetStringField("roleId", RoleId);
+	}
+	if (!ServerId.IsEmpty()) {
+		Query->SetStringField("serverId", ServerId);
+	}
+	if (!ProductSkuCode.IsEmpty()) {
+		Query->SetStringField("productSkuCode", ProductSkuCode);
+	}
+	if (!SubChannelCode.IsEmpty()) {
+		Query->SetStringField("subChannelCode", SubChannelCode);
+	}
 	if (!ProductName.IsEmpty()) {
-		query->SetStringField("productName", ProductName);
+		Query->SetStringField("productName", ProductName);
 	}
 	if (PayAmount > 0) {
-		query->SetStringField("payAmount", FString::Printf(TEXT("%f"), PayAmount));
+		Query->SetStringField("payAmount", FString::Printf(TEXT("%f"), PayAmount));
 	}
 	if (!Ext.IsEmpty()) {
-		query->SetStringField("extras", Ext);
+		Query->SetStringField("extras", Ext);
 	}
-	// PayWebBrowser->LoadURL("https://sdkpay-test.xd.cn/qr-pay/?productSkuCode=com.xd.sdkdemo1.stone30&payAmount=30.0&orderId=&roleId=323499800362549248&appId=1010&product_id%7Ccom.xd.sdkdemo1.stone30&region=CN&lang=zh_CN&serverId=demo_server_id&productName=com.xd.sdkdemo1.stone30");
+	Query->SetStringField("region", XUConfigManager::CurrentConfig()->Region);
+	Query->SetStringField("appId", XUConfigManager::CurrentConfig()->AppID);
+	Query->SetStringField("lang", XULanguageManager::GetLanguageKey());
+	Query->SetStringField("platform", "pc");
 
-	FString QueryStr = TUHelper::CombinParameters(query);
-	FString UrlStr = XUConfigManager::CurrentConfig()->WebPayUrl;
-	auto Parse = TUCommon::FURL_RFC3986();
-	Parse.Parse(UrlStr);
-	UrlStr = FString::Printf(TEXT("%s://%s"), *Parse.GetScheme(), *Parse.GetHost()) / Parse.GetPath();
-	UrlStr = UrlStr + "?" + QueryStr;
+	FString QueryStr = TUHelper::CombinParameters(Query);
+	FString UrlStr = XUConfigManager::CurrentConfig()->WebPayUrl + "?" + QueryStr;
 
-	UXUPayWebWidget::Show(UrlStr, CallBack);
+	if (XUConfigManager::IsCN()) {
+		UXUPayWebWidget::Show(UrlStr, CallBack);
+	} else {
+		FPlatformProcess::LaunchURL(*UrlStr, nullptr, nullptr);
+	}
 }
 
 

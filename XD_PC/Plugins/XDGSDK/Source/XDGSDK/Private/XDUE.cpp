@@ -148,25 +148,10 @@ void XDUE::OpenCustomerCenter(const FString& ServerId, const FString& RoleId, co
 	}
 }
 
-void XDUE::OpenWebPay(const FString& ServerId, const FString& RoleId) {
-	FString UrlStr = XUImpl::Get()->GetPayUrl(ServerId, RoleId);
-
-	if (UrlStr.IsEmpty()) {
-		TUDebuger::ErrorLog("please login first");
-	} else {
-		TUDebuger::DisplayLog(FString::Printf(TEXT("web pay url: %s"), *UrlStr));
-		FPlatformProcess::LaunchURL(*UrlStr, nullptr, nullptr);
-	}
-}
-
-void XDUE::OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductSkuCode,
-	TFunction<void(XUType::PayResult Result)> CallBack, const FString& ProductName, float PayAmount,
-	const FString& Ext) {
-	if (!XUConfigManager::IsCN()) {
-		OpenWebPay(ServerId, RoleId);
-		return;
-	}
-	XUImpl::Get()->OpenWebPay(ServerId, RoleId, ProductSkuCode, ProductName, PayAmount, CallBack, Ext);
+void XDUE::OpenWebPay(const FString& OrderId, const FString& ProductId, const FString& RoleId, const FString& ServerId,
+	TFunction<void(XUType::PayResult Result)> CallBack, const FString& ProductSkuCode, const FString& SubChannelCode,
+	const FString& ProductName, float PayAmount, const FString& Ext) {
+	XUImpl::Get()->OpenWebPay(OrderId, ProductId, RoleId, ServerId, CallBack, ProductSkuCode, SubChannelCode, ProductName, PayAmount, Ext);
 }
 
 void XDUE::SetPushServiceEnable(bool enable) {

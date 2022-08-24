@@ -64,7 +64,7 @@ public:
 	* @param Ext			 附加信息。服务端支付回调会包含该字段，必填
 	* @param ProductSkuCode  商品编号
 	* @param SubChannelCode  渠道编号
-	* @param CallBack		 支付结果回调
+	* @param CallBack		 支付结果回调(仅支持国内支付)
 	*/
 	static void OpenWebPay(const FString& OrderId,
 	                       const FString& ProductId,

@@ -221,7 +221,7 @@ XDSDK支持14种语言，TapSDK仅支持7种，如果XDSDK设置的语言种类�
 	* @param Ext			 附加信息。服务端支付回调会包含该字段，必填
 	* @param ProductSkuCode  商品编号
 	* @param SubChannelCode  渠道编号
-	* @param CallBack		 支付结果回调
+	* @param CallBack		 支付结果回调(仅支持国内支付)
 	*/
 	static void OpenWebPay(const FString& OrderId,
 	                       const FString& ProductId,

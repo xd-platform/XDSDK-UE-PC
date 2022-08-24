@@ -1,5 +1,16 @@
 # Changelog
 
+## 6.5.1
+
+### New Feature
+* 对象`XUError`新增`GetExtraString`接口，与移动端保持统一
+
+### Breaking Changes
+* 谷歌本地配置文件初始化字段`CLIENT_ID`改为`CLIENT_ID_FOR_PC`
+* 国内支付和国外支付API合并为新的接口
+
+
+
 ## 6.5.0
 
 ### New Feature

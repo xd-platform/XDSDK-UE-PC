@@ -53,19 +53,19 @@ public:
 	static void OpenCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
 
 	/**
- * 网页支付
- *
- * @param OrderId         订单ID。游戏侧订单号，服务端支付回调会包含该字段,如无该字段，传空。
- * @param ProductId       商品ID。游戏的商品ID
- * @param ProductName     商品名称。用于内嵌支付内部显示
- * @param PayAmount       商品价格
- * @param RoleId          角色ID。支付角色ID，服务端支付回调会包含该字段，必填
- * @param ServerId        服务器ID。所在服务器ID，不能有特殊字符，服务端支付回调会包含该字段，必填
- * @param Ext			  附加信息。服务端支付回调会包含该字段，必填
- * @param ProductSkuCode  商品编号
- * @param SubChannelCode  渠道编号
- * @param CallBack		  支付结果回调
- */
+	* 网页支付
+	*
+	* @param OrderId         订单ID。游戏侧订单号，服务端支付回调会包含该字段,如无该字段，传空。
+	* @param ProductId       商品ID。游戏的商品ID
+	* @param ProductName     商品名称。用于内嵌支付内部显示
+	* @param PayAmount       商品价格
+	* @param RoleId          角色ID。支付角色ID，服务端支付回调会包含该字段，必填
+	* @param ServerId        服务器ID。所在服务器ID，不能有特殊字符，服务端支付回调会包含该字段，必填
+	* @param Ext			 附加信息。服务端支付回调会包含该字段，必填
+	* @param ProductSkuCode  商品编号
+	* @param SubChannelCode  渠道编号
+	* @param CallBack		 支付结果回调
+	*/
 	static void OpenWebPay(const FString& OrderId,
 	                       const FString& ProductId,
 	                       const FString& RoleId,

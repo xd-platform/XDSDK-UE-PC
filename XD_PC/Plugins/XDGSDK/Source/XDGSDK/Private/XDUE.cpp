@@ -148,11 +148,12 @@ void XDUE::OpenCustomerCenter(const FString& ServerId, const FString& RoleId, co
 	}
 }
 
-void XDUE::OpenWebPay(const FString& OrderId, const FString& ProductId, const FString& RoleId, const FString& ServerId,
-	TFunction<void(XUType::PayResult Result)> CallBack, const FString& ProductSkuCode, const FString& SubChannelCode,
-	const FString& ProductName, float PayAmount, const FString& Ext) {
-	XUImpl::Get()->OpenWebPay(OrderId, ProductId, RoleId, ServerId, CallBack, ProductSkuCode, SubChannelCode, ProductName, PayAmount, Ext);
+void XDUE::OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductId, const FString& OrderId,
+	const FString& ProductName, float PayAmount, const FString& Ext,
+	TFunction<void(XUType::PayResult Result)> CallBack) {
+	XUImpl::Get()->OpenWebPay(ServerId, RoleId, ProductId, OrderId, ProductName, PayAmount, Ext, CallBack);
 }
+
 
 void XDUE::SetPushServiceEnable(bool enable) {
 	FXUUser::SetPushServiceEnable(enable);

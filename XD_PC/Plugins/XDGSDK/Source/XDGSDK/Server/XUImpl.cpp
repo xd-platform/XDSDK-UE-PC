@@ -199,30 +199,30 @@ FString XUImpl::GetCustomerCenter(const FString& ServerId, const FString& RoleId
 	return UrlStr;
 }
 
-void XUImpl::OpenWebPay(const FString& OrderId, const FString& ProductId, const FString& RoleId,
-	const FString& ServerId, TFunction<void(XUType::PayResult Result)> CallBack, const FString& ProductSkuCode,
-	const FString& SubChannelCode, const FString& ProductName, float PayAmount, const FString& Ext) {
-
+void XUImpl::OpenWebPay(const FString& ServerId, const FString& RoleId, const FString& ProductId,
+	const FString& OrderId, const FString& ProductName, float PayAmount, const FString& Ext,
+	TFunction<void(XUType::PayResult Result)> CallBack) {
 	TSharedPtr<FJsonObject> Query = MakeShareable(new FJsonObject);
+	if (ProductId.IsEmpty()) {
+		TUDebuger::ErrorLog("ProductId is empty");
+		return;
+	}
+	if (RoleId.IsEmpty()) {
+		TUDebuger::ErrorLog("RoleId is empty");
+		return;
+	}
+	if (ServerId.IsEmpty()) {
+		TUDebuger::ErrorLog("ServerId is empty");
+		return;
+	}
+	Query->SetStringField("productSkuCode", ProductId);
+	Query->SetStringField("roleId", RoleId);
+	Query->SetStringField("serverId", ServerId);
 
 	if (!OrderId.IsEmpty()) {
 		Query->SetStringField("orderId", OrderId);
 	}
-	if (!ProductId.IsEmpty()) {
-		Query->SetStringField("productId", ProductId);
-	}
-	if (!RoleId.IsEmpty()) {
-		Query->SetStringField("roleId", RoleId);
-	}
-	if (!ServerId.IsEmpty()) {
-		Query->SetStringField("serverId", ServerId);
-	}
-	if (!ProductSkuCode.IsEmpty()) {
-		Query->SetStringField("productSkuCode", ProductSkuCode);
-	}
-	if (!SubChannelCode.IsEmpty()) {
-		Query->SetStringField("subChannelCode", SubChannelCode);
-	}
+
 	if (!ProductName.IsEmpty()) {
 		Query->SetStringField("productName", ProductName);
 	}

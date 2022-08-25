@@ -39,8 +39,8 @@ void UDemoFirstWidget::NativeConstruct()
 	RegionBox->OnSelectionChanged.AddUniqueDynamic(this, &UDemoFirstWidget::OnRegionBoxSelectionChanged);
 	LangBox->OnSelectionChanged.AddUniqueDynamic(this, &UDemoFirstWidget::OnLangBoxSelectionChanged);
 
-	WebPayAmountTF->SetText(FText::FromString("30.0"));
-	WebPayProductSkuCodeTF->SetText(FText::FromString("com.xd.sdkdemo1.stone30"));
+	WebPayOrderIDTF->SetText(FText::FromString(""));
+	WebPayExtrasTF->SetText(FText::FromString("Haha"));
 	WebPayProductIDTF->SetText(FText::FromString("com.xd.sdkdemo1.stone30"));
 	WebPayServerIDTF->SetText(FText::FromString("demo_server_id"));
 	WebPayRoleIDTF->SetText(FText::FromString("323499800362549248"));
@@ -214,9 +214,9 @@ void UDemoFirstWidget::OnWebPayBtnClick() {
 	FString ServerId = WebPayServerIDTF->GetText().ToString();
 	FString RoleId = WebPayRoleIDTF->GetText().ToString();
 	FString ProductID = WebPayProductIDTF->GetText().ToString();
-	FString ProductSkuCode = WebPayProductSkuCodeTF->GetText().ToString();
-	FString PayAmount = WebPayAmountTF->GetText().ToString();
-	XDUE::OpenWebPay("", ProductID, RoleId, ServerId, [](XUType::PayResult Result) {
+	FString OrderID = WebPayOrderIDTF->GetText().ToString();
+	FString Extras = WebPayExtrasTF->GetText().ToString();
+	XDUE::OpenWebPay(ServerId, RoleId, ProductID, OrderID, "", 0, Extras, [](XUType::PayResult Result) {
 		switch (Result) {
 		case XUType::PaySuccess:
 			TUDebuger::DisplayShow("Pay Success");
@@ -228,7 +228,7 @@ void UDemoFirstWidget::OnWebPayBtnClick() {
 			TUDebuger::DisplayShow("Pay Cancel");
 			break;
 		}
-	}, ProductSkuCode, "", "", FCString::Atof(*PayAmount), "");
+	});
 }
 
 void UDemoFirstWidget::OnEnvironmentBoxSelectionChanged(FString SelectedItem, ESelectInfo::Type SelectionType) {

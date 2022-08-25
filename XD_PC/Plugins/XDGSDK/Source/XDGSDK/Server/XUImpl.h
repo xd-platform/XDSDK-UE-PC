@@ -22,16 +22,14 @@ public:
 
 	FString GetCustomerCenter(const FString& ServerId, const FString& RoleId, const FString& RoleName);
 
-	void OpenWebPay(const FString& OrderId,
-	                const FString& ProductId,
-	                const FString& RoleId,
-	                const FString& ServerId,
-	                TFunction<void(XUType::PayResult Result)> CallBack,
-	                const FString& ProductSkuCode = "",
-	                const FString& SubChannelCode = "",
-	                const FString& ProductName = "",
-	                float PayAmount = 0,
-	                const FString& Ext = "");
+	static void OpenWebPay(const FString& ServerId,
+						   const FString& RoleId,
+						   const FString& ProductId,
+						   const FString& OrderId,
+						   const FString& ProductName = "",
+						   float PayAmount = 0,
+						   const FString& Ext = "",
+						   TFunction<void(XUType::PayResult Result)> CallBack = nullptr);
 	
 	void ResetPrivacy();
 

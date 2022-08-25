@@ -138,10 +138,10 @@ private:
 	UEditableTextBox* WebPayProductIDTF;
 	
 	UPROPERTY(meta = (BindWidget))
-	UEditableTextBox* WebPayProductSkuCodeTF;
+	UEditableTextBox* WebPayOrderIDTF;
 	
 	UPROPERTY(meta = (BindWidget))
-	UEditableTextBox* WebPayAmountTF;
+	UEditableTextBox* WebPayExtrasTF;
 	
 	UPROPERTY(meta = (BindWidget))
 	UButton* WebPayBtn;
